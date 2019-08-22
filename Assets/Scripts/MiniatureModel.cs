@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.UIElements;
 
 public class MiniatureModel : MonoBehaviour {
     [SerializeField] private GameObject playerRepresentation;
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
+    //[SerializeField] private OVRInput.Controller showWIMButton;
+    [SerializeField] private OVRInput.RawButton showWIMButton;
+    [SerializeField] private Vector3 WIMSpawnOffset;
+    
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -29,16 +35,23 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     void Update() {
+        CheckSpawnWIM();
+        updatePlayerRepresentation();
+    }
+
+    private void CheckSpawnWIM() {
+        if (!OVRInput.Get(showWIMButton)) return;
+        transform.rotation = Quaternion.identity;
+        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z + new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+    }
+
+    private void updatePlayerRepresentation() {
         var eyeOffset = playerTransform.forward.normalized * -0.15f;
         var playerOffset = (playerTransform.position + eyeOffset) - levelTransform.position;
         var playerRepresentationOffset = playerOffset * scaleFactor;
         playerRepresentationOffset = WIMLevelTransform.parent.rotation * playerRepresentationOffset;
         playerRepresentationTransform.position =
-        WIMLevelTransform.position + playerRepresentationOffset + new Vector3(0, 0.6f, 0) * scaleFactor;
-
-        //var playerRelativeRot = Quaternion.FromToRotation(levelTransform.rotation.eulerAngles, playerTransform.rotation.eulerAngles);
-        //playerRepresentationTransform.rotation = WIMLevelTransform.rotation * playerRelativeRot;
-        //Debug.Log(playerRepresentationTransform.rotation);
+            WIMLevelTransform.position + playerRepresentationOffset + new Vector3(0, 0.6f, 0) * scaleFactor;
 
         var lookAtPos = HMDTransform.position + HMDTransform.forward;
         var lookAtOffset = lookAtPos - levelTransform.position;
@@ -50,14 +63,5 @@ public class MiniatureModel : MonoBehaviour {
         playerRepresentationTransform.LookAt(lookPos);
         playerRepresentationTransform.Rotate(-90, 0, 0);
         playerRepresentationTransform.Rotate(0, -45, 0);
-
-
-        //playerRepresentationTransform.rotation = Quaternion.Euler(new Vector3(LeftEyeAnchorTransform.rotation.x,
-        //                                                                        y,
-        //                                                                        LeftEyeAnchorTransform.rotation.z));
-
-        //playerRepresentationTransform.rotation = Quaternion.Euler(new Vector3(playerRepresentationTransform.rotation.x,
-        //                                                                        LeftEyeAnchorTransform.rotation.y,
-        //                                                                        playerRepresentationTransform.rotation.z));
     }
 }
