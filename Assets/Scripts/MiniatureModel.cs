@@ -4,10 +4,8 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 public class MiniatureModel : MonoBehaviour {
-
     [SerializeField] private GameObject playerRepresentation;
-    [Range(0, 1)]
-    [SerializeField] private float scaleFactor = 0.1f;
+    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -29,6 +27,11 @@ public class MiniatureModel : MonoBehaviour {
     void Update() {
         var playerOffset = playerTransform.position - levelTransform.position;
         var playerRepresentationOffset = playerOffset * scaleFactor;
+        playerRepresentationOffset = WIMLevelTransform.parent.rotation * playerRepresentationOffset;
         playerRepresentationTransform.position = WIMLevelTransform.position + playerRepresentationOffset;
+
+        //playerRepresentationTransform.rotation = Quaternion.Euler(new Vector3(playerRepresentationTransform.rotation.x,
+        //                                                                        playerTransform.rotation.y,
+        //                                                                        playerRepresentationTransform.rotation.z));
     }
 }
