@@ -7,11 +7,13 @@ using UnityEngine.UIElements;
 
 public class MiniatureModel : MonoBehaviour {
     [SerializeField] private GameObject playerRepresentation;
+
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
+
     //[SerializeField] private OVRInput.Controller showWIMButton;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
-    
+
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -40,28 +42,38 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     private void CheckSpawnWIM() {
+        if (Input.GetKeyUp(KeyCode.Space)) {
+            dissolve();
+            return;
+        }
+
         if (!OVRInput.Get(showWIMButton)) return;
         dissolve();
     }
 
     private void dissolve() {
-        //var t = transform.GetChild(0);
-        //for (var i = 0; i < t.childCount; i++) {
-        //    var tt = t.GetChild(i);
-        //    var d = tt.GetComponent<Dissolve>();
-        //    d.durationInSeconds = .5f;
-        //    d.Play();
-        //}
-        Invoke("spawn", 0.5f);
-    }
-
-    private void spawn() {
-        transform.rotation = Quaternion.identity;
-        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z + new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
         var t = transform.GetChild(0);
         for (var i = 0; i < t.childCount; i++) {
             var tt = t.GetChild(i);
             var d = tt.GetComponent<Dissolve>();
+            if(d == null) continue;
+            d.durationInSeconds = .5f;
+            d.Play();
+        }
+
+        Invoke("spawn", 0.6f);
+    }
+
+    private void spawn() {
+        Debug.Log("Spawn");
+        transform.rotation = Quaternion.identity;
+        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
+                             new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        var t = transform.GetChild(0);
+        for (var i = 0; i < t.childCount; i++) {
+            var tt = t.GetChild(i);
+            var d = tt.GetComponent<Dissolve>();
+            if(d == null) continue;
             d.durationInSeconds = 1;
             d.PlayInverse();
         }

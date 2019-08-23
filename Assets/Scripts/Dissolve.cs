@@ -24,7 +24,6 @@ public class Dissolve : MonoBehaviour {
             var remainingTime = endTime - Time.realtimeSinceStartup;
             var percent = (durationInSeconds - remainingTime) / durationInSeconds;
             var progress = (!isInverse) ? percent : 1 - percent;
-            Debug.Log(percent);
             mat.SetFloat("Vector1_461A9E8C", progress);
         }
     }
