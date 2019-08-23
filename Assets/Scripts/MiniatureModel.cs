@@ -42,41 +42,56 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     private void CheckSpawnWIM() {
+        // For debugging.
         if (Input.GetKeyUp(KeyCode.Space)) {
-            dissolve();
+            respawn();
             return;
         }
 
-        if (!OVRInput.Get(showWIMButton)) return;
-        dissolve();
+        if (!OVRInput.GetUp(showWIMButton)) return;
+        respawn();
     }
 
-    private void dissolve() {
-        var t = transform.GetChild(0);
-        for (var i = 0; i < t.childCount; i++) {
-            var tt = t.GetChild(i);
-            var d = tt.GetComponent<Dissolve>();
+    private void respawn() {
+        var WIMLevel = transform.GetChild(0);
+        for (var i = 0; i < WIMLevel.childCount; i++) {
+            var d = WIMLevel.GetChild(i).GetComponent<Dissolve>();
             if(d == null) continue;
-            d.durationInSeconds = .5f;
+            d.durationInSeconds = 1f;
             d.Play();
         }
 
-        Invoke("spawn", 0.6f);
-    }
-
-    private void spawn() {
-        Debug.Log("Spawn");
+        WIMLevel.parent = null;
+        WIMLevel.name = "WIM Level Old";
+        playerRepresentationTransform.parent = null;
+        var newWIMLevel = Instantiate(WIMLevel.gameObject, transform).transform;
+        newWIMLevel.gameObject.name = "WIM Level";
+        WIMLevelTransform = newWIMLevel;
+        var rb = GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        newWIMLevel.position = Vector3.zero;
+        newWIMLevel.localPosition = Vector3.zero;
+        newWIMLevel.rotation = Quaternion.identity;
+        newWIMLevel.localRotation = Quaternion.identity;
+        newWIMLevel.localScale = new Vector3(1,1,1);
+        playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
         transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
                              new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
-        var t = transform.GetChild(0);
-        for (var i = 0; i < t.childCount; i++) {
-            var tt = t.GetChild(i);
-            var d = tt.GetComponent<Dissolve>();
+        for (var i = 0; i < newWIMLevel.childCount; i++) {
+            var d = newWIMLevel.GetChild(i).GetComponent<Dissolve>();
             if(d == null) continue;
             d.durationInSeconds = 1;
+            newWIMLevel.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", 1);
             d.PlayInverse();
         }
+
+        Invoke("destroyOldWIMLevel", 1.1f);
+    }
+
+    private void destroyOldWIMLevel() {
+        Destroy(GameObject.Find("WIM Level Old"));
     }
 
     private void updatePlayerRepresentation() {
