@@ -5,12 +5,17 @@ using UnityEngine.Assertions;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(OVRGrabbable))]
 public class MiniatureModel : MonoBehaviour {
     [SerializeField] private GameObject playerRepresentation;
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
     //[SerializeField] private OVRInput.Controller showWIMButton;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private OVRInput.RawButton destinationSelectButton;
+    [SerializeField] private GameObject destinationIndicator;
     
 
     private Transform levelTransform;
@@ -18,16 +23,23 @@ public class MiniatureModel : MonoBehaviour {
     private Transform playerRepresentationTransform;
     private Transform playerTransform;
     private Transform HMDTransform;
+    private Transform fingertipIndexR;
+    private Transform destinationWIM;
+    private Transform destinationIndicatorInLevel;
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
         WIMLevelTransform = GameObject.Find("WIM Level").transform;
         playerTransform = GameObject.Find("OVRCameraRig").transform;
         HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
+        fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
         Assert.IsNotNull(levelTransform);
         Assert.IsNotNull(WIMLevelTransform);
         Assert.IsNotNull(playerTransform);
         Assert.IsNotNull(HMDTransform);
+        Assert.IsNotNull(fingertipIndexR);
+        Assert.IsNotNull(playerRepresentation);
+        Assert.IsNotNull(destinationIndicator);
     }
 
     void Start() {
@@ -40,9 +52,46 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     private void CheckSpawnWIM() {
+        SelectDestination();
         if (!OVRInput.Get(showWIMButton)) return;
         transform.rotation = Quaternion.identity;
         transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z + new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+    }
+
+    private void SelectDestination() {
+        if (!OVRInput.GetUp(destinationSelectButton)) return;
+
+        // Check if in WIM bounds.
+        if (isInsideWIM(fingertipIndexR.position)) {
+            // Remove previous destination point.
+            if (destinationWIM) {
+                Destroy(destinationWIM.gameObject);
+                Destroy(destinationIndicatorInLevel.gameObject);
+            }
+
+            // Show destination in WIM.
+            destinationWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+            //destinationWIM.position = getGroundPosition(fingertipIndexR.position);
+            destinationWIM.position = fingertipIndexR.position;
+
+            // Show destination in level.
+            var WIMPosition = destinationWIM.position;
+            var WIMOffset = WIMPosition - WIMLevelTransform.position;
+            var levelOffset = WIMOffset / scaleFactor;
+            levelOffset = levelTransform.rotation * levelOffset;
+            var levelPosition = levelTransform.position + levelOffset;
+            destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
+            destinationIndicatorInLevel.position = levelPosition;
+        }
+
+    }
+
+    bool isInsideWIM(Vector3 point) {
+        return GetComponent<Collider>().ClosestPoint(point) == point;
+    }
+
+    Vector3 getGroundPosition(Vector3 point) {
+        return Physics.Raycast(point, Vector3.down, out var hit) ? hit.point : point;
     }
 
     private void updatePlayerRepresentation() {
