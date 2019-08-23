@@ -41,8 +41,30 @@ public class MiniatureModel : MonoBehaviour {
 
     private void CheckSpawnWIM() {
         if (!OVRInput.Get(showWIMButton)) return;
+        dissolve();
+    }
+
+    private void dissolve() {
+        //var t = transform.GetChild(0);
+        //for (var i = 0; i < t.childCount; i++) {
+        //    var tt = t.GetChild(i);
+        //    var d = tt.GetComponent<Dissolve>();
+        //    d.durationInSeconds = .5f;
+        //    d.Play();
+        //}
+        Invoke("spawn", 0.5f);
+    }
+
+    private void spawn() {
         transform.rotation = Quaternion.identity;
         transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z + new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        var t = transform.GetChild(0);
+        for (var i = 0; i < t.childCount; i++) {
+            var tt = t.GetChild(i);
+            var d = tt.GetComponent<Dissolve>();
+            d.durationInSeconds = 1;
+            d.PlayInverse();
+        }
     }
 
     private void updatePlayerRepresentation() {
