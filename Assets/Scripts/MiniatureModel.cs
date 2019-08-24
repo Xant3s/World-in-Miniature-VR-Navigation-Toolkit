@@ -140,6 +140,11 @@ public class MiniatureModel : MonoBehaviour {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
             destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) + new Vector3(0, destinationIndicator.transform.localScale.y * scaleFactor, 0);
         }
+
+        // Destination indicator rotation.
+        var lookPos = fingertipIndexR.position + fingertipIndexR.right;
+        lookPos.y = destinationIndicatorInWIM.position.y;
+        destinationIndicatorInWIM.LookAt(lookPos);
     }
 
     private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
