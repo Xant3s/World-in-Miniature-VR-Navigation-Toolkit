@@ -8,10 +8,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(OVRGrabbable))]
 public class MiniatureModel : MonoBehaviour {
     [SerializeField] private GameObject playerRepresentation;
-
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
-
-    //[SerializeField] private OVRInput.Controller showWIMButton;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
@@ -57,12 +54,6 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     private void checkSpawnWIM() {
-        // For debugging.
-        if (Input.GetKeyUp(KeyCode.Space)) {
-            respawnWIM();
-            return;
-        }
-
         if (!OVRInput.GetUp(showWIMButton)) return;
         respawnWIM();
     }
@@ -75,7 +66,7 @@ public class MiniatureModel : MonoBehaviour {
             d.durationInSeconds = 1f;
             d.Play();
         }
-
+        
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
         playerRepresentationTransform.parent = null;
@@ -114,8 +105,9 @@ public class MiniatureModel : MonoBehaviour {
         if (!destinationIndicatorInLevel) return;
         OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
-        Destroy(destinationIndicatorInLevel.gameObject);
+        destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
         Destroy(destinationIndicatorInWIM.gameObject);
+        Destroy(destinationIndicatorInLevel.gameObject);
         respawnWIM(); // Assist player to orientate at new location.
     }
 
