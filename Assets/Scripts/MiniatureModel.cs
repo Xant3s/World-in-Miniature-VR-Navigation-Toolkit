@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Experimental.GlobalIllumination;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
@@ -16,6 +14,7 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private GameObject destinationIndicator;
+    [SerializeField] private OVRInput.RawButton confirmTeleportButton;
     
 
     private Transform levelTransform;
@@ -24,8 +23,9 @@ public class MiniatureModel : MonoBehaviour {
     private Transform playerTransform;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
-    private Transform destinationWIM;
+    private Transform destinationIndicatorInWIM;
     private Transform destinationIndicatorInLevel;
+    private Transform OVRPlayerController;
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -33,6 +33,7 @@ public class MiniatureModel : MonoBehaviour {
         playerTransform = GameObject.Find("OVRCameraRig").transform;
         HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
         fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
+        OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
         Assert.IsNotNull(levelTransform);
         Assert.IsNotNull(WIMLevelTransform);
         Assert.IsNotNull(playerTransform);
@@ -40,6 +41,7 @@ public class MiniatureModel : MonoBehaviour {
         Assert.IsNotNull(fingertipIndexR);
         Assert.IsNotNull(playerRepresentation);
         Assert.IsNotNull(destinationIndicator);
+        Assert.IsNotNull(OVRPlayerController);
     }
 
     void Start() {
@@ -48,11 +50,21 @@ public class MiniatureModel : MonoBehaviour {
 
     void Update() {
         CheckSpawnWIM();
+        SelectDestination();
+        checkConfirmTeleport();
         updatePlayerRepresentation();
     }
 
+    private void checkConfirmTeleport() {
+        if (!OVRInput.GetUp(confirmTeleportButton)) return;
+        if (!destinationIndicatorInLevel) return;
+        OVRPlayerController.position = destinationIndicatorInLevel.position;
+        OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
+        Destroy(destinationIndicatorInLevel.gameObject);
+        Destroy(destinationIndicatorInWIM.gameObject);
+    }
+
     private void CheckSpawnWIM() {
-        SelectDestination();
         if (!OVRInput.Get(showWIMButton)) return;
         transform.rotation = Quaternion.identity;
         transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z + new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
@@ -64,18 +76,18 @@ public class MiniatureModel : MonoBehaviour {
         // Check if in WIM bounds.
         if (isInsideWIM(fingertipIndexR.position)) {
             // Remove previous destination point.
-            if (destinationWIM) {
-                Destroy(destinationWIM.gameObject);
+            if (destinationIndicatorInWIM) {
+                Destroy(destinationIndicatorInWIM.gameObject);
                 Destroy(destinationIndicatorInLevel.gameObject);
             }
 
             // Show destination in WIM.
-            destinationWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+            destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
             //destinationWIM.position = getGroundPosition(fingertipIndexR.position);
-            destinationWIM.position = fingertipIndexR.position;
+            destinationIndicatorInWIM.position = fingertipIndexR.position;
 
             // Show destination in level.
-            var WIMPosition = destinationWIM.position;
+            var WIMPosition = destinationIndicatorInWIM.position;
             var WIMOffset = WIMPosition - WIMLevelTransform.position;
             var levelOffset = WIMOffset / scaleFactor;
             levelOffset = levelTransform.rotation * levelOffset;
@@ -83,7 +95,6 @@ public class MiniatureModel : MonoBehaviour {
             destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
             destinationIndicatorInLevel.position = levelPosition;
         }
-
     }
 
     bool isInsideWIM(Vector3 point) {
