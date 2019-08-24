@@ -138,13 +138,14 @@ public class MiniatureModel : MonoBehaviour {
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) + new Vector3(0, destinationIndicator.transform.localScale.y * scaleFactor, 0);
+            //destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) + new Vector3(0, destinationIndicator.transform.localScale.y * scaleFactor, 0);
         }
 
         // Destination indicator rotation.
         var lookPos = fingertipIndexR.position + fingertipIndexR.right;
         lookPos.y = destinationIndicatorInWIM.position.y;
         destinationIndicatorInWIM.LookAt(lookPos);
+        destinationIndicatorInLevel.rotation = levelTransform.rotation * destinationIndicatorInWIM.rotation;
     }
 
     private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
