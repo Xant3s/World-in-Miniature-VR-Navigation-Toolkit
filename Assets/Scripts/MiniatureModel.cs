@@ -49,7 +49,7 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     void Update() {
-        CheckSpawnWIM();
+        checkSpawnWIM();
         SelectDestination();
         checkConfirmTeleport();
         updatePlayerRepresentation();
@@ -62,12 +62,18 @@ public class MiniatureModel : MonoBehaviour {
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
         Destroy(destinationIndicatorInLevel.gameObject);
         Destroy(destinationIndicatorInWIM.gameObject);
+        spawnWIM(); // Assist player to orientate at new location.
     }
 
-    private void CheckSpawnWIM() {
+    private void checkSpawnWIM() {
         if (!OVRInput.Get(showWIMButton)) return;
+        spawnWIM();
+    }
+
+    private void spawnWIM() {
         transform.rotation = Quaternion.identity;
-        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z + new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
+                             new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
     }
 
     private void SelectDestination() {
