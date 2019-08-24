@@ -14,6 +14,9 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private GameObject destinationIndicator;
     [SerializeField] private OVRInput.RawButton confirmTeleportButton;
+    [Tooltip("If active, the destination will automatically set to ground level." +
+             "This protects the player from being teleported to a location in mid-air.")]
+    [SerializeField] private bool destinationAlwaysOnTheGround = true;
     
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -115,27 +118,42 @@ public class MiniatureModel : MonoBehaviour {
         if (!OVRInput.GetUp(destinationSelectButton)) return;
 
         // Check if in WIM bounds.
-        if (isInsideWIM(fingertipIndexR.position)) {
-            // Remove previous destination point.
-            if (destinationIndicatorInWIM) {
-                Destroy(destinationIndicatorInWIM.gameObject);
-                Destroy(destinationIndicatorInLevel.gameObject);
-            }
+        if (!isInsideWIM(fingertipIndexR.position)) return;
 
-            // Show destination in WIM.
-            destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
-            //destinationWIM.position = getGroundPosition(fingertipIndexR.position);
-            destinationIndicatorInWIM.position = fingertipIndexR.position;
-
-            // Show destination in level.
-            var WIMPosition = destinationIndicatorInWIM.position;
-            var WIMOffset = WIMPosition - WIMLevelTransform.position;
-            var levelOffset = WIMOffset / scaleFactor;
-            levelOffset = levelTransform.rotation * levelOffset;
-            var levelPosition = levelTransform.position + levelOffset;
-            destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
-            destinationIndicatorInLevel.position = levelPosition;
+        // Remove previous destination point.
+        if (destinationIndicatorInWIM) {
+            Destroy(destinationIndicatorInWIM.gameObject);
+            Destroy(destinationIndicatorInLevel.gameObject);
         }
+
+        // Show destination in WIM.
+        destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+        destinationIndicatorInWIM.position = fingertipIndexR.position;
+
+        // Show destination in level.
+        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
+        destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
+        destinationIndicatorInLevel.position = levelPosition;
+
+        // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
+        if (destinationAlwaysOnTheGround) {
+            destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
+            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) + new Vector3(0, destinationIndicator.transform.localScale.y * scaleFactor, 0);
+        }
+    }
+
+    private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
+        var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
+        var levelOffset = WIMOffset / scaleFactor;
+        levelOffset = levelTransform.rotation * levelOffset;
+        return levelTransform.position + levelOffset;
+    }
+
+    private Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
+        var levelOffset = pointInLevelSpace - levelTransform.position;
+        var WIMOffset = levelOffset * scaleFactor;
+        WIMOffset = WIMLevelTransform.rotation * WIMOffset;
+        return WIMLevelTransform.position + WIMOffset;
     }
 
     bool isInsideWIM(Vector3 point) {
