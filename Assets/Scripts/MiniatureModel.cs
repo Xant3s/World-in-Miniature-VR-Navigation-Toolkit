@@ -62,6 +62,8 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     private void respawnWIM() {
+        removeDestinationIndicators();
+
         var WIMLevel = transform.GetChild(0);
         for (var i = 0; i < WIMLevel.childCount; i++) {
             var d = WIMLevel.GetChild(i).GetComponent<Dissolve>();
@@ -108,9 +110,6 @@ public class MiniatureModel : MonoBehaviour {
         if (!destinationIndicatorInLevel) return;
         OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
-        destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
-        Destroy(destinationIndicatorInWIM.gameObject);
-        Destroy(destinationIndicatorInLevel.gameObject);
         respawnWIM(); // Assist player to orientate at new location.
     }
 
@@ -121,10 +120,7 @@ public class MiniatureModel : MonoBehaviour {
         if (!isInsideWIM(fingertipIndexR.position)) return;
 
         // Remove previous destination point.
-        if (destinationIndicatorInWIM) {
-            Destroy(destinationIndicatorInWIM.gameObject);
-            Destroy(destinationIndicatorInLevel.gameObject);
-        }
+        removeDestinationIndicators();
 
         // Show destination in WIM.
         destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
@@ -146,6 +142,13 @@ public class MiniatureModel : MonoBehaviour {
         lookPos.y = destinationIndicatorInWIM.position.y;
         destinationIndicatorInWIM.LookAt(lookPos);
         destinationIndicatorInLevel.rotation = levelTransform.rotation * destinationIndicatorInWIM.rotation;
+    }
+
+    private void removeDestinationIndicators() {
+        if (!destinationIndicatorInWIM) return;
+        destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
+        Destroy(destinationIndicatorInWIM.gameObject);
+        Destroy(destinationIndicatorInLevel.gameObject);
     }
 
     private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
