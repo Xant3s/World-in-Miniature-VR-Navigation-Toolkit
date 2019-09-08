@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -65,12 +66,7 @@ public class MiniatureModel : MonoBehaviour {
         removeDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
-        for (var i = 0; i < WIMLevel.childCount; i++) {
-            var d = WIMLevel.GetChild(i).GetComponent<Dissolve>();
-            if(d == null) continue;
-            d.durationInSeconds = 1f;
-            d.Play();
-        }
+        dissolveWIM(WIMLevel);
         
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
@@ -90,15 +86,45 @@ public class MiniatureModel : MonoBehaviour {
         transform.rotation = Quaternion.identity;
         transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
                              new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
-        for (var i = 0; i < newWIMLevel.childCount; i++) {
-            var d = newWIMLevel.GetChild(i).GetComponent<Dissolve>();
-            if(d == null) continue;
-            d.durationInSeconds = 1;
-            newWIMLevel.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", 1);
+        resolveWIM(newWIMLevel);
+        Invoke("destroyOldWIMLevel", 1.1f);
+    }
+
+    private void resolveWIM(Transform WIM) {
+        const int resolveDuration = 1;
+        for (var i = 0; i < WIM.childCount; i++) {
+            var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            if (d == null) continue;
+            d.durationInSeconds = resolveDuration;
+            WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", 1);
             d.PlayInverse();
         }
+        StartCoroutine(FixResolveBug(WIM, resolveDuration));
+    }
 
-        Invoke("destroyOldWIMLevel", 1.1f);
+    /// <summary>
+    /// At the end of the resolve effect the WIM will not be completely resolved due to float precision.
+    /// To prevent this, set the dissolve progress to a negative number (everything below 0 will be handled as 0 anyway).
+    /// </summary>
+    /// <param name="WIM"></param>
+    /// <param name="delay"></param>
+    IEnumerator FixResolveBug(Transform WIM, float delay) {
+        yield return new WaitForSeconds(delay);
+        for (var i = 0; i < WIM.childCount; i++) {
+            var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            if (d == null) continue;
+            d.durationInSeconds = 1;
+            WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", -.1f);
+        }
+    }
+
+    private static void dissolveWIM(Transform WIM) {
+        for (var i = 0; i < WIM.childCount; i++) {
+            var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            if (d == null) continue;
+            d.durationInSeconds = 1f;
+            d.Play();
+        }
     }
 
     private void destroyOldWIMLevel() {
