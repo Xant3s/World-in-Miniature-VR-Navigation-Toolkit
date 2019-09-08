@@ -180,7 +180,7 @@ public class MiniatureModel : MonoBehaviour {
     private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
         var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
         var levelOffset = WIMOffset / scaleFactor;
-        levelOffset = levelTransform.rotation * levelOffset;
+        levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
         return levelTransform.position + levelOffset;
     }
 
