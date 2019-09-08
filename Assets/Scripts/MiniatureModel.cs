@@ -54,7 +54,7 @@ public class MiniatureModel : MonoBehaviour {
         checkSpawnWIM();
         SelectDestination();
         checkConfirmTeleport();
-        updatePlayerRepresentation();
+        updatePlayerRepresentationInWIM();
     }
 
     private void checkSpawnWIM() {
@@ -167,7 +167,8 @@ public class MiniatureModel : MonoBehaviour {
         var lookPos = fingertipIndexR.position + fingertipIndexR.right;
         lookPos.y = destinationIndicatorInWIM.position.y;
         destinationIndicatorInWIM.LookAt(lookPos);
-        destinationIndicatorInLevel.rotation = levelTransform.rotation * destinationIndicatorInWIM.rotation;
+        destinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
+        //destinationIndicatorInLevel.rotation = Quaternion.Euler(0, destinationIndicatorInLevel.rotation.y, 0);
     }
 
     private void removeDestinationIndicators() {
@@ -199,7 +200,8 @@ public class MiniatureModel : MonoBehaviour {
         return Physics.Raycast(point, Vector3.down, out var hit) ? hit.point : point;
     }
 
-    private void updatePlayerRepresentation() {
+    private void updatePlayerRepresentationInWIM() {
+        // Position.
         var eyeOffset = playerTransform.forward.normalized * -0.15f;
         var playerOffset = (playerTransform.position + eyeOffset) - levelTransform.position;
         var playerRepresentationOffset = playerOffset * scaleFactor;
@@ -207,15 +209,18 @@ public class MiniatureModel : MonoBehaviour {
         playerRepresentationTransform.position =
             WIMLevelTransform.position + playerRepresentationOffset + new Vector3(0, 0.6f, 0) * scaleFactor;
 
+        // Rotation
         var lookAtPos = HMDTransform.position + HMDTransform.forward;
         var lookAtOffset = lookAtPos - levelTransform.position;
         var WIMLookAtOffset = lookAtOffset * scaleFactor;
         WIMLookAtOffset = WIMLevelTransform.parent.rotation * WIMLookAtOffset;
-        var y = playerRepresentationTransform.rotation.y;
         var lookPos = WIMLevelTransform.position + WIMLookAtOffset;
         lookPos.y = 0;
         playerRepresentationTransform.LookAt(lookPos);
         playerRepresentationTransform.Rotate(-90, 0, 0);
         playerRepresentationTransform.Rotate(0, -45, 0);
+        var rotation = WIMLevelTransform.rotation;
+        rotation.y = playerRepresentationTransform.rotation.y;
+        playerRepresentationTransform.rotation = rotation;
     }
 }
