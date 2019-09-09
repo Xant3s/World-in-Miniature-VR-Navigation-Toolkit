@@ -1,0 +1,226 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.VR;
+using UnityEngine.XR;
+
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(OVRGrabbable))]
+public class MiniatureModel : MonoBehaviour {
+    [SerializeField] private GameObject playerRepresentation;
+    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
+    [SerializeField] private OVRInput.RawButton showWIMButton;
+    [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private OVRInput.RawButton destinationSelectButton;
+    [SerializeField] private GameObject destinationIndicator;
+    [SerializeField] private OVRInput.RawButton confirmTeleportButton;
+    [Tooltip("If active, the destination will automatically set to ground level." +
+             "This protects the player from being teleported to a location in mid-air.")]
+    [SerializeField] private bool destinationAlwaysOnTheGround = true;
+    
+    private Transform levelTransform;
+    private Transform WIMLevelTransform;
+    private Transform playerRepresentationTransform;
+    private Transform playerTransform;
+    private Transform HMDTransform;
+    private Transform fingertipIndexR;
+    private Transform destinationIndicatorInWIM;
+    private Transform destinationIndicatorInLevel;
+    private Transform OVRPlayerController;
+
+    void Awake() {
+        levelTransform = GameObject.Find("Level").transform;
+        WIMLevelTransform = GameObject.Find("WIM Level").transform;
+        playerTransform = GameObject.Find("OVRCameraRig").transform;
+        HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
+        fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
+        OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
+        Assert.IsNotNull(levelTransform);
+        Assert.IsNotNull(WIMLevelTransform);
+        Assert.IsNotNull(playerTransform);
+        Assert.IsNotNull(HMDTransform);
+        Assert.IsNotNull(fingertipIndexR);
+        Assert.IsNotNull(playerRepresentation);
+        Assert.IsNotNull(destinationIndicator);
+        Assert.IsNotNull(OVRPlayerController);
+    }
+
+    void Start() {
+        playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
+    }
+
+    void Update() {
+        checkSpawnWIM();
+        SelectDestination();
+        checkConfirmTeleport();
+        updatePlayerRepresentationInWIM();
+    }
+
+    private void checkSpawnWIM() {
+        if (!OVRInput.GetUp(showWIMButton)) return;
+        respawnWIM();
+    }
+
+    private void respawnWIM() {
+        removeDestinationIndicators();
+
+        var WIMLevel = transform.GetChild(0);
+        dissolveWIM(WIMLevel);
+        
+        WIMLevel.parent = null;
+        WIMLevel.name = "WIM Level Old";
+        playerRepresentationTransform.parent = null;
+        var newWIMLevel = Instantiate(WIMLevel.gameObject, transform).transform;
+        newWIMLevel.gameObject.name = "WIM Level";
+        WIMLevelTransform = newWIMLevel;
+        var rb = GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        newWIMLevel.position = Vector3.zero;
+        newWIMLevel.localPosition = Vector3.zero;
+        newWIMLevel.rotation = Quaternion.identity;
+        newWIMLevel.localRotation = Quaternion.identity;
+        newWIMLevel.localScale = new Vector3(1,1,1);
+        playerRepresentationTransform.parent = newWIMLevel;
+        transform.rotation = Quaternion.identity;
+        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
+                             new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        resolveWIM(newWIMLevel);
+        Invoke("destroyOldWIMLevel", 1.1f);
+    }
+
+    private void resolveWIM(Transform WIM) {
+        const int resolveDuration = 1;
+        for (var i = 0; i < WIM.childCount; i++) {
+            var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            if (d == null) continue;
+            d.durationInSeconds = resolveDuration;
+            WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", 1);
+            d.PlayInverse();
+        }
+        StartCoroutine(FixResolveBug(WIM, resolveDuration));
+    }
+
+    /// <summary>
+    /// At the end of the resolve effect the WIM will not be completely resolved due to float precision.
+    /// To prevent this, set the dissolve progress to a negative number (everything below 0 will be handled as 0 anyway).
+    /// </summary>
+    /// <param name="WIM"></param>
+    /// <param name="delay"></param>
+    IEnumerator FixResolveBug(Transform WIM, float delay) {
+        yield return new WaitForSeconds(delay);
+        for (var i = 0; i < WIM.childCount; i++) {
+            var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            if (d == null) continue;
+            d.durationInSeconds = 1;
+            WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", -.1f);
+        }
+    }
+
+    private static void dissolveWIM(Transform WIM) {
+        for (var i = 0; i < WIM.childCount; i++) {
+            var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            if (d == null) continue;
+            d.durationInSeconds = 1f;
+            d.Play();
+        }
+    }
+
+    private void destroyOldWIMLevel() {
+        Destroy(GameObject.Find("WIM Level Old"));
+    }
+
+    private void checkConfirmTeleport() {
+        if (!OVRInput.GetUp(confirmTeleportButton)) return;
+        if (!destinationIndicatorInLevel) return;
+        OVRPlayerController.position = destinationIndicatorInLevel.position;
+        OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
+        respawnWIM(); // Assist player to orientate at new location.
+    }
+
+    private void SelectDestination() {
+        if (!OVRInput.GetUp(destinationSelectButton)) return;
+
+        // Check if in WIM bounds.
+        if (!isInsideWIM(fingertipIndexR.position)) return;
+
+        // Remove previous destination point.
+        removeDestinationIndicators();
+
+        // Show destination in WIM.
+        destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+        destinationIndicatorInWIM.position = fingertipIndexR.position;
+
+        // Show destination in level.
+        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
+        destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
+        destinationIndicatorInLevel.position = levelPosition;
+
+        // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
+        if (destinationAlwaysOnTheGround) {
+            destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
+            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
+                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
+        }
+
+        // Rotate destination indicator in WIM (align with pointing direction):
+        // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
+        var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
+        var pointBFloor = ConvertToWIMSpace(getGroundPosition(lookAtPoint));
+        var pointAFloor = ConvertToWIMSpace(getGroundPosition(fingertipIndexR.position));
+        var fingertipForward = pointBFloor - pointAFloor;
+        fingertipForward = Quaternion.Inverse(WIMLevelTransform.rotation) * fingertipForward;
+        // Get current forward vector in WIM space. Set to floor.
+        var currForward = getGroundPosition(destinationIndicatorInWIM.position + destinationIndicatorInWIM.forward)
+                          - getGroundPosition(destinationIndicatorInWIM.position);
+        // Get signed angle between current forward vector and desired forward vector (pointing direction).
+        var angle = Vector3.SignedAngle(currForward, fingertipForward, WIMLevelTransform.up);
+        // Rotate to align with pointing direction.
+        destinationIndicatorInWIM.Rotate(Vector3.up, angle);
+
+        // Rotate destination indicator in level.
+        destinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
+    }
+
+    private void removeDestinationIndicators() {
+        if (!destinationIndicatorInWIM) return;
+        destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
+        Destroy(destinationIndicatorInWIM.gameObject);
+        Destroy(destinationIndicatorInLevel.gameObject);
+    }
+
+    private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
+        var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
+        var levelOffset = WIMOffset / scaleFactor;
+        levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
+        return levelTransform.position + levelOffset;
+    }
+
+    private Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
+        var levelOffset = pointInLevelSpace - levelTransform.position;
+        var WIMOffset = levelOffset * scaleFactor;
+        WIMOffset = WIMLevelTransform.rotation * WIMOffset;
+        return WIMLevelTransform.position + WIMOffset;
+    }
+
+    bool isInsideWIM(Vector3 point) {
+        return GetComponent<Collider>().ClosestPoint(point) == point;
+    }
+
+    Vector3 getGroundPosition(Vector3 point) {
+        return Physics.Raycast(point, Vector3.down, out var hit) ? hit.point : point;
+    }
+
+    private void updatePlayerRepresentationInWIM() {
+        // Position.
+        playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
+        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
+
+        // Rotation
+        var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
+        playerRepresentationTransform.rotation = rotationInLevel;
+    }
+}
