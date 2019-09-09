@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.VR;
+using UnityEngine.XR;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
@@ -214,25 +216,11 @@ public class MiniatureModel : MonoBehaviour {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        var eyeOffset = playerTransform.forward.normalized * -0.15f;
-        var playerOffset = (playerTransform.position + eyeOffset) - levelTransform.position;
-        var playerRepresentationOffset = playerOffset * scaleFactor;
-        playerRepresentationOffset = WIMLevelTransform.parent.rotation * playerRepresentationOffset;
-        playerRepresentationTransform.position =
-            WIMLevelTransform.position + playerRepresentationOffset + new Vector3(0, 0.6f, 0) * scaleFactor;
+        playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
+        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
 
         // Rotation
-        var lookAtPos = HMDTransform.position + HMDTransform.forward;
-        var lookAtOffset = lookAtPos - levelTransform.position;
-        var WIMLookAtOffset = lookAtOffset * scaleFactor;
-        WIMLookAtOffset = WIMLevelTransform.parent.rotation * WIMLookAtOffset;
-        var lookPos = WIMLevelTransform.position + WIMLookAtOffset;
-        lookPos.y = 0;
-        playerRepresentationTransform.LookAt(lookPos);
-        playerRepresentationTransform.Rotate(-90, 0, 0);
-        playerRepresentationTransform.Rotate(0, -45, 0);
-        var rotation = WIMLevelTransform.rotation;
-        rotation.y = playerRepresentationTransform.rotation.y;
-        playerRepresentationTransform.rotation = rotation;
+        var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
+        playerRepresentationTransform.rotation = rotationInLevel;
     }
 }
