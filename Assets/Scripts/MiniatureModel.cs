@@ -160,15 +160,27 @@ public class MiniatureModel : MonoBehaviour {
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) + new Vector3(0, destinationIndicator.transform.localScale.y * scaleFactor, 0);
+            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
+                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
         }
 
-        // Destination indicator rotation.
-        var lookPos = fingertipIndexR.position + fingertipIndexR.right;
-        lookPos.y = destinationIndicatorInWIM.position.y;
-        destinationIndicatorInWIM.LookAt(lookPos);
+        // Rotate destination indicator in WIM (align with pointing direction):
+        // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
+        var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
+        var pointBFloor = ConvertToWIMSpace(getGroundPosition(lookAtPoint));
+        var pointAFloor = ConvertToWIMSpace(getGroundPosition(fingertipIndexR.position));
+        var fingertipForward = pointBFloor - pointAFloor;
+        fingertipForward = Quaternion.Inverse(WIMLevelTransform.rotation) * fingertipForward;
+        // Get current forward vector in WIM space. Set to floor.
+        var currForward = getGroundPosition(destinationIndicatorInWIM.position + destinationIndicatorInWIM.forward)
+                          - getGroundPosition(destinationIndicatorInWIM.position);
+        // Get signed angle between current forward vector and desired forward vector (pointing direction).
+        var angle = Vector3.SignedAngle(currForward, fingertipForward, WIMLevelTransform.up);
+        // Rotate to align with pointing direction.
+        destinationIndicatorInWIM.Rotate(Vector3.up, angle);
+
+        // Rotate destination indicator in level.
         destinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
-        //destinationIndicatorInLevel.rotation = Quaternion.Euler(0, destinationIndicatorInLevel.rotation.y, 0);
     }
 
     private void removeDestinationIndicators() {
