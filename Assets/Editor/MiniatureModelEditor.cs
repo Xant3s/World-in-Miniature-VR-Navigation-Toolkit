@@ -31,5 +31,6 @@ public class MiniatureModelEditor : Editor {
             child.gameObject.AddComponent<Dissolve>();
             child.gameObject.isStatic = false;
         }
+        myTarget.transform.localScale = new Vector3(myTarget.scaleFactor, myTarget.scaleFactor, myTarget.scaleFactor);
     }
 }
