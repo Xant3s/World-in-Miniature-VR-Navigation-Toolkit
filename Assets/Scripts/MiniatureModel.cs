@@ -184,7 +184,7 @@ public class MiniatureModel : MonoBehaviour {
         destinationIndicatorInWIM.Rotate(Vector3.up, angle);
 
         // Rotate destination indicator in level.
-        destinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
+        updateDestinationRotationInLevel();
     }
 
     private void selectDestinationRotation() {
@@ -196,8 +196,21 @@ public class MiniatureModel : MonoBehaviour {
         // Only if rotation is changed via thumbstick.
         if (Math.Abs(thumbstickRotation.magnitude) < 0.01f) return;
 
+        // Rotate destination indicator in WIM via thumbstick.
         var rotationAngle = Mathf.Atan2(thumbstickRotation.y, thumbstickRotation.x) * 180 / Mathf.PI;
         destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, -rotationAngle, 0);
+
+        // Update destination indicator rotation in level.
+        updateDestinationRotationInLevel();
+    }
+
+    /// <summary>
+    /// Update the destination indicator rotation in level.
+    /// Rotation should match destination indicator rotation in WIM.
+    /// </summary>
+    private void updateDestinationRotationInLevel() {
+        destinationIndicatorInLevel.rotation =
+            Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
     }
 
     private void removeDestinationIndicators() {
