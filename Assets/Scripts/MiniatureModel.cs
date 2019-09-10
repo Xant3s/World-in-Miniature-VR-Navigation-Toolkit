@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
+    [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private GameObject destinationIndicator;
     [SerializeField] private OVRInput.RawButton confirmTeleportButton;
     [Tooltip("If active, the destination will automatically set to ground level." +
@@ -52,7 +54,8 @@ public class MiniatureModel : MonoBehaviour {
 
     void Update() {
         checkSpawnWIM();
-        SelectDestination();
+        selectDestination();
+        selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
     }
@@ -139,8 +142,9 @@ public class MiniatureModel : MonoBehaviour {
         respawnWIM(); // Assist player to orientate at new location.
     }
 
-    private void SelectDestination() {
-        if (!OVRInput.GetUp(destinationSelectButton)) return;
+    private void selectDestination() {
+        // Only if select button is pressed.
+        if (!OVRInput.GetDown(destinationSelectButton)) return;
 
         // Check if in WIM bounds.
         if (!isInsideWIM(fingertipIndexR.position)) return;
@@ -153,22 +157,22 @@ public class MiniatureModel : MonoBehaviour {
         destinationIndicatorInWIM.position = fingertipIndexR.position;
 
         // Show destination in level.
-        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
+        var levelPosition = convertToLevelSpace(destinationIndicatorInWIM.position);
         destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
         destinationIndicatorInLevel.position = levelPosition;
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
+            destinationIndicatorInWIM.position = convertToWimSpace(getGroundPosition(levelPosition)) 
                                                  + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
         }
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
         var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
-        var pointBFloor = ConvertToWIMSpace(getGroundPosition(lookAtPoint));
-        var pointAFloor = ConvertToWIMSpace(getGroundPosition(fingertipIndexR.position));
+        var pointBFloor = convertToWimSpace(getGroundPosition(lookAtPoint));
+        var pointAFloor = convertToWimSpace(getGroundPosition(fingertipIndexR.position));
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
@@ -183,6 +187,19 @@ public class MiniatureModel : MonoBehaviour {
         destinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
     }
 
+    private void selectDestinationRotation() {
+        // Only if there is a destination indicator in the WIM.
+        if(!destinationIndicatorInWIM) return;
+
+        var thumbstickRotation = OVRInput.Get(destinationRotationThumbstick);
+
+        // Only if rotation is changed via thumbstick.
+        if (Math.Abs(thumbstickRotation.magnitude) < 0.01f) return;
+
+        var rotationAngle = Mathf.Atan2(thumbstickRotation.y, thumbstickRotation.x) * 180 / Mathf.PI;
+        destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, -rotationAngle, 0);
+    }
+
     private void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
         destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
@@ -190,14 +207,14 @@ public class MiniatureModel : MonoBehaviour {
         Destroy(destinationIndicatorInLevel.gameObject);
     }
 
-    private Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
+    private Vector3 convertToLevelSpace(Vector3 pointInWIMSpace) {
         var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
         var levelOffset = WIMOffset / scaleFactor;
         levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
         return levelTransform.position + levelOffset;
     }
 
-    private Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
+    private Vector3 convertToWimSpace(Vector3 pointInLevelSpace) {
         var levelOffset = pointInLevelSpace - levelTransform.position;
         var WIMOffset = levelOffset * scaleFactor;
         WIMOffset = WIMLevelTransform.rotation * WIMOffset;
@@ -214,7 +231,7 @@ public class MiniatureModel : MonoBehaviour {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
+        playerRepresentationTransform.position = convertToWimSpace(Camera.main.transform.position);
         playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
 
         // Rotation
