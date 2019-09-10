@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -10,7 +11,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(OVRGrabbable))]
 public class MiniatureModel : MonoBehaviour {
     [SerializeField] private GameObject playerRepresentation;
-    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
+    [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
@@ -235,7 +236,7 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     bool isInsideWIM(Vector3 point) {
-        return GetComponent<Collider>().ClosestPoint(point) == point;
+        return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
     }
 
     Vector3 getGroundPosition(Vector3 point) {
