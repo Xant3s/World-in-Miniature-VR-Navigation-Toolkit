@@ -12,6 +12,16 @@ public class MiniatureModelEditor : Editor {
             generateWIM();
         }
         DrawDefaultInspector();
+        updateWIMTransparency(myTarget);
+        if (myTarget.transparentWIM)
+            myTarget.transparency = EditorGUILayout.Slider("Transparency", myTarget.transparency, 0, 1);
+    }
+
+    private static void updateWIMTransparency(MiniatureModel myTarget) {
+        if (myTarget.transparentWIM.Equals(myTarget.transparentWIMprev)) return;
+        myTarget.transparentWIMprev = myTarget.transparentWIM;
+        var material = (Material) Resources.Load("Materials/Dissolve");
+        material.shader = Shader.Find(myTarget.transparentWIM? "Shader Graphs/DissolveTransparent" : "Shader Graphs/Dissolve");
     }
 
     private void generateWIM() {
@@ -33,4 +43,6 @@ public class MiniatureModelEditor : Editor {
         }
         myTarget.transform.localScale = new Vector3(myTarget.scaleFactor, myTarget.scaleFactor, myTarget.scaleFactor);
     }
+
+
 }
