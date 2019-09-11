@@ -21,7 +21,11 @@ public class MiniatureModel : MonoBehaviour {
     [Tooltip("If active, the destination will automatically set to ground level." +
              "This protects the player from being teleported to a location in mid-air.")]
     [SerializeField] private bool destinationAlwaysOnTheGround = true;
-    
+    [SerializeField] public bool transparentWIM = true;
+    [HideInInspector] public bool transparentWIMprev = false;
+    [HideInInspector] public float transparency = 0.33f;
+
+
     private Transform levelTransform;
     private Transform WIMLevelTransform;
     private Transform playerRepresentationTransform;
