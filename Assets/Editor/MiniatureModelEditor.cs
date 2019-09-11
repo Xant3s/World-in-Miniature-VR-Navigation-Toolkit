@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +16,29 @@ public class MiniatureModelEditor : Editor {
         updateWIMTransparency(myTarget);
         if (myTarget.transparentWIM)
             myTarget.transparency = EditorGUILayout.Slider("Transparency", myTarget.transparency, 0, 1);
+        updatePreviewScreen(myTarget);
+    }
+
+    private void updatePreviewScreen(MiniatureModel myTarget) {
+        if (myTarget.showPreviewScreen.Equals(myTarget.showPreviewScreenPrev)) return;
+        myTarget.showPreviewScreenPrev = myTarget.showPreviewScreen;
+        destroyAllObjectsWithTag("PreviewScreen");
+        if (myTarget.showPreviewScreen) {
+            var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
+            previewScreen.GetComponent<FloatAbove>().Target = myTarget.transform;
+            if (myTarget.destinationIndicatorInWIM) {
+                var camObj = myTarget.destinationIndicatorInWIM.GetChild(1).gameObject; // Making assumptions on the prefab.
+                var cam = camObj.gameObject.AddComponent<Camera>();
+                cam.targetTexture = Resources.Load<RenderTexture>("Prefabs/Textures/PreviewTexture");
+            }
+        }
+    }
+
+    private static void destroyAllObjectsWithTag(string tag) {
+        var list = GameObject.FindGameObjectsWithTag(tag);
+        foreach (var obj in list) {
+            DestroyImmediate(obj);
+        }
     }
 
     private static void updateWIMTransparency(MiniatureModel myTarget) {

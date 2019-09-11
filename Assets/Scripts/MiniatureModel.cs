@@ -24,6 +24,8 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] public bool transparentWIM = true;
     [HideInInspector] public bool transparentWIMprev = false;
     [HideInInspector] public float transparency = 0.33f;
+    [SerializeField] public bool showPreviewScreen = false;
+    [HideInInspector] public bool showPreviewScreenPrev = true;
 
 
     private Transform levelTransform;
@@ -32,7 +34,7 @@ public class MiniatureModel : MonoBehaviour {
     private Transform playerTransform;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
-    private Transform destinationIndicatorInWIM;
+    [HideInInspector] public Transform destinationIndicatorInWIM;
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
 
