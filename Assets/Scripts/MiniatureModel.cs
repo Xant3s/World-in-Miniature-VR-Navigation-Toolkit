@@ -24,8 +24,7 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] public bool transparentWIM = true;
     [HideInInspector] public bool transparentWIMprev = false;
     [HideInInspector] public float transparency = 0.33f;
-    [SerializeField] public bool showPreviewScreen = false;
-    [HideInInspector] public bool showPreviewScreenPrev = true;
+    [SerializeField] public bool previewScreen = false;
 
 
     private Transform levelTransform;
@@ -34,7 +33,7 @@ public class MiniatureModel : MonoBehaviour {
     private Transform playerTransform;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
-    [HideInInspector] public Transform destinationIndicatorInWIM;
+    private Transform destinationIndicatorInWIM;
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
 
@@ -192,6 +191,9 @@ public class MiniatureModel : MonoBehaviour {
 
         // Rotate destination indicator in level.
         updateDestinationRotationInLevel();
+
+        // Optional: show preview screen.
+        if(previewScreen) showPreviewScreen();
     }
 
     private void selectDestinationRotation() {
@@ -223,8 +225,30 @@ public class MiniatureModel : MonoBehaviour {
     private void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
         destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
+        removePreviewScreen();
         Destroy(destinationIndicatorInWIM.gameObject);
         Destroy(destinationIndicatorInLevel.gameObject);
+    }
+
+    private void showPreviewScreen() {
+        destroyAllObjectsWithTag("PreviewScreen");
+        var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
+        previewScreen.GetComponent<FloatAbove>().Target = transform;
+        var camObj = destinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
+        var cam = camObj.gameObject.AddComponent<Camera>();
+        cam.depth = -1;
+        cam.targetTexture = Resources.Load<RenderTexture>("Prefabs/Textures/PreviewTexture");
+    }
+
+    private void removePreviewScreen() {
+        destroyAllObjectsWithTag("PreviewScreen");
+    }
+
+    private static void destroyAllObjectsWithTag(string tag) {
+        var list = GameObject.FindGameObjectsWithTag(tag);
+        foreach (var obj in list) {
+            DestroyImmediate(obj);
+        }
     }
 
     private Vector3 convertToLevelSpace(Vector3 pointInWIMSpace) {
