@@ -196,14 +196,15 @@ public class MiniatureModel : MonoBehaviour {
         // Only if there is a destination indicator in the WIM.
         if(!destinationIndicatorInWIM) return;
 
-        var thumbstickRotation = OVRInput.Get(destinationRotationThumbstick);
+        // Poll thumbstick input.
+        var inputRotation = OVRInput.Get(destinationRotationThumbstick);
 
         // Only if rotation is changed via thumbstick.
-        if (Math.Abs(thumbstickRotation.magnitude) < 0.01f) return;
+        if (Math.Abs(inputRotation.magnitude) < 0.01f) return;
 
         // Rotate destination indicator in WIM via thumbstick.
-        var rotationAngle = Mathf.Atan2(thumbstickRotation.y, thumbstickRotation.x) * 180 / Mathf.PI;
-        destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, -rotationAngle, 0);
+        var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
+        destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
 
         // Update destination indicator rotation in level.
         updateDestinationRotationInLevel();
