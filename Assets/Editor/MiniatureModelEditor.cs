@@ -10,7 +10,6 @@ public class MiniatureModelEditor : Editor {
 
     public override void OnInspectorGUI() {
         WIM = (MiniatureModel)target;
-        GUILayout.Label("Test");
         if (GUILayout.Button("Generate WIM")) {
             generateWIM();
         }
@@ -18,6 +17,8 @@ public class MiniatureModelEditor : Editor {
         updateWIMTransparency();
         if (WIM.transparentWIM)
             WIM.transparency = EditorGUILayout.Slider("Transparency", WIM.transparency, 0, 1);
+        if (WIM.travelPreviewAnimation)
+            WIM.TravelPreviewAnimationSpeed = EditorGUILayout.Slider("Travel Preview Animation Speed", WIM.TravelPreviewAnimationSpeed, 0, 10);
     }
 
     private void updateWIMTransparency() {

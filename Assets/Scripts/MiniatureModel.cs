@@ -31,7 +31,9 @@ public class MiniatureModel : MonoBehaviour {
     [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
     [SerializeField] public bool autoDetectArmLength = false;
     [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
+    [SerializeField] public bool travelPreviewAnimation = false;
 
+    public float TravelPreviewAnimationSpeed { get; set; } = 1.0f;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     private Transform levelTransform;
@@ -44,6 +46,7 @@ public class MiniatureModel : MonoBehaviour {
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
+    private GameObject travelPreviewAnimationObj;
 
 
     void Awake() {
@@ -66,6 +69,19 @@ public class MiniatureModel : MonoBehaviour {
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
+
+        //createTravelPreviewAnimation();
+    }
+
+    private void createTravelPreviewAnimation() {
+        travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
+        var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
+        //travelPreview.DestinationInWIM = GameObject.Find("FakeDestination").transform;
+        travelPreview.DestinationInWIM = destinationIndicatorInWIM;
+        travelPreview.PlayerPositionInWIM = playerRepresentationTransform;
+        travelPreview.DestinationIndicator = destinationIndicator;
+        travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
+        travelPreview.Scalefactor = scaleFactor;
     }
 
     void Update() {
@@ -217,6 +233,11 @@ public class MiniatureModel : MonoBehaviour {
 
         // Rotate destination indicator in level.
         updateDestinationRotationInLevel();
+
+        // Optional: Travel preview animation.
+        if (travelPreviewAnimation) {
+            createTravelPreviewAnimation();
+        }
     }
 
     private void selectDestinationRotation() {
@@ -249,6 +270,7 @@ public class MiniatureModel : MonoBehaviour {
     private void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
         destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
+        Destroy(travelPreviewAnimationObj);
         Destroy(destinationIndicatorInWIM.gameObject);
         Destroy(destinationIndicatorInLevel.gameObject);
     }
