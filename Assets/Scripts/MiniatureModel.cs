@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -119,7 +121,6 @@ public class MiniatureModel : MonoBehaviour {
         var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
         transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
                              Vector3.up * spawnDistanceY;
-        Debug.Log(camForwardIgnoreY);
         resolveWIM(newWIMLevel);
         Invoke("destroyOldWIMLevel", 1.1f);
     }
