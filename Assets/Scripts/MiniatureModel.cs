@@ -70,7 +70,7 @@ public class MiniatureModel : MonoBehaviour {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
 
-        //createTravelPreviewAnimation();
+        //createTravelPreviewAnimation(); 
     }
 
     private void createTravelPreviewAnimation() {

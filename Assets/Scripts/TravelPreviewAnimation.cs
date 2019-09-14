@@ -19,7 +19,8 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     void Start() {
-        lr.widthMultiplier = .003f;
+        lr.widthMultiplier = .001f;
+        lr.material = Resources.Load<Material>("Materials/Blue");
         animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator).transform;
         animatedPlayerRepresentation.name = "Animated Player Travel Representation";
         animatedPlayerRepresentation.gameObject.AddComponent<Rigidbody>().useGravity = false;
