@@ -6,7 +6,8 @@ using UnityEngine;
 public class AimAssist : MonoBehaviour {
 
     [SerializeField] private OVRInput.RawButton grabButton;
-    [SerializeField] private float length = 1.0f;
+    [SerializeField] private float length = 10.0f;
+
 
     void Update() {
         var lr = GetComponent<LineRenderer>();

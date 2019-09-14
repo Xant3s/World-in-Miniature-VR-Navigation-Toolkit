@@ -11,8 +11,19 @@ public class DistanceGrabbable : MonoBehaviour {
         get => hightlightFX;
         set {
             hightlightFX = value;
-            GetComponent<Renderer>().material =
-                hightlightFX ? Resources.Load<Material>("Materials/outline") : defaultMaterial;
+            if (GetComponent<Renderer>()) {
+                GetComponent<Renderer>().material =
+                    hightlightFX ? Resources.Load<Material>("Materials/outline") : defaultMaterial;
+            }
+            else {
+                // WIM
+                //for(var i = 0; i<transform.GetChild(0).childCount; i++) {
+                //    var child  = transform.GetChild(0).GetChild(i);
+                //    var renderer = child.GetComponent<Renderer>();
+                //    if (!renderer) continue;
+                //    renderer.material = hightlightFX ? Resources.Load<Material>("Materials/outline") : defaultMaterial;
+                //}
+            }
         }
     }
 
@@ -24,7 +35,7 @@ public class DistanceGrabbable : MonoBehaviour {
     private Material defaultMaterial;
 
     void Awake() {
-        defaultMaterial = GetComponent<Renderer>().material;
+        defaultMaterial = GetComponentInChildren<Renderer>().material;
     }
 
     void Update() {
@@ -34,6 +45,9 @@ public class DistanceGrabbable : MonoBehaviour {
         if (Vector3.Distance(Target.position, transform.position) < MinDistance) {
             IsBeingGrabbed = false;
             Target = null;
+            var rb = GetComponent<Rigidbody>();
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
         else {
             //if (Physics.Raycast(transform.position, Target.position - transform.position, out var hit,
