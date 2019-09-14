@@ -14,6 +14,7 @@ public class MiniatureModel : MonoBehaviour {
     [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private float playerArmLength;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private GameObject destinationIndicator;
@@ -24,6 +25,8 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] public bool transparentWIM = true;
     [HideInInspector] public bool transparentWIMprev = false;
     [HideInInspector] public float transparency = 0.33f;
+    [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
+    [SerializeField] public bool autoDetectArmLength = false;
 
 
     private Transform levelTransform;
@@ -35,6 +38,7 @@ public class MiniatureModel : MonoBehaviour {
     private Transform destinationIndicatorInWIM;
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
+    private bool armLengthDetected = false;
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -58,11 +62,22 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     void Update() {
+        detectArmLength();
         checkSpawnWIM();
         selectDestination();
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
+    }
+
+    private void detectArmLength() {
+        if (!autoDetectArmLength || armLengthDetected) return;
+        if (OVRInput.GetDown(confirmTeleportButton)) {
+            armLengthDetected = true;
+            var controllerPos = GameObject.Find("CustomHandRight").transform.position;
+            var headPos = Camera.main.transform.position;
+            playerArmLength = (controllerPos - headPos).magnitude;
+        }
     }
 
     private void checkSpawnWIM() {
@@ -92,7 +107,8 @@ public class MiniatureModel : MonoBehaviour {
         newWIMLevel.localScale = new Vector3(1,1,1);
         playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
-        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
+        var spawnDistanceZ = ((playerArmLength <= 0)? WIMSpawnOffset.z : playerArmLength);
+        transform.position = HMDTransform.position + HMDTransform.forward * spawnDistanceZ +
                              new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
         resolveWIM(newWIMLevel);
         Invoke("destroyOldWIMLevel", 1.1f);
