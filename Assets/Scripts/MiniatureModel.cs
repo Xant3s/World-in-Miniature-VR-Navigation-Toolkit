@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -15,6 +14,7 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private float playerArmLength;
+    [SerializeField] public float playerHeightInCM = 170;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private GameObject destinationIndicator;
@@ -27,7 +27,9 @@ public class MiniatureModel : MonoBehaviour {
     [HideInInspector] public float transparency = 0.33f;
     [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
     [SerializeField] public bool autoDetectArmLength = false;
+    [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
 
+    public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -39,6 +41,7 @@ public class MiniatureModel : MonoBehaviour {
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
+
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
