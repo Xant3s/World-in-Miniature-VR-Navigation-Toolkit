@@ -32,8 +32,8 @@ public class MiniatureModel : MonoBehaviour {
     [SerializeField] public bool autoDetectArmLength = false;
     [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
     [SerializeField] public bool travelPreviewAnimation = false;
+    [HideInInspector] public float TravelPreviewAnimationSpeed = 1.0f;
 
-    public float TravelPreviewAnimationSpeed { get; set; } = 1.0f;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     private Transform levelTransform;
