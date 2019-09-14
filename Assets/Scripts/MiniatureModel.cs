@@ -59,6 +59,7 @@ public class MiniatureModel : MonoBehaviour {
 
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
+        respawnWIM();
     }
 
     void Update() {
