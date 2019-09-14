@@ -11,7 +11,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
-public class MiniatureModel : MonoBehaviour {
+public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
     [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
@@ -73,7 +73,7 @@ public class MiniatureModel : MonoBehaviour {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
 
-        //createTravelPreviewAnimation(); 
+        //createTravelPreviewAnimation();
     }
 
     private void createTravelPreviewAnimation() {
@@ -81,10 +81,12 @@ public class MiniatureModel : MonoBehaviour {
         var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
         //travelPreview.DestinationInWIM = GameObject.Find("FakeDestination").transform;
         travelPreview.DestinationInWIM = destinationIndicatorInWIM;
-        travelPreview.PlayerPositionInWIM = playerRepresentationTransform;
+        travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
         travelPreview.DestinationIndicator = destinationIndicator;
         travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
         travelPreview.Scalefactor = scaleFactor;
+        travelPreview.WIM = WIMLevelTransform;
+        travelPreview.converter = this;
     }
 
     void Update() {
@@ -208,22 +210,22 @@ public class MiniatureModel : MonoBehaviour {
         destinationIndicatorInWIM.position = fingertipIndexR.position;
 
         // Show destination in level.
-        var levelPosition = convertToLevelSpace(destinationIndicatorInWIM.position);
+        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
         destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
         destinationIndicatorInLevel.position = levelPosition;
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = convertToWimSpace(getGroundPosition(levelPosition)) 
+            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
                                                  + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
         }
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
         var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
-        var pointBFloor = convertToWimSpace(getGroundPosition(lookAtPoint));
-        var pointAFloor = convertToWimSpace(getGroundPosition(fingertipIndexR.position));
+        var pointBFloor = ConvertToWIMSpace(getGroundPosition(lookAtPoint));
+        var pointAFloor = ConvertToWIMSpace(getGroundPosition(fingertipIndexR.position));
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
@@ -278,14 +280,14 @@ public class MiniatureModel : MonoBehaviour {
         Destroy(destinationIndicatorInLevel.gameObject);
     }
 
-    private Vector3 convertToLevelSpace(Vector3 pointInWIMSpace) {
+    public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
         var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
         var levelOffset = WIMOffset / scaleFactor;
         levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
         return levelTransform.position + levelOffset;
     }
 
-    private Vector3 convertToWimSpace(Vector3 pointInLevelSpace) {
+    public Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
         var levelOffset = pointInLevelSpace - levelTransform.position;
         var WIMOffset = levelOffset * scaleFactor;
         WIMOffset = WIMLevelTransform.rotation * WIMOffset;
@@ -302,7 +304,7 @@ public class MiniatureModel : MonoBehaviour {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        playerRepresentationTransform.position = convertToWimSpace(Camera.main.transform.position);
+        playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
         playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
 
         // Rotation
