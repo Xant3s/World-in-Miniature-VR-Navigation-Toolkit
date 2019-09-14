@@ -5,35 +5,39 @@ using UnityEngine;
 
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
+
+    private MiniatureModel WIM;
+
     public override void OnInspectorGUI() {
-        var myTarget = (MiniatureModel)target;
+        WIM = (MiniatureModel)target;
         GUILayout.Label("Test");
         if (GUILayout.Button("Generate WIM")) {
             generateWIM();
         }
         DrawDefaultInspector();
-        updateWIMTransparency(myTarget);
-        if (myTarget.transparentWIM)
-            myTarget.transparency = EditorGUILayout.Slider("Transparency", myTarget.transparency, 0, 1);
+        updateWIMTransparency();
+        if (WIM.transparentWIM)
+            WIM.transparency = EditorGUILayout.Slider("Transparency", WIM.transparency, 0, 1);
     }
 
-    private static void updateWIMTransparency(MiniatureModel myTarget) {
-        if (myTarget.transparentWIM.Equals(myTarget.transparentWIMprev)) return;
-        myTarget.transparentWIMprev = myTarget.transparentWIM;
+    private void updateWIMTransparency() {
+        if (WIM.transparentWIM.Equals(WIM.transparentWIMprev)) return;
+        WIM.transparentWIMprev = WIM.transparentWIM;
         var material = (Material) Resources.Load("Materials/Dissolve");
-        material.shader = Shader.Find(myTarget.transparentWIM? "Shader Graphs/DissolveTransparent" : "Shader Graphs/Dissolve");
+        material.shader = Shader.Find(WIM.transparentWIM? "Shader Graphs/DissolveTransparent" : "Shader Graphs/Dissolve");
     }
 
     private void generateWIM() {
-        var myTarget = (MiniatureModel)target;
+        adaptScaleFactorToPlayerHeight();
         var levelTransform = GameObject.Find("Level").transform;
-        if(myTarget.transform.childCount > 0) DestroyImmediate(myTarget.transform.GetChild(0).gameObject);
-        var WIMLevel = Instantiate(levelTransform, myTarget.transform);
+        if (WIM.transform.childCount > 0) DestroyImmediate(WIM.transform.GetChild(0).gameObject);
+        var WIMLevel = Instantiate(levelTransform, WIM.transform);
         WIMLevel.localPosition = Vector3.zero;
         WIMLevel.name = "WIM Level";
-        for (var i = 0; i < WIMLevel.childCount; ++i) {
+        for (var i = 0; i < WIMLevel.childCount; ++i)
+        {
             var child = WIMLevel.GetChild(i);
-            while(child.GetComponent(typeof(Collider)))
+            while (child.GetComponent(typeof(Collider)))
                 DestroyImmediate(child.GetComponent(typeof(Collider)));
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
@@ -41,8 +45,31 @@ public class MiniatureModelEditor : Editor {
             child.gameObject.AddComponent<Dissolve>();
             child.gameObject.isStatic = false;
         }
-        myTarget.transform.localScale = new Vector3(myTarget.scaleFactor, myTarget.scaleFactor, myTarget.scaleFactor);
+        WIM.transform.localScale = new Vector3(WIM.scaleFactor, WIM.scaleFactor, WIM.scaleFactor);
     }
 
-
+    private void adaptScaleFactorToPlayerHeight() {
+        if (!WIM.adaptWIMSizeToPlayerHeight) return;
+        var playerHeight = WIM.playerHeightInCM;
+        const float defaultHeight = 170;
+        var defaultScaleFactor = WIM.scaleFactor;
+        const float minHeight = 100;
+        const float maxHeight = 200;
+        playerHeight = Mathf.Clamp(playerHeight, minHeight, maxHeight);
+        var maxScaleFactorDelta = WIM.MaxWIMScaleFactorDelta;
+        var heightDelta = playerHeight - defaultHeight;
+        if (heightDelta > 0) {
+            const float maxDelta = maxHeight - defaultHeight;
+            var actualDelta = maxHeight - playerHeight;
+            var factor = actualDelta / maxDelta;
+            var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
+            WIM.scaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+        } else if (heightDelta < 0) {
+            const float maxDelta = defaultHeight - minHeight;
+            var actualDelta = defaultHeight - playerHeight;
+            var factor = actualDelta / maxDelta;
+            var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
+            WIM.scaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+        }
+    }
 }

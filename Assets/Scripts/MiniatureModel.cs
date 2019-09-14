@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -14,7 +13,9 @@ public class MiniatureModel : MonoBehaviour {
     [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private float WIMSpawnAtHeight = 150;
     [SerializeField] private float playerArmLength;
+    [SerializeField] public float playerHeightInCM = 170;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private GameObject destinationIndicator;
@@ -27,7 +28,9 @@ public class MiniatureModel : MonoBehaviour {
     [HideInInspector] public float transparency = 0.33f;
     [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
     [SerializeField] public bool autoDetectArmLength = false;
+    [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
 
+    public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -39,6 +42,7 @@ public class MiniatureModel : MonoBehaviour {
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
+
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -59,6 +63,7 @@ public class MiniatureModel : MonoBehaviour {
 
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
+        respawnWIM();
     }
 
     void Update() {
@@ -108,8 +113,13 @@ public class MiniatureModel : MonoBehaviour {
         playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
         var spawnDistanceZ = ((playerArmLength <= 0)? WIMSpawnOffset.z : playerArmLength);
-        transform.position = HMDTransform.position + HMDTransform.forward * spawnDistanceZ +
-                             new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
+        var camForwardPosition = HMDTransform.position + HMDTransform.forward;
+        camForwardPosition.y = HMDTransform.position.y;
+        var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
+        transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
+                             Vector3.up * spawnDistanceY;
+        Debug.Log(camForwardIgnoreY);
         resolveWIM(newWIMLevel);
         Invoke("destroyOldWIMLevel", 1.1f);
     }
