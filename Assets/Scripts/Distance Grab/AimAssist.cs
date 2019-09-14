@@ -8,6 +8,14 @@ public class AimAssist : MonoBehaviour {
     [SerializeField] private OVRInput.RawButton grabButton;
     [SerializeField] private float length = 10.0f;
 
+    void Start() {
+        // Check if enabled.
+        var grabber = gameObject.GetComponentInParent<DistanceGrabber>();
+        if (grabber == null || !grabber.enabled) {
+            gameObject.GetComponent<LineRenderer>().enabled = false;
+            this.enabled = false;
+        }
+    }
 
     void Update() {
         var lr = GetComponent<LineRenderer>();
