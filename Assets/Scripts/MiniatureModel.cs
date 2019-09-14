@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Security.Cryptography;
+using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -25,15 +26,17 @@ public class MiniatureModel : MonoBehaviour {
     [Tooltip("If active, the destination will automatically set to ground level." +
              "This protects the player from being teleported to a location in mid-air.")]
     [SerializeField] private bool destinationAlwaysOnTheGround = true;
-    [SerializeField] public bool transparentWIM = true;
-    [HideInInspector] public bool transparentWIMprev = false;
-    [HideInInspector] public float transparency = 0.33f;
+    public bool transparentWIM = true;
+    [ConditionalField(nameof(transparentWIM))]
+    public float transparency = 0.33f;
     [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
     [SerializeField] public bool autoDetectArmLength = false;
     [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
     [SerializeField] public bool travelPreviewAnimation = false;
-    [HideInInspector] public float TravelPreviewAnimationSpeed = 1.0f;
+    [ConditionalField(nameof(travelPreviewAnimation))]
+    public float TravelPreviewAnimationSpeed = 1.0f;
 
+    public bool TransparentWIMprev { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     private Transform levelTransform;

@@ -15,15 +15,11 @@ public class MiniatureModelEditor : Editor {
         }
         DrawDefaultInspector();
         updateWIMTransparency();
-        if (WIM.transparentWIM)
-            WIM.transparency = EditorGUILayout.Slider("Transparency", WIM.transparency, 0, 1);
-        if (WIM.travelPreviewAnimation)
-            WIM.TravelPreviewAnimationSpeed = EditorGUILayout.Slider("Travel Preview Animation Speed", WIM.TravelPreviewAnimationSpeed, 0, 10);
     }
 
     private void updateWIMTransparency() {
-        if (WIM.transparentWIM.Equals(WIM.transparentWIMprev)) return;
-        WIM.transparentWIMprev = WIM.transparentWIM;
+        if (WIM.transparentWIM.Equals(WIM.TransparentWIMprev)) return;
+        WIM.TransparentWIMprev = WIM.transparentWIM;
         var material = (Material) Resources.Load("Materials/Dissolve");
         material.shader = Shader.Find(WIM.transparentWIM? "Shader Graphs/DissolveTransparent" : "Shader Graphs/Dissolve");
     }
