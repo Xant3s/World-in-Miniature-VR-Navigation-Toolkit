@@ -13,6 +13,7 @@ public class MiniatureModel : MonoBehaviour {
     [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private float WIMSpawnAtHeight = 150;
     [SerializeField] private float playerArmLength;
     [SerializeField] public float playerHeightInCM = 170;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
@@ -112,8 +113,13 @@ public class MiniatureModel : MonoBehaviour {
         playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
         var spawnDistanceZ = ((playerArmLength <= 0)? WIMSpawnOffset.z : playerArmLength);
-        transform.position = HMDTransform.position + HMDTransform.forward * spawnDistanceZ +
-                             new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
+        var camForwardPosition = HMDTransform.position + HMDTransform.forward;
+        camForwardPosition.y = HMDTransform.position.y;
+        var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
+        transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
+                             Vector3.up * spawnDistanceY;
+        Debug.Log(camForwardIgnoreY);
         resolveWIM(newWIMLevel);
         Invoke("destroyOldWIMLevel", 1.1f);
     }
