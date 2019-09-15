@@ -49,6 +49,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public OVRInput.RawButton grabButtonR = OVRInput.RawButton.RHandTrigger;
     [ConditionalField(nameof(AllowWIMScaling))]
     public float ScaleStep = .0001f;
+    [ConditionalField(nameof(AllowWIMScaling))][Tooltip("Ignore inter hand distance deltas below this threshold for scaling.")]
+    public float interHandDistanceDeltaThreshold = .1f;
 
 
     public bool TransparentWIMprev { get; set; }
@@ -119,23 +121,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
-
-        if (Input.GetKeyDown(KeyCode.DownArrow)) ScaleFactor -= .001f;
-        if (Input.GetKeyDown(KeyCode.UpArrow)) ScaleFactor += .001f;
-        checkScalingWIM();
+        scaleWIM();
     }
 
-    void checkScalingWIM() {
+    void scaleWIM() {
+        // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
         if (!AllowWIMScaling || !grabbable.isGrabbed) return;
 
-        // Get what hand is grabbing.
         var grabbingHand = getGrabbingHand();
-        var oppositeHand = getOppositeHand(grabbingHand);
+        var oppositeHand = getOppositeHand(grabbingHand);   // This is the potential scaling hand.
         var scaleButton = getGrabButton(oppositeHand);
 
-        // Check if other hand is inside.
-        // if yes, check if other hand is starting to grab -> set bool
-        // if other hand (scaling hand) is letting go, unset bool
+        // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
+        // Stop scaling if either hand lets go.
         if (getHandIsInside(oppositeHand) && OVRInput.GetDown(scaleButton)) {
             // Start scaling.
             scalingHand = oppositeHand;
@@ -144,19 +142,20 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             scalingHand = Hand.NONE;
         }
 
-        // while bool is active, scale: inter hand distance delta
-        if (scalingHand != Hand.NONE) {
-            // Scale using inter hand distance delta.
-            var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
-            var distanceDelta = currInterHandDistance - prevInterHandDistance;
-            if (distanceDelta > 0) {
-                ScaleFactor += ScaleStep;
-            }
-            else if(distanceDelta < 0) {
-                ScaleFactor -= ScaleStep;
-            }
-            prevInterHandDistance = currInterHandDistance;
+        // Check if currently scaling. Abort if not.
+        if (scalingHand == Hand.NONE) return;
+
+        // Scale using inter hand distance delta.
+        var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
+        var distanceDelta = currInterHandDistance - prevInterHandDistance;
+        var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= interHandDistanceDeltaThreshold;
+        if (distanceDelta > 0 && deltaBeyondThreshold) {
+            ScaleFactor += ScaleStep;
         }
+        else if(distanceDelta < 0 && deltaBeyondThreshold) {
+            ScaleFactor -= ScaleStep;
+        }
+        prevInterHandDistance = currInterHandDistance;
     }
 
     private OVRInput.RawButton getGrabButton(Hand hand) {
