@@ -401,7 +401,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
-        //destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         DestroyImmediate(travelPreviewAnimationObj);
