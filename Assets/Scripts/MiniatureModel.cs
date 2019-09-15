@@ -72,21 +72,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
-
-        //createTravelPreviewAnimation();
-    }
-
-    private void createTravelPreviewAnimation() {
-        travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
-        var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
-        //travelPreview.DestinationInWIM = GameObject.Find("FakeDestination").transform;
-        travelPreview.DestinationInWIM = destinationIndicatorInWIM;
-        travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
-        travelPreview.DestinationIndicator = destinationIndicator;
-        travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
-        travelPreview.Scalefactor = scaleFactor;
-        travelPreview.WIM = WIMLevelTransform;
-        travelPreview.converter = this;
     }
 
     void Update() {
@@ -243,6 +228,17 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (travelPreviewAnimation) {
             createTravelPreviewAnimation();
         }
+    }
+
+    private void createTravelPreviewAnimation() {
+        travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
+        var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
+        travelPreview.DestinationInWIM = destinationIndicatorInWIM;
+        travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
+        travelPreview.DestinationIndicator = destinationIndicator;
+        travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
+        travelPreview.WIM = WIMLevelTransform;
+        travelPreview.Converter = this;
     }
 
     private void selectDestinationRotation() {
