@@ -10,35 +10,47 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
+    [Separator("Basic Settings", true)]
     [SerializeField] private GameObject playerRepresentation;
-    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
-    [SerializeField] private OVRInput.RawButton showWIMButton;
-    [SerializeField] private Vector3 WIMSpawnOffset;
-    [SerializeField] private float WIMSpawnAtHeight = 150;
-    [SerializeField] private float playerArmLength;
-    [SerializeField] public float playerHeightInCM = 170;
-    [SerializeField] private OVRInput.RawButton destinationSelectButton;
-    [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private GameObject destinationIndicator;
-    [SerializeField] private OVRInput.RawButton confirmTeleportButton;
+    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
     [Tooltip("If active, the destination will automatically set to ground level." +
              "This protects the player from being teleported to a location in mid-air.")]
     [SerializeField] private bool destinationAlwaysOnTheGround = true;
-    [SerializeField] public bool previewScreen = false;
+
+    [Separator("Input", true)]
+    [SerializeField] private OVRInput.RawButton showWIMButton;
+    [SerializeField] private OVRInput.RawButton destinationSelectButton;
+    [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
+    [SerializeField] private OVRInput.RawButton confirmTeleportButton;
+   
+    [Separator("Occlusion Handling", true)]
     public bool transparentWIM = true;
     [ConditionalField(nameof(transparentWIM))]
     public float transparency = 0.33f;
-    [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
-    [SerializeField] public bool autoDetectArmLength = false;
-    [ConditionalField(nameof(autoDetectArmLength))]
-    public OVRInput.RawButton confirmArmLengthButton = OVRInput.RawButton.A;
-    [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
+
+    [Separator("Orientation Aids", true)] 
+    [SerializeField] public bool previewScreen = false;
     [SerializeField] public bool travelPreviewAnimation = false;
     [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
     public float TravelPreviewAnimationSpeed = 1.0f;
     [SerializeField] public bool postTravelPathTrace = false;
     [ConditionalField(nameof(postTravelPathTrace))]
     public float traceDuration = 1.0f;
+
+    [Separator("Usability", true)]
+    [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private float WIMSpawnAtHeight = 150;
+    [SerializeField] public float playerHeightInCM = 170;
+    [SerializeField] private float playerArmLength;
+
+    [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
+    [SerializeField] public bool autoDetectArmLength = false;
+    [ConditionalField(nameof(autoDetectArmLength))]
+    public OVRInput.RawButton confirmArmLengthButton = OVRInput.RawButton.A;
+    [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
+
+    [Header("Allow Scaling")]
     [SerializeField] public bool AllowWIMScaling = false;
     [ConditionalField(nameof(AllowWIMScaling))]
     public float minScaleFactor = 0;
