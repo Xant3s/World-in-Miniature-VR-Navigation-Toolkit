@@ -84,6 +84,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool handRIsInside;
     private bool handLIsInside;
     private Hand scalingHand = Hand.NONE;
+    private Material previewScreenMaterial;
 
 
 
@@ -120,6 +121,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
+        updatePreviewScreen();
         scaleWIM();
     }
 
@@ -413,10 +415,22 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         previewScreen.GetComponent<FloatAbove>().Target = transform;
         var camObj = destinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
         var cam = camObj.gameObject.AddComponent<Camera>();
-        cam.depth = -1;
-        cam.targetTexture = new RenderTexture(256, 256, 0, RenderTextureFormat.Default);
+        //cam.depth = -1;
+        cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
+        //cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.clearFlags = CameraClearFlags.Nothing;
+        //cam.backgroundColor = Color.gray;
         previewScreen.GetComponent<Renderer>().material = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-        previewScreen.GetComponent<Renderer>().material.SetTexture("_BaseMap", cam.targetTexture);
+        previewScreenMaterial = previewScreen.GetComponent<Renderer>().material;
+        previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
+    }
+
+    private void updatePreviewScreen() {
+        if (!previewScreen || !destinationIndicatorInLevel) return;
+        var cam = destinationIndicatorInLevel.GetChild(1).gameObject.GetComponent<Camera>();
+        Destroy(cam.targetTexture);
+        cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.ARGB32);
+        previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
     }
 
     private void removePreviewScreen() {
