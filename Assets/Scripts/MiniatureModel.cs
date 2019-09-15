@@ -35,6 +35,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] public bool travelPreviewAnimation = false;
     [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
     public float TravelPreviewAnimationSpeed = 1.0f;
+    [SerializeField] public bool postTravelPathTrace = false;
+    [ConditionalField(nameof(postTravelPathTrace))]
+    public float traceDuration = 1.0f;
 
     public bool TransparentWIMprev { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
@@ -50,6 +53,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
     private GameObject travelPreviewAnimationObj;
+    private PostTravelPathTrace pathTrace;
 
 
     void Awake() {
@@ -175,9 +179,39 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(confirmTeleportButton)) return;
         if (!destinationIndicatorInLevel) return;
+        // Optional: post travel path trace
+        if(postTravelPathTrace)
+            createPostTravelPathTrace();
+
+        // Travel.
         OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
+        
         respawnWIM(); // Assist player to orientate at new location.
+
+        // Optional: post travel path trace
+        if(postTravelPathTrace)
+            initPostTravelPathTrace();
+    }
+
+    private void createPostTravelPathTrace() {
+        var emptyGO = new GameObject();
+        var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
+        pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
+        pathTrace.Converter = this;
+        pathTrace.TraceDurationInSeconds = traceDuration;
+        pathTrace.oldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
+        pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
+        pathTrace.newPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.newPositionInWIM.position = destinationIndicatorInWIM.position;
+        pathTrace.newPositionInWIM.name = "PathTraceNewPosition";
+        Destroy(emptyGO);
+    }
+
+    private void initPostTravelPathTrace() {
+        pathTrace.WIMLevelTransform = transform.GetChild(0);
+        pathTrace.Init();
     }
 
     private void selectDestination() {
@@ -237,7 +271,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
         travelPreview.DestinationIndicator = destinationIndicator;
         travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
-        travelPreview.WIM = WIMLevelTransform;
+        travelPreview.WIMLevelTransform = WIMLevelTransform;
         travelPreview.Converter = this;
     }
 
