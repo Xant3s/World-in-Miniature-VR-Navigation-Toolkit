@@ -76,8 +76,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
-
-        //createPostTravelPathTrace();
     }
 
     void Update() {
@@ -197,13 +195,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void createPostTravelPathTrace() {
+        var emptyGO = new GameObject();
         var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
         pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
         pathTrace.Converter = this;
         pathTrace.TraceDurationInSeconds = traceDuration;
-
-        //pathTrace.newPositionInWIM = GameObject.Find("DummyNewPos").transform.position;
-        var emptyGO = new GameObject();
         pathTrace.oldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
         pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
         pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
@@ -214,7 +210,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void initPostTravelPathTrace() {
-        pathTrace.WIMLevelTransform = GameObject.Find("WIM").transform.GetChild(0);
+        pathTrace.WIMLevelTransform = transform.GetChild(0);
         pathTrace.Init();
     }
 

@@ -34,6 +34,8 @@ public class PostTravelPathTrace : MonoBehaviour {
     }
 
     void Update() {
+        if(!WIMLevelTransform) Destroy(gameObject);
+
         if (Time.time >= endTime) {
             Destroy(gameObject);
         }
