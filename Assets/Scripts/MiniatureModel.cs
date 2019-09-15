@@ -201,7 +201,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         var WIMLevel = transform.GetChild(0);
         dissolveWIM(WIMLevel);
-        
+
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
         playerRepresentationTransform.parent = null;
@@ -215,10 +215,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         newWIMLevel.localPosition = Vector3.zero;
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
-        newWIMLevel.localScale = new Vector3(1,1,1);
+        newWIMLevel.localScale = new Vector3(1, 1, 1);
         playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
-        var spawnDistanceZ = ((playerArmLength <= 0)? WIMSpawnOffset.z : playerArmLength);
+        var spawnDistanceZ = ((playerArmLength <= 0) ? WIMSpawnOffset.z : playerArmLength);
         var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
         var camForwardPosition = HMDTransform.position + HMDTransform.forward;
         camForwardPosition.y = HMDTransform.position.y;
@@ -353,7 +353,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         updateDestinationRotationInLevel();
 
         // Optional: show preview screen.
-        if(previewScreen) showPreviewScreen();
+        if (previewScreen) showPreviewScreen();
+
         // Optional: Travel preview animation.
         if (travelPreviewAnimation) {
             createTravelPreviewAnimation();
@@ -400,11 +401,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
-        destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
+        //destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
         removePreviewScreen();
-        Destroy(travelPreviewAnimationObj);
-        Destroy(destinationIndicatorInWIM.gameObject);
-        Destroy(destinationIndicatorInLevel.gameObject);
+        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
+        DestroyImmediate(travelPreviewAnimationObj);
+        DestroyImmediate(destinationIndicatorInWIM.gameObject);
+        DestroyImmediate(destinationIndicatorInLevel.gameObject);
     }
 
     private void showPreviewScreen() {
