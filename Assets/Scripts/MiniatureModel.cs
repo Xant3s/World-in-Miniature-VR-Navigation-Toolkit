@@ -13,7 +13,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(OVRGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
-    [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
+    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private float WIMSpawnAtHeight = 150;
@@ -38,9 +38,33 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] public bool postTravelPathTrace = false;
     [ConditionalField(nameof(postTravelPathTrace))]
     public float traceDuration = 1.0f;
+    [SerializeField] public bool AllowWIMScaling = false;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float minScaleFactor = 0;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float maxScaleFactor = .5f;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public OVRInput.RawButton grabButtonL = OVRInput.RawButton.LHandTrigger;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public OVRInput.RawButton grabButtonR = OVRInput.RawButton.RHandTrigger;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float ScaleStep = .0001f;
+    [ConditionalField(nameof(AllowWIMScaling))][Tooltip("Ignore inter hand distance deltas below this threshold for scaling.")]
+    public float interHandDistanceDeltaThreshold = .1f;
+
 
     public bool TransparentWIMprev { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
+
+    public float ScaleFactor {
+        get => scaleFactor;
+        set {
+            scaleFactor = Mathf.Clamp(value, minScaleFactor, maxScaleFactor);
+            transform.localScale = new Vector3(value,value,value);
+        }
+    }
+
+    private enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -54,6 +78,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool armLengthDetected = false;
     private GameObject travelPreviewAnimationObj;
     private PostTravelPathTrace pathTrace;
+    private OVRGrabbable grabbable;
+    private float prevInterHandDistance;
+    private Transform handL;
+    private Transform handR;
+    private bool handRIsInside;
+    private bool handLIsInside;
+    private Hand scalingHand = Hand.NONE;
+
 
 
     void Awake() {
@@ -63,6 +95,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
         fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
         OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
+        handL = GameObject.FindWithTag("HandL").transform;
+        handR = GameObject.FindWithTag("HandR").transform;
+        grabbable = GetComponent<OVRGrabbable>();
         Assert.IsNotNull(levelTransform);
         Assert.IsNotNull(WIMLevelTransform);
         Assert.IsNotNull(playerTransform);
@@ -71,6 +106,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         Assert.IsNotNull(playerRepresentation);
         Assert.IsNotNull(destinationIndicator);
         Assert.IsNotNull(OVRPlayerController);
+        Assert.IsNotNull(grabbable);
     }
 
     void Start() {
@@ -85,6 +121,65 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
+        scaleWIM();
+    }
+
+    void scaleWIM() {
+        // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
+        if (!AllowWIMScaling || !grabbable.isGrabbed) return;
+
+        var grabbingHand = getGrabbingHand();
+        var oppositeHand = getOppositeHand(grabbingHand);   // This is the potential scaling hand.
+        var scaleButton = getGrabButton(oppositeHand);
+
+        // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
+        // Stop scaling if either hand lets go.
+        if (getHandIsInside(oppositeHand) && OVRInput.GetDown(scaleButton)) {
+            // Start scaling.
+            scalingHand = oppositeHand;
+        } else if (OVRInput.GetUp(scaleButton)) {
+            // Stop scaling.
+            scalingHand = Hand.NONE;
+        }
+
+        // Check if currently scaling. Abort if not.
+        if (scalingHand == Hand.NONE) return;
+
+        // Scale using inter hand distance delta.
+        var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
+        var distanceDelta = currInterHandDistance - prevInterHandDistance;
+        var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= interHandDistanceDeltaThreshold;
+        if (distanceDelta > 0 && deltaBeyondThreshold) {
+            ScaleFactor += ScaleStep;
+        }
+        else if(distanceDelta < 0 && deltaBeyondThreshold) {
+            ScaleFactor -= ScaleStep;
+        }
+        prevInterHandDistance = currInterHandDistance;
+    }
+
+    private OVRInput.RawButton getGrabButton(Hand hand) {
+        if (hand == Hand.NONE) return OVRInput.RawButton.None;
+        return hand == Hand.HAND_L ? grabButtonL : grabButtonR;
+    }
+
+    private Hand getGrabbingHand() {
+        return (grabbable.grabbedBy.tag == "HandL") ? Hand.HAND_L : Hand.HAND_R;
+    }
+
+    private Hand getOppositeHand(Hand hand) {
+        if (hand == Hand.NONE) return Hand.NONE;
+        return (hand == Hand.HAND_L) ? Hand.HAND_R : Hand.HAND_L;
+    }
+
+    private bool getHandIsInside(Hand hand) {
+        switch (hand) {
+            case Hand.HAND_L when handLIsInside:
+            case Hand.HAND_R when handRIsInside:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private void detectArmLength() {
@@ -237,7 +332,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
             destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
-                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
+                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * ScaleFactor;
         }
 
         // Rotate destination indicator in WIM (align with pointing direction):
@@ -312,14 +407,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
         var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
-        var levelOffset = WIMOffset / scaleFactor;
+        var levelOffset = WIMOffset / ScaleFactor;
         levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
         return levelTransform.position + levelOffset;
     }
 
     public Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
         var levelOffset = pointInLevelSpace - levelTransform.position;
-        var WIMOffset = levelOffset * scaleFactor;
+        var WIMOffset = levelOffset * ScaleFactor;
         WIMOffset = WIMLevelTransform.rotation * WIMOffset;
         return WIMLevelTransform.position + WIMOffset;
     }
@@ -335,10 +430,32 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void updatePlayerRepresentationInWIM() {
         // Position.
         playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
-        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
+        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * ScaleFactor;
 
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
         playerRepresentationTransform.rotation = rotationInLevel;
+    }
+
+    void OnTriggerEnter(Collider other) {
+        const int handLayer = 9;
+        if (other.gameObject.layer != handLayer) return;
+        if (other.transform.root.tag == "HandL") {
+            handLIsInside = true;
+        }
+        else {
+            handRIsInside = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other) {
+        const int handLayer = 9;
+        if (other.gameObject.layer != handLayer) return;
+        if (other.transform.root.tag == "HandL") {
+            handLIsInside = false;
+        }
+        else {
+            handRIsInside = false;
+        }
     }
 }
