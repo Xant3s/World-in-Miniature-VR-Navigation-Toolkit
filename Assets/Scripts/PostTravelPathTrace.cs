@@ -5,15 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class PostTravelPathTrace : MonoBehaviour {
     public WIMSpaceConverter Converter { get; set; }
-    public Vector3 newPositionInWIM { get; set; }
-    public Vector3 oldPositionInWIM { get; set; }
+    public Transform newPositionInWIM { get; set; }
+    public Transform oldPositionInWIM { get; set; }
     public Transform WIMLevelTransform { get; set; }
-    public float TraceDuration { get; set; }
+    public float TraceDurationInSeconds { get; set; }
 
     private LineRenderer lr;
     private float animationProgress;
-    private Transform oldTransform;
-    private Transform newTransform;
+    private float endTime;
+
+    // TODO self destruct
 
 
     void Awake() {
@@ -21,23 +22,22 @@ public class PostTravelPathTrace : MonoBehaviour {
     }
 
     public void Init() {
+        oldPositionInWIM = WIMLevelTransform.Find("PathTraceOldPosition").transform;
+        newPositionInWIM = WIMLevelTransform.Find("PathTraceNewPosition").transform;
         lr.widthMultiplier = .001f;
         lr.material = Resources.Load<Material>("Materials/Blue");
-        var emptyGO = new GameObject();
-        oldTransform = Instantiate(emptyGO, WIMLevelTransform).transform;
-        oldTransform.position = oldPositionInWIM;
-        newTransform = Instantiate(emptyGO, WIMLevelTransform).transform;
-        newTransform.position = newPositionInWIM;
-        Destroy(emptyGO);
+        endTime = Time.time + TraceDurationInSeconds;
     }
 
     void Update() {
-        lr.SetPosition(0, oldTransform.position);
-        lr.SetPosition(1, newTransform.position);
+        lr.SetPosition(0, oldPositionInWIM.position);
+        lr.SetPosition(1, newPositionInWIM.position);
+
+
     }
 
     void OnDestroy() {
-        Destroy(oldTransform.gameObject);
-        Destroy(newTransform.gameObject);
+        Destroy(oldPositionInWIM.gameObject);
+        Destroy(newPositionInWIM.gameObject);
     }
 }

@@ -53,7 +53,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
     private GameObject travelPreviewAnimationObj;
-    private GameObject postTravelPathTraceObj;
+    private PostTravelPathTrace pathTrace;
 
 
     void Awake() {
@@ -77,7 +77,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
 
-        createPostTravelPathTrace();
+        //createPostTravelPathTrace();
     }
 
     void Update() {
@@ -181,20 +181,43 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(confirmTeleportButton)) return;
         if (!destinationIndicatorInLevel) return;
+        // Optional: post travel path trace
+        if(postTravelPathTrace)
+            createPostTravelPathTrace();
+
+        // Travel.
         OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
+        
         respawnWIM(); // Assist player to orientate at new location.
+
+        // Optional: post travel path trace
+        if(postTravelPathTrace)
+            initPostTravelPathTrace();
     }
 
     private void createPostTravelPathTrace() {
-        postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
-        var pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
+        var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
+        pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
         pathTrace.Converter = this;
-        // Todo
-        pathTrace.newPositionInWIM = GameObject.Find("DummyNewPos").transform.position;
-        pathTrace.oldPositionInWIM = playerRepresentationTransform.position;
-        pathTrace.WIMLevelTransform = WIMLevelTransform;
-        pathTrace.TraceDuration = traceDuration;
+        pathTrace.TraceDurationInSeconds = traceDuration;
+        
+        //pathTrace.newPositionInWIM = GameObject.Find("DummyNewPos").transform.position;
+        //var emptyGO = new GameObject();
+        var emptyGO = destinationIndicator;
+        //pathTrace.newPositionInWIM = destinationIndicatorInLevel.position;
+        //pathTrace.oldPositionInWIM = playerRepresentationTransform.position;
+        pathTrace.oldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
+        pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
+        pathTrace.newPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.newPositionInWIM.position = destinationIndicatorInWIM.position;
+        pathTrace.newPositionInWIM.name = "PathTraceNewPosition";
+        Destroy(emptyGO);
+    }
+
+    private void initPostTravelPathTrace() {
+        pathTrace.WIMLevelTransform = GameObject.Find("WIM").transform.GetChild(0);
         pathTrace.Init();
     }
 
