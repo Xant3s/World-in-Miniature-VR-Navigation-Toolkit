@@ -77,21 +77,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         respawnWIM();
 
-        //travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
-        //var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
-        //travelPreview.DestinationInWIM = destinationIndicatorInWIM;
-        //travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
-        //travelPreview.DestinationIndicator = destinationIndicator;
-        //travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
-        //travelPreview.WIM = WIMLevelTransform;
-        //travelPreview.Converter = this;
-
-        //postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
-        //var pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
-        //pathTrace.Converter = this;
-        //pathTrace.newPositionInWIM = GameObject.Find("DummyNewPos").transform.position;
-        //pathTrace.oldPositionInWIM = playerRepresentationTransform.position;
-        //pathTrace.WIM = wim
+        createPostTravelPathTrace();
     }
 
     void Update() {
@@ -198,6 +184,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
         respawnWIM(); // Assist player to orientate at new location.
+    }
+
+    private void createPostTravelPathTrace() {
+        postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
+        var pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
+        pathTrace.Converter = this;
+        // Todo
+        pathTrace.newPositionInWIM = GameObject.Find("DummyNewPos").transform.position;
+        pathTrace.oldPositionInWIM = playerRepresentationTransform.position;
+        pathTrace.WIMLevelTransform = WIMLevelTransform;
+        pathTrace.TraceDuration = traceDuration;
+        pathTrace.Init();
     }
 
     private void selectDestination() {
