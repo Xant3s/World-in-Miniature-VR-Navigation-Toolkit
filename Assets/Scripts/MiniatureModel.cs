@@ -2,18 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
-public class MiniatureModel : MonoBehaviour {
+public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
-    [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
+    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
+    [SerializeField] private float WIMSpawnAtHeight = 150;
+    [SerializeField] private float playerArmLength;
+    [SerializeField] public float playerHeightInCM = 170;
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private GameObject destinationIndicator;
@@ -21,11 +24,46 @@ public class MiniatureModel : MonoBehaviour {
     [Tooltip("If active, the destination will automatically set to ground level." +
              "This protects the player from being teleported to a location in mid-air.")]
     [SerializeField] private bool destinationAlwaysOnTheGround = true;
-    [SerializeField] public bool transparentWIM = true;
-    [HideInInspector] public bool transparentWIMprev = false;
-    [HideInInspector] public float transparency = 0.33f;
     [SerializeField] public bool previewScreen = false;
+    public bool transparentWIM = true;
+    [ConditionalField(nameof(transparentWIM))]
+    public float transparency = 0.33f;
+    [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
+    [SerializeField] public bool autoDetectArmLength = false;
+    [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
+    [SerializeField] public bool travelPreviewAnimation = false;
+    [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
+    public float TravelPreviewAnimationSpeed = 1.0f;
+    [SerializeField] public bool postTravelPathTrace = false;
+    [ConditionalField(nameof(postTravelPathTrace))]
+    public float traceDuration = 1.0f;
+    [SerializeField] public bool AllowWIMScaling = false;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float minScaleFactor = 0;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float maxScaleFactor = .5f;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public OVRInput.RawButton grabButtonL = OVRInput.RawButton.LHandTrigger;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public OVRInput.RawButton grabButtonR = OVRInput.RawButton.RHandTrigger;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float ScaleStep = .0001f;
+    [ConditionalField(nameof(AllowWIMScaling))][Tooltip("Ignore inter hand distance deltas below this threshold for scaling.")]
+    public float interHandDistanceDeltaThreshold = .1f;
 
+
+    public bool TransparentWIMprev { get; set; }
+    public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
+
+    public float ScaleFactor {
+        get => scaleFactor;
+        set {
+            scaleFactor = Mathf.Clamp(value, minScaleFactor, maxScaleFactor);
+            transform.localScale = new Vector3(value,value,value);
+        }
+    }
+
+    private enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -36,6 +74,18 @@ public class MiniatureModel : MonoBehaviour {
     private Transform destinationIndicatorInWIM;
     private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
+    private bool armLengthDetected = false;
+    private GameObject travelPreviewAnimationObj;
+    private PostTravelPathTrace pathTrace;
+    private OVRGrabbable grabbable;
+    private float prevInterHandDistance;
+    private Transform handL;
+    private Transform handR;
+    private bool handRIsInside;
+    private bool handLIsInside;
+    private Hand scalingHand = Hand.NONE;
+
+
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -44,6 +94,9 @@ public class MiniatureModel : MonoBehaviour {
         HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
         fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
         OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
+        handL = GameObject.FindWithTag("HandL").transform;
+        handR = GameObject.FindWithTag("HandR").transform;
+        grabbable = GetComponent<OVRGrabbable>();
         Assert.IsNotNull(levelTransform);
         Assert.IsNotNull(WIMLevelTransform);
         Assert.IsNotNull(playerTransform);
@@ -52,18 +105,90 @@ public class MiniatureModel : MonoBehaviour {
         Assert.IsNotNull(playerRepresentation);
         Assert.IsNotNull(destinationIndicator);
         Assert.IsNotNull(OVRPlayerController);
+        Assert.IsNotNull(grabbable);
     }
 
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
+        respawnWIM();
     }
 
     void Update() {
+        detectArmLength();
         checkSpawnWIM();
         selectDestination();
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
+        scaleWIM();
+    }
+
+    void scaleWIM() {
+        // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
+        if (!AllowWIMScaling || !grabbable.isGrabbed) return;
+
+        var grabbingHand = getGrabbingHand();
+        var oppositeHand = getOppositeHand(grabbingHand);   // This is the potential scaling hand.
+        var scaleButton = getGrabButton(oppositeHand);
+
+        // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
+        // Stop scaling if either hand lets go.
+        if (getHandIsInside(oppositeHand) && OVRInput.GetDown(scaleButton)) {
+            // Start scaling.
+            scalingHand = oppositeHand;
+        } else if (OVRInput.GetUp(scaleButton)) {
+            // Stop scaling.
+            scalingHand = Hand.NONE;
+        }
+
+        // Check if currently scaling. Abort if not.
+        if (scalingHand == Hand.NONE) return;
+
+        // Scale using inter hand distance delta.
+        var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
+        var distanceDelta = currInterHandDistance - prevInterHandDistance;
+        var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= interHandDistanceDeltaThreshold;
+        if (distanceDelta > 0 && deltaBeyondThreshold) {
+            ScaleFactor += ScaleStep;
+        }
+        else if(distanceDelta < 0 && deltaBeyondThreshold) {
+            ScaleFactor -= ScaleStep;
+        }
+        prevInterHandDistance = currInterHandDistance;
+    }
+
+    private OVRInput.RawButton getGrabButton(Hand hand) {
+        if (hand == Hand.NONE) return OVRInput.RawButton.None;
+        return hand == Hand.HAND_L ? grabButtonL : grabButtonR;
+    }
+
+    private Hand getGrabbingHand() {
+        return (grabbable.grabbedBy.tag == "HandL") ? Hand.HAND_L : Hand.HAND_R;
+    }
+
+    private Hand getOppositeHand(Hand hand) {
+        if (hand == Hand.NONE) return Hand.NONE;
+        return (hand == Hand.HAND_L) ? Hand.HAND_R : Hand.HAND_L;
+    }
+
+    private bool getHandIsInside(Hand hand) {
+        switch (hand) {
+            case Hand.HAND_L when handLIsInside:
+            case Hand.HAND_R when handRIsInside:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void detectArmLength() {
+        if (!autoDetectArmLength || armLengthDetected) return;
+        if (OVRInput.GetDown(confirmTeleportButton)) {
+            armLengthDetected = true;
+            var controllerPos = GameObject.Find("CustomHandRight").transform.position;
+            var headPos = Camera.main.transform.position;
+            playerArmLength = (controllerPos - headPos).magnitude;
+        }
     }
 
     private void checkSpawnWIM() {
@@ -93,8 +218,13 @@ public class MiniatureModel : MonoBehaviour {
         newWIMLevel.localScale = new Vector3(1,1,1);
         playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
-        transform.position = HMDTransform.position + HMDTransform.forward * WIMSpawnOffset.z +
-                             new Vector3(WIMSpawnOffset.x, WIMSpawnOffset.y, 0);
+        var spawnDistanceZ = ((playerArmLength <= 0)? WIMSpawnOffset.z : playerArmLength);
+        var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
+        var camForwardPosition = HMDTransform.position + HMDTransform.forward;
+        camForwardPosition.y = HMDTransform.position.y;
+        var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
+        transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
+                             Vector3.up * spawnDistanceY;
         resolveWIM(newWIMLevel);
         Invoke("destroyOldWIMLevel", 1.1f);
     }
@@ -143,9 +273,39 @@ public class MiniatureModel : MonoBehaviour {
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(confirmTeleportButton)) return;
         if (!destinationIndicatorInLevel) return;
+        // Optional: post travel path trace
+        if(postTravelPathTrace)
+            createPostTravelPathTrace();
+
+        // Travel.
         OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
+        
         respawnWIM(); // Assist player to orientate at new location.
+
+        // Optional: post travel path trace
+        if(postTravelPathTrace)
+            initPostTravelPathTrace();
+    }
+
+    private void createPostTravelPathTrace() {
+        var emptyGO = new GameObject();
+        var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
+        pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
+        pathTrace.Converter = this;
+        pathTrace.TraceDurationInSeconds = traceDuration;
+        pathTrace.oldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
+        pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
+        pathTrace.newPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.newPositionInWIM.position = destinationIndicatorInWIM.position;
+        pathTrace.newPositionInWIM.name = "PathTraceNewPosition";
+        Destroy(emptyGO);
+    }
+
+    private void initPostTravelPathTrace() {
+        pathTrace.WIMLevelTransform = transform.GetChild(0);
+        pathTrace.Init();
     }
 
     private void selectDestination() {
@@ -163,22 +323,22 @@ public class MiniatureModel : MonoBehaviour {
         destinationIndicatorInWIM.position = fingertipIndexR.position;
 
         // Show destination in level.
-        var levelPosition = convertToLevelSpace(destinationIndicatorInWIM.position);
+        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
         destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
         destinationIndicatorInLevel.position = levelPosition;
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = convertToWimSpace(getGroundPosition(levelPosition)) 
-                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
+            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
+                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * ScaleFactor;
         }
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
         var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
-        var pointBFloor = convertToWimSpace(getGroundPosition(lookAtPoint));
-        var pointAFloor = convertToWimSpace(getGroundPosition(fingertipIndexR.position));
+        var pointBFloor = ConvertToWIMSpace(getGroundPosition(lookAtPoint));
+        var pointAFloor = ConvertToWIMSpace(getGroundPosition(fingertipIndexR.position));
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
@@ -194,20 +354,36 @@ public class MiniatureModel : MonoBehaviour {
 
         // Optional: show preview screen.
         if(previewScreen) showPreviewScreen();
+        // Optional: Travel preview animation.
+        if (travelPreviewAnimation) {
+            createTravelPreviewAnimation();
+        }
+    }
+
+    private void createTravelPreviewAnimation() {
+        travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
+        var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
+        travelPreview.DestinationInWIM = destinationIndicatorInWIM;
+        travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
+        travelPreview.DestinationIndicator = destinationIndicator;
+        travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
+        travelPreview.WIMLevelTransform = WIMLevelTransform;
+        travelPreview.Converter = this;
     }
 
     private void selectDestinationRotation() {
         // Only if there is a destination indicator in the WIM.
         if(!destinationIndicatorInWIM) return;
 
-        var thumbstickRotation = OVRInput.Get(destinationRotationThumbstick);
+        // Poll thumbstick input.
+        var inputRotation = OVRInput.Get(destinationRotationThumbstick);
 
         // Only if rotation is changed via thumbstick.
-        if (Math.Abs(thumbstickRotation.magnitude) < 0.01f) return;
+        if (Math.Abs(inputRotation.magnitude) < 0.01f) return;
 
         // Rotate destination indicator in WIM via thumbstick.
-        var rotationAngle = Mathf.Atan2(thumbstickRotation.y, thumbstickRotation.x) * 180 / Mathf.PI;
-        destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, -rotationAngle, 0);
+        var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
+        destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
 
         // Update destination indicator rotation in level.
         updateDestinationRotationInLevel();
@@ -226,6 +402,7 @@ public class MiniatureModel : MonoBehaviour {
         if (!destinationIndicatorInWIM) return;
         destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
         removePreviewScreen();
+        Destroy(travelPreviewAnimationObj);
         Destroy(destinationIndicatorInWIM.gameObject);
         Destroy(destinationIndicatorInLevel.gameObject);
     }
@@ -251,16 +428,16 @@ public class MiniatureModel : MonoBehaviour {
         }
     }
 
-    private Vector3 convertToLevelSpace(Vector3 pointInWIMSpace) {
+    public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
         var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
-        var levelOffset = WIMOffset / scaleFactor;
+        var levelOffset = WIMOffset / ScaleFactor;
         levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
         return levelTransform.position + levelOffset;
     }
 
-    private Vector3 convertToWimSpace(Vector3 pointInLevelSpace) {
+    public Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
         var levelOffset = pointInLevelSpace - levelTransform.position;
-        var WIMOffset = levelOffset * scaleFactor;
+        var WIMOffset = levelOffset * ScaleFactor;
         WIMOffset = WIMLevelTransform.rotation * WIMOffset;
         return WIMLevelTransform.position + WIMOffset;
     }
@@ -275,11 +452,33 @@ public class MiniatureModel : MonoBehaviour {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        playerRepresentationTransform.position = convertToWimSpace(Camera.main.transform.position);
-        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
+        playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
+        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * ScaleFactor;
 
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
         playerRepresentationTransform.rotation = rotationInLevel;
+    }
+
+    void OnTriggerEnter(Collider other) {
+        const int handLayer = 9;
+        if (other.gameObject.layer != handLayer) return;
+        if (other.transform.root.tag == "HandL") {
+            handLIsInside = true;
+        }
+        else {
+            handRIsInside = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other) {
+        const int handLayer = 9;
+        if (other.gameObject.layer != handLayer) return;
+        if (other.transform.root.tag == "HandL") {
+            handLIsInside = false;
+        }
+        else {
+            handRIsInside = false;
+        }
     }
 }
