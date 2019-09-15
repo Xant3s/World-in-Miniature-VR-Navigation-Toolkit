@@ -13,7 +13,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(OVRGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
-    [Range(0, 1)] [SerializeField] public float scaleFactor = 0.1f;
+    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
     [SerializeField] private OVRInput.RawButton showWIMButton;
     [SerializeField] private Vector3 WIMSpawnOffset;
     [SerializeField] private float WIMSpawnAtHeight = 150;
@@ -38,9 +38,22 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] public bool postTravelPathTrace = false;
     [ConditionalField(nameof(postTravelPathTrace))]
     public float traceDuration = 1.0f;
+    [SerializeField] public bool AllowWIMScaling = false;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float minScaleFactor = 0;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float maxScaleFactor = .5f;
 
     public bool TransparentWIMprev { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
+
+    public float ScaleFactor {
+        get => scaleFactor;
+        set {
+            scaleFactor = Mathf.Clamp(value, minScaleFactor, maxScaleFactor);
+            transform.localScale = new Vector3(value,value,value);
+        }
+    }
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -85,6 +98,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
+
+        if (Input.GetKeyDown(KeyCode.DownArrow)) ScaleFactor -= .001f;
+        if (Input.GetKeyDown(KeyCode.UpArrow)) ScaleFactor += .001f;
     }
 
     private void detectArmLength() {
@@ -237,7 +253,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (destinationAlwaysOnTheGround) {
             destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
             destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
-                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * scaleFactor;
+                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * ScaleFactor;
         }
 
         // Rotate destination indicator in WIM (align with pointing direction):
@@ -312,14 +328,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
         var WIMOffset = pointInWIMSpace - WIMLevelTransform.position;
-        var levelOffset = WIMOffset / scaleFactor;
+        var levelOffset = WIMOffset / ScaleFactor;
         levelOffset = Quaternion.Inverse(WIMLevelTransform.rotation) * levelOffset; 
         return levelTransform.position + levelOffset;
     }
 
     public Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
         var levelOffset = pointInLevelSpace - levelTransform.position;
-        var WIMOffset = levelOffset * scaleFactor;
+        var WIMOffset = levelOffset * ScaleFactor;
         WIMOffset = WIMLevelTransform.rotation * WIMOffset;
         return WIMLevelTransform.position + WIMOffset;
     }
@@ -335,10 +351,28 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void updatePlayerRepresentationInWIM() {
         // Position.
         playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
-        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * scaleFactor;
+        playerRepresentationTransform.position -= WIMLevelTransform.up * 0.7f * ScaleFactor;
 
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
         playerRepresentationTransform.rotation = rotationInLevel;
+    }
+
+    private bool isInside;
+    private bool handRIsInside;
+    private bool handLIsInside;
+    void OnTriggerEnter(Collider other) {
+        if (other.gameObject.layer != 9) return;
+        if (isInside) return;
+        
+        isInside = true;
+        Debug.Log("Trigger");
+    }
+
+    void OnTriggerExit(Collider other) {
+        if (other.gameObject.layer != 9) return;
+
+        isInside = false;
+        Debug.Log("Exit");
     }
 }

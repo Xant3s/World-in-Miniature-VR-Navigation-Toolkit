@@ -42,14 +42,14 @@ public class MiniatureModelEditor : Editor {
             child.gameObject.AddComponent<Dissolve>();
             child.gameObject.isStatic = false;
         }
-        WIM.transform.localScale = new Vector3(WIM.scaleFactor, WIM.scaleFactor, WIM.scaleFactor);
+        WIM.transform.localScale = new Vector3(WIM.ScaleFactor, WIM.ScaleFactor, WIM.ScaleFactor);
     }
 
     private void adaptScaleFactorToPlayerHeight() {
         if (!WIM.adaptWIMSizeToPlayerHeight) return;
         var playerHeight = WIM.playerHeightInCM;
         const float defaultHeight = 170;
-        var defaultScaleFactor = WIM.scaleFactor;
+        var defaultScaleFactor = WIM.ScaleFactor;
         const float minHeight = 100;
         const float maxHeight = 200;
         playerHeight = Mathf.Clamp(playerHeight, minHeight, maxHeight);
@@ -60,13 +60,13 @@ public class MiniatureModelEditor : Editor {
             var actualDelta = maxHeight - playerHeight;
             var factor = actualDelta / maxDelta;
             var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
-            WIM.scaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+            WIM.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
         } else if (heightDelta < 0) {
             const float maxDelta = defaultHeight - minHeight;
             var actualDelta = defaultHeight - playerHeight;
             var factor = actualDelta / maxDelta;
             var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
-            WIM.scaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+            WIM.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
         }
     }
 }
