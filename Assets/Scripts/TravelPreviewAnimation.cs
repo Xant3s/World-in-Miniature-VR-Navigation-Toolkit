@@ -16,6 +16,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
 
     private LineRenderer lr;
     private Transform animatedPlayerRepresentation;
+    private float animationProgress = 0;
 
     private void Awake() {
         lr = GetComponent<LineRenderer>();
@@ -28,7 +29,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
         animatedPlayerRepresentation.name = "Animated Player Travel Representation";
         animatedPlayerRepresentation.gameObject.AddComponent<Rigidbody>().useGravity = false;
         animatedPlayerRepresentation.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/SemiTransparent");
-        resetAnimatedPlayerRepresentation();
+        resetAnimation();
     }
 
     void Update() {
@@ -42,26 +43,30 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     void updateAnimatedPlayerRepresentation() {
-        if (Vector3.Distance(animatedPlayerRepresentation.position, DestinationInWIM.position) < 0.1f) {
-            resetAnimatedPlayerRepresentation();
+        //if (Vector3.Distance(animatedPlayerRepresentation.position, DestinationInWIM.position) < 0.1f) {
+        //}
+
+        if (animationProgress >= 1) {
+            resetAnimation();
         }
 
         var destinationInLevelSpace = converter.ConvertToLevelSpace(DestinationInWIM.position);
         var playerPosInLevelSpace = converter.ConvertToLevelSpace(animatedPlayerRepresentation.position);
-        //var playerPosInLevelSpace = animatedPlayerRepresentation.position;
         var rotationInLevelSpace = Quaternion.LookRotation(destinationInLevelSpace - playerPosInLevelSpace, Vector3.up);
         animatedPlayerRepresentation.rotation = WIM.rotation * rotationInLevelSpace;
 
-        //animatedPlayerRepresentation.LookAt(DestinationInWIM);
-        //animatedPlayerRepresentation.rotation = WIM.rotation * animatedPlayerRepresentation.rotation;
         
         var step = AnimationSpeed * Time.deltaTime;
-        //animatedPlayerRepresentation.position = Vector3.MoveTowards(animatedPlayerRepresentation.position, DestinationInWIM.position, step);
-        var posInLevelSpace = Vector3.MoveTowards(playerPosInLevelSpace, destinationInLevelSpace, step);
-        animatedPlayerRepresentation.position = converter.ConvertToWIMSpace(posInLevelSpace);
+        animationProgress += step;
+        var dir = DestinationInWIM.position - PlayerRepresentationInWIM.position;
+        animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position + dir * animationProgress;
+
+        //var posInLevelSpace = Vector3.MoveTowards(playerPosInLevelSpace, destinationInLevelSpace, step);
+        //animatedPlayerRepresentation.position = converter.ConvertToWIMSpace(posInLevelSpace);
     }
 
-    void resetAnimatedPlayerRepresentation() {
+    void resetAnimation() {
         animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position;
+        animationProgress = 0;
     }
 }

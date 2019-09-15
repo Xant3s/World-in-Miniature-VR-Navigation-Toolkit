@@ -33,7 +33,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] public bool autoDetectArmLength = false;
     [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
     [SerializeField] public bool travelPreviewAnimation = false;
-    [ConditionalField(nameof(travelPreviewAnimation))]
+    [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
     public float TravelPreviewAnimationSpeed = 1.0f;
 
     public bool TransparentWIMprev { get; set; }
