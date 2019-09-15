@@ -353,12 +353,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         updateDestinationRotationInLevel();
 
         // Optional: show preview screen.
-        if (previewScreen) showPreviewScreen();
+        if(previewScreen) showPreviewScreen();
 
         // Optional: Travel preview animation.
-        if (travelPreviewAnimation) {
-            createTravelPreviewAnimation();
-        }
+        if(travelPreviewAnimation) createTravelPreviewAnimation();
     }
 
     private void createTravelPreviewAnimation() {
@@ -410,24 +408,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void showPreviewScreen() {
-        destroyAllObjectsWithTag("PreviewScreen");
+        removePreviewScreen();
         var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
         previewScreen.GetComponent<FloatAbove>().Target = transform;
         var camObj = destinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
         var cam = camObj.gameObject.AddComponent<Camera>();
         cam.depth = -1;
-        cam.targetTexture = Resources.Load<RenderTexture>("Prefabs/Textures/PreviewTexture");
+        cam.targetTexture = new RenderTexture(256, 256, 0, RenderTextureFormat.Default);
+        previewScreen.GetComponent<Renderer>().material = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        previewScreen.GetComponent<Renderer>().material.SetTexture("_BaseMap", cam.targetTexture);
     }
 
     private void removePreviewScreen() {
-        destroyAllObjectsWithTag("PreviewScreen");
-    }
-
-    private static void destroyAllObjectsWithTag(string tag) {
-        var list = GameObject.FindGameObjectsWithTag(tag);
-        foreach (var obj in list) {
-            DestroyImmediate(obj);
-        }
+        Destroy(GameObject.FindGameObjectWithTag("PreviewScreen"));
     }
 
     public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
