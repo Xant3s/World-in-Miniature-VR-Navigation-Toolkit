@@ -37,6 +37,10 @@ public class TravelPreviewAnimation : MonoBehaviour {
             Resources.Load<Material>("Materials/SemiTransparent");
     }
 
+    void OnDestroy() {
+        Destroy(animatedPlayerRepresentation.gameObject);
+    }
+
     void Update() {
         updateLineRenderer();
         updateAnimatedPlayerRepresentation();
