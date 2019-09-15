@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
-using System.Security.Cryptography;
 using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -26,6 +24,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [Tooltip("If active, the destination will automatically set to ground level." +
              "This protects the player from being teleported to a location in mid-air.")]
     [SerializeField] private bool destinationAlwaysOnTheGround = true;
+    [SerializeField] public bool previewScreen = false;
     public bool transparentWIM = true;
     [ConditionalField(nameof(transparentWIM))]
     public float transparency = 0.33f;
@@ -85,6 +84,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool handRIsInside;
     private bool handLIsInside;
     private Hand scalingHand = Hand.NONE;
+    private Material previewScreenMaterial;
 
 
 
@@ -121,6 +121,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         selectDestinationRotation();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
+        updatePreviewScreen();
         scaleWIM();
     }
 
@@ -202,7 +203,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         var WIMLevel = transform.GetChild(0);
         dissolveWIM(WIMLevel);
-        
+
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
         playerRepresentationTransform.parent = null;
@@ -216,10 +217,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         newWIMLevel.localPosition = Vector3.zero;
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
-        newWIMLevel.localScale = new Vector3(1,1,1);
+        newWIMLevel.localScale = new Vector3(1, 1, 1);
         playerRepresentationTransform.parent = newWIMLevel;
         transform.rotation = Quaternion.identity;
-        var spawnDistanceZ = ((playerArmLength <= 0)? WIMSpawnOffset.z : playerArmLength);
+        var spawnDistanceZ = ((playerArmLength <= 0) ? WIMSpawnOffset.z : playerArmLength);
         var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
         var camForwardPosition = HMDTransform.position + HMDTransform.forward;
         camForwardPosition.y = HMDTransform.position.y;
@@ -353,10 +354,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Rotate destination indicator in level.
         updateDestinationRotationInLevel();
 
+        // Optional: show preview screen.
+        if(previewScreen) showPreviewScreen();
+
         // Optional: Travel preview animation.
-        if (travelPreviewAnimation) {
-            createTravelPreviewAnimation();
-        }
+        if(travelPreviewAnimation) createTravelPreviewAnimation();
     }
 
     private void createTravelPreviewAnimation() {
@@ -399,10 +401,37 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
-        destinationIndicatorInWIM.parent = null;    // Prevent object from being copied with WIM. Destroy is apparently on another thread and thus, the object is not destroyed right away.
-        Destroy(travelPreviewAnimationObj);
-        Destroy(destinationIndicatorInWIM.gameObject);
-        Destroy(destinationIndicatorInLevel.gameObject);
+        removePreviewScreen();
+        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
+        DestroyImmediate(travelPreviewAnimationObj);
+        DestroyImmediate(destinationIndicatorInWIM.gameObject);
+        DestroyImmediate(destinationIndicatorInLevel.gameObject);
+    }
+
+    private void showPreviewScreen() {
+        removePreviewScreen();
+        var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
+        previewScreen.GetComponent<FloatAbove>().Target = transform;
+        var camObj = destinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
+        var cam = camObj.gameObject.AddComponent<Camera>();
+        cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
+        cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.backgroundColor = Color.gray;
+        previewScreen.GetComponent<Renderer>().material = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        previewScreenMaterial = previewScreen.GetComponent<Renderer>().material;
+        previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
+    }
+
+    private void updatePreviewScreen() {
+        if (!previewScreen || !destinationIndicatorInLevel) return;
+        var cam = destinationIndicatorInLevel.GetChild(1).gameObject.GetComponent<Camera>();
+        Destroy(cam.targetTexture);
+        cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
+        previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
+    }
+
+    private void removePreviewScreen() {
+        Destroy(GameObject.FindGameObjectWithTag("PreviewScreen"));
     }
 
     public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {

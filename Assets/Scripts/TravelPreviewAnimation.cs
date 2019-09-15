@@ -38,7 +38,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     void OnDestroy() {
-        Destroy(animatedPlayerRepresentation.gameObject);
+        DestroyImmediate(animatedPlayerRepresentation.gameObject);
     }
 
     void Update() {
