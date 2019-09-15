@@ -14,8 +14,6 @@ public class PostTravelPathTrace : MonoBehaviour {
     private float animationProgress;
     private float endTime;
 
-    // TODO self destruct
-
 
     void Awake() {
         lr = GetComponent<LineRenderer>();
@@ -45,8 +43,8 @@ public class PostTravelPathTrace : MonoBehaviour {
 
         var gradient = new Gradient();
         gradient.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(Color.green, 0), new GradientColorKey(Color.red, 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(1-progress, progress), new GradientAlphaKey(1, 1.0f) }
+            new GradientColorKey[] {new GradientColorKey(Color.green, 0), new GradientColorKey(Color.red, 1.0f)},
+            new GradientAlphaKey[] {new GradientAlphaKey(1 - progress, progress), new GradientAlphaKey(1, 1.0f)}
         );
         //gradient.SetKeys(
         //    new GradientColorKey[]{new GradientColorKey(new Color(0,1,0,1), 0), new GradientColorKey(new Color(1,0,0,1), 1)}, 
