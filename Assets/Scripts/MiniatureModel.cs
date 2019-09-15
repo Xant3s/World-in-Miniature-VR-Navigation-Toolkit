@@ -43,6 +43,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public float minScaleFactor = 0;
     [ConditionalField(nameof(AllowWIMScaling))]
     public float maxScaleFactor = .5f;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public OVRInput.RawButton grabButtonL = OVRInput.RawButton.LHandTrigger;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public OVRInput.RawButton grabButtonR = OVRInput.RawButton.RHandTrigger;
+    [ConditionalField(nameof(AllowWIMScaling))]
+    public float ScaleStep = .0001f;
+
 
     public bool TransparentWIMprev { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
@@ -54,6 +61,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             transform.localScale = new Vector3(value,value,value);
         }
     }
+
+    private enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -67,6 +76,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool armLengthDetected = false;
     private GameObject travelPreviewAnimationObj;
     private PostTravelPathTrace pathTrace;
+    private OVRGrabbable grabbable;
+    private float prevInterHandDistance;
+    private Transform handL;
+    private Transform handR;
+    private bool handRIsInside;
+    private bool handLIsInside;
+    private Hand scalingHand = Hand.NONE;
+
 
 
     void Awake() {
@@ -76,6 +93,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
         fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
         OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
+        handL = GameObject.FindWithTag("HandL").transform;
+        handR = GameObject.FindWithTag("HandR").transform;
+        grabbable = GetComponent<OVRGrabbable>();
         Assert.IsNotNull(levelTransform);
         Assert.IsNotNull(WIMLevelTransform);
         Assert.IsNotNull(playerTransform);
@@ -84,6 +104,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         Assert.IsNotNull(playerRepresentation);
         Assert.IsNotNull(destinationIndicator);
         Assert.IsNotNull(OVRPlayerController);
+        Assert.IsNotNull(grabbable);
     }
 
     void Start() {
@@ -101,6 +122,65 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         if (Input.GetKeyDown(KeyCode.DownArrow)) ScaleFactor -= .001f;
         if (Input.GetKeyDown(KeyCode.UpArrow)) ScaleFactor += .001f;
+        checkScalingWIM();
+    }
+
+    void checkScalingWIM() {
+        if (!AllowWIMScaling || !grabbable.isGrabbed) return;
+
+        // Get what hand is grabbing.
+        var grabbingHand = getGrabbingHand();
+        var oppositeHand = getOppositeHand(grabbingHand);
+        var scaleButton = getGrabButton(oppositeHand);
+
+        // Check if other hand is inside.
+        // if yes, check if other hand is starting to grab -> set bool
+        // if other hand (scaling hand) is letting go, unset bool
+        if (getHandIsInside(oppositeHand) && OVRInput.GetDown(scaleButton)) {
+            // Start scaling.
+            scalingHand = oppositeHand;
+        } else if (OVRInput.GetUp(scaleButton)) {
+            // Stop scaling.
+            scalingHand = Hand.NONE;
+        }
+
+        // while bool is active, scale: inter hand distance delta
+        if (scalingHand != Hand.NONE) {
+            // Scale using inter hand distance delta.
+            var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
+            var distanceDelta = currInterHandDistance - prevInterHandDistance;
+            if (distanceDelta > 0) {
+                ScaleFactor += ScaleStep;
+            }
+            else if(distanceDelta < 0) {
+                ScaleFactor -= ScaleStep;
+            }
+            prevInterHandDistance = currInterHandDistance;
+        }
+    }
+
+    private OVRInput.RawButton getGrabButton(Hand hand) {
+        if (hand == Hand.NONE) return OVRInput.RawButton.None;
+        return hand == Hand.HAND_L ? grabButtonL : grabButtonR;
+    }
+
+    private Hand getGrabbingHand() {
+        return (grabbable.grabbedBy.tag == "HandL") ? Hand.HAND_L : Hand.HAND_R;
+    }
+
+    private Hand getOppositeHand(Hand hand) {
+        if (hand == Hand.NONE) return Hand.NONE;
+        return (hand == Hand.HAND_L) ? Hand.HAND_R : Hand.HAND_L;
+    }
+
+    private bool getHandIsInside(Hand hand) {
+        switch (hand) {
+            case Hand.HAND_L when handLIsInside:
+            case Hand.HAND_R when handRIsInside:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private void detectArmLength() {
@@ -358,21 +438,25 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         playerRepresentationTransform.rotation = rotationInLevel;
     }
 
-    private bool isInside;
-    private bool handRIsInside;
-    private bool handLIsInside;
     void OnTriggerEnter(Collider other) {
-        if (other.gameObject.layer != 9) return;
-        if (isInside) return;
-        
-        isInside = true;
-        Debug.Log("Trigger");
+        const int handLayer = 9;
+        if (other.gameObject.layer != handLayer) return;
+        if (other.transform.root.tag == "HandL") {
+            handLIsInside = true;
+        }
+        else {
+            handRIsInside = true;
+        }
     }
 
     void OnTriggerExit(Collider other) {
-        if (other.gameObject.layer != 9) return;
-
-        isInside = false;
-        Debug.Log("Exit");
+        const int handLayer = 9;
+        if (other.gameObject.layer != handLayer) return;
+        if (other.transform.root.tag == "HandL") {
+            handLIsInside = false;
+        }
+        else {
+            handRIsInside = false;
+        }
     }
 }
