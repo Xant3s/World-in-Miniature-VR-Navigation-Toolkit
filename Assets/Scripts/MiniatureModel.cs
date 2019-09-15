@@ -30,6 +30,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public float transparency = 0.33f;
     [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
     [SerializeField] public bool autoDetectArmLength = false;
+    [ConditionalField(nameof(autoDetectArmLength))]
+    public OVRInput.RawButton confirmArmLengthButton = OVRInput.RawButton.A;
     [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
     [SerializeField] public bool travelPreviewAnimation = false;
     [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
@@ -185,7 +187,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void detectArmLength() {
         if (!autoDetectArmLength || armLengthDetected) return;
-        if (OVRInput.GetDown(confirmTeleportButton)) {
+        if (OVRInput.GetDown(confirmArmLengthButton)) {
             armLengthDetected = true;
             var controllerPos = GameObject.Find("CustomHandRight").transform.position;
             var headPos = Camera.main.transform.position;
