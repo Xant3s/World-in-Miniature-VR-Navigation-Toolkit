@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 public class TravelPreviewAnimation : MonoBehaviour {
     public WIMSpaceConverter Converter { get; set; }
     public Transform DestinationInWIM { get; set; }
     public Transform PlayerRepresentationInWIM { get; set; }
-    public Transform WIM { get; set; }
+    public Transform WIMLevelTransform { get; set; }
     public GameObject DestinationIndicator { get; set; }
     public float AnimationSpeed { get; set; } = 1.0f;
 
@@ -32,7 +30,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     private void initAnimatedPlayerRepresentation() {
-        animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIM.GetChild(0)).transform;
+        animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIMLevelTransform).transform;
         animatedPlayerRepresentation.name = "Animated Player Travel Representation";
         animatedPlayerRepresentation.gameObject.AddComponent<Rigidbody>().useGravity = false;
         animatedPlayerRepresentation.GetComponent<Renderer>().material =
@@ -67,7 +65,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
         var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
         var playerPosInLevelSpace = Converter.ConvertToLevelSpace(animatedPlayerRepresentation.position);
         var rotationInLevelSpace = Quaternion.LookRotation(destinationInLevelSpace - playerPosInLevelSpace, Vector3.up);
-        animatedPlayerRepresentation.rotation = WIM.rotation * rotationInLevelSpace;
+        animatedPlayerRepresentation.rotation = WIMLevelTransform.rotation * rotationInLevelSpace;
     }
 
     private void resetAnimation() {
