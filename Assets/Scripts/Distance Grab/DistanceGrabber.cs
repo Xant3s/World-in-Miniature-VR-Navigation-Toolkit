@@ -12,10 +12,14 @@ public class DistanceGrabber : MonoBehaviour {
 
     private AimAssist aimAssist;
     private LineRenderer lineRenderer;
+    private bool isDisabled;
 
     void Awake() {
         if (!disableWhileInWIM) return;
-        if (!this.enabled) return;
+        if (!this.enabled) {
+            isDisabled = true;
+            return;
+        };
         aimAssist = gameObject.GetComponentInChildren<AimAssist>();
         lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
     }
@@ -38,12 +42,12 @@ public class DistanceGrabber : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if (!disableWhileInWIM || other.name != "WIM") return;
+        if (!disableWhileInWIM || isDisabled || other.name != "WIM") return;
         setEnable(false);
     }
 
     void OnTriggerExit(Collider other) {
-        if (!disableWhileInWIM || other.name != "WIM") return;
+        if (!disableWhileInWIM || isDisabled || other.name != "WIM") return;
         setEnable(true);
     }
 
