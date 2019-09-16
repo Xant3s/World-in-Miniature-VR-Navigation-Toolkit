@@ -162,6 +162,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
         scaleWIM();
+        autoScrollWIM();
     }
 
     void scaleWIM() {
@@ -409,13 +410,15 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(travelPreviewAnimation) createTravelPreviewAnimation();
 
         // Optional: Auto-scroll WIM.
-        if(AllowWIMScrolling && AutoScroll) autoScrollWIM();
+        //if(AllowWIMScrolling && AutoScroll) autoScrollWIM();
     }
 
     void autoScrollWIM() {
-        Assert.IsNotNull(destinationIndicatorInWIM);
-        var scrollOffset = -destinationIndicatorInWIM.localPosition;
-        WIMLevelTransform.localPosition += scrollOffset;
+        if(!AllowWIMScrolling || !AutoScroll) return;
+        var scrollOffset = destinationIndicatorInWIM
+            ? -destinationIndicatorInWIM.localPosition
+            : -playerRepresentationTransform.localPosition;
+        WIMLevelTransform.localPosition = scrollOffset;
     }
 
     private void createTravelPreviewAnimation() {
