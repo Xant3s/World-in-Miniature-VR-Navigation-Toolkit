@@ -9,7 +9,6 @@ using UnityEngine;
 public class MiniatureModelEditor : Editor {
 
     private MiniatureModel WIM;
-    //private List<GameObject> occlusionHandlingObjects = new List<GameObject>();
 
     public override void OnInspectorGUI() {
         WIM = (MiniatureModel)target;
@@ -18,7 +17,7 @@ public class MiniatureModelEditor : Editor {
         }
         DrawDefaultInspector();
         updateOcclusionHandling();
-        updateMeltRadius();
+        updateCylinderMask();
     }
 
     private void updateOcclusionHandling() {
@@ -33,23 +32,18 @@ public class MiniatureModelEditor : Editor {
                 addDissolveScript();
                 break;
             case MiniatureModel.OcclusionHandling.MeltWalls:
-                //if(GameObject.Find("Mask Controller")) return;
                 material = Resources.Load<Material>("Materials/MeltWalls");
                 var maskController = new GameObject("Mask Controller");
-                //occlusionHandlingObjects.Add(maskController);
-                var controller = maskController.AddComponent<Controller_Mask_Sphere>();
+                var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
                 controller.materials = new[] {material};
-                var sphereMask = new GameObject("Sphere Mask");
-                //occlusionHandlingObjects.Add(sphereMask);
-                controller.sphere1 = sphereMask;
-                var moveController = sphereMask.AddComponent<ObjectSceneMove>();
+                var cylinderMask = new GameObject("Cylinder Mask");
+                controller.cylinder1 = cylinderMask;
+                var moveController = cylinderMask.AddComponent<ObjectSceneMove>();
                 moveController.scale = true;
-                moveController.layerMask = ~0; // Everything.
-                sphereMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
-                moveController.transform.localPosition = Vector3.zero;
-                moveController.transform.localScale = new Vector3(WIM.meltRadius, WIM.meltRadius, WIM.meltRadius);
+                moveController.rotate = true;
+                moveController.layerMask = ~0; // Everything.   TODO: only WIM layer
+                cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
                 removeDissolveScript();
-                // TODO: Both hands
                 break;
             case MiniatureModel.OcclusionHandling.None:
                 material = Resources.Load<Material>("Materials/Dissolve");
@@ -66,11 +60,7 @@ public class MiniatureModelEditor : Editor {
     }
 
     void cleanupOcclusionHandling() {
-        //while(occlusionHandlingObjects.Count != 0) {
-        //    DestroyImmediate(occlusionHandlingObjects[0]);
-        //    occlusionHandlingObjects.RemoveAt(0);
-        //}
-        DestroyImmediate(GameObject.Find("Sphere Mask"));
+        DestroyImmediate(GameObject.Find("Cylinder Mask"));
         DestroyImmediate(GameObject.Find("Mask Controller"));
     }
 
@@ -101,12 +91,11 @@ public class MiniatureModelEditor : Editor {
         }
     }
 
-    private void updateMeltRadius() {
-        if(WIM.occlusionHandling != MiniatureModel.OcclusionHandling.MeltWalls) return;
-        if(Math.Abs(WIM.meltRadius - WIM.PrevMeltRadius) < .001f) return;
-        WIM.PrevMeltRadius = WIM.meltRadius;
-        GameObject.Find("Sphere Mask").transform.localScale = new Vector3(WIM.meltRadius,WIM.meltRadius,WIM.meltRadius);
-        // TODO: both hands
+    private void updateCylinderMask() {
+        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.MeltWalls) return;
+        var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
+        if(!cylinderTransform) return;
+        cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
     }
 
     private void generateWIM() {

@@ -18,6 +18,11 @@ public class FollowHand : MonoBehaviour {
     void Update() {
         if(!target) return;
         transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
         transform.position = target.position;
+        transform.rotation = Quaternion.LookRotation(target.forward, target.up);
+        transform.Rotate(Vector3.right, 90);
+        transform.position -= transform.up * .1f;
+        transform.position -= transform.forward * .05f;
     }
 }

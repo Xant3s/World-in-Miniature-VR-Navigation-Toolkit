@@ -26,12 +26,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private OVRInput.RawButton confirmTeleportButton;
 
     [Separator("Occlusion Handling", true)]
-    //[SearchableEnum]
     public OcclusionHandling occlusionHandling;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.Transparency)]
     public float transparency = 0.33f;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
     public float meltRadius = 1.0f;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
+    public float meltHeight = 2.0f;
 
     [Separator("Orientation Aids", true)] 
     [SerializeField] public bool previewScreen = false;
