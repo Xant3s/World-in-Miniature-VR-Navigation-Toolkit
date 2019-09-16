@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
@@ -39,17 +40,24 @@ public class MiniatureModelEditor : Editor {
             var cubeMesh = Instantiate (mf.sharedMesh) as Mesh;
             maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
             maskController.AddComponent<AlignWith>().Target = WIM.transform;
-            //boxMask.transform.parent = WIM.transform;
-            //boxMask.transform.localPosition = Vector3.zero;
-            //boxMask.transform.localScale = WIM.activeAreaBounds;
             controller.box1 = maskController;
             controller.invert = true;
+
+            // Collider.
+            WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = false);
+            WIM.gameObject.AddComponent<BoxCollider>().size = WIM.activeAreaBounds / WIM.ScaleFactor;
+            //var colliders = WIM.GetComponents<Collider>();
+            //for(var i = 0; i < colliders.Count() - 1; i++) {
+            //    colliders[i].enabled = false;
+            //}
+
             removeDissolveScript();
             DestroyImmediate(tmpGO);
-
             maskController.transform.position = WIM.transform.position;
         }
         else {
+            DestroyImmediate(WIM.GetComponents<Collider>().Last());
+            WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = true);
             DestroyImmediate(GameObject.Find("Box Mask"));   
             addDissolveScript();
         }
