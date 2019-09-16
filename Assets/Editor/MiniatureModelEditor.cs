@@ -15,14 +15,27 @@ public class MiniatureModelEditor : Editor {
             generateWIM();
         }
         DrawDefaultInspector();
-        updateWIMTransparency();
+        updateWIMMaterials();
     }
 
-    private void updateWIMTransparency() {
-        if (WIM.transparentWIM.Equals(WIM.TransparentWIMprev)) return;
-        WIM.TransparentWIMprev = WIM.transparentWIM;
-        var material = (Material) Resources.Load("Materials/Dissolve");
-        material.shader = Shader.Find(WIM.transparentWIM? "Shader Graphs/DissolveTransparent" : "Shader Graphs/Dissolve");
+    private void updateWIMMaterials() {
+        if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
+        WIM.prevOcclusionHandling = WIM.occlusionHandling;
+        Material material;
+        switch(WIM.occlusionHandling) {
+            case MiniatureModel.OcclusionHandling.None:
+                material = (Material) Resources.Load("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                break;
+            case MiniatureModel.OcclusionHandling.Transparency:
+                material = (Material) Resources.Load("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
+                break;
+            case MiniatureModel.OcclusionHandling.MeltWalls:
+                material = (Material) Resources.Load("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                break;
+        }
     }
 
     private void generateWIM() {

@@ -23,10 +23,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private OVRInput.RawButton confirmTeleportButton;
-   
+
     [Separator("Occlusion Handling", true)]
-    public bool transparentWIM = true;
-    [ConditionalField(nameof(transparentWIM))]
+    //[SearchableEnum]
+    public OcclusionHandling occlusionHandling;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.Transparency)]
     public float transparency = 0.33f;
 
     [Separator("Orientation Aids", true)] 
@@ -66,7 +67,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public float interHandDistanceDeltaThreshold = .1f;
 
 
-    public bool TransparentWIMprev { get; set; }
+    public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public float ScaleFactor {
@@ -77,6 +78,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
+    public enum OcclusionHandling{None, Transparency, MeltWalls}
     private enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;
