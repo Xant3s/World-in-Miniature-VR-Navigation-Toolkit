@@ -21,6 +21,7 @@ public class FollowHand : MonoBehaviour {
         transform.localRotation = Quaternion.identity;
         transform.position = target.position;
         transform.rotation = Quaternion.LookRotation(target.forward, target.up);
+        // Todo Hardcoded:
         transform.Rotate(Vector3.right, 90);
         transform.position -= transform.up * .1f;
         transform.position -= transform.forward * .05f;

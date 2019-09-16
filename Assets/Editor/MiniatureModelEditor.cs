@@ -41,7 +41,7 @@ public class MiniatureModelEditor : Editor {
                 var moveController = cylinderMask.AddComponent<ObjectSceneMove>();
                 moveController.scale = true;
                 moveController.rotate = true;
-                moveController.layerMask = ~0; // Everything.   TODO: only WIM layer
+                moveController.layerMask = LayerMask.GetMask("WIM");
                 cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
                 removeDissolveScript();
                 break;
