@@ -111,7 +111,8 @@ public class MiniatureModelEditor : Editor {
         DestroyImmediate(GameObject.Find("Cylinder Mask"));
         DestroyImmediate(GameObject.Find("Spotlight Mask"));
         DestroyImmediate(GameObject.Find("Mask Controller"));
-        DestroyImmediate(GameObject.Find("Box Mask")); 
+        if(!WIM.AllowWIMScrolling)
+            DestroyImmediate(GameObject.Find("Box Mask")); 
     }
 
     private void setWIMMaterial(Material material) {
