@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ using UnityEngine;
 public class MiniatureModelEditor : Editor {
 
     private MiniatureModel WIM;
+    private List<GameObject> occlusionHandlingObjects = new List<GameObject>();
 
     public override void OnInspectorGUI() {
         WIM = (MiniatureModel)target;
@@ -15,27 +17,72 @@ public class MiniatureModelEditor : Editor {
             generateWIM();
         }
         DrawDefaultInspector();
-        updateWIMMaterials();
+        updateOcclusionHandling();
+        updateMeltRadius();
     }
 
-    private void updateWIMMaterials() {
+    private void updateOcclusionHandling() {
         if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
         WIM.prevOcclusionHandling = WIM.occlusionHandling;
         Material material;
+        cleanupOcclusionHandling();
         switch(WIM.occlusionHandling) {
-            case MiniatureModel.OcclusionHandling.None:
-                material = (Material) Resources.Load("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/Dissolve");
-                break;
             case MiniatureModel.OcclusionHandling.Transparency:
-                material = (Material) Resources.Load("Materials/Dissolve");
+                material = Resources.Load<Material>("Materials/Dissolve");
                 material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
                 break;
             case MiniatureModel.OcclusionHandling.MeltWalls:
-                material = (Material) Resources.Load("Materials/Dissolve");
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                var maskController = new GameObject("Mask Controller");
+                occlusionHandlingObjects.Add(maskController);
+                var controller = maskController.AddComponent<Controller_Mask_Sphere>();
+                controller.materials = new[] {material};
+                var sphereMask = new GameObject("Sphere Mask");
+                occlusionHandlingObjects.Add(sphereMask);
+                controller.sphere1 = sphereMask;
+                var moveController = sphereMask.AddComponent<ObjectSceneMove>();
+                moveController.scale = true;
+                moveController.layerMask = ~0; // Everything.
+                moveController.transform.parent = GameObject.FindWithTag("HandR").transform;
+                moveController.transform.localPosition = Vector3.zero;
+                moveController.transform.localScale = new Vector3(WIM.meltRadius, WIM.meltRadius, WIM.meltRadius);
+                // TODO: Both hands
+                break;
+            case MiniatureModel.OcclusionHandling.None:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                break;
+            default:
+                material = Resources.Load<Material>("Materials/Dissolve");
                 material.shader = Shader.Find("Shader Graphs/Dissolve");
                 break;
         }
+        setWIMMaterial(material);
+    }
+
+    void cleanupOcclusionHandling() {
+        while(occlusionHandlingObjects.Count != 0) {
+            DestroyImmediate(occlusionHandlingObjects[0]);
+            occlusionHandlingObjects.RemoveAt(0);
+        }
+    }
+
+    private void setWIMMaterial(Material material) {
+        var WIMLevelTransform = WIM.transform.GetChild(0);
+        for(var i = 0; i < WIMLevelTransform.childCount; i++) {
+            var child = WIMLevelTransform.GetChild(i);
+            var renderer = child.GetComponent<Renderer>();
+            if(!renderer) continue;
+            renderer.material = material;
+        }
+    }
+
+    private void updateMeltRadius() {
+        if(WIM.occlusionHandling != MiniatureModel.OcclusionHandling.MeltWalls) return;
+        if(Math.Abs(WIM.meltRadius - WIM.PrevMeltRadius) < .001f) return;
+        WIM.PrevMeltRadius = WIM.meltRadius;
+        GameObject.FindWithTag("HandR").transform.Find("Sphere Mask").transform.localScale = new Vector3(WIM.meltRadius,WIM.meltRadius,WIM.meltRadius);
+        // TODO: both hands
     }
 
     private void generateWIM() {

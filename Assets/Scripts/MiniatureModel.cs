@@ -9,6 +9,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
+[RequireComponent(typeof(DistanceGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [Separator("Basic Settings", true)]
     [SerializeField] private GameObject playerRepresentation;
@@ -29,6 +30,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public OcclusionHandling occlusionHandling;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.Transparency)]
     public float transparency = 0.33f;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
+    public float meltRadius = 1.0f;
 
     [Separator("Orientation Aids", true)] 
     [SerializeField] public bool previewScreen = false;
@@ -68,6 +71,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
 
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
+    public float PrevMeltRadius { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public float ScaleFactor {
