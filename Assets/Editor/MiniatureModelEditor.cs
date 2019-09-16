@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,14 +16,86 @@ public class MiniatureModelEditor : Editor {
             generateWIM();
         }
         DrawDefaultInspector();
-        updateWIMTransparency();
+        updateOcclusionHandling();
+        updateCylinderMask();
     }
 
-    private void updateWIMTransparency() {
-        if (WIM.transparentWIM.Equals(WIM.TransparentWIMprev)) return;
-        WIM.TransparentWIMprev = WIM.transparentWIM;
-        var material = (Material) Resources.Load("Materials/Dissolve");
-        material.shader = Shader.Find(WIM.transparentWIM? "Shader Graphs/DissolveTransparent" : "Shader Graphs/Dissolve");
+    private void updateOcclusionHandling() {
+        if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
+        WIM.prevOcclusionHandling = WIM.occlusionHandling;
+        Material material;
+        cleanupOcclusionHandling();
+        switch(WIM.occlusionHandling) {
+            case MiniatureModel.OcclusionHandling.Transparency:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
+                addDissolveScript();
+                break;
+            case MiniatureModel.OcclusionHandling.MeltWalls:
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                var maskController = new GameObject("Mask Controller");
+                var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
+                controller.materials = new[] {material};
+                var cylinderMask = new GameObject("Cylinder Mask");
+                controller.cylinder1 = cylinderMask;
+                var moveController = cylinderMask.AddComponent<ObjectSceneMove>();
+                moveController.scale = true;
+                moveController.rotate = true;
+                moveController.layerMask = LayerMask.GetMask("WIM");
+                cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
+                removeDissolveScript();
+                break;
+            case MiniatureModel.OcclusionHandling.None:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                addDissolveScript();
+                break;
+            default:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                addDissolveScript();
+                break;
+        }
+        setWIMMaterial(material);
+    }
+
+    void cleanupOcclusionHandling() {
+        DestroyImmediate(GameObject.Find("Cylinder Mask"));
+        DestroyImmediate(GameObject.Find("Mask Controller"));
+    }
+
+    private void setWIMMaterial(Material material) {
+        var WIMLevelTransform = WIM.transform.GetChild(0);
+        for(var i = 0; i < WIMLevelTransform.childCount; i++) {
+            var child = WIMLevelTransform.GetChild(i);
+            var renderer = child.GetComponent<Renderer>();
+            if(!renderer) continue;
+            renderer.material = material;
+        }
+    }
+
+    private void removeDissolveScript() {
+        var WIMLevelTransform = WIM.transform.GetChild(0);
+        for(var i = 0; i < WIMLevelTransform.childCount; i++) {
+            var child = WIMLevelTransform.GetChild(i);
+            DestroyImmediate(child.GetComponent<Dissolve>());
+        }
+    }
+
+    private void addDissolveScript() {
+        var WIMLevelTransform = WIM.transform.GetChild(0);
+        for(var i = 0; i < WIMLevelTransform.childCount; i++) {
+            var child = WIMLevelTransform.GetChild(i);
+            if(!child.GetComponent<Dissolve>())
+                child.gameObject.AddComponent<Dissolve>();
+        }
+    }
+
+    private void updateCylinderMask() {
+        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.MeltWalls) return;
+        var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
+        if(!cylinderTransform) return;
+        cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
     }
 
     private void generateWIM() {

@@ -9,6 +9,7 @@ using UnityEngine.Assertions;
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
+[RequireComponent(typeof(DistanceGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [Separator("Basic Settings", true)]
     [SerializeField] private GameObject playerRepresentation;
@@ -23,11 +24,15 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private OVRInput.RawButton destinationSelectButton;
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
     [SerializeField] private OVRInput.RawButton confirmTeleportButton;
-   
+
     [Separator("Occlusion Handling", true)]
-    public bool transparentWIM = true;
-    [ConditionalField(nameof(transparentWIM))]
+    public OcclusionHandling occlusionHandling;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.Transparency)]
     public float transparency = 0.33f;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
+    public float meltRadius = 1.0f;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
+    public float meltHeight = 2.0f;
 
     [Separator("Orientation Aids", true)] 
     [SerializeField] public bool previewScreen = false;
@@ -66,7 +71,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public float interHandDistanceDeltaThreshold = .1f;
 
 
-    public bool TransparentWIMprev { get; set; }
+    public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
+    public float PrevMeltRadius { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public float ScaleFactor {
@@ -77,7 +83,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    private enum Hand{NONE, HAND_L, HAND_R}
+    public enum OcclusionHandling{None, Transparency, MeltWalls}
+    public enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -216,7 +223,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         removeDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
-        dissolveWIM(WIMLevel);
+        var dissolveFX = occlusionHandling == OcclusionHandling.None ||
+                         occlusionHandling == OcclusionHandling.Transparency;
+        if(dissolveFX)
+            dissolveWIM(WIMLevel);
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
@@ -241,8 +251,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
         transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
                              Vector3.up * spawnDistanceY;
-        resolveWIM(newWIMLevel);
-        Invoke("destroyOldWIMLevel", 1.1f);
+        if(dissolveFX) {
+            resolveWIM(newWIMLevel);
+            Invoke("destroyOldWIMLevel", 1.1f);
+        }
+        else {
+            destroyOldWIMLevel();
+        }
     }
 
     private void resolveWIM(Transform WIM) {
