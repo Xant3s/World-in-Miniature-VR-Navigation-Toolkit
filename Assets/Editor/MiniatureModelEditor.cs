@@ -43,7 +43,7 @@ public class MiniatureModelEditor : Editor {
             //boxMask.transform.localPosition = Vector3.zero;
             //boxMask.transform.localScale = WIM.activeAreaBounds;
             controller.box1 = maskController;
-            //controller.invert = true;
+            controller.invert = true;
             removeDissolveScript();
             DestroyImmediate(tmpGO);
 

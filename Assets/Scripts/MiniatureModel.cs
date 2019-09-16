@@ -241,6 +241,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var WIMLevel = transform.GetChild(0);
         var dissolveFX = occlusionHandling == OcclusionHandling.None ||
                          occlusionHandling == OcclusionHandling.Transparency;
+        if(AllowWIMScrolling) dissolveFX = false;
         if(dissolveFX)
             dissolveWIM(WIMLevel);
 
