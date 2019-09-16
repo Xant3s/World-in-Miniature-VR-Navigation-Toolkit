@@ -19,11 +19,19 @@ public class MiniatureModelEditor : Editor {
         updateOcclusionHandling();
         updateCylinderMask();
         updateCutoutViewMask();
+        updateScrolling();
+    }
+
+    void updateScrolling() {
+        if (WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return;
+        WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
+
     }
 
     private void updateOcclusionHandling() {
         if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
         WIM.prevOcclusionHandling = WIM.occlusionHandling;
+        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.None) WIM.AllowWIMScrolling = false;
         Material material;
         cleanupOcclusionHandling();
         switch(WIM.occlusionHandling) {
