@@ -83,7 +83,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    public enum OcclusionHandling{None, Transparency, MeltWalls}
+    public enum OcclusionHandling{None, Transparency, MeltWalls, CutoutView}
     public enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;

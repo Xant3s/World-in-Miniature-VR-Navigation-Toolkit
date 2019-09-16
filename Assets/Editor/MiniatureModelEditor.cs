@@ -31,20 +31,30 @@ public class MiniatureModelEditor : Editor {
                 material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
                 addDissolveScript();
                 break;
-            case MiniatureModel.OcclusionHandling.MeltWalls:
+            case MiniatureModel.OcclusionHandling.MeltWalls: {
                 material = Resources.Load<Material>("Materials/MeltWalls");
                 var maskController = new GameObject("Mask Controller");
                 var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
                 controller.materials = new[] {material};
                 var cylinderMask = new GameObject("Cylinder Mask");
                 controller.cylinder1 = cylinderMask;
-                var moveController = cylinderMask.AddComponent<ObjectSceneMove>();
-                moveController.scale = true;
-                moveController.rotate = true;
-                moveController.layerMask = LayerMask.GetMask("WIM");
                 cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
                 removeDissolveScript();
                 break;
+            }
+            case MiniatureModel.OcclusionHandling.CutoutView: {
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                var maskController = new GameObject("Mask Controller");
+                var controller = maskController.AddComponent<Controller_Mask_Cone>();
+                controller.materials = new[] {material};
+                var spotlightObj = new GameObject("Spotlight Mask");
+                var spotlight = spotlightObj.AddComponent<Light>();
+                controller.spotLight1 = spotlight;
+                spotlight.type = LightType.Spot;
+                spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
+                removeDissolveScript();
+                break;
+            }
             case MiniatureModel.OcclusionHandling.None:
                 material = Resources.Load<Material>("Materials/Dissolve");
                 material.shader = Shader.Find("Shader Graphs/Dissolve");
