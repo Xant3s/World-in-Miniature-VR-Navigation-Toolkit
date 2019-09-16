@@ -27,7 +27,7 @@ public class MiniatureModelEditor : Editor {
         if(WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return;
         WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
         var material = WIM.AllowWIMScrolling
-            ? Resources.Load<Material>("Materials/MeltWalls")
+            ? Resources.Load<Material>("Materials/ScrollDissolve")
             : Resources.Load<Material>("Materials/Dissolve");
         setWIMMaterial(material);
         if(WIM.AllowWIMScrolling) {
@@ -46,6 +46,8 @@ public class MiniatureModelEditor : Editor {
             //controller.invert = true;
             removeDissolveScript();
             DestroyImmediate(tmpGO);
+
+            maskController.transform.position = WIM.transform.position;
         }
         else {
             DestroyImmediate(GameObject.Find("Box Mask"));   
