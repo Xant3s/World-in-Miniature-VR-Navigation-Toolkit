@@ -72,6 +72,7 @@ public class MiniatureModelEditor : Editor {
 
     void cleanupOcclusionHandling() {
         DestroyImmediate(GameObject.Find("Cylinder Mask"));
+        DestroyImmediate(GameObject.Find("Spotlight Mask"));
         DestroyImmediate(GameObject.Find("Mask Controller"));
     }
 
