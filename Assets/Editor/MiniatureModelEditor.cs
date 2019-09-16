@@ -18,6 +18,7 @@ public class MiniatureModelEditor : Editor {
         DrawDefaultInspector();
         updateOcclusionHandling();
         updateCylinderMask();
+        updateCutoutViewMask();
     }
 
     private void updateOcclusionHandling() {
@@ -106,6 +107,24 @@ public class MiniatureModelEditor : Editor {
         var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
         if(!cylinderTransform) return;
         cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
+    }
+
+    private void updateCutoutViewMask() {
+        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.CutoutView) return;
+        var spotlightObj = GameObject.Find("Spotlight Mask");
+        if(!spotlightObj) return;
+        var spotlight = spotlightObj.GetComponent<Light>();
+        spotlight.range = WIM.cutoutRange;
+        spotlight.spotAngle = WIM.cutoutAngle;
+
+        Color color;
+        if(WIM.showCutoutLight) {
+            color = WIM.cutoutLightColor;
+            color.a = 1;
+        } else {
+            color  = new Color(0,0,0,0);
+        }
+        spotlight.color = color;
     }
 
     private void generateWIM() {

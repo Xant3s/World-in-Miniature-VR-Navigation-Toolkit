@@ -33,6 +33,15 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public float meltRadius = 1.0f;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
     public float meltHeight = 2.0f;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.CutoutView)]
+    public float cutoutRange = 10;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.CutoutView)]
+    public float cutoutAngle = 30;
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.CutoutView)]
+    public bool showCutoutLight = false;
+    [ConditionalField(nameof(showCutoutLight))]
+    public Color cutoutLightColor = Color.white;
+
 
     [Separator("Orientation Aids", true)] 
     [SerializeField] public bool previewScreen = false;
