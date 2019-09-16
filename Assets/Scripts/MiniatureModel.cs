@@ -86,6 +86,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] public bool AllowWIMScrolling = false;
     [ConditionalField(nameof(AllowWIMScrolling))]
     public Vector3 activeAreaBounds = new Vector3(10,10,10);
+    [ConditionalField(nameof(AllowWIMScrolling))]
+    public bool AutoScroll = true;
 
     public bool PrevAllowWIMScrolling { get; set; } = true;
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
@@ -405,6 +407,15 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // Optional: Travel preview animation.
         if(travelPreviewAnimation) createTravelPreviewAnimation();
+
+        // Optional: Auto-scroll WIM.
+        if(AllowWIMScrolling && AutoScroll) autoScrollWIM();
+    }
+
+    void autoScrollWIM() {
+        Assert.IsNotNull(destinationIndicatorInWIM);
+        var scrollOffset = -destinationIndicatorInWIM.localPosition;
+        WIMLevelTransform.localPosition += scrollOffset;
     }
 
     private void createTravelPreviewAnimation() {
