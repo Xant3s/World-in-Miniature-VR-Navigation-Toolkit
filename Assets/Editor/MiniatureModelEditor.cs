@@ -31,28 +31,24 @@ public class MiniatureModelEditor : Editor {
             : Resources.Load<Material>("Materials/Dissolve");
         setWIMMaterial(material);
         if(WIM.AllowWIMScrolling) {
-            var maskController = new GameObject("Mask Controller");
+            var maskController = new GameObject("Box Mask");
             var controller = maskController.AddComponent<Controller_Mask_Box>();
             controller.materials = new[] {material};
-            var boxMask = new GameObject("Box Mask");
             var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
             var mf = tmpGO.GetComponent<MeshFilter>();
             var cubeMesh = Instantiate (mf.sharedMesh) as Mesh;
-            boxMask.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
-            boxMask.AddComponent<AlignWith>().Target = WIM.transform;
+            maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
+            maskController.AddComponent<AlignWith>().Target = WIM.transform;
             //boxMask.transform.parent = WIM.transform;
             //boxMask.transform.localPosition = Vector3.zero;
             //boxMask.transform.localScale = WIM.activeAreaBounds;
-            controller.box1 = boxMask;
+            controller.box1 = maskController;
             //controller.invert = true;
             removeDissolveScript();
             DestroyImmediate(tmpGO);
-
-            //boxMask.AddComponent<MeshRenderer>();
         }
         else {
             DestroyImmediate(GameObject.Find("Box Mask"));   
-            DestroyImmediate(GameObject.Find("Mask Controller"));
             addDissolveScript();
         }
     }
