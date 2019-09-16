@@ -19,19 +19,50 @@ public class MiniatureModelEditor : Editor {
         updateOcclusionHandling();
         updateCylinderMask();
         updateCutoutViewMask();
+        updateScrollingMask();
         updateScrolling();
     }
 
     void updateScrolling() {
-        if (WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return;
+        if(WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return;
         WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
+        var material = WIM.AllowWIMScrolling
+            ? Resources.Load<Material>("Materials/MeltWalls")
+            : Resources.Load<Material>("Materials/Dissolve");
+        setWIMMaterial(material);
+        if(WIM.AllowWIMScrolling) {
+            var maskController = new GameObject("Mask Controller");
+            var controller = maskController.AddComponent<Controller_Mask_Box>();
+            controller.materials = new[] {material};
+            var boxMask = new GameObject("Box Mask");
+            var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var mf = tmpGO.GetComponent<MeshFilter>();
+            var cubeMesh = Instantiate (mf.sharedMesh) as Mesh;
+            boxMask.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
+            boxMask.AddComponent<AlignWith>().Target = WIM.transform;
+            //boxMask.transform.parent = WIM.transform;
+            //boxMask.transform.localPosition = Vector3.zero;
+            //boxMask.transform.localScale = WIM.activeAreaBounds;
+            controller.box1 = boxMask;
+            //controller.invert = true;
+            removeDissolveScript();
+            DestroyImmediate(tmpGO);
 
+            //boxMask.AddComponent<MeshRenderer>();
+        }
+        else {
+            DestroyImmediate(GameObject.Find("Box Mask"));   
+            DestroyImmediate(GameObject.Find("Mask Controller"));
+            addDissolveScript();
+        }
     }
 
     private void updateOcclusionHandling() {
         if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
         WIM.prevOcclusionHandling = WIM.occlusionHandling;
-        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.None) WIM.AllowWIMScrolling = false;
+        if(WIM.occlusionHandling != MiniatureModel.OcclusionHandling.None) {
+            WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
+        }
         Material material;
         cleanupOcclusionHandling();
         switch(WIM.occlusionHandling) {
@@ -134,6 +165,13 @@ public class MiniatureModelEditor : Editor {
             color  = new Color(0,0,0,0);
         }
         spotlight.color = color;
+    }
+
+    private void updateScrollingMask() {
+        if(!WIM.AllowWIMScrolling) return;
+        var boxMaskObj = GameObject.Find("Box Mask");
+        if(!boxMaskObj) return;
+        boxMaskObj.transform.localScale = WIM.activeAreaBounds;
     }
 
     private void generateWIM() {

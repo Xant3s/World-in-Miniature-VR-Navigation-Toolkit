@@ -84,7 +84,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [Header("Allow Scrolling")]
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.None)]
     [SerializeField] public bool AllowWIMScrolling = false;
-
+    [ConditionalField(nameof(AllowWIMScrolling))]
+    public Vector3 activeAreaBounds = new Vector3(10,10,10);
 
     public bool PrevAllowWIMScrolling { get; set; } = true;
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
