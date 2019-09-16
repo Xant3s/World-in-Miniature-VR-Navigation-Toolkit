@@ -9,7 +9,7 @@ using UnityEngine;
 public class MiniatureModelEditor : Editor {
 
     private MiniatureModel WIM;
-    private List<GameObject> occlusionHandlingObjects = new List<GameObject>();
+    //private List<GameObject> occlusionHandlingObjects = new List<GameObject>();
 
     public override void OnInspectorGUI() {
         WIM = (MiniatureModel)target;
@@ -36,11 +36,11 @@ public class MiniatureModelEditor : Editor {
                 //if(GameObject.Find("Mask Controller")) return;
                 material = Resources.Load<Material>("Materials/MeltWalls");
                 var maskController = new GameObject("Mask Controller");
-                occlusionHandlingObjects.Add(maskController);
+                //occlusionHandlingObjects.Add(maskController);
                 var controller = maskController.AddComponent<Controller_Mask_Sphere>();
                 controller.materials = new[] {material};
                 var sphereMask = new GameObject("Sphere Mask");
-                occlusionHandlingObjects.Add(sphereMask);
+                //occlusionHandlingObjects.Add(sphereMask);
                 controller.sphere1 = sphereMask;
                 var moveController = sphereMask.AddComponent<ObjectSceneMove>();
                 moveController.scale = true;
@@ -66,10 +66,12 @@ public class MiniatureModelEditor : Editor {
     }
 
     void cleanupOcclusionHandling() {
-        while(occlusionHandlingObjects.Count != 0) {
-            DestroyImmediate(occlusionHandlingObjects[0]);
-            occlusionHandlingObjects.RemoveAt(0);
-        }
+        //while(occlusionHandlingObjects.Count != 0) {
+        //    DestroyImmediate(occlusionHandlingObjects[0]);
+        //    occlusionHandlingObjects.RemoveAt(0);
+        //}
+        DestroyImmediate(GameObject.Find("Sphere Mask"));
+        DestroyImmediate(GameObject.Find("Mask Controller"));
     }
 
     private void setWIMMaterial(Material material) {
