@@ -18,6 +18,7 @@ public class MiniatureModelEditor : Editor {
         DrawDefaultInspector();
         updateOcclusionHandling();
         updateCylinderMask();
+        updateCutoutViewMask();
     }
 
     private void updateOcclusionHandling() {
@@ -31,20 +32,30 @@ public class MiniatureModelEditor : Editor {
                 material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
                 addDissolveScript();
                 break;
-            case MiniatureModel.OcclusionHandling.MeltWalls:
+            case MiniatureModel.OcclusionHandling.MeltWalls: {
                 material = Resources.Load<Material>("Materials/MeltWalls");
                 var maskController = new GameObject("Mask Controller");
                 var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
                 controller.materials = new[] {material};
                 var cylinderMask = new GameObject("Cylinder Mask");
                 controller.cylinder1 = cylinderMask;
-                var moveController = cylinderMask.AddComponent<ObjectSceneMove>();
-                moveController.scale = true;
-                moveController.rotate = true;
-                moveController.layerMask = LayerMask.GetMask("WIM");
                 cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
                 removeDissolveScript();
                 break;
+            }
+            case MiniatureModel.OcclusionHandling.CutoutView: {
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                var maskController = new GameObject("Mask Controller");
+                var controller = maskController.AddComponent<Controller_Mask_Cone>();
+                controller.materials = new[] {material};
+                var spotlightObj = new GameObject("Spotlight Mask");
+                var spotlight = spotlightObj.AddComponent<Light>();
+                controller.spotLight1 = spotlight;
+                spotlight.type = LightType.Spot;
+                spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
+                removeDissolveScript();
+                break;
+            }
             case MiniatureModel.OcclusionHandling.None:
                 material = Resources.Load<Material>("Materials/Dissolve");
                 material.shader = Shader.Find("Shader Graphs/Dissolve");
@@ -61,6 +72,7 @@ public class MiniatureModelEditor : Editor {
 
     void cleanupOcclusionHandling() {
         DestroyImmediate(GameObject.Find("Cylinder Mask"));
+        DestroyImmediate(GameObject.Find("Spotlight Mask"));
         DestroyImmediate(GameObject.Find("Mask Controller"));
     }
 
@@ -96,6 +108,24 @@ public class MiniatureModelEditor : Editor {
         var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
         if(!cylinderTransform) return;
         cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
+    }
+
+    private void updateCutoutViewMask() {
+        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.CutoutView) return;
+        var spotlightObj = GameObject.Find("Spotlight Mask");
+        if(!spotlightObj) return;
+        var spotlight = spotlightObj.GetComponent<Light>();
+        spotlight.range = WIM.cutoutRange;
+        spotlight.spotAngle = WIM.cutoutAngle;
+
+        Color color;
+        if(WIM.showCutoutLight) {
+            color = WIM.cutoutLightColor;
+            color.a = 1;
+        } else {
+            color  = new Color(0,0,0,0);
+        }
+        spotlight.color = color;
     }
 
     private void generateWIM() {
