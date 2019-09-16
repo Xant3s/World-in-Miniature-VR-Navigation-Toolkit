@@ -83,7 +83,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public enum OcclusionHandling{None, Transparency, MeltWalls}
-    private enum Hand{NONE, HAND_L, HAND_R}
+    public enum Hand{NONE, HAND_L, HAND_R}
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -222,7 +222,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         removeDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
-        dissolveWIM(WIMLevel);
+        var dissolveFX = occlusionHandling == OcclusionHandling.None ||
+                         occlusionHandling == OcclusionHandling.Transparency;
+        if(dissolveFX)
+            dissolveWIM(WIMLevel);
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
@@ -247,8 +250,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
         transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
                              Vector3.up * spawnDistanceY;
-        resolveWIM(newWIMLevel);
-        Invoke("destroyOldWIMLevel", 1.1f);
+        if(dissolveFX) {
+            resolveWIM(newWIMLevel);
+            Invoke("destroyOldWIMLevel", 1.1f);
+        }
+        else {
+            destroyOldWIMLevel();
+        }
     }
 
     private void resolveWIM(Transform WIM) {
