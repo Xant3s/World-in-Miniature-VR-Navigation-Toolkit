@@ -222,15 +222,13 @@ public class MiniatureModelEditor : Editor {
             removeAllColliders(child);
             var childBoxCollider = child.gameObject.AddComponent<BoxCollider>();
             // 3. move collider to WIM root (consider scale and position)
+            // TODO: Is working, ProBuilder is causing the offset!!!
             var rootCollider = WIM.gameObject.AddComponent<BoxCollider>();
             rootCollider.center = child.localPosition;
-            //rootCollider.center = childBoxCollider.center;
             rootCollider.size = Vector3.zero;
             var bounds = rootCollider.bounds;
             bounds.Encapsulate(childBoxCollider.bounds);
             rootCollider.size = bounds.size / WIM.ScaleFactor;
-            //rootCollider.center = childBoxCollider.center;
-            //rootCollider.center += WIM.transform.position / WIM.ScaleFactor;
             removeAllColliders(child);
         }
         // 4. remove every collider that is fully inside another one.
