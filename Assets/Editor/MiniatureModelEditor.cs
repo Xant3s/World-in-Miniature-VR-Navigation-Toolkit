@@ -5,6 +5,7 @@ using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using System.Security.Cryptography;
 
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
@@ -44,22 +45,27 @@ public class MiniatureModelEditor : Editor {
             controller.invert = true;
 
             // Collider.
-            WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = false);
+            //WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = false);
+            removeAllColliders();
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.activeAreaBounds / WIM.ScaleFactor;
-            //var colliders = WIM.GetComponents<Collider>();
-            //for(var i = 0; i < colliders.Count() - 1; i++) {
-            //    colliders[i].enabled = false;
-            //}
 
             removeDissolveScript();
             DestroyImmediate(tmpGO);
             maskController.transform.position = WIM.transform.position;
         }
         else {
-            DestroyImmediate(WIM.GetComponents<Collider>().Last());
-            WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = true);
+            //DestroyImmediate(WIM.GetComponents<Collider>().Last());
+            //WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = true);
+            removeAllColliders();
+            // Todo: generate default colliders
             DestroyImmediate(GameObject.Find("Box Mask"));   
             addDissolveScript();
+        }
+    }
+
+    private void removeAllColliders() {
+        while(WIM.GetComponent<Collider>()) {
+            DestroyImmediate(WIM.GetComponent<Collider>());
         }
     }
 

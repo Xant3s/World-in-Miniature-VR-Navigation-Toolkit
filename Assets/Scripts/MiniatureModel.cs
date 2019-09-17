@@ -408,9 +408,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // Optional: Travel preview animation.
         if(travelPreviewAnimation) createTravelPreviewAnimation();
-
-        // Optional: Auto-scroll WIM.
-        //if(AllowWIMScrolling && AutoScroll) autoScrollWIM();
     }
 
     void autoScrollWIM() {
