@@ -5,7 +5,6 @@ using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
-using System.Security.Cryptography;
 
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
@@ -195,10 +194,9 @@ public class MiniatureModelEditor : Editor {
         var WIMLevel = Instantiate(levelTransform, WIM.transform);
         WIMLevel.localPosition = Vector3.zero;
         WIMLevel.name = "WIM Level";
-        for (var i = 0; i < WIMLevel.childCount; ++i)
-        {
+        for(var i = 0; i < WIMLevel.childCount; ++i) {
             var child = WIMLevel.GetChild(i);
-            while (child.GetComponent(typeof(Collider)))
+            while(child.GetComponent(typeof(Collider)))
                 DestroyImmediate(child.GetComponent(typeof(Collider)));
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));

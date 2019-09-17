@@ -5,9 +5,7 @@ using System.Linq;
 using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UIElements;
 
-[RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
 [RequireComponent(typeof(DistanceGrabbable))]
