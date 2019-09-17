@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
+using System.Security.Cryptography;
 
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
@@ -19,11 +21,60 @@ public class MiniatureModelEditor : Editor {
         updateOcclusionHandling();
         updateCylinderMask();
         updateCutoutViewMask();
+        updateScrollingMask();
+        updateScrolling();
+    }
+
+    void updateScrolling() {
+        if(WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return;
+        WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
+        var material = WIM.AllowWIMScrolling
+            ? Resources.Load<Material>("Materials/ScrollDissolve")
+            : Resources.Load<Material>("Materials/Dissolve");
+        setWIMMaterial(material);
+        if(WIM.AllowWIMScrolling) {
+            var maskController = new GameObject("Box Mask");
+            var controller = maskController.AddComponent<Controller_Mask_Box>();
+            controller.materials = new[] {material};
+            var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var mf = tmpGO.GetComponent<MeshFilter>();
+            var cubeMesh = Instantiate (mf.sharedMesh) as Mesh;
+            maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
+            maskController.AddComponent<AlignWith>().Target = WIM.transform;
+            controller.box1 = maskController;
+            controller.invert = true;
+
+            // Collider.
+            //WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = false);
+            removeAllColliders();
+            WIM.gameObject.AddComponent<BoxCollider>().size = WIM.activeAreaBounds / WIM.ScaleFactor;
+
+            removeDissolveScript();
+            DestroyImmediate(tmpGO);
+            maskController.transform.position = WIM.transform.position;
+        }
+        else {
+            //DestroyImmediate(WIM.GetComponents<Collider>().Last());
+            //WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = true);
+            removeAllColliders();
+            // Todo: generate default colliders
+            DestroyImmediate(GameObject.Find("Box Mask"));   
+            addDissolveScript();
+        }
+    }
+
+    private void removeAllColliders() {
+        while(WIM.GetComponent<Collider>()) {
+            DestroyImmediate(WIM.GetComponent<Collider>());
+        }
     }
 
     private void updateOcclusionHandling() {
         if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
         WIM.prevOcclusionHandling = WIM.occlusionHandling;
+        if(WIM.occlusionHandling != MiniatureModel.OcclusionHandling.None) {
+            WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
+        }
         Material material;
         cleanupOcclusionHandling();
         switch(WIM.occlusionHandling) {
@@ -74,6 +125,8 @@ public class MiniatureModelEditor : Editor {
         DestroyImmediate(GameObject.Find("Cylinder Mask"));
         DestroyImmediate(GameObject.Find("Spotlight Mask"));
         DestroyImmediate(GameObject.Find("Mask Controller"));
+        if(!WIM.AllowWIMScrolling)
+            DestroyImmediate(GameObject.Find("Box Mask")); 
     }
 
     private void setWIMMaterial(Material material) {
@@ -126,6 +179,13 @@ public class MiniatureModelEditor : Editor {
             color  = new Color(0,0,0,0);
         }
         spotlight.color = color;
+    }
+
+    private void updateScrollingMask() {
+        if(!WIM.AllowWIMScrolling) return;
+        var boxMaskObj = GameObject.Find("Box Mask");
+        if(!boxMaskObj) return;
+        boxMaskObj.transform.localScale = WIM.activeAreaBounds;
     }
 
     private void generateWIM() {

@@ -5,6 +5,7 @@ using System.Linq;
 using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
@@ -26,6 +27,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private OVRInput.RawButton confirmTeleportButton;
 
     [Separator("Occlusion Handling", true)]
+    [Tooltip("Select occlusion handling strategy. Disable for scrolling.")]
     public OcclusionHandling occlusionHandling;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.Transparency)]
     public float transparency = 0.33f;
@@ -79,9 +81,16 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [ConditionalField(nameof(AllowWIMScaling))][Tooltip("Ignore inter hand distance deltas below this threshold for scaling.")]
     public float interHandDistanceDeltaThreshold = .1f;
 
+    [Header("Allow Scrolling")]
+    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.None)]
+    [SerializeField] public bool AllowWIMScrolling = false;
+    [ConditionalField(nameof(AllowWIMScrolling))]
+    public Vector3 activeAreaBounds = new Vector3(10,10,10);
+    [ConditionalField(nameof(AllowWIMScrolling))]
+    public bool AutoScroll = true;
 
+    public bool PrevAllowWIMScrolling { get; set; } = true;
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
-    public float PrevMeltRadius { get; set; }
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public float ScaleFactor {
@@ -153,6 +162,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
         scaleWIM();
+        autoScrollWIM();
     }
 
     void scaleWIM() {
@@ -234,6 +244,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var WIMLevel = transform.GetChild(0);
         var dissolveFX = occlusionHandling == OcclusionHandling.None ||
                          occlusionHandling == OcclusionHandling.Transparency;
+        if(AllowWIMScrolling) dissolveFX = false;
         if(dissolveFX)
             dissolveWIM(WIMLevel);
 
@@ -397,6 +408,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // Optional: Travel preview animation.
         if(travelPreviewAnimation) createTravelPreviewAnimation();
+    }
+
+    void autoScrollWIM() {
+        if(!AllowWIMScrolling || !AutoScroll) return;
+        var scrollOffset = destinationIndicatorInWIM
+            ? -destinationIndicatorInWIM.localPosition
+            : -playerRepresentationTransform.localPosition;
+        WIMLevelTransform.localPosition = scrollOffset;
     }
 
     private void createTravelPreviewAnimation() {
