@@ -14,7 +14,8 @@ public class Test : MonoBehaviour {
     [ButtonMethod]
     private void generateColliders() {
         // Generate colliders:
-        // 1. Copy colliders from actual level (to determine which objects should have a collider) [alternatively don't delete them while generating the WIM]
+        // 1. Copy colliders from actual level (to determine which objects should have a collider)
+        // [alternatively don't delete them while generating the WIM]
         // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
         for(var i = 0; i < transform.childCount; i++) {
             var child = transform.GetChild(i);
@@ -23,11 +24,15 @@ public class Test : MonoBehaviour {
             removeAllColliders(child);
             var boxCollider = child.gameObject.AddComponent<BoxCollider>();
             // 3. move collider to WIM root (consider scale and position)
-            var boxColliderRoot = gameObject.AddComponent<BoxCollider>();
-            boxColliderRoot.center = child.localPosition;
-            //boxColliderRoot.size = new Vector3(boxCollider.size.x * child.localScale.x,
-            //    boxCollider.size.y * child.localScale.y,
-            //boxCollider.size.z* child.localScale.z);
+            //var boxColliderRoot = gameObject.AddComponent<BoxCollider>();
+            //boxColliderRoot.center = child.localPosition;
+            var rootCollider = gameObject.AddComponent<BoxCollider>();
+            rootCollider.center = child.localPosition;
+            rootCollider.size = Vector3.zero;
+            var bounds = rootCollider.bounds;
+            bounds.Encapsulate(boxCollider.bounds);
+            rootCollider.size = bounds.size;
+            removeAllColliders(child);
         }
         // 4. remove every collider that is fully inside another one.
         pruneColliders();
@@ -72,6 +77,13 @@ public class Test : MonoBehaviour {
         }
     }
 
+    [ButtonMethod]
+    private void clear() {
+        removeAllColliders(transform);
+        for(var i = 0; i < transform.childCount; i++) {
+            transform.GetChild(i).gameObject.AddComponent<MeshCollider>();
+        }
+    }
     private Vector3 getCorner(BoxCollider box, int id) {
         var extends = box.bounds.extents;
         var center = box.bounds.center;
@@ -104,41 +116,6 @@ public class Test : MonoBehaviour {
                 throw new Exception("Bad input.");
         }
     }
-
-    //[ButtonMethod]
-    //private void test() {
-    //    var child = transform.GetChild(0);
-    //    var childBound = child.GetComponent<BoxCollider>().bounds;
-    //    var boxCollider = gameObject.AddComponent<BoxCollider>();
-    //    boxCollider.size = new Vector3((childBound.size.x/child.localScale.x),(childBound.size.y/child.localScale.y),(childBound.size.z/child.localScale.z));
-    //    boxCollider.center = child.localPosition;
-    //}
-
-    //[ButtonMethod]
-    //private void test2() {
-    //    var bounds = CalculateRendererBounds(transform.GetChild(0).gameObject);
-    //    var boxCol = gameObject.AddComponent<BoxCollider>();
-    //    boxCol.center = bounds.center;
-    //    boxCol.size = bounds.size;
-    //}
-
-    //Calculates the renderer bounds of the gameobject with its children
-    //public static Bounds CalculateRendererBounds(GameObject obj) {
-    //    Quaternion prevRot = obj.transform.localRotation;
-     
-    //    obj.transform.localRotation = Quaternion.identity;
-     
-    //    Bounds bounds = new Bounds(obj.transform.position, Vector3.one);
-     
-    //    Renderer[] children = obj.GetComponentsInChildren<Renderer>();
-    //    foreach(Renderer child in children)
-    //        if (child != null)
-    //            bounds.Encapsulate(child.bounds);
-     
-    //    obj.transform.localRotation = prevRot;
-     
-    //    return bounds;
-    //}
 
     private void removeAllColliders(Transform t) {
         while(t.GetComponent<Collider>()) {
