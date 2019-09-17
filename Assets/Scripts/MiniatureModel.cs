@@ -14,7 +14,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
     [SerializeField] private GameObject destinationIndicator;
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
-    public Vector3 expandCollidersBy = Vector3.zero;
+    //public Vector3 expandCollidersBy = Vector3.zero;
+    [VectorLabels("Left", "Right")] public Vector2 expandCollidersX = Vector2.zero;
+    [VectorLabels("Up", "Down")] public Vector2 expandCollidersY = Vector2.zero;
+    [VectorLabels("Front", "Back")] public Vector2 expandCollidersZ = Vector2.zero;
     [Tooltip("If active, the destination will automatically set to ground level." +
              "This protects the player from being teleported to a location in mid-air.")]
     [SerializeField] private bool destinationAlwaysOnTheGround = true;

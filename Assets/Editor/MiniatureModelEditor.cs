@@ -264,8 +264,17 @@ public class MiniatureModelEditor : Editor {
 
     private void expandColliders() {
         foreach(var boxCollider in WIM.gameObject.GetComponents<BoxCollider>()) {
-            boxCollider.size += WIM.expandCollidersBy;
-            //boxCollider.center += Vector3.up * WIM.expandCollidersBy.y / 2.0f;
+            boxCollider.size += new Vector3(WIM.expandCollidersX.x + WIM.expandCollidersX.y, 0,0);
+            boxCollider.center += Vector3.left * WIM.expandCollidersX.x / 2.0f;
+            boxCollider.center += Vector3.right * WIM.expandCollidersX.y / 2.0f;
+
+            boxCollider.size += new Vector3(0, WIM.expandCollidersY.x + WIM.expandCollidersY.y,0);
+            boxCollider.center += Vector3.up * WIM.expandCollidersY.x / 2.0f;
+            boxCollider.center += Vector3.down * WIM.expandCollidersY.y / 2.0f;
+
+            boxCollider.size += new Vector3(0, 0,WIM.expandCollidersZ.x + WIM.expandCollidersZ.y);
+            boxCollider.center += Vector3.forward * WIM.expandCollidersZ.x / 2.0f;
+            boxCollider.center += Vector3.back * WIM.expandCollidersZ.y / 2.0f;
         }
     }
 
