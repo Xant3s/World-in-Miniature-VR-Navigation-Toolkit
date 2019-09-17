@@ -44,7 +44,6 @@ public class MiniatureModelEditor : Editor {
             controller.invert = true;
 
             // Collider.
-            //WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = false);
             removeAllColliders();
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.activeAreaBounds / WIM.ScaleFactor;
 
@@ -53,8 +52,6 @@ public class MiniatureModelEditor : Editor {
             maskController.transform.position = WIM.transform.position;
         }
         else {
-            //DestroyImmediate(WIM.GetComponents<Collider>().Last());
-            //WIM.GetComponents<Collider>().ToList().ForEach(col => col.enabled = true);
             removeAllColliders();
             // Todo: generate default colliders
             DestroyImmediate(GameObject.Find("Box Mask"));   
@@ -197,8 +194,6 @@ public class MiniatureModelEditor : Editor {
         WIMLevel.name = "WIM Level";
         for(var i = 0; i < WIMLevel.childCount; ++i) {
             var child = WIMLevel.GetChild(i);
-            //while(child.GetComponent(typeof(Collider)))
-            //    DestroyImmediate(child.GetComponent(typeof(Collider)));
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
             child.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/Dissolve");
