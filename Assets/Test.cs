@@ -17,8 +17,8 @@ public class Test : MonoBehaviour {
         // 1. Copy colliders from actual level (to determine which objects should have a collider)
         // [alternatively don't delete them while generating the WIM]
         // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
-        for(var i = 0; i < transform.childCount; i++) {
-            var child = transform.GetChild(i);
+        for(var i = 0; i < transform.GetChild(0).childCount; i++) {
+            var child = transform.GetChild(0).GetChild(i);
             var collider = child.GetComponent<Collider>();
             if(!collider)continue;
             removeAllColliders(child);

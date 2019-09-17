@@ -220,13 +220,18 @@ public class MiniatureModelEditor : Editor {
             var collider = child.GetComponent<Collider>();
             if(!collider) continue;
             removeAllColliders(child);
-            var boxCollider = child.gameObject.AddComponent<BoxCollider>();
+            var childBoxCollider = child.gameObject.AddComponent<BoxCollider>();
             // 3. move collider to WIM root (consider scale and position)
-            var boxColliderRoot = WIM.gameObject.AddComponent<BoxCollider>();
-            boxColliderRoot.center = child.localPosition;
-            //boxColliderRoot.size = new Vector3(boxCollider.size.x * child.localScale.x,
-            //    boxCollider.size.y * child.localScale.y,
-            //boxCollider.size.z* child.localScale.z);
+            var rootCollider = WIM.gameObject.AddComponent<BoxCollider>();
+            rootCollider.center = child.localPosition;
+            //rootCollider.center = childBoxCollider.center;
+            rootCollider.size = Vector3.zero;
+            var bounds = rootCollider.bounds;
+            bounds.Encapsulate(childBoxCollider.bounds);
+            rootCollider.size = bounds.size / WIM.ScaleFactor;
+            //rootCollider.center = childBoxCollider.center;
+            //rootCollider.center += WIM.transform.position / WIM.ScaleFactor;
+            removeAllColliders(child);
         }
         // 4. remove every collider that is fully inside another one.
         //pruneColliders();
