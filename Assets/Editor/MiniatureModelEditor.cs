@@ -52,10 +52,8 @@ public class MiniatureModelEditor : Editor {
             maskController.transform.position = WIM.transform.position;
         }
         else {
-            removeAllColliders();
-            // Todo: generate default colliders
             DestroyImmediate(GameObject.Find("Box Mask"));   
-            addDissolveScript();
+            generateWIM();
         }
     }
 
