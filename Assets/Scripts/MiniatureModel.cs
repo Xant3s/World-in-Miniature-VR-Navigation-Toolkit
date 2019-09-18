@@ -5,6 +5,7 @@ using System.Linq;
 using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
@@ -559,8 +560,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
             var renderer = child.GetComponent<Renderer>();
-            if(renderer)
+            if(renderer) {
                 renderer.material = Resources.Load<Material>("Materials/Dissolve");
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+            }
             child.gameObject.AddComponent<Dissolve>();
             child.gameObject.isStatic = false;
         }
