@@ -26,7 +26,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
 
     private void initLineRenderer() {
         lr.widthMultiplier = .001f;
-        lr.material = Resources.Load<Material>("Materials/Blue");
+        lr.material = Resources.Load<Material>("Materials/SemiTransparent");
     }
 
     private void initAnimatedPlayerRepresentation() {
