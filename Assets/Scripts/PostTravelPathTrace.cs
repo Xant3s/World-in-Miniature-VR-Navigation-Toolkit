@@ -26,17 +26,18 @@ public class PostTravelPathTrace : MonoBehaviour {
         lr.material = new Material(Shader.Find("Sprites/Default"));
         var gradient = new Gradient();
         gradient.SetKeys(
-            new GradientColorKey[] {new GradientColorKey(Color.green, 0), new GradientColorKey(Color.green, 1.0f)},
-            new GradientAlphaKey[] {new GradientAlphaKey(0, 0), new GradientAlphaKey(1, 1)}
+            new[] {new GradientColorKey(Color.white, 0), new GradientColorKey(Color.white, 1.0f)},
+            new[] {new GradientAlphaKey(0, 0), new GradientAlphaKey(1, 1)}
         );
         lr.colorGradient = gradient;
+        lr.material = Resources.Load<Material>("Materials/SemiTransparent");
         endTime = Time.time + TraceDurationInSeconds;
     }
 
     void Update() {
         if(!WIMLevelTransform) Destroy(gameObject);
 
-        if (Time.time >= endTime) {
+        if(Time.time >= endTime) {
             Destroy(gameObject);
         }
 
