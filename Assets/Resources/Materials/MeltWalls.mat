@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: MeltWalls
   m_Shader: {fileID: 4800000, guid: e8e4d5175b39e6f4dbbbc1907cf4276a, type: 3}
-  m_ShaderKeywords: _DISSOLVEALPHASOURCE_CUSTOM_MAP _DISSOLVEMASK_BOX _RECEIVE_SHADOWS_OFF
+  m_ShaderKeywords: _DISSOLVEALPHASOURCE_CUSTOM_MAP _DISSOLVEMASK_CYLINDER _RECEIVE_SHADOWS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -96,7 +96,7 @@ Material:
     - _DissolveMap3Channel: 3
     - _DissolveMap3Intensity: 1
     - _DissolveMappingType: 0
-    - _DissolveMask: 4
+    - _DissolveMask: 5
     - _DissolveMaskAxis: 0
     - _DissolveMaskCount: 0
     - _DissolveMaskInvert: -1

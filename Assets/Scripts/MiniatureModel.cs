@@ -477,8 +477,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.gray;
-        previewScreen.GetComponent<Renderer>().material = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-        previewScreenMaterial = previewScreen.GetComponent<Renderer>().material;
+        previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit"));
+        previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
         previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
     }
 
@@ -487,6 +487,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var cam = destinationIndicatorInLevel.GetChild(1).gameObject.GetComponent<Camera>();
         Destroy(cam.targetTexture);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
+        if(!previewScreenMaterial) {
+            Debug.LogError("Preview screen material is null");
+            previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit"));
+            GameObject.FindWithTag("PreviewScreen").GetComponent<Renderer>().material = previewScreenMaterial;
+        }
         previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
     }
 
