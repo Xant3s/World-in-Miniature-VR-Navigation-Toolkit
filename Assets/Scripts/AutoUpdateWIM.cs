@@ -28,7 +28,7 @@ public class AutoUpdateWIM : MonoBehaviour {
 #if UNITY_EDITOR
     void Update() {
         var somethingChanged = getIsChanged();
-        if(!somethingChanged || alreadyUpdatedThisFrame) return;
+        if(!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.AutoGenerateWIM) return;
         updateValues();
         triggerWIMUpdate();
     }
