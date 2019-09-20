@@ -97,6 +97,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public Vector3 activeAreaBounds = new Vector3(10,10,10);
     [ConditionalField(nameof(AllowWIMScrolling))]
     public bool AutoScroll = false;
+    [ConditionalField(nameof(AutoScroll), false, false)]
+    public float ScrollSpeed = 1;
 
     public bool AutoGenerateWIM { get; set; } = false;
     public bool PrevAllowWIMScrolling { get; set; } = true;
@@ -203,7 +205,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
         scaleWIM();
-        autoScrollWIM();
+        if(AutoScroll) autoScrollWIM();
+        else scrollWIM();
     }
 
     void scaleWIM() {
@@ -238,6 +241,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             ScaleFactor -= ScaleStep;
         }
         prevInterHandDistance = currInterHandDistance;
+    }
+
+    private void scrollWIM() {
+        var input = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
+        var direction = new Vector3(input.x, 0, input.y);
+        WIMLevelTransform.Translate(-direction * ScrollSpeed * Time.deltaTime, Space.World);
     }
 
     private OVRInput.RawButton getGrabButton(Hand hand) {
@@ -684,6 +693,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         foreach(Transform child in WIMLevel) {
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
+            DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
             var renderer = child.GetComponent<Renderer>();
             if(renderer) {
                 renderer.material = Resources.Load<Material>("Materials/Dissolve");
