@@ -545,8 +545,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        playerRepresentationTransform.position = ConvertToWIMSpace(Camera.main.transform.position);
-        //playerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y /2.0f * ScaleFactor;
+        playerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
+        playerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y * ScaleFactor;
 
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
