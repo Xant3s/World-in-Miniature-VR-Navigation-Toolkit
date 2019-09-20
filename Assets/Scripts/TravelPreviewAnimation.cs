@@ -13,6 +13,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
     private Transform animatedPlayerRepresentation;
     private float animationProgress;
     private float startAnimationProgress;
+    private float endAnimationProgress;
 
 
     private void Awake() {
@@ -59,7 +60,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
         }
         else if (animationProgress >= 1) {
             // Reached destination. End animation: align with destination indicator.
-            resetAnimation();
+            doEndAnimation();
         }
         else {
             // In between: walk towards destination indicator.
@@ -86,6 +87,23 @@ public class TravelPreviewAnimation : MonoBehaviour {
         updatePosition();
     }
 
+    private void doEndAnimation() {
+        var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
+        var playerPosInLevelSpace = Converter.ConvertToLevelSpace(PlayerRepresentationInWIM.position);
+        var rotationInLevelSpace = Quaternion.LookRotation(destinationInLevelSpace - playerPosInLevelSpace, Vector3.up);
+        var desiredRotation = WIMLevelTransform.rotation * rotationInLevelSpace;
+        if (endAnimationProgress >= 1) {
+            resetAnimation();
+            return;
+        }
+
+        var step = AnimationSpeed * 4.0f * Time.deltaTime;
+        endAnimationProgress += step;
+        animatedPlayerRepresentation.rotation =
+            Quaternion.Lerp(desiredRotation, DestinationInWIM.rotation, endAnimationProgress);
+        updatePosition();
+    }
+
     private void updatePosition() {
         var dir = DestinationInWIM.position - PlayerRepresentationInWIM.position;
         animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position + dir * animationProgress;
@@ -108,5 +126,6 @@ public class TravelPreviewAnimation : MonoBehaviour {
         animatedPlayerRepresentation.rotation = PlayerRepresentationInWIM.rotation;
         animationProgress = 0;
         startAnimationProgress = 0;
+        endAnimationProgress = 0;
     }
 }
