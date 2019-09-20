@@ -10,6 +10,7 @@ public class PickupDestinationSelection : MonoBehaviour {
     private bool thumbIsGrabbing;
     private bool indexIsGrabbing;
     private bool isGrabbing;
+    private bool stoppedGrabbing;
 
 
     void Awake() {
@@ -31,12 +32,15 @@ public class PickupDestinationSelection : MonoBehaviour {
         var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
         if(rightHandPinch && !isGrabbing) {
             isGrabbing = true;
+            stoppedGrabbing = false;
             startGrabbing();
         } else if(isGrabbing && !rightHandPinch) {
             isGrabbing = false;
         }
         if(!isGrabbing && (OVRInput.GetUp(OVRInput.RawButton.A) || OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger))) {
+            if(stoppedGrabbing) return;
             stopGrabbing();
+            stoppedGrabbing = true;
         }
     }
 
@@ -67,19 +71,15 @@ public class PickupDestinationSelection : MonoBehaviour {
         WIM.removeDestinationIndicators();
 
         // Spawn new destination indicator.
-        // TODO: destination indicator in WIM is responsible for updating its counterpart in the level?
         WIM.SpawnDestinationIndicatorInWIM();
 
         // Actually pick up the new destination indicator.
         WIM.DestinationIndicatorInWIM.parent = index;
 
         // TODO: make destination indicator in WIM grabbable, so it can be changed without creating a new one.
-
-        // TODO: cleanup preview animation stuff.
     }
 
     void stopGrabbing() {
-        Debug.Log("Stop grabbing");
         var WIMTransform = transform.root;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
 
