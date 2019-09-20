@@ -353,7 +353,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Travel.
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
         WIMHeightRelativeToPlayer = transform.position.y - OVRPlayerController.position.y;  // Maintain height relative to player.
-        OVRPlayerController.position = new Vector3(destinationIndicatorInLevel.position.x, OVRPlayerController.position.y, destinationIndicatorInLevel.position.z);
+        var playerHeight = OVRPlayerController.position.y - getGroundPosition(OVRPlayerController.position).y;
+        OVRPlayerController.position = getGroundPosition(destinationIndicatorInLevel.position) + Vector3.up * playerHeight;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
