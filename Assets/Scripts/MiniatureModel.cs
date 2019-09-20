@@ -167,6 +167,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private float WIMHeightRelativeToPlayer;
     private bool isNewDestination = false;
     private Transform destinationIndicatorInWIM;
+    private bool previewScreenEnabled;
 
 
     void Awake() {
@@ -206,7 +207,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             checkConfirmTeleport();
         }
         updatePlayerRepresentationInWIM();
-        updatePreviewScreen();
+        if(previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
         if(AutoScroll) autoScrollWIM();
         else scrollWIM();
@@ -613,6 +614,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
 
         InitPreviewScreen(previewScreen);
+        previewScreenEnabled = true;
     }
 
     public void InitPreviewScreen(GameObject previewScreen) {
@@ -640,6 +642,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public void RemovePreviewScreen() {
+        previewScreenEnabled = false;
         var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
         if(!previewScreen) return;
         previewScreen.transform.parent = null;
