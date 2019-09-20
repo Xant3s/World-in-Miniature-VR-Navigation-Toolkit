@@ -32,6 +32,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
     [SerializeField] private OVRInput.RawButton confirmTeleportButton = OVRInput.RawButton.B;
 
+
     [Separator("Occlusion Handling", true)]
     [Tooltip("Select occlusion handling strategy. Disable for scrolling.")]
     public OcclusionHandling occlusionHandling;
@@ -458,6 +459,16 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
                                                  ScaleFactor;
         }
 
+        // Set orientation.
+        if(destinationSelectionMethod == DestinationSelection.Pickup && destinationAlwaysOnTheGround) {
+            var forwardPos = DestinationIndicatorInWIM.position + DestinationIndicatorInWIM.forward;
+            forwardPos.y = DestinationIndicatorInWIM.position.y;
+            var forwardWIM = forwardPos - DestinationIndicatorInWIM.position;
+            var rotationInWIM = Quaternion.LookRotation(forwardWIM, WIMLevelTransform.up);
+            DestinationIndicatorInWIM.rotation = rotationInWIM;
+            DestinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * rotationInWIM;
+        }
+
         return DestinationIndicatorInLevel;
     }
 
@@ -487,7 +498,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void createTravelPreviewAnimation() {
-        Debug.Log("NEW");
         travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
         var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
         travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
