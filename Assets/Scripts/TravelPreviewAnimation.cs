@@ -55,7 +55,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
     private void updateAnimatedPlayerRepresentation() {
         if (animationProgress == 0) {
             // Start animation: Turn towards destination.
-            startAnimation();
+            doStartAnimation();
         }
         else if (animationProgress >= 1) {
             // Reached destination. End animation: align with destination indicator.
@@ -69,7 +69,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
         }
     }
 
-    private void startAnimation() {
+    private void doStartAnimation() {
         var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
         var playerPosInLevelSpace = Converter.ConvertToLevelSpace(animatedPlayerRepresentation.position);
         var rotationInLevelSpace = Quaternion.LookRotation(destinationInLevelSpace - playerPosInLevelSpace, Vector3.up);
@@ -79,7 +79,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
             return;
         }
 
-        var step = AnimationSpeed * Time.deltaTime;
+        var step = AnimationSpeed * 4.0f * Time.deltaTime;
         startAnimationProgress += step;
         animatedPlayerRepresentation.rotation =
             Quaternion.Lerp(PlayerRepresentationInWIM.rotation, desiredRotation, startAnimationProgress);
@@ -105,6 +105,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
 
     private void resetAnimation() {
         animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position;
+        animatedPlayerRepresentation.rotation = PlayerRepresentationInWIM.rotation;
         animationProgress = 0;
         startAnimationProgress = 0;
     }
