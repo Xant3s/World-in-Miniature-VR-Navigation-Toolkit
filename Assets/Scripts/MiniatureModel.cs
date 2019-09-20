@@ -24,9 +24,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     [Separator("Input", true)]
     [SerializeField] private OVRInput.RawButton showWIMButton;
-    [SerializeField] private OVRInput.RawButton destinationSelectButton;
-    [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick;
-    [SerializeField] private OVRInput.RawButton confirmTeleportButton;
+    [SerializeField] public DestinationSelection destinationSelectionMethod;
+    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
+    [SerializeField] private OVRInput.RawButton destinationSelectButton = OVRInput.RawButton.A;
+    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
+    [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick = OVRInput.RawAxis2D.RThumbstick;
+    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
+    [SerializeField] private OVRInput.RawButton confirmTeleportButton = OVRInput.RawButton.B;
 
     [Separator("Occlusion Handling", true)]
     [Tooltip("Select occlusion handling strategy. Disable for scrolling.")]
@@ -106,6 +110,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public enum OcclusionHandling{None, Transparency, MeltWalls, CutoutView}
     public enum Hand{NONE, HAND_L, HAND_R}
+    public enum DestinationSelection {Selection, Pickup}
 
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -128,6 +133,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Hand scalingHand = Hand.NONE;
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
+    private bool isNewDestination;
 
 
 
@@ -154,14 +160,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
+        if (destinationSelectionMethod == DestinationSelection.Pickup)
+            playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>();
         respawnWIM(false);
     }
 
     void Update() {
         detectArmLength();
         checkSpawnWIM();
-        selectDestination();
-        selectDestinationRotation();
+        if (destinationSelectionMethod == DestinationSelection.Selection) {
+            selectDestination();
+            selectDestinationRotation();
+        }
+        checkNewDestination();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
@@ -428,11 +439,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Rotate destination indicator in level.
         updateDestinationRotationInLevel();
 
+        // New destination.
+        isNewDestination = true;
+    }
+
+    void checkNewDestination() {
+        if (!isNewDestination) return;
+        isNewDestination = false;
+
         // Optional: show preview screen.
-        if(previewScreen) showPreviewScreen();
+        if (previewScreen) showPreviewScreen();
 
         // Optional: Travel preview animation.
-        if(travelPreviewAnimation) createTravelPreviewAnimation();
+        if (travelPreviewAnimation) createTravelPreviewAnimation();
     }
 
     void autoScrollWIM() {
