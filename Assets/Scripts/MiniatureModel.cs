@@ -121,9 +121,25 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    public Transform DestinationIndicatorInWIM { get; set; }
+    public Transform DestinationIndicatorInWIM {
+        get => destinationIndicatorInWIM;
+        set {
+            Destroy(destinationIndicatorInWIM);
+            destinationIndicatorInWIM = value;
+        }
+    }
+
     public Transform DestinationIndicatorInLevel { get; set; }
 
+    private GameObject TravelPreviewAnimationObj {
+        get => travelPreviewAnimationObj;
+        set {
+            Destroy(travelPreviewAnimationObj);
+            travelPreviewAnimationObj = value;
+        }
+    }
+
+    private GameObject travelPreviewAnimationObj;
     private Transform levelTransform;
     private Transform WIMLevelTransform;
     private Transform playerRepresentationTransform;
@@ -132,7 +148,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Transform fingertipIndexR;
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
-    private GameObject travelPreviewAnimationObj;
     private PostTravelPathTrace pathTrace;
     private OVRGrabbable grabbable;
     private float prevInterHandDistance;
@@ -144,6 +159,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
     private bool isNewDestination = false;
+    private Transform destinationIndicatorInWIM;
 
 
     void Awake() {
@@ -494,8 +510,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void createTravelPreviewAnimation() {
-        travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
-        var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
+        TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
+        var travelPreview = TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
         travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
         travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
         travelPreview.DestinationIndicator = destinationIndicator;
@@ -535,17 +551,17 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (!DestinationIndicatorInWIM) return;
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        DestroyImmediate(travelPreviewAnimationObj);
+        DestroyImmediate(TravelPreviewAnimationObj);
         DestroyImmediate(DestinationIndicatorInWIM.gameObject);
         if(DestinationIndicatorInLevel)
             DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 
-    public void PickupDestinationIndicator() {
+    public void RemoveDestionantionIndicatorsExceptWIM() {
         if (!DestinationIndicatorInWIM) return;
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        DestroyImmediate(travelPreviewAnimationObj);
+        DestroyImmediate(TravelPreviewAnimationObj);
         if(DestinationIndicatorInLevel) DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 

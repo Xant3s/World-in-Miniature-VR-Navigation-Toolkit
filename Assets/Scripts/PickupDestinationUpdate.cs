@@ -69,11 +69,8 @@ public class PickupDestinationUpdate : MonoBehaviour {
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         Assert.IsNotNull(WIM);
 
-        // Remove existing destination indicator.
-        WIM.PickupDestinationIndicator();
-
-        // Spawn new destination indicator.
-        //WIM.SpawnDestinationIndicatorInWIM();
+        // Remove existing destination indicator (except "this").
+        WIM.RemoveDestionantionIndicatorsExceptWIM();
 
         // Actually pick up the new destination indicator.
         WIM.DestinationIndicatorInWIM.parent = index;
