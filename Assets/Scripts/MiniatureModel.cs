@@ -112,14 +112,20 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public enum Hand{NONE, HAND_L, HAND_R}
     public enum DestinationSelection {Selection, Pickup}
 
+    public bool IsNewDestination {
+        get => isNewDestination;
+        set => onNewDestination();
+    }
+
+    public Transform DestinationIndicatorInWIM { get; set; }
+    public Transform DestinationIndicatorInLevel { get; set; }
+
     private Transform levelTransform;
     private Transform WIMLevelTransform;
     private Transform playerRepresentationTransform;
     private Transform playerTransform;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
-    private Transform destinationIndicatorInWIM;
-    private Transform destinationIndicatorInLevel;
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
     private GameObject travelPreviewAnimationObj;
@@ -133,8 +139,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Hand scalingHand = Hand.NONE;
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
-    private bool isNewDestination;
-
+    private bool isNewDestination = false;
 
 
     void Awake() {
@@ -172,7 +177,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             selectDestination();
             selectDestinationRotation();
         }
-        checkNewDestination();
+        onNewDestination();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
@@ -356,7 +361,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(confirmTeleportButton)) return;
-        if (!destinationIndicatorInLevel) return;
+        if (!DestinationIndicatorInLevel) return;
         // Optional: post travel path trace
         if(postTravelPathTrace)
             createPostTravelPathTrace();
@@ -365,8 +370,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
         WIMHeightRelativeToPlayer = transform.position.y - OVRPlayerController.position.y;  // Maintain height relative to player.
         var playerHeight = OVRPlayerController.position.y - getGroundPosition(OVRPlayerController.position).y;
-        OVRPlayerController.position = getGroundPosition(destinationIndicatorInLevel.position) + Vector3.up * playerHeight;
-        OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
+        OVRPlayerController.position = getGroundPosition(DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
+        OVRPlayerController.rotation = DestinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
 
@@ -385,7 +390,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
         pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
         pathTrace.newPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
-        pathTrace.newPositionInWIM.position = destinationIndicatorInWIM.position;
+        pathTrace.newPositionInWIM.position = DestinationIndicatorInWIM.position;
         pathTrace.newPositionInWIM.name = "PathTraceNewPosition";
         Destroy(emptyGO);
     }
@@ -419,46 +424,46 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
-        var currForward = getGroundPosition(destinationIndicatorInWIM.position + destinationIndicatorInWIM.forward)
-                          - getGroundPosition(destinationIndicatorInWIM.position);
+        var currForward = getGroundPosition(DestinationIndicatorInWIM.position + DestinationIndicatorInWIM.forward)
+                          - getGroundPosition(DestinationIndicatorInWIM.position);
         // Get signed angle between current forward vector and desired forward vector (pointing direction).
         var angle = Vector3.SignedAngle(currForward, fingertipForward, WIMLevelTransform.up);
         // Rotate to align with pointing direction.
-        destinationIndicatorInWIM.Rotate(Vector3.up, angle);
+        DestinationIndicatorInWIM.Rotate(Vector3.up, angle);
 
         // Rotate destination indicator in level.
         updateDestinationRotationInLevel();
 
         // New destination.
-        isNewDestination = true;
+        IsNewDestination = true;
     }
 
     public Transform SpawnDestinationIndicatorInLevel() {
-        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
-        destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
-        destinationIndicatorInLevel.position = levelPosition;
+        var levelPosition = ConvertToLevelSpace(DestinationIndicatorInWIM.position);
+        DestinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
+        DestinationIndicatorInLevel.position = levelPosition;
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if(destinationAlwaysOnTheGround) {
-            destinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
+            DestinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
                                                    new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
+            DestinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
                                                  + WIMLevelTransform.up * destinationIndicator.transform.localScale.y *
                                                  ScaleFactor;
         }
 
-        return destinationIndicatorInLevel;
+        return DestinationIndicatorInLevel;
     }
 
     public Transform SpawnDestinationIndicatorInWIM() {
-        destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
-        destinationIndicatorInWIM.position = fingertipIndexR.position;
-        return destinationIndicatorInWIM;
+        DestinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+        DestinationIndicatorInWIM.position = fingertipIndexR.position;
+        return DestinationIndicatorInWIM;
     }
 
-    void checkNewDestination() {
-        if (!isNewDestination) return;
-        isNewDestination = false;
+    void onNewDestination() {
+        if (!IsNewDestination) return;
+        IsNewDestination = false;
 
         // Optional: show preview screen.
         if (previewScreen) showPreviewScreen();
@@ -469,8 +474,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     void autoScrollWIM() {
         if(!AllowWIMScrolling || !AutoScroll) return;
-        var scrollOffset = destinationIndicatorInWIM
-            ? -destinationIndicatorInWIM.localPosition
+        var scrollOffset = DestinationIndicatorInWIM
+            ? -DestinationIndicatorInWIM.localPosition
             : -playerRepresentationTransform.localPosition;
         WIMLevelTransform.localPosition = scrollOffset;
     }
@@ -478,7 +483,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void createTravelPreviewAnimation() {
         travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
         var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
-        travelPreview.DestinationInWIM = destinationIndicatorInWIM;
+        travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
         travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
         travelPreview.DestinationIndicator = destinationIndicator;
         travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
@@ -488,7 +493,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void selectDestinationRotation() {
         // Only if there is a destination indicator in the WIM.
-        if(!destinationIndicatorInWIM) return;
+        if(!DestinationIndicatorInWIM) return;
 
         // Poll thumbstick input.
         var inputRotation = OVRInput.Get(destinationRotationThumbstick);
@@ -498,7 +503,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // Rotate destination indicator in WIM via thumbstick.
         var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
-        destinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
+        DestinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
 
         // Update destination indicator rotation in level.
         updateDestinationRotationInLevel();
@@ -509,24 +514,25 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     /// Rotation should match destination indicator rotation in WIM.
     /// </summary>
     private void updateDestinationRotationInLevel() {
-        destinationIndicatorInLevel.rotation =
-            Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
+        DestinationIndicatorInLevel.rotation =
+            Quaternion.Inverse(WIMLevelTransform.rotation) * DestinationIndicatorInWIM.rotation;
     }
 
     public void removeDestinationIndicators() {
-        if (!destinationIndicatorInWIM) return;
+        if (!DestinationIndicatorInWIM) return;
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         DestroyImmediate(travelPreviewAnimationObj);
-        DestroyImmediate(destinationIndicatorInWIM.gameObject);
-        DestroyImmediate(destinationIndicatorInLevel.gameObject);
+        DestroyImmediate(DestinationIndicatorInWIM.gameObject);
+        if(DestinationIndicatorInLevel)
+            DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 
     private void showPreviewScreen() {
         removePreviewScreen();
         var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
         previewScreen.GetComponent<FloatAbove>().Target = transform;
-        var camObj = destinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
+        var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
         var cam = camObj.gameObject.AddComponent<Camera>();
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         cam.clearFlags = CameraClearFlags.SolidColor;
@@ -537,8 +543,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void updatePreviewScreen() {
-        if (!previewScreen || !destinationIndicatorInLevel) return;
-        var cam = destinationIndicatorInLevel.GetChild(1).gameObject.GetComponent<Camera>();
+        if (!previewScreen || !DestinationIndicatorInLevel) return;
+        var cam = DestinationIndicatorInLevel.GetChild(1).gameObject.GetComponent<Camera>();
         Destroy(cam.targetTexture);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         if(!previewScreenMaterial) {
