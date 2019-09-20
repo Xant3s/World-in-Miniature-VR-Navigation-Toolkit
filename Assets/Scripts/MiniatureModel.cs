@@ -160,7 +160,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
-        if (destinationSelectionMethod == DestinationSelection.Pickup)
+        if(destinationSelectionMethod == DestinationSelection.Pickup)
             playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>();
         respawnWIM(false);
     }
@@ -406,20 +406,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         removeDestinationIndicators();
 
         // Show destination in WIM.
-        destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
-        destinationIndicatorInWIM.position = fingertipIndexR.position;
+        SpawnDestinationIndicatorInWIM();
 
         // Show destination in level.
-        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
-        destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
-        destinationIndicatorInLevel.position = levelPosition;
-
-        // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
-        if (destinationAlwaysOnTheGround) {
-            destinationIndicatorInLevel.position = getGroundPosition(levelPosition) + new Vector3(0, destinationIndicator.transform.localScale.y, 0);
-            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition)) 
-                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y * ScaleFactor;
-        }
+        SpawnDestinationIndicatorInLevel();
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
@@ -441,6 +431,29 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // New destination.
         isNewDestination = true;
+    }
+
+    public Transform SpawnDestinationIndicatorInLevel() {
+        var levelPosition = ConvertToLevelSpace(destinationIndicatorInWIM.position);
+        destinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
+        destinationIndicatorInLevel.position = levelPosition;
+
+        // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
+        if(destinationAlwaysOnTheGround) {
+            destinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
+                                                   new Vector3(0, destinationIndicator.transform.localScale.y, 0);
+            destinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
+                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y *
+                                                 ScaleFactor;
+        }
+
+        return destinationIndicatorInLevel;
+    }
+
+    public Transform SpawnDestinationIndicatorInWIM() {
+        destinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+        destinationIndicatorInWIM.position = fingertipIndexR.position;
+        return destinationIndicatorInWIM;
     }
 
     void checkNewDestination() {
@@ -500,7 +513,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             Quaternion.Inverse(WIMLevelTransform.rotation) * destinationIndicatorInWIM.rotation;
     }
 
-    private void removeDestinationIndicators() {
+    public void removeDestinationIndicators() {
         if (!destinationIndicatorInWIM) return;
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
