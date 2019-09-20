@@ -96,7 +96,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [ConditionalField(nameof(AllowWIMScrolling))]
     public Vector3 activeAreaBounds = new Vector3(10,10,10);
     [ConditionalField(nameof(AllowWIMScrolling))]
-    public bool AutoScroll = true;
+    public bool AutoScroll = false;
 
     public bool AutoGenerateWIM { get; set; } = false;
     public bool PrevAllowWIMScrolling { get; set; } = true;
@@ -566,8 +566,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         //    DestroyImmediate(DestinationIndicatorInLevel.gameObject);
 
         // Destroy uses another thread, so make sure they are not copied by removing from parent.
-        TravelPreviewAnimationObj.transform.parent = null;
-        Destroy(TravelPreviewAnimationObj);
+        if(TravelPreviewAnimationObj) {
+            TravelPreviewAnimationObj.transform.parent = null;
+            Destroy(TravelPreviewAnimationObj);
+        }
         DestinationIndicatorInWIM.parent = null;
         Destroy(DestinationIndicatorInWIM.gameObject);
         if(!DestinationIndicatorInLevel) return;
