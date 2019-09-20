@@ -249,8 +249,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var dissolveFX = occlusionHandling == OcclusionHandling.None ||
                          occlusionHandling == OcclusionHandling.Transparency;
         if(AllowWIMScrolling) dissolveFX = false;
-        if(dissolveFX)
-            dissolveWIM(WIMLevel);
+        if(dissolveFX && !maintainTransformRelativeToPlayer) dissolveWIM(WIMLevel);
+        if(maintainTransformRelativeToPlayer) instantDissolveWIM(WIMLevel);
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
@@ -323,11 +323,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private static void dissolveWIM(Transform WIM) {
-        for (var i = 0; i < WIM.childCount; i++) {
-            var d = WIM.GetChild(i).GetComponent<Dissolve>();
-            if (d == null) continue;
+        foreach (Transform child in WIM) {
+            var d = child.GetComponent<Dissolve>();
+            if (!d) return;
             d.durationInSeconds = 1f;
             d.Play();
+        }
+    }
+
+    private static void instantDissolveWIM(Transform WIM) {
+        foreach (Transform child in WIM) {
+            var d = child.GetComponent<Dissolve>();
+            if (!d) return;
+            d.SetProgress(1);
         }
     }
 
@@ -345,7 +353,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Travel.
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
         WIMHeightRelativeToPlayer = transform.position.y - OVRPlayerController.position.y;  // Maintain height relative to player.
-        //OVRPlayerController.position = destinationIndicatorInLevel.position;
         OVRPlayerController.position = new Vector3(destinationIndicatorInLevel.position.x, OVRPlayerController.position.y, destinationIndicatorInLevel.position.z);
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
 

@@ -37,4 +37,8 @@ public class Dissolve : MonoBehaviour {
         isInverse = true;
         endTime = Time.realtimeSinceStartup + durationInSeconds;
     }
+
+    public void SetProgress(float progress) {
+        mat.SetFloat("Vector1_461A9E8C", progress);
+    }
 }
