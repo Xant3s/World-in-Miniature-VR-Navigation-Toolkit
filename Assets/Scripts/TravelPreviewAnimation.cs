@@ -33,6 +33,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
 
     private void initAnimatedPlayerRepresentation() {
         animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIMLevelTransform).transform;
+        animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
         animatedPlayerRepresentation.name = "Animated Player Travel Representation";
         animatedPlayerRepresentation.gameObject.AddComponent<Rigidbody>().useGravity = false;
         animatedPlayerRepresentation.GetComponent<Renderer>().material =
@@ -40,7 +41,8 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     void OnDestroy() {
-        DestroyImmediate(animatedPlayerRepresentation.gameObject);
+        animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
+        Destroy(animatedPlayerRepresentation.gameObject);
     }
 
     void Update() {

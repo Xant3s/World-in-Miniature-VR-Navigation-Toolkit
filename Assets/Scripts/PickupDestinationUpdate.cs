@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 public class PickupDestinationUpdate : MonoBehaviour {
+    public float DoubleTapInterval { get; set; } = 2;
+
     private bool pickupMode = false;
     private Transform thumb;
     private Transform index;
@@ -11,6 +13,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
     private bool indexIsGrabbing;
     private bool isGrabbing;
     private bool stoppedGrabbing;
+    private bool firstTap = false;
 
 
     void Awake() {
@@ -49,14 +52,26 @@ public class PickupDestinationUpdate : MonoBehaviour {
             stopGrabbing();
             stoppedGrabbing = true;
         }
+
+        // Detect destination confirmation (double tap).
+
     }
 
     void OnTriggerEnter(Collider other) {
+        var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+
         if(other.transform == thumb) {
             thumbIsGrabbing = true;
         }
         else if(other.transform == index) {
             indexIsGrabbing = true;
+            if(firstTap) {
+                WIM.ConfirmTeleport();
+            }
+            else {
+                firstTap = true;
+                Invoke("resetDoubleTap", DoubleTapInterval);
+            }
         }
     }
 
@@ -93,5 +108,9 @@ public class PickupDestinationUpdate : MonoBehaviour {
 
         // New destination
         WIM.IsNewDestination = true;
+    }
+
+    private void resetDoubleTap() {
+        firstTap = false;
     }
 }

@@ -53,7 +53,7 @@ public class PostTravelPathTrace : MonoBehaviour {
     }
 
     void OnDestroy() {
-        Destroy(oldPositionInWIM.gameObject);
-        Destroy(newPositionInWIM.gameObject);
+        if(oldPositionInWIM) Destroy(oldPositionInWIM.gameObject);
+        if(newPositionInWIM) Destroy(newPositionInWIM.gameObject);
     }
 }

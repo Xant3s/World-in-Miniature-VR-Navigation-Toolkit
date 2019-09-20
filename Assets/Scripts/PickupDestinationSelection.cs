@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 public class PickupDestinationSelection : MonoBehaviour {
+
+    public float DoubleTapInterval { get; set; } = 2;
+
     private bool pickupMode = false;
     private Transform thumb;
     private Transform index;
@@ -82,6 +85,7 @@ public class PickupDestinationSelection : MonoBehaviour {
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
 
         // Let go.
+        if(!WIM.DestinationIndicatorInWIM) return;
         WIM.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
         // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
@@ -97,6 +101,6 @@ public class PickupDestinationSelection : MonoBehaviour {
     private void allowUpdates() {
         var WIMTransform = transform.root;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
-        WIM.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>();
+        WIM.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>().DoubleTapInterval = DoubleTapInterval;
     }
 }
