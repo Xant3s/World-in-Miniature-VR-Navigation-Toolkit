@@ -172,10 +172,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(destinationSelectionMethod == DestinationSelection.Pickup)
             playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>();
         respawnWIM(false);
-
-        //DestinationIndicatorInWIM = Instantiate(destinationIndicator).transform;
-        //SpawnDestinationIndicatorInLevel();
-        //IsNewDestination = true;
     }
 
     void Update() {
@@ -266,7 +262,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void respawnWIM(bool maintainTransformRelativeToPlayer) {
-        removeDestinationIndicators();
+        RemoveDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
         var dissolveFX = occlusionHandling == OcclusionHandling.None ||
@@ -415,7 +411,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (!isInsideWIM(fingertipIndexR.position)) return;
 
         // Remove previous destination point.
-        removeDestinationIndicators();
+        RemoveDestinationIndicators();
 
         // Show destination in WIM.
         SpawnDestinationIndicatorInWIM();
@@ -535,7 +531,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             Quaternion.Inverse(WIMLevelTransform.rotation) * DestinationIndicatorInWIM.rotation;
     }
 
-    public void removeDestinationIndicators() {
+    public void RemoveDestinationIndicators() {
         if (!DestinationIndicatorInWIM) return;
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
@@ -543,6 +539,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         DestroyImmediate(DestinationIndicatorInWIM.gameObject);
         if(DestinationIndicatorInLevel)
             DestroyImmediate(DestinationIndicatorInLevel.gameObject);
+    }
+
+    public void PickupDestinationIndicator() {
+        if (!DestinationIndicatorInWIM) return;
+        removePreviewScreen();
+        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
+        DestroyImmediate(travelPreviewAnimationObj);
+        if(DestinationIndicatorInLevel) DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 
     private void showPreviewScreen() {

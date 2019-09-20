@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class PickupDestinationSelection : MonoBehaviour {
+public class PickupDestinationUpdate : MonoBehaviour {
     private bool pickupMode = false;
     private Transform thumb;
     private Transform index;
@@ -34,9 +34,11 @@ public class PickupDestinationSelection : MonoBehaviour {
             isGrabbing = true;
             stoppedGrabbing = false;
             startGrabbing();
-        } else if(isGrabbing && !rightHandPinch) {
+        }
+        else if(isGrabbing && !rightHandPinch) {
             isGrabbing = false;
         }
+
         if(!isGrabbing && (OVRInput.GetUp(OVRInput.RawButton.A) || OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger))) {
             if(stoppedGrabbing) return;
             stopGrabbing();
@@ -68,35 +70,26 @@ public class PickupDestinationSelection : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Remove existing destination indicator.
-        WIM.RemoveDestinationIndicators();
+        WIM.PickupDestinationIndicator();
 
         // Spawn new destination indicator.
-        WIM.SpawnDestinationIndicatorInWIM();
+        //WIM.SpawnDestinationIndicatorInWIM();
 
         // Actually pick up the new destination indicator.
         WIM.DestinationIndicatorInWIM.parent = index;
     }
 
     void stopGrabbing() {
-        var WIMTransform = transform.root;
+        var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
 
         // Let go.
         WIM.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
-
-        // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
-        Invoke("allowUpdates", 1);
 
         // Create destination indicator in level. Includes snap to ground.
         if(!WIM.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
 
         // New destination
         WIM.IsNewDestination = true;
-    }
-
-    private void allowUpdates() {
-        var WIMTransform = transform.root;
-        var WIM = WIMTransform.GetComponent<MiniatureModel>();
-        WIM.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>();
     }
 }
