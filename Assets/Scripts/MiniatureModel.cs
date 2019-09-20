@@ -480,14 +480,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
                                                  ScaleFactor;
         }
 
-        // Set orientation.
+        // Fix orientation.
         if(destinationSelectionMethod == DestinationSelection.Pickup && destinationAlwaysOnTheGround) {
-            var forwardPos = DestinationIndicatorInWIM.position + DestinationIndicatorInWIM.forward;
-            forwardPos.y = DestinationIndicatorInWIM.position.y;
-            var forwardWIM = forwardPos - DestinationIndicatorInWIM.position;
-            var rotationInWIM = Quaternion.LookRotation(forwardWIM, WIMLevelTransform.up);
-            DestinationIndicatorInWIM.rotation = rotationInWIM;
-            DestinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * rotationInWIM;
+            DestinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * DestinationIndicatorInWIM.rotation;
+            var forwardPos = DestinationIndicatorInLevel.position + DestinationIndicatorInLevel.forward;
+            forwardPos.y = DestinationIndicatorInLevel.position.y;
+            var forwardInLevel = forwardPos - DestinationIndicatorInLevel.position;
+            DestinationIndicatorInLevel.rotation = Quaternion.LookRotation(forwardInLevel, Vector3.up);
+            DestinationIndicatorInWIM.rotation = WIMLevelTransform.rotation * DestinationIndicatorInLevel.rotation;
         }
 
         return DestinationIndicatorInLevel;
