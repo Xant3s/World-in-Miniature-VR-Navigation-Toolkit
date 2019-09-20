@@ -127,6 +127,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool handLIsInside;
     private Hand scalingHand = Hand.NONE;
     private Material previewScreenMaterial;
+    private float WIMHeightRelativeToPlayer;
 
 
 
@@ -153,7 +154,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
-        respawnWIM();
+        respawnWIM(false);
     }
 
     void Update() {
@@ -238,18 +239,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void checkSpawnWIM() {
         if (!OVRInput.GetUp(showWIMButton)) return;
-        respawnWIM();
+        respawnWIM(false);
     }
 
-    private void respawnWIM() {
+    private void respawnWIM(bool maintainTransformRelativeToPlayer) {
         removeDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
         var dissolveFX = occlusionHandling == OcclusionHandling.None ||
                          occlusionHandling == OcclusionHandling.Transparency;
         if(AllowWIMScrolling) dissolveFX = false;
-        if(dissolveFX)
-            dissolveWIM(WIMLevel);
+        if(dissolveFX && !maintainTransformRelativeToPlayer) dissolveWIM(WIMLevel);
+        if(maintainTransformRelativeToPlayer) instantDissolveWIM(WIMLevel);
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
@@ -266,14 +267,22 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
         playerRepresentationTransform.parent = newWIMLevel;
-        transform.rotation = Quaternion.identity;
-        var spawnDistanceZ = ((playerArmLength <= 0) ? WIMSpawnOffset.z : playerArmLength);
-        var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
-        var camForwardPosition = HMDTransform.position + HMDTransform.forward;
-        camForwardPosition.y = HMDTransform.position.y;
-        var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
-        transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
-                             Vector3.up * spawnDistanceY;
+        
+        if (!maintainTransformRelativeToPlayer) {
+            var spawnDistanceZ = ((playerArmLength <= 0) ? WIMSpawnOffset.z : playerArmLength);
+            var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
+            var camForwardPosition = HMDTransform.position + HMDTransform.forward;
+            camForwardPosition.y = HMDTransform.position.y;
+            var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
+            transform.rotation = Quaternion.identity;
+            transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
+                                 Vector3.up * spawnDistanceY;
+        }
+        else {
+            transform.position = new Vector3(transform.position.x,
+                OVRPlayerController.position.y + WIMHeightRelativeToPlayer, transform.position.z);
+        }
+
         if(dissolveFX) {
             resolveWIM(newWIMLevel);
             Invoke("destroyOldWIMLevel", 1.1f);
@@ -281,6 +290,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         else {
             destroyOldWIMLevel();
         }
+
+        if (maintainTransformRelativeToPlayer) transform.parent = null;
     }
 
     private void resolveWIM(Transform WIM) {
@@ -312,11 +323,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private static void dissolveWIM(Transform WIM) {
-        for (var i = 0; i < WIM.childCount; i++) {
-            var d = WIM.GetChild(i).GetComponent<Dissolve>();
-            if (d == null) continue;
+        foreach (Transform child in WIM) {
+            var d = child.GetComponent<Dissolve>();
+            if (!d) return;
             d.durationInSeconds = 1f;
             d.Play();
+        }
+    }
+
+    private static void instantDissolveWIM(Transform WIM) {
+        foreach (Transform child in WIM) {
+            var d = child.GetComponent<Dissolve>();
+            if (!d) return;
+            d.SetProgress(1);
         }
     }
 
@@ -332,10 +351,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             createPostTravelPathTrace();
 
         // Travel.
-        OVRPlayerController.position = destinationIndicatorInLevel.position;
+        transform.parent = OVRPlayerController; // Maintain transform relative to player.
+        WIMHeightRelativeToPlayer = transform.position.y - OVRPlayerController.position.y;  // Maintain height relative to player.
+        var playerHeight = OVRPlayerController.position.y - getGroundPosition(OVRPlayerController.position).y;
+        OVRPlayerController.position = getGroundPosition(destinationIndicatorInLevel.position) + Vector3.up * playerHeight;
         OVRPlayerController.rotation = destinationIndicatorInLevel.rotation;
-        
-        respawnWIM(); // Assist player to orientate at new location.
+
+        respawnWIM(true); // Assist player to orientate at new location.
 
         // Optional: post travel path trace
         if(postTravelPathTrace)
