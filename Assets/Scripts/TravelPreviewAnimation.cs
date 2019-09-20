@@ -12,6 +12,7 @@ public class TravelPreviewAnimation : MonoBehaviour {
     private LineRenderer lr;
     private Transform animatedPlayerRepresentation;
     private float animationProgress;
+    private float startAnimationProgress;
 
 
     private void Awake() {
@@ -52,17 +53,47 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     private void updateAnimatedPlayerRepresentation() {
-        if (animationProgress >= 1)
+        if (animationProgress == 0) {
+            // Start animation: Turn towards destination.
+            startAnimation();
+        }
+        else if (animationProgress >= 1) {
+            // Reached destination. End animation: align with destination indicator.
             resetAnimation();
-        updateRotation();
+        }
+        else {
+            // In between: walk towards destination indicator.
+            advanceWalkAnimation();
+            updateRotation();
+            updatePosition();
+        }
+    }
+
+    private void startAnimation() {
+        var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
+        var playerPosInLevelSpace = Converter.ConvertToLevelSpace(animatedPlayerRepresentation.position);
+        var rotationInLevelSpace = Quaternion.LookRotation(destinationInLevelSpace - playerPosInLevelSpace, Vector3.up);
+        var desiredRotation = WIMLevelTransform.rotation * rotationInLevelSpace;
+        if (startAnimationProgress >= 1) {
+            animationProgress = .01f; // Start the next phase: move towards destination.
+            return;
+        }
+
+        var step = AnimationSpeed * Time.deltaTime;
+        startAnimationProgress += step;
+        animatedPlayerRepresentation.rotation =
+            Quaternion.Lerp(PlayerRepresentationInWIM.rotation, desiredRotation, startAnimationProgress);
         updatePosition();
     }
 
     private void updatePosition() {
-        var step = AnimationSpeed * Time.deltaTime;
-        animationProgress += step;
         var dir = DestinationInWIM.position - PlayerRepresentationInWIM.position;
         animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position + dir * animationProgress;
+    }
+
+    private void advanceWalkAnimation() {
+        var step = AnimationSpeed * Time.deltaTime;
+        animationProgress += step;
     }
 
     private void updateRotation() {
@@ -75,5 +106,6 @@ public class TravelPreviewAnimation : MonoBehaviour {
     private void resetAnimation() {
         animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position;
         animationProgress = 0;
+        startAnimationProgress = 0;
     }
 }
