@@ -49,27 +49,6 @@ public class PickupDestinationSelection : MonoBehaviour {
         }
     }
 
-    void OnTriggerStay(Collider other) {
-        //if(other.tag != "HandR" || other.tag != "HandL") return;
-
-        // Initiate pickup.
-        //var rightHandPinch = OVRInput.Get(OVRInput.RawButton.A) && OVRInput.Get(OVRInput.RawButton.RIndexTrigger);
-        //if (!rightHandPinch) return;
-        //if (!pickupMode) return;
-
-        // Remove existing destination indicator.
-        //var WIM = transform.root;
-        //Destroy(WIM);
-
-        // Spawn new destination indicator.
-
-        // Actually pick up the new destination indicator.
-
-        // Move, rotate until letting go pinch grip.
-
-        // Tell WIM there is a new destination every time the destination indicator is updated.
-    }
-
     void OnTriggerExit(Collider other) {
         if(other.transform == thumb) {
             thumbIsGrabbing = false;
@@ -90,34 +69,27 @@ public class PickupDestinationSelection : MonoBehaviour {
         // Spawn new destination indicator.
         // TODO: destination indicator in WIM is responsible for updating its counterpart in the level?
         WIM.SpawnDestinationIndicatorInWIM();
-        //var destinationIndicatorInLevel = WIM.SpawnDestinationIndicatorInLevel();
 
         // Actually pick up the new destination indicator.
         WIM.DestinationIndicatorInWIM.parent = index;
-        //destinationIndicatorInWIM.localPosition = Vector3.zero;
-        //WIM.DestinationIndicatorInWIM.parent = null;
-        //WIM.DestinationIndicatorInWIM.gameObject.AddComponent<AlignWithRight>().Target = index;
-
-        // Move, rotate until letting go pinch grip.
-
-        // Tell WIM there is a new destination every time the destination indicator is updated.
-        // Create destination indicator in level.
 
         // TODO: make destination indicator in WIM grabbable, so it can be changed without creating a new one.
+
+        // TODO: cleanup preview animation stuff.
     }
 
     void stopGrabbing() {
+        Debug.Log("Stop grabbing");
         var WIMTransform = transform.root;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
 
         // Let go.
-        //Destroy(WIM.DestinationIndicatorInWIM.GetComponent<AlignWithRight>());
         WIM.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
-        // Snap to ground
+        // Create destination indicator in level. Includes snap to ground.
+        if(!WIM.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
 
-        // Destination indicator in level.
-        if(!WIM.DestinationIndicatorInWIM) WIM.SpawnDestinationIndicatorInLevel();
+        // TODO: Fix orientation.
 
         // New destination
         WIM.IsNewDestination = true;

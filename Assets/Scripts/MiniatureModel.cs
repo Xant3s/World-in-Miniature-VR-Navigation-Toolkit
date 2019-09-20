@@ -114,7 +114,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public bool IsNewDestination {
         get => isNewDestination;
-        set => onNewDestination();
+        set {
+            isNewDestination = value;
+            if(isNewDestination) onNewDestination();
+        }
     }
 
     public Transform DestinationIndicatorInWIM { get; set; }
@@ -168,6 +171,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(destinationSelectionMethod == DestinationSelection.Pickup)
             playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>();
         respawnWIM(false);
+
+        //DestinationIndicatorInWIM = Instantiate(destinationIndicator).transform;
+        //SpawnDestinationIndicatorInLevel();
+        //IsNewDestination = true;
     }
 
     void Update() {
@@ -177,7 +184,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             selectDestination();
             selectDestinationRotation();
         }
-        onNewDestination();
         checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
@@ -462,7 +468,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     void onNewDestination() {
-        if (!IsNewDestination) return;
+        //if (!IsNewDestination) return;
         IsNewDestination = false;
 
         // Optional: show preview screen.
@@ -481,6 +487,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void createTravelPreviewAnimation() {
+        Debug.Log("NEW");
         travelPreviewAnimationObj = new GameObject("Travel Preview Animation");
         var travelPreview = travelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
         travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
