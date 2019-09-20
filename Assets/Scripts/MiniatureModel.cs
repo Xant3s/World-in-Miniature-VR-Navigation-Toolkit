@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyBox;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 
@@ -56,6 +57,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     [Separator("Orientation Aids", true)] 
     [SerializeField] public bool previewScreen = false;
+    [ConditionalField(nameof(previewScreen))]
+    public bool autoPositionPreviewScreen = false;
     [SerializeField] public bool travelPreviewAnimation = false;
     [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
     public float TravelPreviewAnimationSpeed = 1.0f;
@@ -516,7 +519,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         IsNewDestination = false;
 
         // Optional: show preview screen.
-        if (previewScreen) showPreviewScreen();
+        if (previewScreen && autoPositionPreviewScreen) showPreviewScreen(true);
 
         // Optional: Travel preview animation.
         if (travelPreviewAnimation) createTravelPreviewAnimation();
@@ -570,7 +573,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public void RemoveDestinationIndicators() {
         if (!DestinationIndicatorInWIM) return;
-        removePreviewScreen();
+        RemovePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         //DestroyImmediate(TravelPreviewAnimationObj);
         //DestroyImmediate(DestinationIndicatorInWIM.gameObject);
@@ -591,16 +594,28 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public void RemoveDestionantionIndicatorsExceptWIM() {
         if (!DestinationIndicatorInWIM) return;
-        removePreviewScreen();
+        RemovePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         DestroyImmediate(TravelPreviewAnimationObj);
         if(DestinationIndicatorInLevel) DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 
-    private void showPreviewScreen() {
-        removePreviewScreen();
+    private void showPreviewScreen(bool autoPosition) {
+        RemovePreviewScreen();
         var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
-        previewScreen.GetComponent<FloatAbove>().Target = transform;
+
+        if(autoPosition) {
+            previewScreen.GetComponent<FloatAbove>().Target = transform;
+        }
+        else {
+            Destroy(previewScreen.GetComponent<FloatAbove>());
+            previewScreen.AddComponent<ClosePreviewScreen>();
+        }
+
+        InitPreviewScreen(previewScreen);
+    }
+
+    public void InitPreviewScreen(GameObject previewScreen) {
         var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
         var cam = camObj.gameObject.AddComponent<Camera>();
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
@@ -624,7 +639,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
     }
 
-    private void removePreviewScreen() {
+    public void RemovePreviewScreen() {
         var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
         if(!previewScreen) return;
         previewScreen.transform.parent = null;
