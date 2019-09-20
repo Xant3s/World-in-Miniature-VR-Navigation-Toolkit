@@ -31,6 +31,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick = OVRInput.RawAxis2D.RThumbstick;
     [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
     [SerializeField] private OVRInput.RawButton confirmTeleportButton = OVRInput.RawButton.B;
+    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Pickup)]
+    public float DoubleTapInterval = 2;
 
 
     [Separator("Occlusion Handling", true)]
@@ -186,7 +188,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Start() {
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         if(destinationSelectionMethod == DestinationSelection.Pickup)
-            playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>();
+            playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = DoubleTapInterval;
         respawnWIM(false);
     }
 
@@ -196,8 +198,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (destinationSelectionMethod == DestinationSelection.Selection) {
             selectDestination();
             selectDestinationRotation();
+            checkConfirmTeleport();
         }
-        checkConfirmTeleport();
         updatePlayerRepresentationInWIM();
         updatePreviewScreen();
         scaleWIM();
@@ -381,13 +383,20 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(confirmTeleportButton)) return;
         if (!DestinationIndicatorInLevel) return;
+        ConfirmTeleport();
+    }
+
+    public void ConfirmTeleport() {
+        RemoveDestinationIndicators();
+
         // Optional: post travel path trace
-        if(postTravelPathTrace)
+        if (postTravelPathTrace)
             createPostTravelPathTrace();
 
         // Travel.
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
-        WIMHeightRelativeToPlayer = transform.position.y - OVRPlayerController.position.y;  // Maintain height relative to player.
+        WIMHeightRelativeToPlayer =
+            transform.position.y - OVRPlayerController.position.y; // Maintain height relative to player.
         var playerHeight = OVRPlayerController.position.y - getGroundPosition(OVRPlayerController.position).y;
         OVRPlayerController.position = getGroundPosition(DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
         OVRPlayerController.rotation = DestinationIndicatorInLevel.rotation;
@@ -395,7 +404,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         respawnWIM(true); // Assist player to orientate at new location.
 
         // Optional: post travel path trace
-        if(postTravelPathTrace)
+        if (postTravelPathTrace)
             initPostTravelPathTrace();
     }
 
@@ -551,10 +560,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (!DestinationIndicatorInWIM) return;
         removePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        DestroyImmediate(TravelPreviewAnimationObj);
-        DestroyImmediate(DestinationIndicatorInWIM.gameObject);
-        if(DestinationIndicatorInLevel)
-            DestroyImmediate(DestinationIndicatorInLevel.gameObject);
+        //DestroyImmediate(TravelPreviewAnimationObj);
+        //DestroyImmediate(DestinationIndicatorInWIM.gameObject);
+        //if(DestinationIndicatorInLevel)
+        //    DestroyImmediate(DestinationIndicatorInLevel.gameObject);
+
+        // Destroy uses another thread, so make sure they are not copied by removing from parent.
+        TravelPreviewAnimationObj.transform.parent = null;
+        Destroy(TravelPreviewAnimationObj);
+        DestinationIndicatorInWIM.parent = null;
+        Destroy(DestinationIndicatorInWIM.gameObject);
+        if(!DestinationIndicatorInLevel) return;
+        DestinationIndicatorInLevel.parent = null;
+        Destroy(DestinationIndicatorInLevel.gameObject);
     }
 
     public void RemoveDestionantionIndicatorsExceptWIM() {
@@ -593,7 +611,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void removePreviewScreen() {
-        Destroy(GameObject.FindGameObjectWithTag("PreviewScreen"));
+        var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
+        if(!previewScreen) return;
+        previewScreen.transform.parent = null;
+        Destroy(previewScreen);
     }
 
     public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
