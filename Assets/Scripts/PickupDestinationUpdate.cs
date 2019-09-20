@@ -39,6 +39,11 @@ public class PickupDestinationUpdate : MonoBehaviour {
             isGrabbing = false;
         }
 
+        // Hotfix: for not detection thumb letting go.
+        if(isGrabbing && !OVRInput.Get(OVRInput.RawButton.A)) {
+            isGrabbing = false;
+        }
+
         if(!isGrabbing && (OVRInput.GetUp(OVRInput.RawButton.A) || OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger))) {
             if(stoppedGrabbing) return;
             stopGrabbing();
