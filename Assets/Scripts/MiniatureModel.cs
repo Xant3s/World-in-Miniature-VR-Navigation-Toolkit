@@ -480,6 +480,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         DestinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
         DestinationIndicatorInLevel.position = levelPosition;
 
+        // Remove frustum.
+        Destroy(DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
+
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if(destinationAlwaysOnTheGround) {
             DestinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
