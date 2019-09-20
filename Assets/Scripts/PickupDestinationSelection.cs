@@ -48,8 +48,12 @@ public class PickupDestinationSelection : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        thumbIsGrabbing = other.transform == thumb;
-        indexIsGrabbing = other.transform == index;
+        if(other.transform == thumb) {
+            thumbIsGrabbing = true;
+        }
+        else if(other.transform == index) {
+            indexIsGrabbing = true;
+        }
     }
 
     void OnTriggerStay(Collider other) {
@@ -74,8 +78,12 @@ public class PickupDestinationSelection : MonoBehaviour {
     }
 
     void OnTriggerExit(Collider other) {
-        thumbIsGrabbing = !(other.transform == thumb);
-        indexIsGrabbing = !(other.transform == index);
+        if(other.transform == thumb) {
+            thumbIsGrabbing = false;
+        }
+        else if(other.transform == index) {
+            indexIsGrabbing = false;
+        }
     }
 
     void startGrabbing() {
