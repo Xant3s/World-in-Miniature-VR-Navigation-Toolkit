@@ -697,10 +697,28 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
             var renderer = child.GetComponent<Renderer>();
             if(renderer) {
-                renderer.material = Resources.Load<Material>("Materials/Dissolve");
+                //renderer.material = Resources.Load<Material>("Materials/Dissolve");
+                //renderer.materials.ToList().ForEach(m => {
+                //    m = Resources.Load<Material>("Materials/Dissolve");
+                //});
+                //for(var i = 0; i<renderer.materials.Length; i++) {
+                //    renderer.materials[i] = Resources.Load<Material>("Materials/Dissolve");
+                //}
+                //var newMaterials = new Material[renderer.materials.Length];
+                //for(var i = 0; i < newMaterials.Length; i++) {
+                //    newMaterials[i] = Resources.Load<Material>("Materials/Dissolve");
+                //}
+                //renderer.sharedMaterials = newMaterials;
+                var newMat = Resources.Load<Material>("Materials/Dissolve");
+                var mats = new Material[renderer.materials.Length];
+                for(var j = 0; j < renderer.materials.Length; j++) {
+                    mats[j] = newMat;
+                }
+                renderer.sharedMaterials = mats;
+
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
+                child.gameObject.AddComponent<Dissolve>();
             }
-            child.gameObject.AddComponent<Dissolve>();
             child.gameObject.isStatic = false;
         }
         transform.localScale = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);

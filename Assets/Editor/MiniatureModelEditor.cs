@@ -142,7 +142,13 @@ public class MiniatureModelEditor : Editor {
         foreach(Transform child in WIMLevelTransform) {
             var renderer = child.GetComponent<Renderer>();
             if(!renderer) continue;
-            renderer.material = material;
+            //renderer.material = material;
+
+            var newMaterials = new Material[renderer.materials.Length];
+            for(var i = 0; i < newMaterials.Length; i++) {
+                newMaterials[i] = material;
+            }
+            renderer.sharedMaterials = newMaterials;
         }
     }
 
