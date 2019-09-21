@@ -16,6 +16,7 @@ public class ClosePreviewScreen : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if(other.transform != index) return;
+        if(transform.root.tag == "HandR") return;
         if(firstTap) {
             var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
             WIM.RemovePreviewScreen();

@@ -615,7 +615,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         else {
             //previewScreen.GetComponent<FloatAbove>().Target = transform;
             //Destroy(previewScreen.GetComponent<FloatAbove>());
-            previewScreen.GetComponent<FloatAbove>().Target = transform;    // TODO remove
+            //previewScreen.GetComponent<FloatAbove>().Target = transform;    // TODO remove
+            //previewScreen.transform.position = transform.position;
             previewScreen.AddComponent<ClosePreviewScreen>();
         }
 

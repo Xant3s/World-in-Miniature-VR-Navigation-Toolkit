@@ -71,10 +71,11 @@ public class PickupPreviewScreen : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Spawn new preview screen.
-        previewScreenTransform = WIM.showPreviewScreen(true);
+        previewScreenTransform = WIM.showPreviewScreen(false);
 
         // Pick up the new preview screen.
-        //previewScreenTransform.parent = index;
+        previewScreenTransform.parent = index;
+        previewScreenTransform.localPosition = Vector3.zero;
         //previewScreenTransform.GetComponent<FloatAbove>().Target = index;
     }
 
@@ -84,7 +85,7 @@ public class PickupPreviewScreen : MonoBehaviour {
 
         // Let go.
         if(!previewScreenTransform) return;
-        //previewScreenTransform.parent = WIMTransform.GetChild(0);
+        previewScreenTransform.parent = WIMTransform.GetChild(0);
 
         // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
         //Invoke("allowUpdates", 1);
