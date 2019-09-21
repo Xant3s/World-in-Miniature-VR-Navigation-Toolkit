@@ -206,9 +206,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        updatePlayerRepresentationInWIM();
+        if(playerRepresentationTransform) updatePlayerRepresentationInWIM();
         if(previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
+        if(!WIMLevelTransform) return;
         if(AutoScroll) autoScrollWIM();
         else scrollWIM();
     }
@@ -512,6 +513,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public Transform SpawnDestinationIndicatorInWIM() {
         DestinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
         DestinationIndicatorInWIM.position = fingertipIndexR.position;
+        if(previewScreen && !autoPositionPreviewScreen)
+            DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
+        //DestinationIndicatorInWIM.Find("Camera").GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
         return DestinationIndicatorInWIM;
     }
 
@@ -601,7 +605,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(DestinationIndicatorInLevel) DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 
-    private void showPreviewScreen(bool autoPosition) {
+    public Transform showPreviewScreen(bool autoPosition) {
         RemovePreviewScreen();
         var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
 
@@ -609,17 +613,22 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             previewScreen.GetComponent<FloatAbove>().Target = transform;
         }
         else {
-            Destroy(previewScreen.GetComponent<FloatAbove>());
+            //previewScreen.GetComponent<FloatAbove>().Target = transform;
+            //Destroy(previewScreen.GetComponent<FloatAbove>());
+            previewScreen.GetComponent<FloatAbove>().Target = transform;    // TODO remove
             previewScreen.AddComponent<ClosePreviewScreen>();
         }
 
         InitPreviewScreen(previewScreen);
         previewScreenEnabled = true;
+        return previewScreen.transform;
     }
 
     public void InitPreviewScreen(GameObject previewScreen) {
         var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
-        var cam = camObj.gameObject.AddComponent<Camera>();
+        var cam = camObj.AddComponent<Camera>();
+        if(!cam)
+            cam = camObj.AddComponent<Camera>();    // Don't ask...
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.gray;
@@ -630,7 +639,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void updatePreviewScreen() {
         if (!previewScreen || !DestinationIndicatorInLevel) return;
-        var cam = DestinationIndicatorInLevel.GetChild(1).gameObject.GetComponent<Camera>();
+        var cam = DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
         Destroy(cam.targetTexture);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         if(!previewScreenMaterial) {
