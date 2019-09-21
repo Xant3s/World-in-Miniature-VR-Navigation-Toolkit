@@ -21,14 +21,6 @@ public class PickupPreviewScreen : MonoBehaviour {
         Assert.IsNotNull(index);
     }
 
-
-    void Start() {
-        //var collider = gameObject.AddComponent<CapsuleCollider>();
-        //collider.height = 2.2f;
-        //collider.radius = .7f;
-        //collider.isTrigger = true;
-    }
-
     void Update() {
         var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
         if(rightHandPinch && !isGrabbing) {
@@ -76,7 +68,6 @@ public class PickupPreviewScreen : MonoBehaviour {
         // Pick up the new preview screen.
         previewScreenTransform.parent = index;
         previewScreenTransform.localPosition = Vector3.zero;
-        //previewScreenTransform.GetComponent<FloatAbove>().Target = index;
     }
 
     void stopGrabbing() {
@@ -86,19 +77,5 @@ public class PickupPreviewScreen : MonoBehaviour {
         // Let go.
         if(!previewScreenTransform) return;
         previewScreenTransform.parent = WIMTransform.GetChild(0);
-
-        // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
-        //Invoke("allowUpdates", 1);
-
-        // Create destination indicator in level. Includes snap to ground.
-        //if(!WIM.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
-
-        // New destination
-        //WIM.IsNewDestination = true;
     }
-
-    //private void allowUpdates() {
-    //    var WIMTransform = transform.root;
-    //    var WIM = WIMTransform.GetComponent<MiniatureModel>();
-    //}
 }
