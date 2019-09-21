@@ -160,8 +160,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private float prevInterHandDistance;
     private Transform handL;
     private Transform handR;
-    private bool handRIsInside;
-    private bool handLIsInside;
     private Hand scalingHand = Hand.NONE;
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
@@ -269,13 +267,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private bool getHandIsInside(Hand hand) {
-        switch (hand) {
-            case Hand.HAND_L when handLIsInside:
-            case Hand.HAND_R when handRIsInside:
-                return true;
-            default:
-                return false;
-        }
+        if(hand == Hand.NONE) return false;
+        var handTag = hand == Hand.HAND_L ? "HandL" : "HandR";
+        var hitColliders = Physics.OverlapBox(transform.position, activeAreaBounds, WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
+        return hitColliders.Any(col => col.transform.root.tag == handTag);
     }
 
     private void detectArmLength() {
@@ -686,28 +681,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
         playerRepresentationTransform.rotation = rotationInLevel;
-    }
-
-    void OnTriggerEnter(Collider other) {
-        const int handLayer = 9;
-        if (other.gameObject.layer != handLayer) return;
-        if (other.transform.root.tag == "HandL") {
-            handLIsInside = true;
-        }
-        else {
-            handRIsInside = true;
-        }
-    }
-
-    void OnTriggerExit(Collider other) {
-        const int handLayer = 9;
-        if (other.gameObject.layer != handLayer) return;
-        if (other.transform.root.tag == "HandL") {
-            handLIsInside = false;
-        }
-        else {
-            handRIsInside = false;
-        }
     }
 
     public void generateNewWIM() {
