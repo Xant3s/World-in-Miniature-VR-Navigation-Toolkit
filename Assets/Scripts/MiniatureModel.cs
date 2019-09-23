@@ -768,7 +768,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void disableScrolling(bool createNewWIM) {
         DestroyImmediate(GameObject.Find("Box Mask"));
-        if(createNewWIM) generateNewWIM();
+        removeAllColliders(transform);
+        generateColliders();
     }
 
     public Material LoadAppropriateMaterial() {
@@ -836,13 +837,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void generateColliders() {
-        // Generate colliders: // TODO: what about child of childs: WIM-WIMLevel-objects-childs-...
+        // Generate colliders:
         // 1. Copy colliders from actual level (to determine which objects should have a collider)
         // [alternatively don't delete them while generating the WIM]
         // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
         var wimLevelTransform = transform.GetChild(0);
-        foreach(Transform child in wimLevelTransform) {
-            var collider = child.GetComponent<Collider>();
+        //foreach(Transform child in wimLevelTransform) {
+        var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
+        var levelChildTransforms = GameObject.FindGameObjectWithTag("LevelRoot").GetComponentsInChildren<Transform>();
+        var i = 0;
+        foreach(var child in WIMChildTransforms){
+            var collider = levelChildTransforms.ElementAt(i).GetComponent<Collider>();
+            i++;
             if(!collider) continue;
             removeAllColliders(child);
             var childBoxCollider = child.gameObject.AddComponent<BoxCollider>();
