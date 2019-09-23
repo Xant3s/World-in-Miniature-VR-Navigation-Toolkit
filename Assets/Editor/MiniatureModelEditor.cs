@@ -21,11 +21,10 @@ public class MiniatureModelEditor : Editor {
         WIM.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.AutoGenerateWIM);
         if(EditorGUI.EndChangeCheck()) updateAutoGenerateWIM();
         DrawDefaultInspector();
-        updateOcclusionHandling();
+        if (scrollingPropertyChanged() || occlusionHandlingStrategyChanged()) WIM.ConfigureWIM(createNewWIM: true);
         updateCylinderMask();
         updateCutoutViewMask();
         updateScrollingMask();
-        updateScrolling();
     }
 
     void updateAutoGenerateWIM() {
@@ -44,112 +43,19 @@ public class MiniatureModelEditor : Editor {
         }
     }
 
-    void updateScrolling() {
-        if(WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return;
+    private bool scrollingPropertyChanged() {
+        if(WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return false;
         WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
-        var material = WIM.AllowWIMScrolling
-            ? Resources.Load<Material>("Materials/ScrollDissolve")
-            : Resources.Load<Material>("Materials/Dissolve");
-        WIM.SetWIMMaterial(material);
-        if(WIM.AllowWIMScrolling) {
-            var maskController = new GameObject("Box Mask");
-            var controller = maskController.AddComponent<Controller_Mask_Box>();
-            controller.materials = new[] {material};
-            var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            var mf = tmpGO.GetComponent<MeshFilter>();
-            var cubeMesh = Instantiate (mf.sharedMesh) as Mesh;
-            maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
-            maskController.AddComponent<AlignWith>().Target = WIM.transform;
-            controller.box1 = maskController;
-            controller.invert = true;
-
-            // Collider.
-            WIM.removeAllColliders();
-            WIM.gameObject.AddComponent<BoxCollider>().size = WIM.activeAreaBounds / WIM.ScaleFactor;
-
-            removeDissolveScript();
-            DestroyImmediate(tmpGO);
-            maskController.transform.position = WIM.transform.position;
-        }
-        else {
-            DestroyImmediate(GameObject.Find("Box Mask"));   
-            WIM.generateNewWIM();
-        }
+        return true;
     }
 
-    private void updateOcclusionHandling() {
-        if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return;
+    private bool occlusionHandlingStrategyChanged() {
+        if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return false;
         WIM.prevOcclusionHandling = WIM.occlusionHandling;
         if(WIM.occlusionHandling != MiniatureModel.OcclusionHandling.None) {
             WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
         }
-        Material material;
-        cleanupOcclusionHandling();
-        switch(WIM.occlusionHandling) {
-            case MiniatureModel.OcclusionHandling.Transparency:
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                addDissolveScript();
-                break;
-            case MiniatureModel.OcclusionHandling.MeltWalls: {
-                material = Resources.Load<Material>("Materials/MeltWalls");
-                var maskController = new GameObject("Mask Controller");
-                var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
-                controller.materials = new[] {material};
-                var cylinderMask = new GameObject("Cylinder Mask");
-                controller.cylinder1 = cylinderMask;
-                cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
-                removeDissolveScript();
-                break;
-            }
-            case MiniatureModel.OcclusionHandling.CutoutView: {
-                material = Resources.Load<Material>("Materials/MeltWalls");
-                var maskController = new GameObject("Mask Controller");
-                var controller = maskController.AddComponent<Controller_Mask_Cone>();
-                controller.materials = new[] {material};
-                var spotlightObj = new GameObject("Spotlight Mask");
-                var spotlight = spotlightObj.AddComponent<Light>();
-                controller.spotLight1 = spotlight;
-                spotlight.type = LightType.Spot;
-                spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
-                removeDissolveScript();
-                break;
-            }
-            case MiniatureModel.OcclusionHandling.None:
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/Dissolve");
-                addDissolveScript();
-                break;
-            default:
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/Dissolve");
-                addDissolveScript();
-                break;
-        }
-        WIM.SetWIMMaterial(material);
-    }
-
-    void cleanupOcclusionHandling() {
-        DestroyImmediate(GameObject.Find("Cylinder Mask"));
-        DestroyImmediate(GameObject.Find("Spotlight Mask"));
-        DestroyImmediate(GameObject.Find("Mask Controller"));
-        if(!WIM.AllowWIMScrolling)
-            DestroyImmediate(GameObject.Find("Box Mask")); 
-    }
-
-    private void removeDissolveScript() {
-        var WIMLevelTransform = WIM.transform.GetChild(0);
-        foreach(Transform child in WIMLevelTransform) {
-            DestroyImmediate(child.GetComponent<Dissolve>());
-        }
-    }
-
-    private void addDissolveScript() {
-        var WIMLevelTransform = WIM.transform.GetChild(0);
-        foreach(Transform child in WIMLevelTransform) {
-            if(!child.GetComponent<Dissolve>())
-                child.gameObject.AddComponent<Dissolve>();
-        }
+        return true;
     }
 
     private void updateCylinderMask() {

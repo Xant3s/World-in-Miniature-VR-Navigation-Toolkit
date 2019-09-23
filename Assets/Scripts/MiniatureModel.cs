@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AdvancedDissolve_Example;
 using MyBox;
 using UnityEngine;
 using UnityEngine.AI;
@@ -698,37 +699,127 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
             var renderer = child.GetComponent<Renderer>();
             if(renderer) {
-                //renderer.material = Resources.Load<Material>("Materials/Dissolve");
-                //renderer.materials.ToList().ForEach(m => {
-                //    m = Resources.Load<Material>("Materials/Dissolve");
-                //});
-                //for(var i = 0; i<renderer.materials.Length; i++) {
-                //    renderer.materials[i] = Resources.Load<Material>("Materials/Dissolve");
-                //}
-                //var newMaterials = new Material[renderer.materials.Length];
-                //for(var i = 0; i < newMaterials.Length; i++) {
-                //    newMaterials[i] = Resources.Load<Material>("Materials/Dissolve");
-                //}
-                //renderer.sharedMaterials = newMaterials;
-
-                //var newMat = Resources.Load<Material>("Materials/Dissolve");
-                //var mats = new Material[renderer.materials.Length];
-                //for(var j = 0; j < renderer.materials.Length; j++) {
-                //    mats[j] = newMat;
-                //}
-                //renderer.sharedMaterials = mats;
-
-                SetWIMMaterial(Resources.Load<Material>("Materials/Dissolve"));
-                // TODO: load material according to settings, not always dissolve!!
-                
-
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
-                child.gameObject.AddComponent<Dissolve>();
             }
             child.gameObject.isStatic = false;
         }
         transform.localScale = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);
         generateColliders();
+        ConfigureWIM();
+    }
+
+    public void ConfigureWIM(bool createNewWIM = false) {
+        // Cleanup old configuration.
+        disableScrolling(createNewWIM);
+        cleanupOcclusionHandling();
+
+        // Setup new configuration.
+        var material = LoadAppropriateMaterial();
+        SetWIMMaterial(material);
+        SetupDissolveScript();
+        if(AllowWIMScrolling) enableScrolling(material);
+        else if(occlusionHandling == MiniatureModel.OcclusionHandling.CutoutView) configureCutoutView(material);
+        else if(occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls) configureMeltWalls(material);
+    }
+
+    private static void configureCutoutView(Material material) {
+        var maskController = new GameObject("Mask Controller");
+        var controller = maskController.AddComponent<Controller_Mask_Cone>();
+        controller.materials = new[] {material};
+        var spotlightObj = new GameObject("Spotlight Mask");
+        var spotlight = spotlightObj.AddComponent<Light>();
+        controller.spotLight1 = spotlight;
+        spotlight.type = LightType.Spot;
+        spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
+    }
+
+    private static void configureMeltWalls(Material material) {
+        var maskController = new GameObject("Mask Controller");
+        var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
+        controller.materials = new[] {material};
+        var cylinderMask = new GameObject("Cylinder Mask");
+        controller.cylinder1 = cylinderMask;
+        cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
+    }
+
+    void cleanupOcclusionHandling() {
+        DestroyImmediate(GameObject.Find("Cylinder Mask"));
+        DestroyImmediate(GameObject.Find("Spotlight Mask"));
+        DestroyImmediate(GameObject.Find("Mask Controller"));
+    }
+
+    private void enableScrolling(Material material) {
+        var maskController = new GameObject("Box Mask");
+        var controller = maskController.AddComponent<Controller_Mask_Box>();
+        controller.materials = new[] {material};
+        var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        var mf = tmpGO.GetComponent<MeshFilter>();
+        var cubeMesh = Instantiate(mf.sharedMesh) as Mesh;
+        maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
+        maskController.AddComponent<AlignWith>().Target = transform;
+        controller.box1 = maskController;
+        controller.invert = true;
+        removeAllColliders();
+        gameObject.AddComponent<BoxCollider>().size = activeAreaBounds / ScaleFactor;
+        RemoveDissolveScript();
+        DestroyImmediate(tmpGO);
+        maskController.transform.position = transform.position;
+    }
+
+    private void disableScrolling(bool createNewWIM) {
+        DestroyImmediate(GameObject.Find("Box Mask"));
+        if(createNewWIM) generateNewWIM();
+    }
+
+    public Material LoadAppropriateMaterial() {
+        if(AllowWIMScrolling) return Resources.Load<Material>("Materials/ScrollDissolve");
+        Material material;
+        switch(occlusionHandling) {
+             case MiniatureModel.OcclusionHandling.Transparency:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
+                break;
+            case MiniatureModel.OcclusionHandling.MeltWalls: {
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                break;
+            }
+            case MiniatureModel.OcclusionHandling.CutoutView: {
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                break;
+            }
+             case OcclusionHandling.None:
+             default:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                break;
+        }
+
+        return material;
+    }
+
+    public void SetupDissolveScript() {
+        if(AllowWIMScrolling || occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls ||
+           occlusionHandling == OcclusionHandling.CutoutView) {
+            RemoveDissolveScript();
+        }
+        else {
+            AddDissolveScript();
+        }
+    }
+
+    public void RemoveDissolveScript() {
+        var WIMLevelTransform = transform.GetChild(0);
+        foreach(Transform child in WIMLevelTransform) {
+            DestroyImmediate(child.GetComponent<Dissolve>());
+        }
+    }
+
+    public void AddDissolveScript() {
+        var WIMLevelTransform = transform.GetChild(0);
+        foreach(Transform child in WIMLevelTransform) {
+            if(!child.GetComponent<Dissolve>())
+                child.gameObject.AddComponent<Dissolve>();
+        }
     }
 
     public void SetWIMMaterial(Material material) {
