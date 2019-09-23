@@ -200,16 +200,16 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Update() {
         detectArmLength();
         checkSpawnWIM();
-        if (destinationSelectionMethod == DestinationSelection.Selection) {
+        if(destinationSelectionMethod == DestinationSelection.Selection) {
             selectDestination();
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        if(playerRepresentationTransform) updatePlayerRepresentationInWIM();
-        if(previewScreenEnabled) updatePreviewScreen();
+        if (playerRepresentationTransform) updatePlayerRepresentationInWIM();
+        if (previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
-        if(!WIMLevelTransform) return;
-        if(AutoScroll) autoScrollWIM();
+        if (!WIMLevelTransform) return;
+        if (AutoScroll) autoScrollWIM();
         else scrollWIM();
     }
 
@@ -676,7 +676,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        playerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
+       playerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
         playerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y * ScaleFactor;
 
         // Rotation
@@ -846,10 +846,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
         var levelChildTransforms = GameObject.FindGameObjectWithTag("LevelRoot").GetComponentsInChildren<Transform>();
         var i = 0;
-        foreach(var child in WIMChildTransforms){
-            var collider = levelChildTransforms.ElementAt(i).GetComponent<Collider>();
+        foreach (var child in WIMChildTransforms){
+            var childEquivalentInLevel = levelChildTransforms.ElementAt(i);
+            if (!childEquivalentInLevel) continue;
+            var collider = childEquivalentInLevel.GetComponent<Collider>();
             i++;
-            if(!collider) continue;
+            if (collider == null) continue;
             removeAllColliders(child);
             var childBoxCollider = child.gameObject.AddComponent<BoxCollider>();
             // 3. move collider to WIM root (consider scale and position)
