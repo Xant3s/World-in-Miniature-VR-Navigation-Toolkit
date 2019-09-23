@@ -710,12 +710,17 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
                 //    newMaterials[i] = Resources.Load<Material>("Materials/Dissolve");
                 //}
                 //renderer.sharedMaterials = newMaterials;
-                var newMat = Resources.Load<Material>("Materials/Dissolve");
-                var mats = new Material[renderer.materials.Length];
-                for(var j = 0; j < renderer.materials.Length; j++) {
-                    mats[j] = newMat;
-                }
-                renderer.sharedMaterials = mats;
+
+                //var newMat = Resources.Load<Material>("Materials/Dissolve");
+                //var mats = new Material[renderer.materials.Length];
+                //for(var j = 0; j < renderer.materials.Length; j++) {
+                //    mats[j] = newMat;
+                //}
+                //renderer.sharedMaterials = mats;
+
+                SetWIMMaterial(Resources.Load<Material>("Materials/Dissolve"));
+                // TODO: load material according to settings, not always dissolve!!
+                
 
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
                 child.gameObject.AddComponent<Dissolve>();
@@ -724,6 +729,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
         transform.localScale = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);
         generateColliders();
+    }
+
+    public void SetWIMMaterial(Material material) {
+        var WIMLevelTransform = transform.GetChild(0);
+        foreach(Transform child in WIMLevelTransform) {
+            var renderer = child.GetComponent<Renderer>();
+            if(!renderer) continue;
+            var newMaterials = renderer.sharedMaterials;
+            for(var i = 0; i < newMaterials.Length; i++) {
+                newMaterials[i] = material;
+            }
+            renderer.sharedMaterials = newMaterials;
+        }
     }
 
     private void generateColliders() {

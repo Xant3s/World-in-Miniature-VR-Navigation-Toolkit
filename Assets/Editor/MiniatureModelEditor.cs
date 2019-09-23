@@ -50,7 +50,7 @@ public class MiniatureModelEditor : Editor {
         var material = WIM.AllowWIMScrolling
             ? Resources.Load<Material>("Materials/ScrollDissolve")
             : Resources.Load<Material>("Materials/Dissolve");
-        setWIMMaterial(material);
+        WIM.SetWIMMaterial(material);
         if(WIM.AllowWIMScrolling) {
             var maskController = new GameObject("Box Mask");
             var controller = maskController.AddComponent<Controller_Mask_Box>();
@@ -126,7 +126,7 @@ public class MiniatureModelEditor : Editor {
                 addDissolveScript();
                 break;
         }
-        setWIMMaterial(material);
+        WIM.SetWIMMaterial(material);
     }
 
     void cleanupOcclusionHandling() {
@@ -135,21 +135,6 @@ public class MiniatureModelEditor : Editor {
         DestroyImmediate(GameObject.Find("Mask Controller"));
         if(!WIM.AllowWIMScrolling)
             DestroyImmediate(GameObject.Find("Box Mask")); 
-    }
-
-    private void setWIMMaterial(Material material) {
-        var WIMLevelTransform = WIM.transform.GetChild(0);
-        foreach(Transform child in WIMLevelTransform) {
-            var renderer = child.GetComponent<Renderer>();
-            if(!renderer) continue;
-            //renderer.material = material;
-
-            var newMaterials = new Material[renderer.materials.Length];
-            for(var i = 0; i < newMaterials.Length; i++) {
-                newMaterials[i] = material;
-            }
-            renderer.sharedMaterials = newMaterials;
-        }
     }
 
     private void removeDissolveScript() {
