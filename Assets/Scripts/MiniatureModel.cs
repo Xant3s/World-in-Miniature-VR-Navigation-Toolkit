@@ -691,6 +691,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var WIMLevel = Instantiate(levelTransform, transform);
         WIMLevel.localPosition = Vector3.zero;
         WIMLevel.name = "WIM Level";
+        WIMLevel.gameObject.isStatic = false;
         foreach(Transform child in WIMLevel) {
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
