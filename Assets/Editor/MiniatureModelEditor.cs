@@ -21,6 +21,7 @@ public class MiniatureModelEditor : Editor {
         WIM.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.AutoGenerateWIM);
         if(EditorGUI.EndChangeCheck()) updateAutoGenerateWIM();
         DrawDefaultInspector();
+        if(Application.isPlaying) return;
         if (scrollingPropertyChanged() || occlusionHandlingStrategyChanged()) WIM.ConfigureWIM(createNewWIM: true);
         updateCylinderMask();
         updateCutoutViewMask();

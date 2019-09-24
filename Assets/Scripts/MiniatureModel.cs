@@ -845,9 +845,16 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         //foreach(Transform child in wimLevelTransform) {
         var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
         var levelChildTransforms = GameObject.FindGameObjectWithTag("LevelRoot").GetComponentsInChildren<Transform>();
+        if(WIMChildTransforms.Length != levelChildTransforms.Length) return;
         var i = 0;
-        foreach (var child in WIMChildTransforms){
-            var childEquivalentInLevel = levelChildTransforms.ElementAt(i);
+        foreach (var child in WIMChildTransforms) {
+            Transform childEquivalentInLevel;
+            try {
+                childEquivalentInLevel = levelChildTransforms.ElementAt(i);
+            }
+            catch {
+                continue;
+            }
             if (!childEquivalentInLevel) continue;
             var collider = childEquivalentInLevel.GetComponent<Collider>();
             i++;
