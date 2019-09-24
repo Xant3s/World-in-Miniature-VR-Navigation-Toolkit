@@ -39,6 +39,11 @@ public class Dissolve : MonoBehaviour {
     }
 
     public void SetProgress(float progress) {
+        if(!mat) {
+            mat = GetComponent<Renderer>().material;
+        }
+
+        if(!mat) return;
         mat.SetFloat("Vector1_461A9E8C", progress);
     }
 }
