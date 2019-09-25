@@ -1,19 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 public class PickupDestinationUpdate : MonoBehaviour {
     public float DoubleTapInterval { get; set; } = 2;
 
+    private enum TapState{None, FirstTap, WaitingForSecondTap, SecondTap}
+
+    private TapState tapState;
     private bool pickupMode = false;
     private Transform thumb;
     private Transform index;
-    private bool thumbIsGrabbing;
-    private bool indexIsGrabbing;
+    private bool thumbIsTouching;
+    private bool indexIsTouching;
     private bool isGrabbing;
-    private bool stoppedGrabbing;
-    private bool firstTap = false;
 
 
     void Awake() {
@@ -32,60 +34,49 @@ public class PickupDestinationUpdate : MonoBehaviour {
     }
 
     void Update() {
-        var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
-        if(rightHandPinch && !isGrabbing) {
+        var capLowerCenter = transform.position - transform.up * transform.localScale.y;
+        var capUpperCenter = transform.position + transform.up * transform.localScale.y;
+        var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().ScaleFactor * 1.0f;
+        var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
+        thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
+        indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
+        var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
+        var thumbAndIndexPressed = OVRInput.Get(OVRInput.RawButton.A) && OVRInput.Get(OVRInput.RawButton.RIndexTrigger);
+
+        if(!isGrabbing) {
+            // Handle double tap
+            switch(tapState) {
+                case TapState.None when indexIsTouching && !thumbIsTouching:
+                    // First tap
+                    tapState = TapState.FirstTap;
+                    Invoke("resetDoubleTap", DoubleTapInterval);
+                    break;
+                case TapState.FirstTap when !indexIsTouching:
+                    // Tapped once, now outside 
+                    tapState = TapState.WaitingForSecondTap;
+                    break;
+                case TapState.WaitingForSecondTap when indexIsTouching && !thumbIsTouching:
+                    // 2nd tap
+                    tapState = TapState.SecondTap;
+                    var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+                    WIM.ConfirmTeleport();
+                    break;
+            }
+        }
+
+        if (!isGrabbing && thumbAndIndexTouching && thumbAndIndexPressed) {
             isGrabbing = true;
-            stoppedGrabbing = false;
+            resetDoubleTap();
             startGrabbing();
         }
-        else if(isGrabbing && !rightHandPinch) {
+        else if(isGrabbing && !thumbAndIndexPressed) {
             isGrabbing = false;
-        }
-
-        // Hotfix: for not detection thumb letting go.
-        if(isGrabbing && !OVRInput.Get(OVRInput.RawButton.A)) {
-            isGrabbing = false;
-        }
-
-        if(!isGrabbing && (OVRInput.GetUp(OVRInput.RawButton.A) || OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger))) {
-            if(stoppedGrabbing) return;
             stopGrabbing();
-            stoppedGrabbing = true;
-        }
-
-        // Detect destination confirmation (double tap).
-
-    }
-
-    void OnTriggerEnter(Collider other) {
-        var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
-
-        if(other.transform == thumb) {
-            thumbIsGrabbing = true;
-        }
-        else if(other.transform == index) {
-            indexIsGrabbing = true;
-            if(firstTap) {
-                WIM.ConfirmTeleport();
-            }
-            else {
-                firstTap = true;
-                Invoke("resetDoubleTap", DoubleTapInterval);
-            }
-        }
-    }
-
-    void OnTriggerExit(Collider other) {
-        if(other.transform == thumb) {
-            thumbIsGrabbing = false;
-        }
-        else if(other.transform == index) {
-            indexIsGrabbing = false;
         }
     }
 
     void startGrabbing() {
-        var WIMTransform = transform.root;
+        var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         Assert.IsNotNull(WIM);
 
@@ -94,13 +85,16 @@ public class PickupDestinationUpdate : MonoBehaviour {
 
         // Actually pick up the new destination indicator.
         WIM.DestinationIndicatorInWIM.parent = index;
+        var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
+        WIM.DestinationIndicatorInWIM.position = midPos;
     }
 
     void stopGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
+        Assert.IsNotNull(WIM);
 
-        // Let go.
+        // Let go. 
         WIM.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
         // Create destination indicator in level. Includes snap to ground.
@@ -111,6 +105,8 @@ public class PickupDestinationUpdate : MonoBehaviour {
     }
 
     private void resetDoubleTap() {
-        firstTap = false;
+        //firstTap = false;
+        tapState = TapState.None;
+        CancelInvoke("resetDoubleTap");
     }
 }

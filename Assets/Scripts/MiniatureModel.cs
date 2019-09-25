@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AdvancedDissolve_Example;
 using MyBox;
 using UnityEngine;
 using UnityEngine.AI;
@@ -166,7 +167,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool isNewDestination = false;
     private Transform destinationIndicatorInWIM;
     private bool previewScreenEnabled;
-
+    private Vector3 WIMLevelLocalPos;
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -190,6 +191,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     void Start() {
+        WIMLevelLocalPos = WIMLevelTransform.localPosition;
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         if(destinationSelectionMethod == DestinationSelection.Pickup)
             playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = DoubleTapInterval;
@@ -199,16 +201,17 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Update() {
         detectArmLength();
         checkSpawnWIM();
-        if (destinationSelectionMethod == DestinationSelection.Selection) {
+        if(destinationSelectionMethod == DestinationSelection.Selection) {
             selectDestination();
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        if(playerRepresentationTransform) updatePlayerRepresentationInWIM();
-        if(previewScreenEnabled) updatePreviewScreen();
+        if (playerRepresentationTransform) updatePlayerRepresentationInWIM();
+        if (previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
-        if(!WIMLevelTransform) return;
-        if(AutoScroll) autoScrollWIM();
+        if (!WIMLevelTransform) return;
+        if(!AllowWIMScrolling) return;
+        if (AutoScroll) autoScrollWIM();
         else scrollWIM();
     }
 
@@ -308,7 +311,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         newWIMLevel.position = Vector3.zero;
-        newWIMLevel.localPosition = Vector3.zero;
+        //newWIMLevel.localPosition = Vector3.zero;
+        newWIMLevel.localPosition = WIMLevelLocalPos;
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
@@ -423,12 +427,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
         pathTrace.Converter = this;
         pathTrace.TraceDurationInSeconds = traceDuration;
-        pathTrace.oldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
-        pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
-        pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
-        pathTrace.newPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
-        pathTrace.newPositionInWIM.position = DestinationIndicatorInWIM.position;
-        pathTrace.newPositionInWIM.name = "PathTraceNewPosition";
+        pathTrace.OldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.OldPositionInWIM.position = playerRepresentationTransform.position;
+        pathTrace.OldPositionInWIM.name = "PathTraceOldPosition";
+        pathTrace.NewPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.NewPositionInWIM.position = DestinationIndicatorInWIM.position;
+        pathTrace.NewPositionInWIM.name = "PathTraceNewPosition";
         Destroy(emptyGO);
     }
 
@@ -506,6 +510,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public Transform SpawnDestinationIndicatorInWIM() {
+        Assert.IsNotNull(WIMLevelTransform);
+        Assert.IsNotNull(destinationIndicator);
         DestinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
         DestinationIndicatorInWIM.position = fingertipIndexR.position;
         if(previewScreen && !autoPositionPreviewScreen)
@@ -515,7 +521,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     void onNewDestination() {
-        //if (!IsNewDestination) return;
         IsNewDestination = false;
 
         // Optional: show preview screen.
@@ -574,12 +579,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public void RemoveDestinationIndicators() {
         if (!DestinationIndicatorInWIM) return;
         RemovePreviewScreen();
-        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        //DestroyImmediate(TravelPreviewAnimationObj);
-        //DestroyImmediate(DestinationIndicatorInWIM.gameObject);
-        //if(DestinationIndicatorInLevel)
-        //    DestroyImmediate(DestinationIndicatorInLevel.gameObject);
-
         // Destroy uses another thread, so make sure they are not copied by removing from parent.
         if(TravelPreviewAnimationObj) {
             TravelPreviewAnimationObj.transform.parent = null;
@@ -612,16 +611,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             previewScreen.AddComponent<ClosePreviewScreen>();
         }
 
-        InitPreviewScreen(previewScreen);
+        initPreviewScreen(previewScreen);
         previewScreenEnabled = true;
         return previewScreen.transform;
     }
 
-    public void InitPreviewScreen(GameObject previewScreen) {
+    private void initPreviewScreen(GameObject previewScreen) {
+        Assert.IsNotNull(DestinationIndicatorInLevel);
+        Assert.IsNotNull(DestinationIndicatorInLevel.GetChild(1));
         var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
-        var cam = camObj.AddComponent<Camera>();
-        if(!cam)
-            cam = camObj.AddComponent<Camera>();    // Don't ask...
+        Assert.IsNotNull(camObj);
+        var cam = camObj.GetOrAddComponent<Camera>();
+        Assert.IsNotNull(cam);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.gray;
@@ -675,7 +676,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-        playerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
+       playerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
         playerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y * ScaleFactor;
 
         // Rotation
@@ -691,41 +692,186 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var WIMLevel = Instantiate(levelTransform, transform);
         WIMLevel.localPosition = Vector3.zero;
         WIMLevel.name = "WIM Level";
+        WIMLevel.gameObject.isStatic = false;
         foreach(Transform child in WIMLevel) {
             DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
             DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
             DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
             var renderer = child.GetComponent<Renderer>();
             if(renderer) {
-                renderer.material = Resources.Load<Material>("Materials/Dissolve");
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
             }
-            child.gameObject.AddComponent<Dissolve>();
             child.gameObject.isStatic = false;
         }
         transform.localScale = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);
+        ConfigureWIM();
+    }
+
+    public void ConfigureWIM() {
+        // Cleanup old configuration.
+        disableScrolling();
+        cleanupOcclusionHandling();
+
+        // Setup new configuration.
+        var material = LoadAppropriateMaterial();
+        SetWIMMaterial(material);
+        SetupDissolveScript();
+        if (AllowWIMScrolling) enableScrolling(material);
+        else if (occlusionHandling == MiniatureModel.OcclusionHandling.CutoutView) configureCutoutView(material);
+        else if (occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls) configureMeltWalls(material);
+    }
+
+    private static void configureCutoutView(Material material) {
+        var maskController = new GameObject("Mask Controller");
+        var controller = maskController.AddComponent<Controller_Mask_Cone>();
+        controller.materials = new[] {material};
+        var spotlightObj = new GameObject("Spotlight Mask");
+        var spotlight = spotlightObj.AddComponent<Light>();
+        controller.spotLight1 = spotlight;
+        spotlight.type = LightType.Spot;
+        spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
+    }
+
+    private static void configureMeltWalls(Material material) {
+        var maskController = new GameObject("Mask Controller");
+        var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
+        controller.materials = new[] {material};
+        var cylinderMask = new GameObject("Cylinder Mask");
+        controller.cylinder1 = cylinderMask;
+        cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
+    }
+
+    void cleanupOcclusionHandling() {
+        DestroyImmediate(GameObject.Find("Cylinder Mask"));
+        DestroyImmediate(GameObject.Find("Spotlight Mask"));
+        DestroyImmediate(GameObject.Find("Mask Controller"));
+    }
+
+    private void enableScrolling(Material material) {
+        var maskController = new GameObject("Box Mask");
+        var controller = maskController.AddComponent<Controller_Mask_Box>();
+        controller.materials = new[] {material};
+        var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        var mf = tmpGO.GetComponent<MeshFilter>();
+        var cubeMesh = Instantiate(mf.sharedMesh) as Mesh;
+        maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
+        maskController.AddComponent<AlignWith>().Target = transform;
+        controller.box1 = maskController;
+        controller.invert = true;
+        removeAllColliders();
+        gameObject.AddComponent<BoxCollider>().size = activeAreaBounds / ScaleFactor;
+        RemoveDissolveScript();
+        DestroyImmediate(tmpGO);
+        maskController.transform.position = transform.position;
+    }
+
+    private void disableScrolling() {
+        DestroyImmediate(GameObject.Find("Box Mask"));
+        removeAllColliders(transform);
         generateColliders();
     }
 
+    public Material LoadAppropriateMaterial() {
+        if(AllowWIMScrolling) return Resources.Load<Material>("Materials/ScrollDissolve");
+        Material material;
+        switch(occlusionHandling) {
+             case MiniatureModel.OcclusionHandling.Transparency:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
+                break;
+            case MiniatureModel.OcclusionHandling.MeltWalls: {
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                break;
+            }
+            case MiniatureModel.OcclusionHandling.CutoutView: {
+                material = Resources.Load<Material>("Materials/MeltWalls");
+                break;
+            }
+             case OcclusionHandling.None:
+             default:
+                material = Resources.Load<Material>("Materials/Dissolve");
+                material.shader = Shader.Find("Shader Graphs/Dissolve");
+                break;
+        }
+
+        return material;
+    }
+
+    public void SetupDissolveScript() {
+        if(AllowWIMScrolling || occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls ||
+           occlusionHandling == OcclusionHandling.CutoutView) {
+            RemoveDissolveScript();
+        }
+        else {
+            AddDissolveScript();
+        }
+    }
+
+    public void RemoveDissolveScript() {
+        var WIMLevelTransform = transform.GetChild(0);
+        foreach(Transform child in WIMLevelTransform) {
+            DestroyImmediate(child.GetComponent<Dissolve>());
+        }
+    }
+
+    public void AddDissolveScript() {
+        var WIMLevelTransform = transform.GetChild(0);
+        foreach(Transform child in WIMLevelTransform) {
+            if(!child.GetComponent<Dissolve>())
+                child.gameObject.AddComponent<Dissolve>();
+        }
+    }
+
+    public void SetWIMMaterial(Material material) {
+        var WIMLevelTransform = transform.GetChild(0);
+        foreach(Transform child in WIMLevelTransform) {
+            var renderer = child.GetComponent<Renderer>();
+            if(!renderer) continue;
+            var newMaterials = renderer.sharedMaterials;
+            for(var i = 0; i < newMaterials.Length; i++) {
+                newMaterials[i] = material;
+            }
+            renderer.sharedMaterials = newMaterials;
+        }
+    }
+
+    [ExecuteInEditMode]
     private void generateColliders() {
-        // Generate colliders: // TODO: what about child of childs: WIM-WIMLevel-objects-childs-...
+        // Generate colliders:
         // 1. Copy colliders from actual level (to determine which objects should have a collider)
         // [alternatively don't delete them while generating the WIM]
         // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
         var wimLevelTransform = transform.GetChild(0);
-        foreach(Transform child in wimLevelTransform) {
-            var collider = child.GetComponent<Collider>();
-            if(!collider) continue;
-            removeAllColliders(child);
-            var childBoxCollider = child.gameObject.AddComponent<BoxCollider>();
+        Assert.IsNotNull(wimLevelTransform);
+        var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
+        var levelChildTransforms = GameObject.Find("Level").GetComponentsInChildren<Transform>();
+        Assert.AreNotEqual(wimLevelTransform, GameObject.Find("Level").transform);
+        if (WIMChildTransforms.Length != levelChildTransforms.Length) return;
+        var i = 0;
+        foreach (var childInWIM in WIMChildTransforms) {
+            Transform childEquivalentInLevel;
+            try {
+                childEquivalentInLevel = levelChildTransforms.ElementAt(i);
+                Assert.IsNotNull(childEquivalentInLevel);
+            }
+            catch {
+                continue;
+            }
+            if (!childEquivalentInLevel) continue;
+            Assert.AreNotEqual(childEquivalentInLevel, childInWIM);
+            var collider = childEquivalentInLevel.GetComponent<Collider>();
+            i++;
+            if (!collider) continue;
+            removeAllColliders(childInWIM);
+            var childBoxCollider = childInWIM.gameObject.AddComponent<BoxCollider>();
             // 3. move collider to WIM root (consider scale and position)
             var rootCollider = gameObject.AddComponent<BoxCollider>();
-            rootCollider.center = child.localPosition;
+            rootCollider.center = childInWIM.localPosition;
             rootCollider.size = Vector3.zero;
             var bounds = rootCollider.bounds;
             bounds.Encapsulate(childBoxCollider.bounds);
             rootCollider.size = bounds.size / ScaleFactor;
-            removeAllColliders(child);
+            removeAllColliders(childInWIM);
         }
         // 4. remove every collider that is fully inside another one.
         pruneColliders();
@@ -733,15 +879,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         expandColliders();
     }
 
-    public void removeAllColliders() {
-        while(GetComponent<Collider>()) {
-            DestroyImmediate(GetComponent<Collider>());
-        }
+    private void removeAllColliders() {
+        removeAllColliders(transform);
     }
 
     private void removeAllColliders(Transform t) {
-        while(t.GetComponent<Collider>()) {
-            DestroyImmediate(t.GetComponent<Collider>());
+        Collider collider;
+        while(collider = t.GetComponent<Collider>()) {  // Assignment
+            DestroyImmediate(collider);
         }
     }
 
