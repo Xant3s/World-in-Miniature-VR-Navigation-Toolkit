@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -23,15 +24,14 @@ public class PickupDestinationSelection : MonoBehaviour {
         Assert.IsNotNull(index);
     }
 
-
-    void Start() {
-        var collider = gameObject.AddComponent<CapsuleCollider>();
-        collider.height = 2.2f;
-        collider.radius = .7f;
-        collider.isTrigger = true;
-    }
-
     void Update() {
+        var capLowerCenter = transform.position - transform.up * transform.localScale.y;
+        var capUpperCenter = transform.position + transform.up * transform.localScale.y;
+        var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().ScaleFactor * 1.0f;
+        var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
+        thumbIsGrabbing = colliders.Contains(thumb.GetComponent<Collider>());
+        indexIsGrabbing = colliders.Contains(index.GetComponent<Collider>());
+
         var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
         if(rightHandPinch && !isGrabbing) {
             isGrabbing = true;
@@ -44,24 +44,6 @@ public class PickupDestinationSelection : MonoBehaviour {
             if(stoppedGrabbing) return;
             stopGrabbing();
             stoppedGrabbing = true;
-        }
-    }
-
-    void OnTriggerEnter(Collider other) {
-        if(other.transform == thumb) {
-            thumbIsGrabbing = true;
-        }
-        else if(other.transform == index) {
-            indexIsGrabbing = true;
-        }
-    }
-
-    void OnTriggerExit(Collider other) {
-        if(other.transform == thumb) {
-            thumbIsGrabbing = false;
-        }
-        else if(other.transform == index) {
-            indexIsGrabbing = false;
         }
     }
 
@@ -83,6 +65,7 @@ public class PickupDestinationSelection : MonoBehaviour {
     void stopGrabbing() {
         var WIMTransform = transform.root;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
+        Assert.IsNotNull(WIM);
 
         // Let go.
         if(!WIM.DestinationIndicatorInWIM) return;

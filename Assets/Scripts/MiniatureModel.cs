@@ -875,7 +875,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         expandColliders();
     }
 
-    public void removeAllColliders() {
+    private void removeAllColliders() {
         removeAllColliders(transform);
     }
 
