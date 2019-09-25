@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MyBox;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -33,17 +34,22 @@ public class TravelPreviewAnimation : MonoBehaviour {
     }
 
     private void initAnimatedPlayerRepresentation() {
+        Assert.IsNotNull(DestinationIndicator);
+        Assert.IsNotNull(WIMLevelTransform);
         animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIMLevelTransform).transform;
+        Assert.IsNotNull(animatedPlayerRepresentation);
         animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
         animatedPlayerRepresentation.name = "Animated Player Travel Representation";
-        Assert.IsNotNull(animatedPlayerRepresentation);
-        var rb = animatedPlayerRepresentation.GetComponent<Rigidbody>();
-        Assert.IsNotNull(rb);
+        //var rb = animatedPlayerRepresentation.GetOrAddComponent<Rigidbody>();
+        //Assert.IsNotNull(rb);
+        //rb.useGravity = false;
+        //rb.isKinematic = true;
         animatedPlayerRepresentation.GetComponent<Renderer>().material =
             Resources.Load<Material>("Materials/SemiTransparent");
     }
 
     void OnDestroy() {
+        if(!animatedPlayerRepresentation) return;
         animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
         Destroy(animatedPlayerRepresentation.gameObject);
     }
