@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 [RequireComponent(typeof(LineRenderer))]
 public class TravelPreviewAnimation : MonoBehaviour {
@@ -35,7 +36,9 @@ public class TravelPreviewAnimation : MonoBehaviour {
         animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIMLevelTransform).transform;
         animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
         animatedPlayerRepresentation.name = "Animated Player Travel Representation";
-        animatedPlayerRepresentation.gameObject.AddComponent<Rigidbody>().useGravity = false;
+        Assert.IsNotNull(animatedPlayerRepresentation);
+        var rb = animatedPlayerRepresentation.GetComponent<Rigidbody>();
+        Assert.IsNotNull(rb);
         animatedPlayerRepresentation.GetComponent<Renderer>().material =
             Resources.Load<Material>("Materials/SemiTransparent");
     }
