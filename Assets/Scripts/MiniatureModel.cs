@@ -168,7 +168,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Transform destinationIndicatorInWIM;
     private bool previewScreenEnabled;
 
-
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
         WIMLevelTransform = GameObject.Find("WIM Level").transform;
@@ -508,6 +507,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public Transform SpawnDestinationIndicatorInWIM() {
+        Assert.IsNotNull(WIMLevelTransform);
+        Assert.IsNotNull(destinationIndicator);
         DestinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
         DestinationIndicatorInWIM.position = fingertipIndexR.position;
         if(previewScreen && !autoPositionPreviewScreen)
@@ -517,7 +518,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     void onNewDestination() {
-        //if (!IsNewDestination) return;
         IsNewDestination = false;
 
         // Optional: show preview screen.
@@ -576,12 +576,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public void RemoveDestinationIndicators() {
         if (!DestinationIndicatorInWIM) return;
         RemovePreviewScreen();
-        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        //DestroyImmediate(TravelPreviewAnimationObj);
-        //DestroyImmediate(DestinationIndicatorInWIM.gameObject);
-        //if(DestinationIndicatorInLevel)
-        //    DestroyImmediate(DestinationIndicatorInLevel.gameObject);
-
         // Destroy uses another thread, so make sure they are not copied by removing from parent.
         if(TravelPreviewAnimationObj) {
             TravelPreviewAnimationObj.transform.parent = null;
@@ -614,16 +608,17 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             previewScreen.AddComponent<ClosePreviewScreen>();
         }
 
-        InitPreviewScreen(previewScreen);
+        initPreviewScreen(previewScreen);
         previewScreenEnabled = true;
         return previewScreen.transform;
     }
 
-    public void InitPreviewScreen(GameObject previewScreen) {
+    private void initPreviewScreen(GameObject previewScreen) {
+        Assert.IsNotNull(DestinationIndicatorInLevel);
+        Assert.IsNotNull(DestinationIndicatorInLevel.GetChild(1));
         var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
         var cam = camObj.AddComponent<Camera>();
-        if(!cam)
-            cam = camObj.AddComponent<Camera>();    // Don't ask...
+        Assert.IsNotNull(cam);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.gray;
@@ -705,22 +700,21 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             child.gameObject.isStatic = false;
         }
         transform.localScale = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);
-        generateColliders();
         ConfigureWIM();
     }
 
-    public void ConfigureWIM(bool createNewWIM = false) {
+    public void ConfigureWIM() {
         // Cleanup old configuration.
-        disableScrolling(createNewWIM);
+        disableScrolling();
         cleanupOcclusionHandling();
 
         // Setup new configuration.
         var material = LoadAppropriateMaterial();
         SetWIMMaterial(material);
         SetupDissolveScript();
-        if(AllowWIMScrolling) enableScrolling(material);
-        else if(occlusionHandling == MiniatureModel.OcclusionHandling.CutoutView) configureCutoutView(material);
-        else if(occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls) configureMeltWalls(material);
+        if (AllowWIMScrolling) enableScrolling(material);
+        else if (occlusionHandling == MiniatureModel.OcclusionHandling.CutoutView) configureCutoutView(material);
+        else if (occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls) configureMeltWalls(material);
     }
 
     private static void configureCutoutView(Material material) {
@@ -767,7 +761,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         maskController.transform.position = transform.position;
     }
 
-    private void disableScrolling(bool createNewWIM) {
+    private void disableScrolling() {
         DestroyImmediate(GameObject.Find("Box Mask"));
         removeAllColliders(transform);
         generateColliders();
@@ -837,39 +831,43 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
+    [ExecuteInEditMode]
     private void generateColliders() {
         // Generate colliders:
         // 1. Copy colliders from actual level (to determine which objects should have a collider)
         // [alternatively don't delete them while generating the WIM]
         // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
         var wimLevelTransform = transform.GetChild(0);
-        //foreach(Transform child in wimLevelTransform) {
+        Assert.IsNotNull(wimLevelTransform);
         var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
-        var levelChildTransforms = GameObject.FindGameObjectWithTag("LevelRoot").GetComponentsInChildren<Transform>();
-        if(WIMChildTransforms.Length != levelChildTransforms.Length) return;
+        var levelChildTransforms = GameObject.Find("Level").GetComponentsInChildren<Transform>();
+        Assert.AreNotEqual(wimLevelTransform, GameObject.Find("Level").transform);
+        if (WIMChildTransforms.Length != levelChildTransforms.Length) return;
         var i = 0;
-        foreach (var child in WIMChildTransforms) {
+        foreach (var childInWIM in WIMChildTransforms) {
             Transform childEquivalentInLevel;
             try {
                 childEquivalentInLevel = levelChildTransforms.ElementAt(i);
+                Assert.IsNotNull(childEquivalentInLevel);
             }
             catch {
                 continue;
             }
             if (!childEquivalentInLevel) continue;
+            Assert.AreNotEqual(childEquivalentInLevel, childInWIM);
             var collider = childEquivalentInLevel.GetComponent<Collider>();
             i++;
-            if (collider == null) continue;
-            removeAllColliders(child);
-            var childBoxCollider = child.gameObject.AddComponent<BoxCollider>();
+            if (!collider) continue;
+            removeAllColliders(childInWIM);
+            var childBoxCollider = childInWIM.gameObject.AddComponent<BoxCollider>();
             // 3. move collider to WIM root (consider scale and position)
             var rootCollider = gameObject.AddComponent<BoxCollider>();
-            rootCollider.center = child.localPosition;
+            rootCollider.center = childInWIM.localPosition;
             rootCollider.size = Vector3.zero;
             var bounds = rootCollider.bounds;
             bounds.Encapsulate(childBoxCollider.bounds);
             rootCollider.size = bounds.size / ScaleFactor;
-            removeAllColliders(child);
+            removeAllColliders(childInWIM);
         }
         // 4. remove every collider that is fully inside another one.
         pruneColliders();
@@ -878,14 +876,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public void removeAllColliders() {
-        while(GetComponent<Collider>()) {
-            DestroyImmediate(GetComponent<Collider>());
-        }
+        removeAllColliders(transform);
     }
 
     private void removeAllColliders(Transform t) {
-        while(t.GetComponent<Collider>()) {
-            DestroyImmediate(t.GetComponent<Collider>());
+        Collider collider;
+        while(collider = t.GetComponent<Collider>()) {  // Assignment
+            DestroyImmediate(collider);
         }
     }
 

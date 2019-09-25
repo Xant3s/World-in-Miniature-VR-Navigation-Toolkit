@@ -22,7 +22,7 @@ public class MiniatureModelEditor : Editor {
         if(EditorGUI.EndChangeCheck()) updateAutoGenerateWIM();
         DrawDefaultInspector();
         if(Application.isPlaying) return;
-        if (scrollingPropertyChanged() || occlusionHandlingStrategyChanged()) WIM.ConfigureWIM(createNewWIM: true);
+        if (scrollingPropertyChanged() || occlusionHandlingStrategyChanged()) WIM.ConfigureWIM();
         updateCylinderMask();
         updateCutoutViewMask();
         updateScrollingMask();
