@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 [RequireComponent(typeof(LineRenderer))]
 public class PostTravelPathTrace : MonoBehaviour {
     public WIMSpaceConverter Converter { get; set; }
-    public Transform newPositionInWIM { get; set; }
-    public Transform oldPositionInWIM { get; set; }
+    public Transform NewPositionInWIM { get; set; }
+    public Transform OldPositionInWIM { get; set; }
     public Transform WIMLevelTransform { get; set; }
     public float TraceDurationInSeconds { get; set; }
 
@@ -20,8 +21,11 @@ public class PostTravelPathTrace : MonoBehaviour {
     }
 
     public void Init() {
-        oldPositionInWIM = WIMLevelTransform.Find("PathTraceOldPosition").transform;
-        newPositionInWIM = WIMLevelTransform.Find("PathTraceNewPosition").transform;
+        Assert.IsNotNull(WIMLevelTransform);
+        OldPositionInWIM = WIMLevelTransform.Find("PathTraceOldPosition").transform;
+        NewPositionInWIM = WIMLevelTransform.Find("PathTraceNewPosition").transform;
+        Assert.IsNotNull(OldPositionInWIM);
+        Assert.IsNotNull(NewPositionInWIM);
         lr.widthMultiplier = .001f;
         lr.material = new Material(Shader.Find("Sprites/Default"));
         var gradient = new Gradient();
@@ -46,14 +50,14 @@ public class PostTravelPathTrace : MonoBehaviour {
         var progress = timePast / TraceDurationInSeconds;
         progress = Mathf.Clamp(progress, 0, 1);
 
-        var dir = newPositionInWIM.position - oldPositionInWIM.position;
-        var currPos = oldPositionInWIM.position + dir * progress;
+        var dir = NewPositionInWIM.position - OldPositionInWIM.position;
+        var currPos = OldPositionInWIM.position + dir * progress;
         lr.SetPosition(0, currPos);
-        lr.SetPosition(1, newPositionInWIM.position);
+        lr.SetPosition(1, NewPositionInWIM.position);
     }
 
     void OnDestroy() {
-        if(oldPositionInWIM) Destroy(oldPositionInWIM.gameObject);
-        if(newPositionInWIM) Destroy(newPositionInWIM.gameObject);
+        if(OldPositionInWIM) Destroy(OldPositionInWIM.gameObject);
+        if(NewPositionInWIM) Destroy(NewPositionInWIM.gameObject);
     }
 }

@@ -424,12 +424,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
         pathTrace.Converter = this;
         pathTrace.TraceDurationInSeconds = traceDuration;
-        pathTrace.oldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
-        pathTrace.oldPositionInWIM.position = playerRepresentationTransform.position;
-        pathTrace.oldPositionInWIM.name = "PathTraceOldPosition";
-        pathTrace.newPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
-        pathTrace.newPositionInWIM.position = DestinationIndicatorInWIM.position;
-        pathTrace.newPositionInWIM.name = "PathTraceNewPosition";
+        pathTrace.OldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.OldPositionInWIM.position = playerRepresentationTransform.position;
+        pathTrace.OldPositionInWIM.name = "PathTraceOldPosition";
+        pathTrace.NewPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
+        pathTrace.NewPositionInWIM.position = DestinationIndicatorInWIM.position;
+        pathTrace.NewPositionInWIM.name = "PathTraceNewPosition";
         Destroy(emptyGO);
     }
 
