@@ -209,6 +209,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
         if (!WIMLevelTransform) return;
+        if(!AllowWIMScrolling) return;
         if (AutoScroll) autoScrollWIM();
         else scrollWIM();
     }
