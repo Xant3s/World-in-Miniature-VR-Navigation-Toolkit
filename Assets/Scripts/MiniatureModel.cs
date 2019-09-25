@@ -167,6 +167,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool isNewDestination = false;
     private Transform destinationIndicatorInWIM;
     private bool previewScreenEnabled;
+    private Vector3 WIMLevelLocalPos;
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -190,6 +191,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     void Start() {
+        WIMLevelLocalPos = WIMLevelTransform.localPosition;
         playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         if(destinationSelectionMethod == DestinationSelection.Pickup)
             playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = DoubleTapInterval;
@@ -309,7 +311,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         newWIMLevel.position = Vector3.zero;
-        newWIMLevel.localPosition = Vector3.zero;
+        //newWIMLevel.localPosition = Vector3.zero;
+        newWIMLevel.localPosition = WIMLevelLocalPos;
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
