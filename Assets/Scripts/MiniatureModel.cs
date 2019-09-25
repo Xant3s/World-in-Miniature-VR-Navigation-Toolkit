@@ -617,7 +617,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         Assert.IsNotNull(DestinationIndicatorInLevel);
         Assert.IsNotNull(DestinationIndicatorInLevel.GetChild(1));
         var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
-        var cam = camObj.AddComponent<Camera>();
+        Assert.IsNotNull(camObj);
+        var cam = camObj.GetOrAddComponent<Camera>();
         Assert.IsNotNull(cam);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
         cam.clearFlags = CameraClearFlags.SolidColor;
