@@ -26,6 +26,7 @@ public class MiniatureModelEditor : Editor {
         updateCylinderMask();
         updateCutoutViewMask();
         updateScrollingMask();
+        updateTransparency();
     }
 
     void updateAutoGenerateWIM() {
@@ -89,5 +90,12 @@ public class MiniatureModelEditor : Editor {
         var boxMaskObj = GameObject.Find("Box Mask");
         if(!boxMaskObj) return;
         boxMaskObj.transform.localScale = WIM.activeAreaBounds;
+    }
+
+    private void updateTransparency() {
+        if(WIM.SemiTransparent == WIM.PrevSemiTransparent && Math.Abs(WIM.transparency - WIM.PrevTransparency) < .1f) return;
+        WIM.PrevTransparency = WIM.transparency;
+        WIM.PrevSemiTransparent = WIM.SemiTransparent;
+        WIM.ConfigureWIM();
     }
 }
