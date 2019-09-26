@@ -17,6 +17,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
     [SerializeField] private GameObject destinationIndicator;
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
+    [SerializeField] private Vector3 WIMLevelOffset = Vector3.zero;
     [VectorLabels("Left", "Right")] public Vector2 expandCollidersX = Vector2.zero;
     [VectorLabels("Up", "Down")] public Vector2 expandCollidersY = Vector2.zero;
     [VectorLabels("Front", "Back")] public Vector2 expandCollidersZ = Vector2.zero;
@@ -38,10 +39,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
 
     [Separator("Occlusion Handling", true)]
+    public bool SemiTransparent = true;
+    [ConditionalField(nameof(SemiTransparent))]
+    public float transparency = 0.33f;
     [Tooltip("Select occlusion handling strategy. Disable for scrolling.")]
     public OcclusionHandling occlusionHandling;
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.Transparency)]
-    public float transparency = 0.33f;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
     public float meltRadius = 1.0f;
     [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
@@ -106,7 +108,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public bool AutoGenerateWIM { get; set; } = false;
     public bool PrevAllowWIMScrolling { get; set; } = true;
-    public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.Transparency;
+    public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.None;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public float ScaleFactor {
@@ -117,7 +119,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    public enum OcclusionHandling{None, Transparency, MeltWalls, CutoutView}
+    public enum OcclusionHandling{None, MeltWalls, CutoutView}
     public enum Hand{NONE, HAND_L, HAND_R}
     public enum DestinationSelection {Selection, Pickup}
 
@@ -146,6 +148,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             travelPreviewAnimationObj = value;
         }
     }
+
+    public bool PrevSemiTransparent { get; set; } = false;
+    public float PrevTransparency { get; set; } = 0;
 
     private GameObject travelPreviewAnimationObj;
     private Transform levelTransform;
@@ -295,8 +300,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         RemoveDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
-        var dissolveFX = occlusionHandling == OcclusionHandling.None ||
-                         occlusionHandling == OcclusionHandling.Transparency;
+        var dissolveFX = occlusionHandling == OcclusionHandling.None;
         if(AllowWIMScrolling) dissolveFX = false;
         if(dissolveFX && !maintainTransformRelativeToPlayer) dissolveWIM(WIMLevel);
         if(maintainTransformRelativeToPlayer) instantDissolveWIM(WIMLevel);
@@ -690,7 +694,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var levelTransform = GameObject.Find("Level").transform;
         if (transform.childCount > 0) DestroyImmediate(transform.GetChild(0).gameObject);
         var WIMLevel = Instantiate(levelTransform, transform);
-        WIMLevel.localPosition = Vector3.zero;
+        WIMLevel.localPosition = WIMLevelOffset;
         WIMLevel.name = "WIM Level";
         WIMLevel.gameObject.isStatic = false;
         foreach(Transform child in WIMLevel) {
@@ -713,9 +717,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         cleanupOcclusionHandling();
 
         // Setup new configuration.
-        var material = LoadAppropriateMaterial();
+        var material = loadAppropriateMaterial();
         SetWIMMaterial(material);
-        SetupDissolveScript();
+        setupDissolveScript();
         if (AllowWIMScrolling) enableScrolling(material);
         else if (occlusionHandling == MiniatureModel.OcclusionHandling.CutoutView) configureCutoutView(material);
         else if (occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls) configureMeltWalls(material);
@@ -760,7 +764,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         controller.invert = true;
         removeAllColliders();
         gameObject.AddComponent<BoxCollider>().size = activeAreaBounds / ScaleFactor;
-        RemoveDissolveScript();
+        removeDissolveScript();
         DestroyImmediate(tmpGO);
         maskController.transform.position = transform.position;
     }
@@ -770,44 +774,60 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         removeAllColliders(transform);
         generateColliders();
     }
-
-    public Material LoadAppropriateMaterial() {
-        if(AllowWIMScrolling) return Resources.Load<Material>("Materials/ScrollDissolve");
+    
+    private Material loadAppropriateMaterial() {
         Material material;
+        if(AllowWIMScrolling) {
+            material = Resources.Load<Material>("Materials/ScrollDissolve");
+            setBaseColorAlpha(material, SemiTransparent ? 1 - transparency : 1 - 0);
+            return material;
+        }
         switch(occlusionHandling) {
-             case MiniatureModel.OcclusionHandling.Transparency:
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                break;
             case MiniatureModel.OcclusionHandling.MeltWalls: {
                 material = Resources.Load<Material>("Materials/MeltWalls");
-                break;
+                var color = material.GetColor("_BaseColor");
+                color.a = 1 - transparency;
+                material.SetColor("_BaseColor", color);                break;
             }
             case MiniatureModel.OcclusionHandling.CutoutView: {
                 material = Resources.Load<Material>("Materials/MeltWalls");
+                setBaseColorAlpha(material, 1 - transparency);
                 break;
             }
              case OcclusionHandling.None:
              default:
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/Dissolve");
-                break;
+                 if(SemiTransparent) {
+                     material = Resources.Load<Material>("Materials/Dissolve");
+                     material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
+                     material.SetFloat("Vector1_964AF7C", 1 - transparency);
+                 }
+                 else {
+                     material = Resources.Load<Material>("Materials/Dissolve");
+                     material.shader = Shader.Find("Shader Graphs/Dissolve");
+                 }
+                 break;
         }
 
         return material;
     }
 
-    public void SetupDissolveScript() {
+    private void setBaseColorAlpha(Material material, float value) {
+        var color = material.GetColor("_BaseColor");
+        color.a = value;
+        material.SetColor("_BaseColor", color);
+    }
+
+    private void setupDissolveScript() {
         if(AllowWIMScrolling || occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls ||
            occlusionHandling == OcclusionHandling.CutoutView) {
-            RemoveDissolveScript();
+            removeDissolveScript();
         }
         else {
             AddDissolveScript();
         }
     }
 
-    public void RemoveDissolveScript() {
+    private void removeDissolveScript() {
         var WIMLevelTransform = transform.GetChild(0);
         foreach(Transform child in WIMLevelTransform) {
             DestroyImmediate(child.GetComponent<Dissolve>());
