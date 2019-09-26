@@ -170,6 +170,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Hand scalingHand = Hand.NONE;
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
+    private Vector3 WIMLevelLocalPosOnTravel;
     private bool isNewDestination = false;
     private Transform destinationIndicatorInWIM;
     private bool previewScreenEnabled;
@@ -316,8 +317,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         newWIMLevel.position = Vector3.zero;
-        //newWIMLevel.localPosition = Vector3.zero;
-        newWIMLevel.localPosition = WIMLevelLocalPos;
+        newWIMLevel.localPosition = maintainTransformRelativeToPlayer ? WIMLevelLocalPosOnTravel : WIMLevelLocalPos;
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
@@ -412,6 +412,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             createPostTravelPathTrace();
 
         // Travel.
+        WIMLevelLocalPosOnTravel = transform.GetChild(0).localPosition;
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
         WIMHeightRelativeToPlayer =
             transform.position.y - OVRPlayerController.position.y; // Maintain height relative to player.
