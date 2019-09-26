@@ -149,6 +149,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
+    public bool PrevSemiTransparent { get; set; } = false;
+    public float PrevTransparency { get; set; } = 0;
+
     private GameObject travelPreviewAnimationObj;
     private Transform levelTransform;
     private Transform WIMLevelTransform;
@@ -771,7 +774,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         removeAllColliders(transform);
         generateColliders();
     }
-
+    
     private Material loadAppropriateMaterial() {
         Material material;
         if(AllowWIMScrolling) {
