@@ -152,10 +152,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public bool PrevSemiTransparent { get; set; } = false;
     public float PrevTransparency { get; set; } = 0;
 
+    public Transform PlayerRepresentationTransform { get; private set; }
+
     private GameObject travelPreviewAnimationObj;
     private Transform levelTransform;
     private Transform WIMLevelTransform;
-    private Transform playerRepresentationTransform;
     private Transform playerTransform;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
@@ -197,9 +198,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     void Start() {
         WIMLevelLocalPos = WIMLevelTransform.localPosition;
-        playerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
+        PlayerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         if(destinationSelectionMethod == DestinationSelection.Pickup)
-            playerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = DoubleTapInterval;
+            PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = DoubleTapInterval;
         respawnWIM(false);
     }
 
@@ -211,7 +212,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        if (playerRepresentationTransform) updatePlayerRepresentationInWIM();
+        if (PlayerRepresentationTransform) updatePlayerRepresentationInWIM();
         if (previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
         if (!WIMLevelTransform) return;
@@ -307,7 +308,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
-        playerRepresentationTransform.parent = null;
+        PlayerRepresentationTransform.parent = null;
         var newWIMLevel = Instantiate(WIMLevel.gameObject, transform).transform;
         newWIMLevel.gameObject.name = "WIM Level";
         WIMLevelTransform = newWIMLevel;
@@ -320,7 +321,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
-        playerRepresentationTransform.parent = newWIMLevel;
+        PlayerRepresentationTransform.parent = newWIMLevel;
         
         if (!maintainTransformRelativeToPlayer) {
             var spawnDistanceZ = ((playerArmLength <= 0) ? WIMSpawnOffset.z : playerArmLength);
@@ -432,7 +433,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         pathTrace.Converter = this;
         pathTrace.TraceDurationInSeconds = traceDuration;
         pathTrace.OldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
-        pathTrace.OldPositionInWIM.position = playerRepresentationTransform.position;
+        pathTrace.OldPositionInWIM.position = PlayerRepresentationTransform.position;
         pathTrace.OldPositionInWIM.name = "PathTraceOldPosition";
         pathTrace.NewPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
         pathTrace.NewPositionInWIM.position = DestinationIndicatorInWIM.position;
@@ -538,7 +539,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(!AllowWIMScrolling || !AutoScroll) return;
         var scrollOffset = DestinationIndicatorInWIM
             ? -DestinationIndicatorInWIM.localPosition
-            : -playerRepresentationTransform.localPosition;
+            : -PlayerRepresentationTransform.localPosition;
         WIMLevelTransform.localPosition = scrollOffset;
     }
 
@@ -546,7 +547,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
         var travelPreview = TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
         travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
-        travelPreview.PlayerRepresentationInWIM = playerRepresentationTransform;
+        travelPreview.PlayerRepresentationInWIM = PlayerRepresentationTransform;
         travelPreview.DestinationIndicator = destinationIndicator;
         travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
         travelPreview.WIMLevelTransform = WIMLevelTransform;
@@ -680,12 +681,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-       playerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
-        playerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y * ScaleFactor;
+       PlayerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
+        PlayerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y * ScaleFactor;
 
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
-        playerRepresentationTransform.rotation = rotationInLevel;
+        PlayerRepresentationTransform.rotation = rotationInLevel;
     }
 
     public void generateNewWIM() {

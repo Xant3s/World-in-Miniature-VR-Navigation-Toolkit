@@ -59,6 +59,7 @@ public class PickupDestinationSelection : MonoBehaviour {
         WIM.DestinationIndicatorInWIM.parent = index;
         var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
         WIM.DestinationIndicatorInWIM.position = midPos;
+        WIM.DestinationIndicatorInWIM.rotation = WIM.PlayerRepresentationTransform.rotation;
     }
 
     void stopGrabbing() {
