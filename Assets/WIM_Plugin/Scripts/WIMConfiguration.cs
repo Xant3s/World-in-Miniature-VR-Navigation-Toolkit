@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     // The WIM configuration. Data only. Modified via GUI.
+    // TODO: Replace with scriptable object.
     public interface WIMConfiguration {
         bool AutoGenerateWIM { get; set; }
         GameObject PlayerRepresentation { get; set; }
@@ -17,7 +18,7 @@ namespace WIM_Plugin {
         OVRInput.RawButton ShowWIMButton { get; set; }
         DestinationSelection DestinationSelectionMethod { get; set; }
         OVRInput.RawButton DestinationSelectionButton { get; set; }
-        OVRInput.RawAxis2D DestinationSelectionThumbstick { get; set; }
+        OVRInput.RawAxis2D DestinationRotationThumbstick { get; set; }
         OVRInput.RawButton ConfirmTravelButton { get; set; }
         float DoubleTapInterval { get; set; }
         bool SemiTransparent { get; set; }
@@ -27,7 +28,7 @@ namespace WIM_Plugin {
         float MeltHeihgt { get; set; }
         float CutoutRange { get; set; }
         float CutoutAngle { get; set; }
-        float ShowCutoutLight { get; set; }
+        bool ShowCutoutLight { get; set; }
         Color CutoutLightColor { get; set; }
         bool PreviewScreen { get; set; }
         bool AutoPositionPreviewScreen { get; set; }
@@ -66,46 +67,46 @@ namespace WIM_Plugin {
         public Vector2 ExpandCollidersX { get; set; }
         public Vector2 ExpandCollidersY { get; set; }
         public Vector2 ExpandCollidersZ { get; set; }
-        public bool DestinationAlwaysOnTheGround { get; set; }
-        public OVRInput.RawButton ShowWIMButton { get; set; }
-        public DestinationSelection DestinationSelectionMethod { get; set; }
-        public OVRInput.RawButton DestinationSelectionButton { get; set; }
-        public OVRInput.RawAxis2D DestinationSelectionThumbstick { get; set; }
-        public OVRInput.RawButton ConfirmTravelButton { get; set; }
-        public float DoubleTapInterval { get; set; }
-        public bool SemiTransparent { get; set; }
-        public float Transparency { get; set; }
+        public bool DestinationAlwaysOnTheGround { get; set; } = true;
+        public OVRInput.RawButton ShowWIMButton { get; set; } = OVRInput.RawButton.X;
+        public DestinationSelection DestinationSelectionMethod { get; set; } = DestinationSelection.Pickup;
+        public OVRInput.RawButton DestinationSelectionButton { get; set; } = OVRInput.RawButton.A;
+        public OVRInput.RawAxis2D DestinationRotationThumbstick { get; set; } = OVRInput.RawAxis2D.RThumbstick;
+        public OVRInput.RawButton ConfirmTravelButton { get; set; } = OVRInput.RawButton.B;
+        public float DoubleTapInterval { get; set; } = 2;
+        public bool SemiTransparent { get; set; } = true;
+        public float Transparency { get; set; } = 0.33f;
         public OcclusionHandling OcclusionHandlingMethod { get; set; }
-        public float MeltRadius { get; set; }
-        public float MeltHeihgt { get; set; }
-        public float CutoutRange { get; set; }
-        public float CutoutAngle { get; set; }
-        public float ShowCutoutLight { get; set; }
-        public Color CutoutLightColor { get; set; }
+        public float MeltRadius { get; set; } = 1.0f;
+        public float MeltHeihgt { get; set; } = 2.0f;
+        public float CutoutRange { get; set; } = 10;
+        public float CutoutAngle { get; set; } = 30;
+        public bool ShowCutoutLight { get; set; }
+        public Color CutoutLightColor { get; set; } = Color.white;
         public bool PreviewScreen { get; set; }
         public bool AutoPositionPreviewScreen { get; set; }
         public bool TravelPreviewAnimaition { get; set; }
-        public float TravelPreviewAnimationSpeed { get; set; }
+        public float TravelPreviewAnimationSpeed { get; set; } = 1.0f;
         public bool PostTravelPathTrace { get; set; }
-        public float TraceDuration { get; set; }
+        public float TraceDuration { get; set; } = 1.0f;
         public Vector3 WIMSpawnOffset { get; set; }
-        public float WIMSpawnHeight { get; set; }
-        public float PlayerHeightInCM { get; set; }
+        public float WIMSpawnHeight { get; set; } = 150;
+        public float PlayerHeightInCM { get; set; } = 170;
         public float PlayerArmLength { get; set; }
         public bool AutoDetectArmLength { get; set; }
-        public OVRInput.RawButton ConfirmArmLengthButton { get; set; }
+        public OVRInput.RawButton ConfirmArmLengthButton { get; set; } = OVRInput.RawButton.A;
         public bool AdaptWIMSizeToPlayerHeight { get; set; }
         public bool AllowWIMScaling { get; set; }
-        public float MinScaleFactor { get; set; }
-        public float MaxScaleFactor { get; set; }
-        public OVRInput.RawButton GrabButttonL { get; set; }
-        public OVRInput.RawButton GrabButttonR { get; set; }
-        public float ScaleStep { get; set; }
-        public float InterHandDistanceDeltaThreshold { get; set; }
+        public float MinScaleFactor { get; set; } = 0;
+        public float MaxScaleFactor { get; set; } = .5f;
+        public OVRInput.RawButton GrabButttonL { get; set; } = OVRInput.RawButton.LHandTrigger;
+        public OVRInput.RawButton GrabButttonR { get; set; } = OVRInput.RawButton.RHandTrigger;
+        public float ScaleStep { get; set; } = .0001f;
+        public float InterHandDistanceDeltaThreshold { get; set; } = .1f;
         public bool AllowWIMScrolling { get; set; }
-        public Vector3 ActiveAreaBounds { get; set; }
+        public Vector3 ActiveAreaBounds { get; set; } = new Vector3(10,10,10);
         public bool AutoScroll { get; set; }
-        public float ScrollSpeed { get; set; }
+        public float ScrollSpeed { get; set; } = 1;
         public float MaxWIMScaleFactorDelta { get; set; }
     }
 }
