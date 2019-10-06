@@ -5,8 +5,6 @@ using UnityEngine;
 namespace WIM_Plugin {
     // The WIM configuration. Data only. Modified via GUI.
     public interface WIMConfiguration {
-        bool TestBool { get; set; }
-
         bool AutoGenerateWIM { get; set; }
         GameObject PlayerRepresentation { get; set; }
         GameObject DestinationIndicator { get; set; }
@@ -60,11 +58,10 @@ namespace WIM_Plugin {
     }
 
     public class WIMConfigurationImpl : WIMConfiguration {
-        public bool TestBool { get; set; }
         public bool AutoGenerateWIM { get; set; }
         public GameObject PlayerRepresentation { get; set; }
         public GameObject DestinationIndicator { get; set; }
-        public float ScaleFactor { get; set; }
+        public float ScaleFactor { get; set; } = 0.1f;
         public Vector3 WIMLevelOffset { get; set; }
         public Vector2 ExpandCollidersX { get; set; }
         public Vector2 ExpandCollidersY { get; set; }

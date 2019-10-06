@@ -118,9 +118,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    //public enum OcclusionHandling{None, MeltWalls, CutoutView}
-    //public enum Hand{NONE, HAND_L, HAND_R}
-    //public enum DestinationSelection {Selection, Pickup}
 
     public bool IsNewDestination {
         get => isNewDestination;
