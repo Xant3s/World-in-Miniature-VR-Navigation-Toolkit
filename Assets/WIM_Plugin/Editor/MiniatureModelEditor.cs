@@ -18,7 +18,9 @@ public class MiniatureModelEditor : Editor {
             fontStyle = FontStyle.Bold
         };
 
-        GUILayout.Label("World-in-Miniature (WIM)");
+        GUILayout.Label("World-in-Miniature (WIM)"); 
+        WIM.Configuration = (WIMConfiguration)
+            EditorGUILayout.ObjectField("Configuration", WIM.Configuration, typeof(WIMConfiguration), false);
         if (GUILayout.Button("Generate WIM")) WIM.Generator.GenerateNewWIM(WIM);
         //EditorGUI.BeginChangeCheck();
         WIM.Configuration.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.Configuration.AutoGenerateWIM);

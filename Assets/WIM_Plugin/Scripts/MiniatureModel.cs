@@ -179,7 +179,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public MiniatureModel() {
         Generator = new WIMGenerator();
-        Configuration = new WIMConfigurationImpl();
+        Configuration = new WIMConfiguration();
     }
 
     void Awake() {
