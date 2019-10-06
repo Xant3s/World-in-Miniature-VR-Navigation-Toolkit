@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Linq;
 using WIM_Plugin;
 
+// The custom inspector. Displays only relevant settings. Should not contain logic.
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
 
@@ -20,86 +21,16 @@ public class MiniatureModelEditor : Editor {
         }
         EditorGUI.BeginChangeCheck();
         WIM.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.AutoGenerateWIM);
-        if(EditorGUI.EndChangeCheck()) updateAutoGenerateWIM();
+        if(EditorGUI.EndChangeCheck()) WIM.Generator.UpdateAutoGenerateWIM(WIM);
 
         WIM.Configuration.TestBool = EditorGUILayout.Toggle("Test", WIM.Configuration.TestBool);
 
         DrawDefaultInspector();
         if(Application.isPlaying) return;
-        if (scrollingPropertyChanged() || occlusionHandlingStrategyChanged()) WIM.ConfigureWIM();
-        updateCylinderMask();
-        updateCutoutViewMask();
-        updateScrollingMask();
-        updateTransparency();
-    }
-
-    void updateAutoGenerateWIM() {
-        var level = GameObject.Find("Level");
-        if(!level) {
-            Debug.LogWarning("Level not found.");
-            return;
-        }
-        if(WIM.AutoGenerateWIM) {
-            // Add script recursive
-            level.AddComponent<AutoUpdateWIM>().WIM = WIM;
-        }
-        else {
-            // Destroy script recursive
-            DestroyImmediate(level.GetComponent<AutoUpdateWIM>());
-        }
-    }
-
-    private bool scrollingPropertyChanged() {
-        if(WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return false;
-        WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
-        return true;
-    }
-
-    private bool occlusionHandlingStrategyChanged() {
-        if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return false;
-        WIM.prevOcclusionHandling = WIM.occlusionHandling;
-        if(WIM.occlusionHandling != OcclusionHandling.None) {
-            WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
-        }
-        return true;
-    }
-
-    private void updateCylinderMask() {
-        if (WIM.occlusionHandling != OcclusionHandling.MeltWalls) return;
-        var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
-        if(!cylinderTransform) return;
-        cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
-    }
-
-    private void updateCutoutViewMask() {
-        if (WIM.occlusionHandling != OcclusionHandling.CutoutView) return;
-        var spotlightObj = GameObject.Find("Spotlight Mask");
-        if(!spotlightObj) return;
-        var spotlight = spotlightObj.GetComponent<Light>();
-        spotlight.range = WIM.cutoutRange;
-        spotlight.spotAngle = WIM.cutoutAngle;
-
-        Color color;
-        if(WIM.showCutoutLight) {
-            color = WIM.cutoutLightColor;
-            color.a = 1;
-        } else {
-            color  = new Color(0,0,0,0);
-        }
-        spotlight.color = color;
-    }
-
-    private void updateScrollingMask() {
-        if(!WIM.AllowWIMScrolling) return;
-        var boxMaskObj = GameObject.Find("Box Mask");
-        if(!boxMaskObj) return;
-        boxMaskObj.transform.localScale = WIM.activeAreaBounds;
-    }
-
-    private void updateTransparency() {
-        if(WIM.SemiTransparent == WIM.PrevSemiTransparent && Math.Abs(WIM.transparency - WIM.PrevTransparency) < .1f) return;
-        WIM.PrevTransparency = WIM.transparency;
-        WIM.PrevSemiTransparent = WIM.SemiTransparent;
-        WIM.ConfigureWIM();
+        if (WIM.Generator.ScrollingPropertyChanged(WIM) || WIM.Generator.OcclusionHandlingStrategyChanged(WIM)) WIM.ConfigureWIM();
+        WIM.Generator.UpdateCylinderMask(WIM);
+        WIM.Generator.UpdateCutoutViewMask(WIM);
+        WIM.Generator.UpdateScrollingMask(WIM);
+        WIM.Generator.UpdateTransparency(WIM);
     }
 }

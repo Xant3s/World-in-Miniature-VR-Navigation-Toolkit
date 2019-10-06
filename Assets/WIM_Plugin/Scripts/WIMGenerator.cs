@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 
 namespace WIM_Plugin {
     // Generates the actual WIM. Also takes care of configurating the WIM, i.e. set materials and shaders etc.
@@ -215,6 +217,81 @@ namespace WIM_Plugin {
 
             WIM.transform.localScale = new Vector3(WIM.ScaleFactor, WIM.ScaleFactor, WIM.ScaleFactor);
             WIM.ConfigureWIM();
+        }
+
+        internal void UpdateTransparency(in MiniatureModel WIM) {
+            if (WIM.SemiTransparent == WIM.PrevSemiTransparent &&
+                Math.Abs(WIM.transparency - WIM.PrevTransparency) < .1f) return;
+            WIM.PrevTransparency = WIM.transparency;
+            WIM.PrevSemiTransparent = WIM.SemiTransparent;
+            WIM.ConfigureWIM();
+        }
+
+        internal void UpdateScrollingMask(in MiniatureModel WIM) {
+            if (!WIM.AllowWIMScrolling) return;
+            var boxMaskObj = GameObject.Find("Box Mask");
+            if (!boxMaskObj) return;
+            boxMaskObj.transform.localScale = WIM.activeAreaBounds;
+        }
+
+        internal void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
+            var level = GameObject.Find("Level");
+            if (!level) {
+                Debug.LogWarning("Level not found.");
+                return;
+            }
+
+            if (WIM.AutoGenerateWIM) {
+                // Add script recursive
+                level.AddComponent<AutoUpdateWIM>().WIM = WIM;
+            }
+            else {
+                // Destroy script recursive
+                Object.DestroyImmediate(level.GetComponent<AutoUpdateWIM>());
+            }
+        }
+
+        internal bool ScrollingPropertyChanged(in MiniatureModel WIM) {
+            if (WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return false;
+            WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
+            return true;
+        }
+
+        internal bool OcclusionHandlingStrategyChanged(in MiniatureModel WIM) {
+            if (WIM.occlusionHandling == WIM.prevOcclusionHandling) return false;
+            WIM.prevOcclusionHandling = WIM.occlusionHandling;
+            if (WIM.occlusionHandling != OcclusionHandling.None) {
+                WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
+            }
+
+            return true;
+        }
+
+        internal void UpdateCylinderMask(in MiniatureModel WIM) {
+            if (WIM.occlusionHandling != OcclusionHandling.MeltWalls) return;
+            var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
+            if (!cylinderTransform) return;
+            cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
+        }
+
+        internal void UpdateCutoutViewMask(in MiniatureModel WIM) {
+            if (WIM.occlusionHandling != OcclusionHandling.CutoutView) return;
+            var spotlightObj = GameObject.Find("Spotlight Mask");
+            if (!spotlightObj) return;
+            var spotlight = spotlightObj.GetComponent<Light>();
+            spotlight.range = WIM.cutoutRange;
+            spotlight.spotAngle = WIM.cutoutAngle;
+
+            Color color;
+            if (WIM.showCutoutLight) {
+                color = WIM.cutoutLightColor;
+                color.a = 1;
+            }
+            else {
+                color = new Color(0, 0, 0, 0);
+            }
+
+            spotlight.color = color;
         }
     }
 }
