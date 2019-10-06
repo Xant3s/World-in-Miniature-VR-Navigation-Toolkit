@@ -21,6 +21,9 @@ public class MiniatureModelEditor : Editor {
         EditorGUI.BeginChangeCheck();
         WIM.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.AutoGenerateWIM);
         if(EditorGUI.EndChangeCheck()) updateAutoGenerateWIM();
+
+        WIM.Configuration.TestBool = EditorGUILayout.Toggle("Test", WIM.Configuration.TestBool);
+
         DrawDefaultInspector();
         if(Application.isPlaying) return;
         if (scrollingPropertyChanged() || occlusionHandlingStrategyChanged()) WIM.ConfigureWIM();

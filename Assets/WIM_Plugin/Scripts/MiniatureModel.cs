@@ -175,10 +175,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool previewScreenEnabled;
     private Vector3 WIMLevelLocalPos;
 
+
     public WIMGenerator Generator;
+    public WIMConfiguration Configuration;
+
 
     public MiniatureModel() {
         Generator = new WIMGenerator();
+        Configuration = new WIMConfigurationImpl();
     }
 
     void Awake() {
