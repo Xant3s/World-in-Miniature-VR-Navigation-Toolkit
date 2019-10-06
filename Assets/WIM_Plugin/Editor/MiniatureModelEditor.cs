@@ -5,6 +5,7 @@ using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using WIM_Plugin;
 
 [CustomEditor(typeof(MiniatureModel))]
 public class MiniatureModelEditor : Editor {
@@ -15,7 +16,7 @@ public class MiniatureModelEditor : Editor {
         GUILayout.Label("World-in-Miniature (WIM)");
         WIM = (MiniatureModel)target;
         if (GUILayout.Button("Generate WIM")) {
-            WIM.generateNewWIM();
+            WIM.Generator.GenerateNewWIM(WIM);
         }
         EditorGUI.BeginChangeCheck();
         WIM.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.AutoGenerateWIM);
@@ -54,21 +55,21 @@ public class MiniatureModelEditor : Editor {
     private bool occlusionHandlingStrategyChanged() {
         if(WIM.occlusionHandling == WIM.prevOcclusionHandling) return false;
         WIM.prevOcclusionHandling = WIM.occlusionHandling;
-        if(WIM.occlusionHandling != MiniatureModel.OcclusionHandling.None) {
+        if(WIM.occlusionHandling != OcclusionHandling.None) {
             WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
         }
         return true;
     }
 
     private void updateCylinderMask() {
-        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.MeltWalls) return;
+        if (WIM.occlusionHandling != OcclusionHandling.MeltWalls) return;
         var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
         if(!cylinderTransform) return;
         cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
     }
 
     private void updateCutoutViewMask() {
-        if (WIM.occlusionHandling != MiniatureModel.OcclusionHandling.CutoutView) return;
+        if (WIM.occlusionHandling != OcclusionHandling.CutoutView) return;
         var spotlightObj = GameObject.Find("Spotlight Mask");
         if(!spotlightObj) return;
         var spotlight = spotlightObj.GetComponent<Light>();

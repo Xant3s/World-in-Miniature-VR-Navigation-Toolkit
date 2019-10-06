@@ -5,9 +5,8 @@ using System.Linq;
 using AdvancedDissolve_Example;
 using MyBox;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Assertions;
-using UnityEngine.Rendering;
+using WIM_Plugin;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
@@ -17,7 +16,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [SerializeField] private GameObject playerRepresentation;
     [SerializeField] private GameObject destinationIndicator;
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
-    [SerializeField] private Vector3 WIMLevelOffset = Vector3.zero;
+    [SerializeField] public Vector3 WIMLevelOffset = Vector3.zero;
     [VectorLabels("Left", "Right")] public Vector2 expandCollidersX = Vector2.zero;
     [VectorLabels("Up", "Down")] public Vector2 expandCollidersY = Vector2.zero;
     [VectorLabels("Front", "Back")] public Vector2 expandCollidersZ = Vector2.zero;
@@ -119,9 +118,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    public enum OcclusionHandling{None, MeltWalls, CutoutView}
-    public enum Hand{NONE, HAND_L, HAND_R}
-    public enum DestinationSelection {Selection, Pickup}
+    //public enum OcclusionHandling{None, MeltWalls, CutoutView}
+    //public enum Hand{NONE, HAND_L, HAND_R}
+    //public enum DestinationSelection {Selection, Pickup}
 
     public bool IsNewDestination {
         get => isNewDestination;
@@ -175,6 +174,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Transform destinationIndicatorInWIM;
     private bool previewScreenEnabled;
     private Vector3 WIMLevelLocalPos;
+
+    public WIMGenerator Generator;
+
+    public MiniatureModel() {
+        Generator = new WIMGenerator();
+    }
 
     void Awake() {
         levelTransform = GameObject.Find("Level").transform;
@@ -304,8 +309,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var WIMLevel = transform.GetChild(0);
         var dissolveFX = occlusionHandling == OcclusionHandling.None;
         if(AllowWIMScrolling) dissolveFX = false;
-        if(dissolveFX && !maintainTransformRelativeToPlayer) dissolveWIM(WIMLevel);
-        if(maintainTransformRelativeToPlayer) instantDissolveWIM(WIMLevel);
+        if(dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);
+        if(maintainTransformRelativeToPlayer) WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
@@ -358,40 +363,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", 1);
             d.PlayInverse();
         }
-        StartCoroutine(FixResolveBug(WIM, resolveDuration));
-    }
 
-    /// <summary>
-    /// At the end of the resolve effect the WIM will not be completely resolved due to float precision.
-    /// To prevent this, set the dissolve progress to a negative number (everything below 0 will be handled as 0 anyway).
-    /// </summary>
-    /// <param name="WIM"></param>
-    /// <param name="delay"></param>
-    IEnumerator FixResolveBug(Transform WIM, float delay) {
-        yield return new WaitForSeconds(delay);
-        for (var i = 0; i < WIM.childCount; i++) {
-            var d = WIM.GetChild(i).GetComponent<Dissolve>();
-            if (d == null) continue;
-            d.durationInSeconds = 1;
-            WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", -.1f);
-        }
-    }
-
-    private static void dissolveWIM(Transform WIM) {
-        foreach (Transform child in WIM) {
-            var d = child.GetComponent<Dissolve>();
-            if (!d) return;
-            d.durationInSeconds = 1f;
-            d.Play();
-        }
-    }
-
-    private static void instantDissolveWIM(Transform WIM) {
-        foreach (Transform child in WIM) {
-            var d = child.GetComponent<Dissolve>();
-            if (!d) return;
-            d.SetProgress(1);
-        }
+        StartCoroutine(WIMVisualizationUtils.FixResolveBug(WIM, resolveDuration));
     }
 
     private void destroyOldWIMLevel() {
@@ -563,7 +536,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var inputRotation = OVRInput.Get(destinationRotationThumbstick);
 
         // Only if rotation is changed via thumbstick.
-        if (Math.Abs(inputRotation.magnitude) < 0.01f) return;
+        if (System.Math.Abs(inputRotation.magnitude) < 0.01f) return;
 
         // Rotate destination indicator in WIM via thumbstick.
         var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
@@ -690,41 +663,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         PlayerRepresentationTransform.rotation = rotationInLevel;
     }
 
-    public void generateNewWIM() {
-        removeAllColliders(transform);
-        adaptScaleFactorToPlayerHeight();
-        var levelTransform = GameObject.Find("Level").transform;
-        if (transform.childCount > 0) DestroyImmediate(transform.GetChild(0).gameObject);
-        var WIMLevel = Instantiate(levelTransform, transform);
-        WIMLevel.localPosition = WIMLevelOffset;
-        WIMLevel.name = "WIM Level";
-        WIMLevel.gameObject.isStatic = false;
-        foreach(Transform child in WIMLevel) {
-            DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
-            DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
-            DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
-            var renderer = child.GetComponent<Renderer>();
-            if(renderer) {
-                renderer.shadowCastingMode = ShadowCastingMode.Off;
-            }
-            child.gameObject.isStatic = false;
-        }
-        transform.localScale = new Vector3(ScaleFactor, ScaleFactor, ScaleFactor);
-        ConfigureWIM();
-    }
-
     public void ConfigureWIM() {
         // Cleanup old configuration.
         disableScrolling();
         cleanupOcclusionHandling();
 
         // Setup new configuration.
-        var material = loadAppropriateMaterial();
-        SetWIMMaterial(material);
-        setupDissolveScript();
+        var material = Generator.LoadAppropriateMaterial(this);
+        Generator.SetWIMMaterial(material, this);
+        Generator.SetupDissolveScript(this);
         if (AllowWIMScrolling) enableScrolling(material);
-        else if (occlusionHandling == MiniatureModel.OcclusionHandling.CutoutView) configureCutoutView(material);
-        else if (occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls) configureMeltWalls(material);
+        else if (occlusionHandling == OcclusionHandling.CutoutView) configureCutoutView(material);
+        else if (occlusionHandling == OcclusionHandling.MeltWalls) configureMeltWalls(material);
     }
 
     private static void configureCutoutView(Material material) {
@@ -744,7 +694,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         controller.materials = new[] {material};
         var cylinderMask = new GameObject("Cylinder Mask");
         controller.cylinder1 = cylinderMask;
-        cylinderMask.AddComponent<FollowHand>().hand = MiniatureModel.Hand.HAND_R;
+        cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
     }
 
     void cleanupOcclusionHandling() {
@@ -764,9 +714,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         maskController.AddComponent<AlignWith>().Target = transform;
         controller.box1 = maskController;
         controller.invert = true;
-        removeAllColliders();
+        removeAllColliders(transform);
         gameObject.AddComponent<BoxCollider>().size = activeAreaBounds / ScaleFactor;
-        removeDissolveScript();
+        Generator.RemoveDissolveScript(this);
         DestroyImmediate(tmpGO);
         maskController.transform.position = transform.position;
     }
@@ -774,135 +724,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void disableScrolling() {
         DestroyImmediate(GameObject.Find("Box Mask"));
         removeAllColliders(transform);
-        generateColliders();
-    }
-    
-    private Material loadAppropriateMaterial() {
-        Material material;
-        if(AllowWIMScrolling) {
-            material = Resources.Load<Material>("Materials/ScrollDissolve");
-            setBaseColorAlpha(material, SemiTransparent ? 1 - transparency : 1 - 0);
-            return material;
-        }
-        switch(occlusionHandling) {
-            case MiniatureModel.OcclusionHandling.MeltWalls: {
-                material = Resources.Load<Material>("Materials/MeltWalls");
-                var color = material.GetColor("_BaseColor");
-                color.a = 1 - transparency;
-                material.SetColor("_BaseColor", color);                break;
-            }
-            case MiniatureModel.OcclusionHandling.CutoutView: {
-                material = Resources.Load<Material>("Materials/MeltWalls");
-                setBaseColorAlpha(material, 1 - transparency);
-                break;
-            }
-             case OcclusionHandling.None:
-             default:
-                 if(SemiTransparent) {
-                     material = Resources.Load<Material>("Materials/Dissolve");
-                     material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                     material.SetFloat("Vector1_964AF7C", 1 - transparency);
-                 }
-                 else {
-                     material = Resources.Load<Material>("Materials/Dissolve");
-                     material.shader = Shader.Find("Shader Graphs/Dissolve");
-                 }
-                 break;
-        }
-
-        return material;
-    }
-
-    private void setBaseColorAlpha(Material material, float value) {
-        var color = material.GetColor("_BaseColor");
-        color.a = value;
-        material.SetColor("_BaseColor", color);
-    }
-
-    private void setupDissolveScript() {
-        if(AllowWIMScrolling || occlusionHandling == MiniatureModel.OcclusionHandling.MeltWalls ||
-           occlusionHandling == OcclusionHandling.CutoutView) {
-            removeDissolveScript();
-        }
-        else {
-            AddDissolveScript();
-        }
-    }
-
-    private void removeDissolveScript() {
-        var WIMLevelTransform = transform.GetChild(0);
-        foreach(Transform child in WIMLevelTransform) {
-            DestroyImmediate(child.GetComponent<Dissolve>());
-        }
-    }
-
-    public void AddDissolveScript() {
-        var WIMLevelTransform = transform.GetChild(0);
-        foreach(Transform child in WIMLevelTransform) {
-            if(!child.GetComponent<Dissolve>())
-                child.gameObject.AddComponent<Dissolve>();
-        }
-    }
-
-    public void SetWIMMaterial(Material material) {
-        var WIMLevelTransform = transform.GetChild(0);
-        foreach(Transform child in WIMLevelTransform) {
-            var renderer = child.GetComponent<Renderer>();
-            if(!renderer) continue;
-            var newMaterials = renderer.sharedMaterials;
-            for(var i = 0; i < newMaterials.Length; i++) {
-                newMaterials[i] = material;
-            }
-            renderer.sharedMaterials = newMaterials;
-        }
-    }
-
-    [ExecuteInEditMode]
-    private void generateColliders() {
-        // Generate colliders:
-        // 1. Copy colliders from actual level (to determine which objects should have a collider)
-        // [alternatively don't delete them while generating the WIM]
-        // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
-        var wimLevelTransform = transform.GetChild(0);
-        Assert.IsNotNull(wimLevelTransform);
-        var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
-        var levelChildTransforms = GameObject.Find("Level").GetComponentsInChildren<Transform>();
-        Assert.AreNotEqual(wimLevelTransform, GameObject.Find("Level").transform);
-        if (WIMChildTransforms.Length != levelChildTransforms.Length) return;
-        var i = 0;
-        foreach (var childInWIM in WIMChildTransforms) {
-            Transform childEquivalentInLevel;
-            try {
-                childEquivalentInLevel = levelChildTransforms.ElementAt(i);
-                Assert.IsNotNull(childEquivalentInLevel);
-            }
-            catch {
-                continue;
-            }
-            if (!childEquivalentInLevel) continue;
-            Assert.AreNotEqual(childEquivalentInLevel, childInWIM);
-            var collider = childEquivalentInLevel.GetComponent<Collider>();
-            i++;
-            if (!collider) continue;
-            removeAllColliders(childInWIM);
-            var childBoxCollider = childInWIM.gameObject.AddComponent<BoxCollider>();
-            // 3. move collider to WIM root (consider scale and position)
-            var rootCollider = gameObject.AddComponent<BoxCollider>();
-            rootCollider.center = childInWIM.localPosition;
-            rootCollider.size = Vector3.zero;
-            var bounds = rootCollider.bounds;
-            bounds.Encapsulate(childBoxCollider.bounds);
-            rootCollider.size = bounds.size / ScaleFactor;
-            removeAllColliders(childInWIM);
-        }
-        // 4. remove every collider that is fully inside another one.
-        pruneColliders();
-        // 5. extend collider (esp. upwards)
-        expandColliders();
-    }
-
-    private void removeAllColliders() {
-        removeAllColliders(transform);
+        Generator.GenerateColliders(this);
     }
 
     private void removeAllColliders(Transform t) {
@@ -912,49 +734,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    private void pruneColliders() {
-        var destoryList = new List<Collider>();
-        var colliders = gameObject.GetComponents<Collider>();
-        for(var i = 0; i < colliders.Length; i++) {
-            var col = (BoxCollider)colliders[i];
-            for(var j = 0; j < colliders.Length; j++) {
-                if(i == j) continue;
-                var other = colliders[j];
-                var skip = false;
-                for(var id = 0; id < 8; id++) {
-                    if(other.bounds.Contains(getCorner(col, id))) continue;
-                    // next collider
-                    skip = true;
-                    break;
-                }
-                if(skip) continue;
-                destoryList.Add(col);
-                break;
-            }
-        }
-        while(destoryList.Count() != 0) {
-            DestroyImmediate(destoryList[0]);
-            destoryList.RemoveAt(0);
-        }
-    }
-
-    private void expandColliders() {
-        foreach(var boxCollider in gameObject.GetComponents<BoxCollider>()) {
-            boxCollider.size += new Vector3(expandCollidersX.x + expandCollidersX.y, 0,0);
-            boxCollider.center += Vector3.left * expandCollidersX.x / 2.0f;
-            boxCollider.center += Vector3.right * expandCollidersX.y / 2.0f;
-
-            boxCollider.size += new Vector3(0, expandCollidersY.x + expandCollidersY.y,0);
-            boxCollider.center += Vector3.up * expandCollidersY.x / 2.0f;
-            boxCollider.center += Vector3.down * expandCollidersY.y / 2.0f;
-
-            boxCollider.size += new Vector3(0, 0,expandCollidersZ.x + expandCollidersZ.y);
-            boxCollider.center += Vector3.forward * expandCollidersZ.x / 2.0f;
-            boxCollider.center += Vector3.back * expandCollidersZ.y / 2.0f;
-        }
-    }
-
-    private void adaptScaleFactorToPlayerHeight() {
+    internal void adaptScaleFactorToPlayerHeight() {
         if (!adaptWIMSizeToPlayerHeight) return;
         var playerHeight = playerHeightInCM;
         const float defaultHeight = 170;
@@ -976,39 +756,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             var factor = actualDelta / maxDelta;
             var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
             ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
-        }
-    }
-
-    private Vector3 getCorner(BoxCollider box, int id) {
-        var extends = box.bounds.extents;
-        var center = box.bounds.center;
-        switch(id) {
-            case 0:
-                // Top right front.
-                return center + box.transform.up * extends.y + box.transform.right * extends.x + box.transform.forward * -extends.z;
-            case 1:
-                // top right back.
-                return center + box.transform.up * extends.y + box.transform.right * extends.x + box.transform.forward * +extends.z;
-            case 2:
-                // top left back.
-                return center + box.transform.up * extends.y + box.transform.right * -extends.x + box.transform.forward * +extends.z;
-            case 3:
-                // top left front.
-                return center + box.transform.up * extends.y + box.transform.right * -extends.x + box.transform.forward * -extends.z;
-            case 4:
-                // bottom right front.
-                return center + box.transform.up * -extends.y + box.transform.right * extends.x + box.transform.forward * -extends.z;
-            case 5:
-                // bottom right back.
-                return center + box.transform.up * -extends.y + box.transform.right * extends.x + box.transform.forward * -extends.z;
-            case 6:
-                // bottom left back.
-                return center + box.transform.up * -extends.y + box.transform.right * -extends.x + box.transform.forward * +extends.z;
-            case 7:
-                // bottom left front.
-                return center + box.transform.up * -extends.y + box.transform.right * -extends.x + box.transform.forward * -extends.z;
-            default:
-                throw new Exception("Bad input.");
         }
     }
 }

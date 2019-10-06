@@ -62,6 +62,6 @@ public class AutoUpdateWIM : MonoBehaviour {
 
     private void triggerWIMUpdate() {
         alreadyUpdatedThisFrame = true;
-        WIM.generateNewWIM();
+        WIM.Generator.GenerateNewWIM(WIM);
     }
 }
