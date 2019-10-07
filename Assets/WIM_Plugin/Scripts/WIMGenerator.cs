@@ -13,31 +13,31 @@ namespace WIM_Plugin {
         // Load the material appropriate to current WIM configuration.
         internal Material LoadAppropriateMaterial(in MiniatureModel WIM) {
             Material material;
-            if (WIM.AllowWIMScrolling) {
+            if (WIM.Configuration.AllowWIMScrolling) {
                 material = Resources.Load<Material>("Materials/ScrollDissolve");
-                setBaseColorAlpha(material, WIM.SemiTransparent ? 1 - WIM.transparency : 1 - 0);
+                setBaseColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1 - 0);
                 return material;
             }
 
-            switch (WIM.occlusionHandling) {
+            switch (WIM.Configuration.OcclusionHandlingMethod) {
                 case OcclusionHandling.MeltWalls: {
                     material = Resources.Load<Material>("Materials/MeltWalls");
                     var color = material.GetColor("_BaseColor");
-                    color.a = 1 - WIM.transparency;
+                    color.a = 1 - WIM.Configuration.Transparency;
                     material.SetColor("_BaseColor", color);
                     break;
                 }
                 case OcclusionHandling.CutoutView: {
                     material = Resources.Load<Material>("Materials/MeltWalls");
-                    setBaseColorAlpha(material, 1 - WIM.transparency);
+                    setBaseColorAlpha(material, 1 - WIM.Configuration.Transparency);
                     break;
                 }
                 case OcclusionHandling.None:
                 default:
-                    if (WIM.SemiTransparent) {
+                    if (WIM.Configuration.SemiTransparent) {
                         material = Resources.Load<Material>("Materials/Dissolve");
                         material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                        material.SetFloat("Vector1_964AF7C", 1 - WIM.transparency);
+                        material.SetFloat("Vector1_964AF7C", 1 - WIM.Configuration.Transparency);
                     }
                     else {
                         material = Resources.Load<Material>("Materials/Dissolve");
@@ -58,8 +58,8 @@ namespace WIM_Plugin {
         }
 
         public void SetupDissolveScript(in MiniatureModel WIM) {
-            if (WIM.AllowWIMScrolling || WIM.occlusionHandling == OcclusionHandling.MeltWalls ||
-                WIM.occlusionHandling == OcclusionHandling.CutoutView) {
+            if (WIM.Configuration.AllowWIMScrolling || WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls ||
+                WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) {
                 RemoveDissolveScript(WIM);
             }
             else {
@@ -98,17 +98,17 @@ namespace WIM_Plugin {
 
         private void expandColliders(in MiniatureModel WIM) {
             foreach (var boxCollider in WIM.gameObject.GetComponents<BoxCollider>()) {
-                boxCollider.size += new Vector3(WIM.expandCollidersX.x + WIM.expandCollidersX.y, 0, 0);
-                boxCollider.center += Vector3.left * WIM.expandCollidersX.x / 2.0f;
-                boxCollider.center += Vector3.right * WIM.expandCollidersX.y / 2.0f;
+                boxCollider.size += new Vector3(WIM.Configuration.ExpandCollidersX.x + WIM.Configuration.ExpandCollidersX.y, 0, 0);
+                boxCollider.center += Vector3.left * WIM.Configuration.ExpandCollidersX.x / 2.0f;
+                boxCollider.center += Vector3.right * WIM.Configuration.ExpandCollidersX.y / 2.0f;
 
-                boxCollider.size += new Vector3(0, WIM.expandCollidersY.x + WIM.expandCollidersY.y, 0);
-                boxCollider.center += Vector3.up * WIM.expandCollidersY.x / 2.0f;
-                boxCollider.center += Vector3.down * WIM.expandCollidersY.y / 2.0f;
+                boxCollider.size += new Vector3(0, WIM.Configuration.ExpandCollidersY.x + WIM.Configuration.ExpandCollidersY.y, 0);
+                boxCollider.center += Vector3.up * WIM.Configuration.ExpandCollidersY.x / 2.0f;
+                boxCollider.center += Vector3.down * WIM.Configuration.ExpandCollidersY.y / 2.0f;
 
-                boxCollider.size += new Vector3(0, 0, WIM.expandCollidersZ.x + WIM.expandCollidersZ.y);
-                boxCollider.center += Vector3.forward * WIM.expandCollidersZ.x / 2.0f;
-                boxCollider.center += Vector3.back * WIM.expandCollidersZ.y / 2.0f;
+                boxCollider.size += new Vector3(0, 0, WIM.Configuration.ExpandCollidersZ.x + WIM.Configuration.ExpandCollidersZ.y);
+                boxCollider.center += Vector3.forward * WIM.Configuration.ExpandCollidersZ.x / 2.0f;
+                boxCollider.center += Vector3.back * WIM.Configuration.ExpandCollidersZ.y / 2.0f;
             }
         }
 
@@ -200,7 +200,7 @@ namespace WIM_Plugin {
             var levelTransform = GameObject.Find("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
             var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
-            WIMLevel.localPosition = WIM.WIMLevelOffset;
+            WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
             WIMLevel.name = "WIM Level";
             WIMLevel.gameObject.isStatic = false;
             foreach (Transform child in WIMLevel) {
@@ -220,18 +220,18 @@ namespace WIM_Plugin {
         }
 
         internal void UpdateTransparency(in MiniatureModel WIM) {
-            if (WIM.SemiTransparent == WIM.PrevSemiTransparent &&
-                Math.Abs(WIM.transparency - WIM.PrevTransparency) < .1f) return;
-            WIM.PrevTransparency = WIM.transparency;
-            WIM.PrevSemiTransparent = WIM.SemiTransparent;
+            if (WIM.Configuration.SemiTransparent == WIM.PrevSemiTransparent &&
+                Math.Abs(WIM.Configuration.Transparency - WIM.PrevTransparency) < .1f) return;
+            WIM.PrevTransparency = WIM.Configuration.Transparency;
+            WIM.PrevSemiTransparent = WIM.Configuration.SemiTransparent;
             WIM.ConfigureWIM();
         }
 
         internal void UpdateScrollingMask(in MiniatureModel WIM) {
-            if (!WIM.AllowWIMScrolling) return;
+            if (!WIM.Configuration.AllowWIMScrolling) return;
             var boxMaskObj = GameObject.Find("Box Mask");
             if (!boxMaskObj) return;
-            boxMaskObj.transform.localScale = WIM.activeAreaBounds;
+            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
         }
 
         internal void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
@@ -241,7 +241,7 @@ namespace WIM_Plugin {
                 return;
             }
 
-            if (WIM.AutoGenerateWIM) {
+            if (WIM.Configuration.AutoGenerateWIM) {
                 // Add script recursive
                 level.AddComponent<AutoUpdateWIM>().WIM = WIM;
             }
@@ -252,39 +252,39 @@ namespace WIM_Plugin {
         }
 
         internal bool ScrollingPropertyChanged(in MiniatureModel WIM) {
-            if (WIM.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return false;
-            WIM.PrevAllowWIMScrolling = WIM.AllowWIMScrolling;
+            if (WIM.Configuration.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return false;
+            WIM.PrevAllowWIMScrolling = WIM.Configuration.AllowWIMScrolling;
             return true;
         }
 
         internal bool OcclusionHandlingStrategyChanged(in MiniatureModel WIM) {
-            if (WIM.occlusionHandling == WIM.prevOcclusionHandling) return false;
-            WIM.prevOcclusionHandling = WIM.occlusionHandling;
-            if (WIM.occlusionHandling != OcclusionHandling.None) {
-                WIM.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
+            if (WIM.Configuration.OcclusionHandlingMethod == WIM.prevOcclusionHandling) return false;
+            WIM.prevOcclusionHandling = WIM.Configuration.OcclusionHandlingMethod;
+            if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandling.None) {
+                WIM.Configuration.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
             }
 
             return true;
         }
 
         internal void UpdateCylinderMask(in MiniatureModel WIM) {
-            if (WIM.occlusionHandling != OcclusionHandling.MeltWalls) return;
+            if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandling.MeltWalls) return;
             var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
             if (!cylinderTransform) return;
-            cylinderTransform.localScale = new Vector3(WIM.meltRadius, WIM.meltHeight, 1);
+            cylinderTransform.localScale = new Vector3(WIM.Configuration.MeltRadius, WIM.Configuration.MeltHeight, 1);
         }
 
         internal void UpdateCutoutViewMask(in MiniatureModel WIM) {
-            if (WIM.occlusionHandling != OcclusionHandling.CutoutView) return;
+            if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandling.CutoutView) return;
             var spotlightObj = GameObject.Find("Spotlight Mask");
             if (!spotlightObj) return;
             var spotlight = spotlightObj.GetComponent<Light>();
-            spotlight.range = WIM.cutoutRange;
-            spotlight.spotAngle = WIM.cutoutAngle;
+            spotlight.range = WIM.Configuration.CutoutRange;
+            spotlight.spotAngle = WIM.Configuration.CutoutAngle;
 
             Color color;
-            if (WIM.showCutoutLight) {
-                color = WIM.cutoutLightColor;
+            if (WIM.Configuration.ShowCutoutLight) {
+                color = WIM.Configuration.CutoutLightColor;
                 color.a = 1;
             }
             else {

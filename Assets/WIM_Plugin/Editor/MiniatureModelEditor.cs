@@ -22,9 +22,9 @@ public class MiniatureModelEditor : Editor {
         WIM.Configuration = (WIMConfiguration)
             EditorGUILayout.ObjectField("Configuration", WIM.Configuration, typeof(WIMConfiguration), false);
         if (GUILayout.Button("Generate WIM")) WIM.Generator.GenerateNewWIM(WIM);
-        //EditorGUI.BeginChangeCheck();
+        EditorGUI.BeginChangeCheck();
         WIM.Configuration.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.Configuration.AutoGenerateWIM);
-        //if (EditorGUI.EndChangeCheck()) WIM.Generator.UpdateAutoGenerateWIM(WIM);
+        if (EditorGUI.EndChangeCheck()) WIM.Generator.UpdateAutoGenerateWIM(WIM);
 
         separator("Basic Settings");
         WIM.Configuration.PlayerRepresentation = (GameObject) EditorGUILayout.ObjectField("Player Representation",
@@ -74,7 +74,7 @@ public class MiniatureModelEditor : Editor {
             WIM.Configuration.OcclusionHandlingMethod);
         if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls) {
             WIM.Configuration.MeltRadius = EditorGUILayout.FloatField("Melt Radius", WIM.Configuration.MeltRadius);
-            WIM.Configuration.MeltHeihgt = EditorGUILayout.FloatField("Melt Height", WIM.Configuration.MeltHeihgt);
+            WIM.Configuration.MeltHeight = EditorGUILayout.FloatField("Melt Height", WIM.Configuration.MeltHeight);
         }else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) {
             WIM.Configuration.CutoutRange = EditorGUILayout.FloatField("Cutout Range", WIM.Configuration.CutoutRange);
             WIM.Configuration.CutoutAngle = EditorGUILayout.FloatField("Cutout Angle", WIM.Configuration.CutoutAngle);
@@ -94,9 +94,9 @@ public class MiniatureModelEditor : Editor {
             WIM.Configuration.AutoPositionPreviewScreen = EditorGUILayout.Toggle("Auto Position Preview Screen",
                 WIM.Configuration.AutoPositionPreviewScreen);
         }
-        WIM.Configuration.TravelPreviewAnimaition =
-            EditorGUILayout.Toggle("Travel Preview Animation", WIM.Configuration.TravelPreviewAnimaition);
-        if (WIM.Configuration.TravelPreviewAnimaition) {
+        WIM.Configuration.TravelPreviewAnimation =
+            EditorGUILayout.Toggle("Travel Preview Animation", WIM.Configuration.TravelPreviewAnimation);
+        if (WIM.Configuration.TravelPreviewAnimation) {
             WIM.Configuration.TravelPreviewAnimationSpeed = EditorGUILayout.Slider("Travel Preview Animation Speed",
                 WIM.Configuration.TravelPreviewAnimationSpeed, 0, 1);
         }
@@ -139,12 +139,12 @@ public class MiniatureModelEditor : Editor {
                 EditorGUILayout.FloatField("Min Scale Factor", WIM.Configuration.MinScaleFactor);
             WIM.Configuration.MaxScaleFactor =
                 EditorGUILayout.FloatField("Max Scale Factor", WIM.Configuration.MaxScaleFactor);
-            WIM.Configuration.GrabButttonL =
+            WIM.Configuration.GrabButtonL =
                 (OVRInput.RawButton)EditorGUILayout.EnumPopup("Grab Button L",
-                    WIM.Configuration.GrabButttonL);
-            WIM.Configuration.GrabButttonR =
+                    WIM.Configuration.GrabButtonL);
+            WIM.Configuration.GrabButtonR =
                 (OVRInput.RawButton)EditorGUILayout.EnumPopup("Grab Button R",
-                    WIM.Configuration.GrabButttonR);
+                    WIM.Configuration.GrabButtonR);
             WIM.Configuration.ScaleStep = EditorGUILayout.FloatField("Scale Step", WIM.Configuration.ScaleStep);
             WIM.Configuration.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
                 new GUIContent("Inter Hand Distance Delta Threshold",
@@ -172,13 +172,6 @@ public class MiniatureModelEditor : Editor {
 
 
 
-
-        GUILayout.Label("----------------------------");
-        EditorGUI.BeginChangeCheck();
-        WIM.AutoGenerateWIM = EditorGUILayout.Toggle("Auto Generate WIM", WIM.AutoGenerateWIM);
-        if (EditorGUI.EndChangeCheck()) WIM.Generator.UpdateAutoGenerateWIM(WIM);
-
-        DrawDefaultInspector();
         if (Application.isPlaying) return;
         if (WIM.Generator.ScrollingPropertyChanged(WIM) || WIM.Generator.OcclusionHandlingStrategyChanged(WIM))
             WIM.ConfigureWIM();
@@ -197,22 +190,6 @@ public class MiniatureModelEditor : Editor {
         tmpVec.x = EditorGUILayout.FloatField(tmpVec.x);
         GUILayout.Label(yAxisName, namedFloatFieldStyle);
         tmpVec.y = EditorGUILayout.FloatField(tmpVec.y);
-        EditorGUILayout.EndHorizontal();
-        return tmpVec;
-    }
-
-    private Vector3 NamedVectorField(string text, Vector3 vector, string xAxisName = "X", string yAxisName = "Y",
-        string zAxisName = "Z") {
-        var namedFloatFieldStyle = new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleRight};
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.PrefixLabel(text);
-        var tmpVec = vector;
-        GUILayout.Label(xAxisName, namedFloatFieldStyle);
-        tmpVec.x = EditorGUILayout.FloatField(tmpVec.x);
-        GUILayout.Label(yAxisName, namedFloatFieldStyle);
-        tmpVec.y = EditorGUILayout.FloatField(tmpVec.y);
-        GUILayout.Label(zAxisName, namedFloatFieldStyle);
-        tmpVec.z = EditorGUILayout.FloatField(tmpVec.z);
         EditorGUILayout.EndHorizontal();
         return tmpVec;
     }

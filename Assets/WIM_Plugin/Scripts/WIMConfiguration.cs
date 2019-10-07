@@ -25,14 +25,14 @@ namespace WIM_Plugin {
         public float Transparency = 0.33f;
         public OcclusionHandling OcclusionHandlingMethod;
         public float MeltRadius = 1.0f;
-        public float MeltHeihgt = 2.0f;
+        public float MeltHeight = 2.0f;
         public float CutoutRange = 10;
         public float CutoutAngle = 30;
         public bool ShowCutoutLight;
         public Color CutoutLightColor = Color.white;
         public bool PreviewScreen;
         public bool AutoPositionPreviewScreen;
-        public bool TravelPreviewAnimaition;
+        public bool TravelPreviewAnimation;
         public float TravelPreviewAnimationSpeed = 1.0f;
         public bool PostTravelPathTrace;
         public float TraceDuration = 1.0f;
@@ -46,8 +46,8 @@ namespace WIM_Plugin {
         public bool AllowWIMScaling;
         public float MinScaleFactor = 0;
         public float MaxScaleFactor = .5f;
-        public OVRInput.RawButton GrabButttonL = OVRInput.RawButton.LHandTrigger;
-        public OVRInput.RawButton GrabButttonR = OVRInput.RawButton.RHandTrigger;
+        public OVRInput.RawButton GrabButtonL = OVRInput.RawButton.LHandTrigger;
+        public OVRInput.RawButton GrabButtonR = OVRInput.RawButton.RHandTrigger;
         public float ScaleStep = .0001f;
         public float InterHandDistanceDeltaThreshold = .1f;
         public bool AllowWIMScrolling;

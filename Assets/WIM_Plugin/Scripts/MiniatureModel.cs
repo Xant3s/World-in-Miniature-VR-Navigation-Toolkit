@@ -12,108 +12,15 @@ using WIM_Plugin;
 [RequireComponent(typeof(OVRGrabbable))]
 [RequireComponent(typeof(DistanceGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
-    [Separator("Basic Settings", true)]
-    [SerializeField] private GameObject playerRepresentation; 
-    [SerializeField] private GameObject destinationIndicator;
-    [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
-    [SerializeField] public Vector3 WIMLevelOffset = Vector3.zero;
-    [VectorLabels("Left", "Right")] public Vector2 expandCollidersX = Vector2.zero;
-    [VectorLabels("Up", "Down")] public Vector2 expandCollidersY = Vector2.zero;
-    [VectorLabels("Front", "Back")] public Vector2 expandCollidersZ = Vector2.zero;
-    [Tooltip("If active, the destination will automatically set to ground level." +
-             "This protects the player from being teleported to a location in mid-air.")]
-    [SerializeField] private bool destinationAlwaysOnTheGround = true;
-
-    [Separator("Input", true)]
-    [SerializeField] private OVRInput.RawButton showWIMButton;
-    [SerializeField] public DestinationSelection destinationSelectionMethod;
-    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
-    [SerializeField] private OVRInput.RawButton destinationSelectButton = OVRInput.RawButton.A;
-    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
-    [SerializeField] private OVRInput.RawAxis2D destinationRotationThumbstick = OVRInput.RawAxis2D.RThumbstick;
-    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Selection)]
-    [SerializeField] private OVRInput.RawButton confirmTeleportButton = OVRInput.RawButton.B;
-    [ConditionalField(nameof(destinationSelectionMethod), false, DestinationSelection.Pickup)]
-    public float DoubleTapInterval = 2;
-
-
-    [Separator("Occlusion Handling", true)]
-    public bool SemiTransparent = true;
-    [ConditionalField(nameof(SemiTransparent))]
-    public float transparency = 0.33f;
-    [Tooltip("Select occlusion handling strategy. Disable for scrolling.")]
-    public OcclusionHandling occlusionHandling;
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
-    public float meltRadius = 1.0f;
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.MeltWalls)]
-    public float meltHeight = 2.0f;
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.CutoutView)]
-    public float cutoutRange = 10;
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.CutoutView)]
-    public float cutoutAngle = 30;
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.CutoutView)]
-    public bool showCutoutLight = false;
-    [ConditionalField(nameof(showCutoutLight))]
-    public Color cutoutLightColor = Color.white;
-
-
-    [Separator("Orientation Aids", true)] 
-    [SerializeField] public bool previewScreen = false;
-    [ConditionalField(nameof(previewScreen))]
-    public bool autoPositionPreviewScreen = false;
-    [SerializeField] public bool travelPreviewAnimation = false;
-    [ConditionalField(nameof(travelPreviewAnimation))][Tooltip("Number between 0 and 1.")]
-    public float TravelPreviewAnimationSpeed = 1.0f;
-    [SerializeField] public bool postTravelPathTrace = false;
-    [ConditionalField(nameof(postTravelPathTrace))]
-    public float traceDuration = 1.0f;
-
-    [Separator("Usability", true)]
-    [SerializeField] private Vector3 WIMSpawnOffset;
-    [SerializeField] private float WIMSpawnAtHeight = 150;
-    [SerializeField] public float playerHeightInCM = 170;
-    [SerializeField] private float playerArmLength;
-
-    [Tooltip("At the start of the application, player has to extend the arm and press the confirm teleport button.")]
-    [SerializeField] public bool autoDetectArmLength = false;
-    [ConditionalField(nameof(autoDetectArmLength))]
-    public OVRInput.RawButton confirmArmLengthButton = OVRInput.RawButton.A;
-    [SerializeField] public bool adaptWIMSizeToPlayerHeight = false;
-
-    [Header("Allow Scaling")]
-    [SerializeField] public bool AllowWIMScaling = false;
-    [ConditionalField(nameof(AllowWIMScaling))]
-    public float minScaleFactor = 0;
-    [ConditionalField(nameof(AllowWIMScaling))]
-    public float maxScaleFactor = .5f;
-    [ConditionalField(nameof(AllowWIMScaling))]
-    public OVRInput.RawButton grabButtonL = OVRInput.RawButton.LHandTrigger;
-    [ConditionalField(nameof(AllowWIMScaling))]
-    public OVRInput.RawButton grabButtonR = OVRInput.RawButton.RHandTrigger;
-    [ConditionalField(nameof(AllowWIMScaling))]
-    public float ScaleStep = .0001f;
-    [ConditionalField(nameof(AllowWIMScaling))][Tooltip("Ignore inter hand distance deltas below this threshold for scaling.")]
-    public float interHandDistanceDeltaThreshold = .1f;
-
-    [Header("Allow Scrolling")]
-    [ConditionalField(nameof(occlusionHandling), false, OcclusionHandling.None)]
-    [SerializeField] public bool AllowWIMScrolling = false;
-    [ConditionalField(nameof(AllowWIMScrolling))]
-    public Vector3 activeAreaBounds = new Vector3(10,10,10);
-    [ConditionalField(nameof(AllowWIMScrolling))]
-    public bool AutoScroll = false;
-    [ConditionalField(nameof(AutoScroll), false, false)]
-    public float ScrollSpeed = 1;
-
-    public bool AutoGenerateWIM { get; set; } = false;
     public bool PrevAllowWIMScrolling { get; set; } = true;
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.None;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public float ScaleFactor {
-        get => scaleFactor;
+        get => Configuration.ScaleFactor;
         set {
-            scaleFactor = Mathf.Clamp(value, minScaleFactor, maxScaleFactor);
+
+            Configuration.ScaleFactor = Mathf.Clamp(value, Configuration.MinScaleFactor, Configuration.MaxScaleFactor);
             transform.localScale = new Vector3(value,value,value);
         }
     }
@@ -197,8 +104,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         Assert.IsNotNull(playerTransform);
         Assert.IsNotNull(HMDTransform);
         Assert.IsNotNull(fingertipIndexR);
-        Assert.IsNotNull(playerRepresentation);
-        Assert.IsNotNull(destinationIndicator);
+        Assert.IsNotNull(Configuration.PlayerRepresentation);
+        Assert.IsNotNull(Configuration.DestinationIndicator);
         Assert.IsNotNull(OVRPlayerController);
         Assert.IsNotNull(grabbable);
     }
@@ -212,9 +119,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Start() {
         if(EnsureConfigurationIsThere()) return;
         WIMLevelLocalPos = WIMLevelTransform.localPosition;
-        PlayerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
-        if(destinationSelectionMethod == DestinationSelection.Pickup)
-            PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = DoubleTapInterval;
+        PlayerRepresentationTransform = Instantiate(Configuration.PlayerRepresentation, WIMLevelTransform).transform;
+        if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup)
+            PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = Configuration.DoubleTapInterval;
         respawnWIM(false);
     }
 
@@ -222,7 +129,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(EnsureConfigurationIsThere()) return;
         detectArmLength();
         checkSpawnWIM();
-        if(destinationSelectionMethod == DestinationSelection.Selection) {
+        if(Configuration.DestinationSelectionMethod == DestinationSelection.Selection) {
             selectDestination();
             selectDestinationRotation();
             checkConfirmTeleport();
@@ -231,14 +138,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (previewScreenEnabled) updatePreviewScreen();
         scaleWIM();
         if (!WIMLevelTransform) return;
-        if(!AllowWIMScrolling) return;
-        if (AutoScroll) autoScrollWIM();
+        if(!Configuration.AllowWIMScrolling) return;
+        if (Configuration.AutoScroll) autoScrollWIM();
         else scrollWIM();
     }
 
     void scaleWIM() {
         // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
-        if (!AllowWIMScaling || !grabbable.isGrabbed) return;
+        if (!Configuration.AllowWIMScaling || !grabbable.isGrabbed) return;
 
         var grabbingHand = getGrabbingHand();
         var oppositeHand = getOppositeHand(grabbingHand);   // This is the potential scaling hand.
@@ -260,12 +167,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Scale using inter hand distance delta.
         var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
         var distanceDelta = currInterHandDistance - prevInterHandDistance;
-        var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= interHandDistanceDeltaThreshold;
+        var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= Configuration.InterHandDistanceDeltaThreshold;
         if (distanceDelta > 0 && deltaBeyondThreshold) {
-            ScaleFactor += ScaleStep;
+            ScaleFactor += Configuration.ScaleStep;
         }
         else if(distanceDelta < 0 && deltaBeyondThreshold) {
-            ScaleFactor -= ScaleStep;
+            ScaleFactor -= Configuration.ScaleStep;
         }
         prevInterHandDistance = currInterHandDistance;
     }
@@ -273,12 +180,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void scrollWIM() {
         var input = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
         var direction = new Vector3(input.x, 0, input.y);
-        WIMLevelTransform.Translate(-direction * ScrollSpeed * Time.deltaTime, Space.World);
+        WIMLevelTransform.Translate(-direction * Configuration.ScrollSpeed * Time.deltaTime, Space.World);
     }
 
     private OVRInput.RawButton getGrabButton(Hand hand) {
         if (hand == Hand.NONE) return OVRInput.RawButton.None;
-        return hand == Hand.HAND_L ? grabButtonL : grabButtonR;
+        return hand == Hand.HAND_L ? Configuration.GrabButtonL : Configuration.GrabButtonR;
     }
 
     private Hand getGrabbingHand() {
@@ -293,22 +200,22 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool getHandIsInside(Hand hand) {
         if(hand == Hand.NONE) return false;
         var handTag = hand == Hand.HAND_L ? "HandL" : "HandR";
-        var hitColliders = Physics.OverlapBox(transform.position, activeAreaBounds, WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
+        var hitColliders = Physics.OverlapBox(transform.position, Configuration.ActiveAreaBounds, WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
         return hitColliders.Any(col => col.transform.root.tag == handTag);
     }
 
     private void detectArmLength() {
-        if (!autoDetectArmLength || armLengthDetected) return;
-        if (OVRInput.GetDown(confirmArmLengthButton)) {
+        if (!Configuration.AutoDetectArmLength || armLengthDetected) return;
+        if (OVRInput.GetDown(Configuration.ConfirmArmLengthButton)) {
             armLengthDetected = true;
             var controllerPos = GameObject.Find("CustomHandRight").transform.position;
             var headPos = Camera.main.transform.position;
-            playerArmLength = (controllerPos - headPos).magnitude;
+            Configuration.PlayerArmLength = (controllerPos - headPos).magnitude;
         }
     }
 
     private void checkSpawnWIM() {
-        if (!OVRInput.GetUp(showWIMButton)) return;
+        if (!OVRInput.GetUp(Configuration.ShowWIMButton)) return;
         respawnWIM(false);
     }
 
@@ -316,8 +223,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         RemoveDestinationIndicators();
 
         var WIMLevel = transform.GetChild(0);
-        var dissolveFX = occlusionHandling == OcclusionHandling.None;
-        if(AllowWIMScrolling) dissolveFX = false;
+        var dissolveFX = Configuration.OcclusionHandlingMethod == OcclusionHandling.None;
+        if(Configuration.AllowWIMScrolling) dissolveFX = false;
         if(dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);
         if(maintainTransformRelativeToPlayer) WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 
@@ -338,8 +245,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         PlayerRepresentationTransform.parent = newWIMLevel;
         
         if (!maintainTransformRelativeToPlayer) {
-            var spawnDistanceZ = ((playerArmLength <= 0) ? WIMSpawnOffset.z : playerArmLength);
-            var spawnDistanceY = (WIMSpawnAtHeight - playerHeightInCM) / 100;
+            var spawnDistanceZ = ((Configuration.PlayerArmLength <= 0) ? Configuration.WIMSpawnOffset.z : Configuration.PlayerArmLength);
+            var spawnDistanceY = (Configuration.WIMSpawnHeight - Configuration.PlayerHeightInCM) / 100;
             var camForwardPosition = HMDTransform.position + HMDTransform.forward;
             camForwardPosition.y = HMDTransform.position.y;
             var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
@@ -381,7 +288,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void checkConfirmTeleport() {
-        if (!OVRInput.GetUp(confirmTeleportButton)) return;
+        if (!OVRInput.GetUp(Configuration.ConfirmTravelButton)) return;
         if (!DestinationIndicatorInLevel) return;
         ConfirmTeleport();
     }
@@ -390,7 +297,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         RemoveDestinationIndicators();
 
         // Optional: post travel path trace
-        if (postTravelPathTrace)
+        if (Configuration.PostTravelPathTrace)
             createPostTravelPathTrace();
 
         // Travel.
@@ -405,7 +312,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         respawnWIM(true); // Assist player to orientate at new location.
 
         // Optional: post travel path trace
-        if (postTravelPathTrace)
+        if (Configuration.PostTravelPathTrace)
             initPostTravelPathTrace();
     }
 
@@ -414,7 +321,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
         pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
         pathTrace.Converter = this;
-        pathTrace.TraceDurationInSeconds = traceDuration;
+        pathTrace.TraceDurationInSeconds = Configuration.TraceDuration;
         pathTrace.OldPositionInWIM = Instantiate(emptyGO, WIMLevelTransform).transform;
         pathTrace.OldPositionInWIM.position = PlayerRepresentationTransform.position;
         pathTrace.OldPositionInWIM.name = "PathTraceOldPosition";
@@ -431,7 +338,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void selectDestination() {
         // Only if select button is pressed.
-        if (!OVRInput.GetDown(destinationSelectButton)) return;
+        if (!OVRInput.GetDown(Configuration.DestinationSelectionButton)) return;
 
         // Check if in WIM bounds.
         if (!isInsideWIM(fingertipIndexR.position)) return;
@@ -469,23 +376,23 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public Transform SpawnDestinationIndicatorInLevel() {
         var levelPosition = ConvertToLevelSpace(DestinationIndicatorInWIM.position);
-        DestinationIndicatorInLevel = Instantiate(destinationIndicator, levelTransform).transform;
+        DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, levelTransform).transform;
         DestinationIndicatorInLevel.position = levelPosition;
 
         // Remove frustum.
         Destroy(DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
-        if(destinationAlwaysOnTheGround) {
+        if(Configuration.DestinationAlwaysOnTheGround) {
             DestinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
-                                                   new Vector3(0, destinationIndicator.transform.localScale.y, 0);
+                                                   new Vector3(0, Configuration.DestinationIndicator.transform.localScale.y, 0);
             DestinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
-                                                 + WIMLevelTransform.up * destinationIndicator.transform.localScale.y *
+                                                 + WIMLevelTransform.up * Configuration.DestinationIndicator.transform.localScale.y *
                                                  ScaleFactor;
         }
 
         // Fix orientation.
-        if(destinationSelectionMethod == DestinationSelection.Pickup && destinationAlwaysOnTheGround) {
+        if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup && Configuration.DestinationAlwaysOnTheGround) {
             DestinationIndicatorInLevel.rotation = Quaternion.Inverse(WIMLevelTransform.rotation) * DestinationIndicatorInWIM.rotation;
             var forwardPos = DestinationIndicatorInLevel.position + DestinationIndicatorInLevel.forward;
             forwardPos.y = DestinationIndicatorInLevel.position.y;
@@ -499,10 +406,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public Transform SpawnDestinationIndicatorInWIM() {
         Assert.IsNotNull(WIMLevelTransform);
-        Assert.IsNotNull(destinationIndicator);
-        DestinationIndicatorInWIM = Instantiate(destinationIndicator, WIMLevelTransform).transform;
+        Assert.IsNotNull(Configuration.DestinationIndicator);
+        DestinationIndicatorInWIM = Instantiate(Configuration.DestinationIndicator, WIMLevelTransform).transform;
         DestinationIndicatorInWIM.position = fingertipIndexR.position;
-        if(previewScreen && !autoPositionPreviewScreen)
+        if(Configuration.PreviewScreen && !Configuration.AutoPositionPreviewScreen)
             DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
         //DestinationIndicatorInWIM.Find("Camera").GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
         return DestinationIndicatorInWIM;
@@ -512,14 +419,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         IsNewDestination = false;
 
         // Optional: show preview screen.
-        if (previewScreen && autoPositionPreviewScreen) showPreviewScreen(true);
+        if (Configuration.PreviewScreen && Configuration.AutoPositionPreviewScreen) showPreviewScreen(true);
 
         // Optional: Travel preview animation.
-        if (travelPreviewAnimation) createTravelPreviewAnimation();
+        if (Configuration.TravelPreviewAnimation) createTravelPreviewAnimation();
     }
 
     void autoScrollWIM() {
-        if(!AllowWIMScrolling || !AutoScroll) return;
+        if(!Configuration.AllowWIMScrolling || !Configuration.AutoScroll) return;
         var scrollOffset = DestinationIndicatorInWIM
             ? -DestinationIndicatorInWIM.localPosition
             : -PlayerRepresentationTransform.localPosition;
@@ -531,8 +438,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var travelPreview = TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
         travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
         travelPreview.PlayerRepresentationInWIM = PlayerRepresentationTransform;
-        travelPreview.DestinationIndicator = destinationIndicator;
-        travelPreview.AnimationSpeed = TravelPreviewAnimationSpeed;
+        travelPreview.DestinationIndicator = Configuration.DestinationIndicator;
+        travelPreview.AnimationSpeed = Configuration.TravelPreviewAnimationSpeed;
         travelPreview.WIMLevelTransform = WIMLevelTransform;
         travelPreview.Converter = this;
     }
@@ -542,7 +449,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(!DestinationIndicatorInWIM) return;
 
         // Poll thumbstick input.
-        var inputRotation = OVRInput.Get(destinationRotationThumbstick);
+        var inputRotation = OVRInput.Get(Configuration.DestinationRotationThumbstick);
 
         // Only if rotation is changed via thumbstick.
         if (System.Math.Abs(inputRotation.magnitude) < 0.01f) return;
@@ -620,7 +527,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     private void updatePreviewScreen() {
-        if (!previewScreen || !DestinationIndicatorInLevel) return;
+        if (!Configuration.PreviewScreen || !DestinationIndicatorInLevel) return;
         var cam = DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
         Destroy(cam.targetTexture);
         cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
@@ -665,7 +572,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private void updatePlayerRepresentationInWIM() {
         // Position.
        PlayerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
-        PlayerRepresentationTransform.position += WIMLevelTransform.up * playerRepresentation.transform.localScale.y * ScaleFactor;
+        PlayerRepresentationTransform.position += WIMLevelTransform.up * Configuration.PlayerRepresentation.transform.localScale.y * ScaleFactor;
 
         // Rotation
         var rotationInLevel = WIMLevelTransform.rotation * playerTransform.rotation;
@@ -681,9 +588,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var material = Generator.LoadAppropriateMaterial(this);
         Generator.SetWIMMaterial(material, this);
         Generator.SetupDissolveScript(this);
-        if (AllowWIMScrolling) enableScrolling(material);
-        else if (occlusionHandling == OcclusionHandling.CutoutView) configureCutoutView(material);
-        else if (occlusionHandling == OcclusionHandling.MeltWalls) configureMeltWalls(material);
+        if (Configuration.AllowWIMScrolling) enableScrolling(material);
+        else if (Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) configureCutoutView(material);
+        else if (Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls) configureMeltWalls(material);
     }
 
     private static void configureCutoutView(Material material) {
@@ -724,7 +631,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         controller.box1 = maskController;
         controller.invert = true;
         removeAllColliders(transform);
-        gameObject.AddComponent<BoxCollider>().size = activeAreaBounds / ScaleFactor;
+        gameObject.AddComponent<BoxCollider>().size = Configuration.ActiveAreaBounds / ScaleFactor;
         Generator.RemoveDissolveScript(this);
         DestroyImmediate(tmpGO);
         maskController.transform.position = transform.position;
@@ -744,8 +651,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     internal void adaptScaleFactorToPlayerHeight() {
-        if (!adaptWIMSizeToPlayerHeight) return;
-        var playerHeight = playerHeightInCM;
+        if (!Configuration.AdaptWIMSizeToPlayerHeight) return;
+        var playerHeight = Configuration.PlayerHeightInCM;
         const float defaultHeight = 170;
         var defaultScaleFactor = ScaleFactor;
         const float minHeight = 100;
