@@ -66,11 +66,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private Transform OVRPlayerController;
     private bool armLengthDetected = false;
     private PostTravelPathTrace pathTrace;
-    private OVRGrabbable grabbable;
-    private float prevInterHandDistance;
     private Transform handL;
     private Transform handR;
-    private Hand scalingHand = Hand.NONE;
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
     private Vector3 WIMLevelLocalPosOnTravel;
@@ -79,9 +76,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private bool previewScreenEnabled;
     private Vector3 WIMLevelLocalPos;
 
+    private OVRGrabbable grabbable;
+    private Hand scalingHand = Hand.NONE;
+    private float prevInterHandDistance;
+
+
 
     public WIMGenerator Generator;
     public WIMConfiguration Configuration;
+
+    public delegate void UpdateAction(WIMConfiguration config);
+    public static event UpdateAction OnUpdate;
+
 
 
     public MiniatureModel() {
@@ -141,6 +147,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(!Configuration.AllowWIMScrolling) return;
         if (Configuration.AutoScroll) autoScrollWIM();
         else scrollWIM();
+
+        OnUpdate?.Invoke(Configuration);
     }
 
     void scaleWIM() {
