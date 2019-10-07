@@ -13,7 +13,7 @@ using WIM_Plugin;
 [RequireComponent(typeof(DistanceGrabbable))]
 public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     [Separator("Basic Settings", true)]
-    [SerializeField] private GameObject playerRepresentation;
+    [SerializeField] private GameObject playerRepresentation; 
     [SerializeField] private GameObject destinationIndicator;
     [Range(0, 1)] [SerializeField] private float scaleFactor = 0.1f;
     [SerializeField] public Vector3 WIMLevelOffset = Vector3.zero;
@@ -179,10 +179,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     public MiniatureModel() {
         Generator = new WIMGenerator();
-        Configuration = new WIMConfiguration();
     }
 
     void Awake() {
+        if(EnsureConfigurationIsThere()) return;
         levelTransform = GameObject.Find("Level").transform;
         WIMLevelTransform = GameObject.Find("WIM Level").transform;
         playerTransform = GameObject.Find("OVRCameraRig").transform;
@@ -203,7 +203,14 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         Assert.IsNotNull(grabbable);
     }
 
+    private bool EnsureConfigurationIsThere() {
+        if(Configuration) return false;
+        Debug.LogError("WIM configuration missing.");
+        return true;
+    }
+
     void Start() {
+        if(EnsureConfigurationIsThere()) return;
         WIMLevelLocalPos = WIMLevelTransform.localPosition;
         PlayerRepresentationTransform = Instantiate(playerRepresentation, WIMLevelTransform).transform;
         if(destinationSelectionMethod == DestinationSelection.Pickup)
@@ -212,6 +219,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     void Update() {
+        if(EnsureConfigurationIsThere()) return;
         detectArmLength();
         checkSpawnWIM();
         if(destinationSelectionMethod == DestinationSelection.Selection) {

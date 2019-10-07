@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     // The WIM configuration. Data only. Modified via GUI.
-    [CreateAssetMenu]
+    [CreateAssetMenu(menuName = "WIM/Configuration")]
     public class WIMConfiguration : ScriptableObject {
         public bool AutoGenerateWIM;
         public GameObject PlayerRepresentation;
