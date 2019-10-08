@@ -176,7 +176,7 @@ namespace WIM_Plugin {
                 rootCollider.size = Vector3.zero;
                 var bounds = rootCollider.bounds;
                 bounds.Encapsulate(childBoxCollider.bounds);
-                rootCollider.size = bounds.size / WIM.ScaleFactor;
+                rootCollider.size = bounds.size / WIM.Configuration.ScaleFactor;
                 removeAllColliders(childInWIM);
             }
 
@@ -215,7 +215,7 @@ namespace WIM_Plugin {
                 child.gameObject.isStatic = false;
             }
 
-            WIM.transform.localScale = new Vector3(WIM.ScaleFactor, WIM.ScaleFactor, WIM.ScaleFactor);
+            WIM.transform.localScale = new Vector3(WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor);
             WIM.ConfigureWIM();
         }
 

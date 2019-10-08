@@ -1,6 +1,7 @@
 ﻿using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIM_Plugin;
 
 [RequireComponent(typeof(LineRenderer))]
 public class TravelPreviewAnimation : MonoBehaviour {

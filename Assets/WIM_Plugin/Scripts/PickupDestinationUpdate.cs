@@ -36,7 +36,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
     void Update() {
         var capLowerCenter = transform.position - transform.up * transform.localScale.y;
         var capUpperCenter = transform.position + transform.up * transform.localScale.y;
-        var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().ScaleFactor * 1.0f;
+        var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().Configuration.ScaleFactor * 1.0f;
         var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
         thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
         indexIsTouching = colliders.Contains(index.GetComponent<Collider>());

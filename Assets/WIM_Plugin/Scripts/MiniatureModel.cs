@@ -11,20 +11,10 @@ using WIM_Plugin;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(OVRGrabbable))]
 [RequireComponent(typeof(DistanceGrabbable))]
-public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
+public class MiniatureModel : MonoBehaviour {
     public bool PrevAllowWIMScrolling { get; set; } = true;
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.None;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
-
-    public float ScaleFactor {
-        get => Configuration.ScaleFactor;
-        set {
-
-            Configuration.ScaleFactor = Mathf.Clamp(value, Configuration.MinScaleFactor, Configuration.MaxScaleFactor);
-            transform.localScale = new Vector3(value,value,value);
-        }
-    }
-
 
     public bool IsNewDestination {
         get => isNewDestination;
@@ -49,8 +39,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
 
     private GameObject travelPreviewAnimationObj;
-    private Transform levelTransform;
-    private Transform playerTransform;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
     private Transform OVRPlayerController;
@@ -68,6 +56,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public WIMGenerator Generator;
     public WIMConfiguration Configuration;
     public WIMData Data;
+    public WIMSpaceConverter Converter;
 
     public delegate void UpdateAction(WIMConfiguration config, WIMData data);
     public static event UpdateAction OnUpdate;
@@ -81,20 +70,21 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Awake() {
         if(EnsureConfigurationIsThere()) return;
         Data = new WIMData();
-        levelTransform = GameObject.Find("Level").transform;
+        Converter = new WIMSpaceConverterImpl(Configuration, Data);
         Data.WIMLevelTransform = GameObject.Find("WIM Level").transform;
-        playerTransform = GameObject.Find("OVRCameraRig").transform;
+        Data.LevelTransform = GameObject.Find("Level").transform;
+        Data.PlayerTransform = GameObject.Find("OVRCameraRig").transform;
         HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
         fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
         OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
-        Assert.IsNotNull(levelTransform);
         Assert.IsNotNull(Data.WIMLevelTransform);
-        Assert.IsNotNull(playerTransform);
         Assert.IsNotNull(HMDTransform);
         Assert.IsNotNull(fingertipIndexR);
         Assert.IsNotNull(Configuration.PlayerRepresentation);
         Assert.IsNotNull(Configuration.DestinationIndicator);
         Assert.IsNotNull(OVRPlayerController);
+        Assert.IsNotNull(Data.LevelTransform);
+        Assert.IsNotNull(Data.PlayerTransform);
     }
 
     private bool EnsureConfigurationIsThere() {
@@ -121,7 +111,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        if (Data.PlayerRepresentationTransform) updatePlayerRepresentationInWIM();
         if (previewScreenEnabled) updatePreviewScreen();
 
         OnUpdate?.Invoke(Configuration, Data);
@@ -228,8 +217,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
         WIMHeightRelativeToPlayer =
             transform.position.y - OVRPlayerController.position.y; // Maintain height relative to player.
-        var playerHeight = OVRPlayerController.position.y - getGroundPosition(OVRPlayerController.position).y;
-        OVRPlayerController.position = getGroundPosition(DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
+        var playerHeight = OVRPlayerController.position.y - MathUtils.GetGroundPosition(OVRPlayerController.position).y;
+        OVRPlayerController.position = MathUtils.GetGroundPosition(DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
         OVRPlayerController.rotation = DestinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
@@ -243,7 +232,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var emptyGO = new GameObject();
         var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
         pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
-        pathTrace.Converter = this;
+        pathTrace.Converter = Converter;
         pathTrace.TraceDurationInSeconds = Configuration.TraceDuration;
         pathTrace.OldPositionInWIM = Instantiate(emptyGO, Data.WIMLevelTransform).transform;
         pathTrace.OldPositionInWIM.position = Data.PlayerRepresentationTransform.position;
@@ -278,13 +267,13 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
         var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
-        var pointBFloor = ConvertToWIMSpace(getGroundPosition(lookAtPoint));
-        var pointAFloor = ConvertToWIMSpace(getGroundPosition(fingertipIndexR.position));
+        var pointBFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(lookAtPoint));
+        var pointAFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(fingertipIndexR.position));
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
-        var currForward = getGroundPosition(Data.DestinationIndicatorInWIM.position + Data.DestinationIndicatorInWIM.forward)
-                          - getGroundPosition(Data.DestinationIndicatorInWIM.position);
+        var currForward = MathUtils.GetGroundPosition(Data.DestinationIndicatorInWIM.position + Data.DestinationIndicatorInWIM.forward)
+                          - MathUtils.GetGroundPosition(Data.DestinationIndicatorInWIM.position);
         // Get signed angle between current forward vector and desired forward vector (pointing direction).
         var angle = Vector3.SignedAngle(currForward, fingertipForward, Data.WIMLevelTransform.up);
         // Rotate to align with pointing direction.
@@ -298,8 +287,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public Transform SpawnDestinationIndicatorInLevel() {
-        var levelPosition = ConvertToLevelSpace(Data.DestinationIndicatorInWIM.position);
-        DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, levelTransform).transform;
+        var levelPosition = Converter.ConvertToLevelSpace(Data.DestinationIndicatorInWIM.position);
+        DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, Data.LevelTransform).transform;
         DestinationIndicatorInLevel.position = levelPosition;
 
         // Remove frustum.
@@ -307,11 +296,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if(Configuration.DestinationAlwaysOnTheGround) {
-            DestinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
+            DestinationIndicatorInLevel.position = MathUtils.GetGroundPosition(levelPosition) +
                                                    new Vector3(0, Configuration.DestinationIndicator.transform.localScale.y, 0);
-            Data.DestinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
+            Data.DestinationIndicatorInWIM.position = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(levelPosition))
                                                  + Data.WIMLevelTransform.up * Configuration.DestinationIndicator.transform.localScale.y *
-                                                 ScaleFactor;
+                                                 Configuration.ScaleFactor;
         }
 
         // Fix orientation.
@@ -356,7 +345,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         travelPreview.DestinationIndicator = Configuration.DestinationIndicator;
         travelPreview.AnimationSpeed = Configuration.TravelPreviewAnimationSpeed;
         travelPreview.WIMLevelTransform = Data.WIMLevelTransform;
-        travelPreview.Converter = this;
+        travelPreview.Converter = Converter;
     }
 
     private void selectDestinationRotation() {
@@ -462,36 +451,8 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         Destroy(previewScreen);
     }
 
-    public Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace) {
-        var WIMOffset = pointInWIMSpace - Data.WIMLevelTransform.position;
-        var levelOffset = WIMOffset / ScaleFactor;
-        levelOffset = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * levelOffset; 
-        return levelTransform.position + levelOffset;
-    }
-
-    public Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace) {
-        var levelOffset = pointInLevelSpace - levelTransform.position;
-        var WIMOffset = levelOffset * ScaleFactor;
-        WIMOffset = Data.WIMLevelTransform.rotation * WIMOffset;
-        return Data.WIMLevelTransform.position + WIMOffset;
-    }
-
     bool isInsideWIM(Vector3 point) {
         return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
-    }
-
-    Vector3 getGroundPosition(Vector3 point) {
-        return Physics.Raycast(point, Vector3.down, out var hit) ? hit.point : point;
-    }
-
-    private void updatePlayerRepresentationInWIM() {
-        // Position.
-        Data.PlayerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
-        Data.PlayerRepresentationTransform.position += Data.WIMLevelTransform.up * Configuration.PlayerRepresentation.transform.localScale.y * ScaleFactor;
-
-        // Rotation
-        var rotationInLevel = Data.WIMLevelTransform.rotation * playerTransform.rotation;
-        Data.PlayerRepresentationTransform.rotation = rotationInLevel;
     }
 
     public void ConfigureWIM() {
@@ -546,7 +507,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         controller.box1 = maskController;
         controller.invert = true;
         removeAllColliders(transform);
-        gameObject.AddComponent<BoxCollider>().size = Configuration.ActiveAreaBounds / ScaleFactor;
+        gameObject.AddComponent<BoxCollider>().size = Configuration.ActiveAreaBounds / Configuration.ScaleFactor;
         Generator.RemoveDissolveScript(this);
         DestroyImmediate(tmpGO);
         maskController.transform.position = transform.position;
@@ -569,7 +530,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (!Configuration.AdaptWIMSizeToPlayerHeight) return;
         var playerHeight = Configuration.PlayerHeightInCM;
         const float defaultHeight = 170;
-        var defaultScaleFactor = ScaleFactor;
+        var defaultScaleFactor = Configuration.ScaleFactor;
         const float minHeight = 100;
         const float maxHeight = 200;
         playerHeight = Mathf.Clamp(playerHeight, minHeight, maxHeight);
@@ -580,13 +541,18 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             var actualDelta = maxHeight - playerHeight;
             var factor = actualDelta / maxDelta;
             var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
-            ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+            Configuration.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+            Configuration.ScaleFactor = Mathf.Clamp(Configuration.ScaleFactor, Configuration.MinScaleFactor, Configuration.MaxScaleFactor);
+            transform.localScale = new Vector3(Configuration.ScaleFactor,Configuration.ScaleFactor,Configuration.ScaleFactor);
+
         } else if (heightDelta < 0) {
             const float maxDelta = defaultHeight - minHeight;
             var actualDelta = defaultHeight - playerHeight;
             var factor = actualDelta / maxDelta;
             var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
-            ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+            Configuration.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+            Configuration.ScaleFactor = Mathf.Clamp(Configuration.ScaleFactor, Configuration.MinScaleFactor, Configuration.MaxScaleFactor);
+            transform.localScale = new Vector3(Configuration.ScaleFactor,Configuration.ScaleFactor,Configuration.ScaleFactor);
         }
     }
 }

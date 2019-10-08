@@ -45,5 +45,9 @@ namespace WIM_Plugin {
                     throw new Exception("Bad input.");
             }
         }
+
+        public static Vector3 GetGroundPosition(Vector3 point) {
+            return Physics.Raycast(point, Vector3.down, out var hit) ? hit.point : point;
+        }
     }
 }
