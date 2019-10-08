@@ -26,29 +26,21 @@ public class MiniatureModel : MonoBehaviour {
 
     public Transform DestinationIndicatorInLevel { get; set; }
 
-    private GameObject TravelPreviewAnimationObj {
-        get => travelPreviewAnimationObj;
-        set {
-            Destroy(travelPreviewAnimationObj);
-            travelPreviewAnimationObj = value;
-        }
-    }
-
     public bool PrevSemiTransparent { get; set; } = false;
     public float PrevTransparency { get; set; } = 0;
 
 
-    private GameObject travelPreviewAnimationObj;
     private Transform HMDTransform;
     private Transform fingertipIndexR;
     private Transform OVRPlayerController;
     private PostTravelPathTrace pathTrace;
-    private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
     private Vector3 WIMLevelLocalPosOnTravel;
     private bool isNewDestination = false;
     private bool previewScreenEnabled;
     private Vector3 WIMLevelLocalPos;
+    private Material previewScreenMaterial;
+
 
 
 
@@ -57,8 +49,9 @@ public class MiniatureModel : MonoBehaviour {
     public WIMData Data;
     public WIMSpaceConverter Converter;
 
-    public delegate void UpdateAction(WIMConfiguration config, WIMData data);
-    public static event UpdateAction OnUpdate;
+    public delegate void Action(WIMConfiguration config, WIMData data);
+    public static event Action OnUpdate;
+    public static event Action OnNewDestination;
 
 
 
@@ -103,7 +96,6 @@ public class MiniatureModel : MonoBehaviour {
 
     void Update() {
         if(!ConfigurationIsThere()) return;
-        //detectArmLength();
         checkSpawnWIM();
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Selection) {
             selectDestination();
@@ -113,6 +105,10 @@ public class MiniatureModel : MonoBehaviour {
         if (previewScreenEnabled) updatePreviewScreen();
 
         OnUpdate?.Invoke(Configuration, Data);
+    }
+
+    public void NewDestination() {
+        OnNewDestination?.Invoke(Configuration, Data);
     }
 
     private void checkSpawnWIM() {
@@ -273,6 +269,7 @@ public class MiniatureModel : MonoBehaviour {
 
         // New destination.
         IsNewDestination = true;
+        NewDestination();
     }
 
     public Transform SpawnDestinationIndicatorInLevel() {
@@ -321,20 +318,6 @@ public class MiniatureModel : MonoBehaviour {
 
         // Optional: show preview screen.
         if (Configuration.PreviewScreen && Configuration.AutoPositionPreviewScreen) showPreviewScreen(true);
-
-        // Optional: Travel preview animation.
-        if (Configuration.TravelPreviewAnimation) createTravelPreviewAnimation();
-    }
-
-    private void createTravelPreviewAnimation() {
-        TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
-        var travelPreview = TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
-        travelPreview.DestinationInWIM = Data.DestinationIndicatorInWIM;
-        travelPreview.PlayerRepresentationInWIM = Data.PlayerRepresentationTransform;
-        travelPreview.DestinationIndicator = Configuration.DestinationIndicator;
-        travelPreview.AnimationSpeed = Configuration.TravelPreviewAnimationSpeed;
-        travelPreview.WIMLevelTransform = Data.WIMLevelTransform;
-        travelPreview.Converter = Converter;
     }
 
     private void selectDestinationRotation() {
@@ -368,9 +351,9 @@ public class MiniatureModel : MonoBehaviour {
         if (!Data.DestinationIndicatorInWIM) return;
         RemovePreviewScreen();
         // Destroy uses another thread, so make sure they are not copied by removing from parent.
-        if(TravelPreviewAnimationObj) {
-            TravelPreviewAnimationObj.transform.parent = null;
-            Destroy(TravelPreviewAnimationObj);
+        if(Data.TravelPreviewAnimationObj) {
+            Data.TravelPreviewAnimationObj.transform.parent = null;
+            Destroy(Data.TravelPreviewAnimationObj);
         }
         Data.DestinationIndicatorInWIM.parent = null;
         Destroy(Data.DestinationIndicatorInWIM.gameObject);
@@ -379,11 +362,11 @@ public class MiniatureModel : MonoBehaviour {
         Destroy(DestinationIndicatorInLevel.gameObject);
     }
 
-    public void RemoveDestionantionIndicatorsExceptWIM() {
+    public void RemoveDestinantionIndicatorsExceptWIM() {
         if (!Data.DestinationIndicatorInWIM) return;
         RemovePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        DestroyImmediate(TravelPreviewAnimationObj);
+        DestroyImmediate(Data.TravelPreviewAnimationObj);
         if(DestinationIndicatorInLevel) DestroyImmediate(DestinationIndicatorInLevel.gameObject);
     }
 

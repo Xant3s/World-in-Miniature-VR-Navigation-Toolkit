@@ -79,6 +79,7 @@ public class PickupDestinationSelection : MonoBehaviour {
 
         // New destination
         WIM.IsNewDestination = true;
+        WIM.NewDestination();
     }
 
     private void allowUpdates() {

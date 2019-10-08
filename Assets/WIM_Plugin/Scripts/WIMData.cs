@@ -10,11 +10,11 @@ namespace WIM_Plugin {
         public Transform DestinationIndicatorInWIM;
         public Transform LevelTransform;
         public Transform PlayerTransform;
+        public GameObject TravelPreviewAnimationObj;
 
 
         public bool IsNewDestination { get; set; }
         public Transform DestinationIndicatorInLevel { get; set; }
-        public GameObject TravelPreviewAnimationObj { get; set; }
         public GameObject TravelPreviewAnimationObj2 { get; set; }
         public Transform HMDTransform { get; set; }
         public Transform FingertipIndexR { get; set; }

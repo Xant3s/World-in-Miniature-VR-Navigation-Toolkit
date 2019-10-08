@@ -81,7 +81,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Remove existing destination indicator (except "this").
-        WIM.RemoveDestionantionIndicatorsExceptWIM();
+        WIM.RemoveDestinantionIndicatorsExceptWIM();
 
         // Actually pick up the new destination indicator.
         WIM.Data.DestinationIndicatorInWIM.parent = index;
@@ -102,6 +102,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
 
         // New destination
         WIM.IsNewDestination = true;
+        WIM.NewDestination();
     }
 
     private void resetDoubleTap() {
