@@ -19,9 +19,9 @@ MonoBehaviour:
     type: 3}
   ScaleFactor: 0.015
   WIMLevelOffset: {x: 0, y: 0, z: 0}
-  ExpandCollidersX: {x: 0, y: 0}
-  ExpandCollidersY: {x: 0, y: 0}
-  ExpandCollidersZ: {x: 0, y: 0}
+  ExpandCollidersX: {x: 0.5, y: 0.5}
+  ExpandCollidersY: {x: 3, y: 0.5}
+  ExpandCollidersZ: {x: 0.5, y: 0.5}
   DestinationAlwaysOnTheGround: 1
   ShowWIMButton: 256
   DestinationSelectionMethod: 1
@@ -38,28 +38,28 @@ MonoBehaviour:
   CutoutAngle: 30
   ShowCutoutLight: 0
   CutoutLightColor: {r: 1, g: 1, b: 1, a: 1}
-  PreviewScreen: 0
+  PreviewScreen: 1
   AutoPositionPreviewScreen: 0
-  TravelPreviewAnimation: 0
-  TravelPreviewAnimationSpeed: 1
-  PostTravelPathTrace: 0
-  TraceDuration: 1
-  WIMSpawnOffset: {x: 0, y: 0, z: 0}
+  TravelPreviewAnimation: 1
+  TravelPreviewAnimationSpeed: 0.3
+  PostTravelPathTrace: 1
+  TraceDuration: 5
+  WIMSpawnOffset: {x: 0, y: -0.25, z: 0.35}
   WIMSpawnHeight: 150
   PlayerHeightInCM: 170
   PlayerArmLength: 0
   AutoDetectArmLength: 0
   ConfirmArmLengthButton: 1
   AdaptWIMSizeToPlayerHeight: 0
-  AllowWIMScaling: 0
-  MinScaleFactor: 0
-  MaxScaleFactor: 0.5
+  AllowWIMScaling: 1
+  MinScaleFactor: 0.01
+  MaxScaleFactor: 0.02
   GrabButtonL: 536870912
   GrabButtonR: 134217728
   ScaleStep: 0.0001
-  InterHandDistanceDeltaThreshold: 0.1
+  InterHandDistanceDeltaThreshold: 0.003
   AllowWIMScrolling: 0
   ActiveAreaBounds: {x: 10, y: 10, z: 10}
   AutoScroll: 0
-  ScrollSpeed: 1
+  ScrollSpeed: 0.1
   MaxWIMScaleFactorDelta: 0

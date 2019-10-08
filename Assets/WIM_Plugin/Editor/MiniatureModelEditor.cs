@@ -179,7 +179,7 @@ public class MiniatureModelEditor : Editor {
         WIM.Generator.UpdateCutoutViewMask(WIM);
         WIM.Generator.UpdateScrollingMask(WIM);
         WIM.Generator.UpdateTransparency(WIM);
-        EditorUtility.SetDirty(target);
+        EditorUtility.SetDirty(WIM.Configuration);
     }
 
     private Vector2 NamedVectorField(string text, Vector2 vector, string xAxisName = "X", string yAxisName = "Y") {
