@@ -54,6 +54,6 @@ namespace WIM_Plugin {
         public Vector3 ActiveAreaBounds = new Vector3(10, 10, 10);
         public bool AutoScroll;
         public float ScrollSpeed = 1;
-        public float MaxWIMScaleFactorDelta;
+        public float MaxWIMScaleFactorDelta = 0.005f;   // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
     }
 }

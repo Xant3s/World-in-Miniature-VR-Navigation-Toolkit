@@ -13,7 +13,6 @@ using WIM_Plugin;
 public class MiniatureModel : MonoBehaviour {
     public bool PrevAllowWIMScrolling { get; set; } = true;
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.None;
-    public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
     public bool PrevSemiTransparent { get; set; } = false;
     public float PrevTransparency { get; set; } = 0;
@@ -24,7 +23,6 @@ public class MiniatureModel : MonoBehaviour {
     private Transform OVRPlayerController;
     private float WIMHeightRelativeToPlayer;
     private Vector3 WIMLevelLocalPosOnTravel;
-    private bool isNewDestination = false;
     private Vector3 WIMLevelLocalPos;
 
 
@@ -178,6 +176,8 @@ public class MiniatureModel : MonoBehaviour {
     public void ConfirmTeleport() {
         RemoveDestinationIndicators();
 
+        OnPreTravel?.Invoke(Configuration, Data);
+
         // Travel.
         WIMLevelLocalPosOnTravel = transform.GetChild(0).localPosition;
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
@@ -188,6 +188,8 @@ public class MiniatureModel : MonoBehaviour {
         OVRPlayerController.rotation = Data.DestinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
+
+        OnPostTravel?.Invoke(Configuration, Data);
     }
 
     private void selectDestination() {
@@ -320,106 +322,5 @@ public class MiniatureModel : MonoBehaviour {
 
     bool isInsideWIM(Vector3 point) {
         return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
-    }
-
-    public void ConfigureWIM() {
-        // Cleanup old configuration.
-        disableScrolling();
-        cleanupOcclusionHandling();
-
-        // Setup new configuration.
-        var material = Generator.LoadAppropriateMaterial(this);
-        Generator.SetWIMMaterial(material, this);
-        Generator.SetupDissolveScript(this);
-        if (Configuration.AllowWIMScrolling) enableScrolling(material);
-        else if (Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) configureCutoutView(material);
-        else if (Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls) configureMeltWalls(material);
-    }
-
-    private static void configureCutoutView(Material material) {
-        var maskController = new GameObject("Mask Controller");
-        var controller = maskController.AddComponent<Controller_Mask_Cone>();
-        controller.materials = new[] {material};
-        var spotlightObj = new GameObject("Spotlight Mask");
-        var spotlight = spotlightObj.AddComponent<Light>();
-        controller.spotLight1 = spotlight;
-        spotlight.type = LightType.Spot;
-        spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
-    }
-
-    private static void configureMeltWalls(Material material) {
-        var maskController = new GameObject("Mask Controller");
-        var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
-        controller.materials = new[] {material};
-        var cylinderMask = new GameObject("Cylinder Mask");
-        controller.cylinder1 = cylinderMask;
-        cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
-    }
-
-    void cleanupOcclusionHandling() {
-        DestroyImmediate(GameObject.Find("Cylinder Mask"));
-        DestroyImmediate(GameObject.Find("Spotlight Mask"));
-        DestroyImmediate(GameObject.Find("Mask Controller"));
-    }
-
-    private void enableScrolling(Material material) {
-        var maskController = new GameObject("Box Mask");
-        var controller = maskController.AddComponent<Controller_Mask_Box>();
-        controller.materials = new[] {material};
-        var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        var mf = tmpGO.GetComponent<MeshFilter>();
-        var cubeMesh = Instantiate(mf.sharedMesh) as Mesh;
-        maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
-        maskController.AddComponent<AlignWith>().Target = transform;
-        controller.box1 = maskController;
-        controller.invert = true;
-        removeAllColliders(transform);
-        gameObject.AddComponent<BoxCollider>().size = Configuration.ActiveAreaBounds / Configuration.ScaleFactor;
-        Generator.RemoveDissolveScript(this);
-        DestroyImmediate(tmpGO);
-        maskController.transform.position = transform.position;
-    }
-
-    private void disableScrolling() {
-        DestroyImmediate(GameObject.Find("Box Mask"));
-        removeAllColliders(transform);
-        Generator.GenerateColliders(this);
-    }
-
-    private void removeAllColliders(Transform t) {
-        Collider collider;
-        while(collider = t.GetComponent<Collider>()) {  // Assignment
-            DestroyImmediate(collider);
-        }
-    }
-
-    internal void adaptScaleFactorToPlayerHeight() {
-        if (!Configuration.AdaptWIMSizeToPlayerHeight) return;
-        var playerHeight = Configuration.PlayerHeightInCM;
-        const float defaultHeight = 170;
-        var defaultScaleFactor = Configuration.ScaleFactor;
-        const float minHeight = 100;
-        const float maxHeight = 200;
-        playerHeight = Mathf.Clamp(playerHeight, minHeight, maxHeight);
-        var maxScaleFactorDelta = MaxWIMScaleFactorDelta;
-        var heightDelta = playerHeight - defaultHeight;
-        if (heightDelta > 0) {
-            const float maxDelta = maxHeight - defaultHeight;
-            var actualDelta = maxHeight - playerHeight;
-            var factor = actualDelta / maxDelta;
-            var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
-            Configuration.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
-            Configuration.ScaleFactor = Mathf.Clamp(Configuration.ScaleFactor, Configuration.MinScaleFactor, Configuration.MaxScaleFactor);
-            transform.localScale = new Vector3(Configuration.ScaleFactor,Configuration.ScaleFactor,Configuration.ScaleFactor);
-
-        } else if (heightDelta < 0) {
-            const float maxDelta = defaultHeight - minHeight;
-            var actualDelta = defaultHeight - playerHeight;
-            var factor = actualDelta / maxDelta;
-            var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
-            Configuration.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
-            Configuration.ScaleFactor = Mathf.Clamp(Configuration.ScaleFactor, Configuration.MinScaleFactor, Configuration.MaxScaleFactor);
-            transform.localScale = new Vector3(Configuration.ScaleFactor,Configuration.ScaleFactor,Configuration.ScaleFactor);
-        }
     }
 }

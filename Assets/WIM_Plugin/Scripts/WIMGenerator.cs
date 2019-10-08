@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AdvancedDissolve_Example;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
@@ -196,7 +197,7 @@ namespace WIM_Plugin {
 
         public void GenerateNewWIM(in MiniatureModel WIM) {
             removeAllColliders(WIM.transform);
-            WIM.adaptScaleFactorToPlayerHeight();
+            adaptScaleFactorToPlayerHeight(WIM);
             var levelTransform = GameObject.Find("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
             var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
@@ -216,7 +217,38 @@ namespace WIM_Plugin {
             }
 
             WIM.transform.localScale = new Vector3(WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor);
-            WIM.ConfigureWIM();
+            ConfigureWIM(WIM);
+        }
+
+        internal void adaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
+            var config = WIM.Configuration;
+            if (!config.AdaptWIMSizeToPlayerHeight) return;
+            var playerHeight = config.PlayerHeightInCM;
+            const float defaultHeight = 170;
+            var defaultScaleFactor = config.ScaleFactor;
+            const float minHeight = 100;
+            const float maxHeight = 200;
+            playerHeight = Mathf.Clamp(playerHeight, minHeight, maxHeight);
+            var maxScaleFactorDelta = config.MaxWIMScaleFactorDelta;
+            var heightDelta = playerHeight - defaultHeight;
+            if (heightDelta > 0) {
+                const float maxDelta = maxHeight - defaultHeight;
+                var actualDelta = maxHeight - playerHeight;
+                var factor = actualDelta / maxDelta;
+                var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
+                config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+                config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, config.MinScaleFactor, config.MaxScaleFactor);
+                WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
+
+            } else if (heightDelta < 0) {
+                const float maxDelta = defaultHeight - minHeight;
+                var actualDelta = defaultHeight - playerHeight;
+                var factor = actualDelta / maxDelta;
+                var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
+                config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
+                config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, config.MinScaleFactor, config.MaxScaleFactor);
+                WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
+            }
         }
 
         internal void UpdateTransparency(in MiniatureModel WIM) {
@@ -224,7 +256,7 @@ namespace WIM_Plugin {
                 Math.Abs(WIM.Configuration.Transparency - WIM.PrevTransparency) < .1f) return;
             WIM.PrevTransparency = WIM.Configuration.Transparency;
             WIM.PrevSemiTransparent = WIM.Configuration.SemiTransparent;
-            WIM.ConfigureWIM();
+            ConfigureWIM(WIM);
         }
 
         internal void UpdateScrollingMask(in MiniatureModel WIM) {
@@ -292,6 +324,70 @@ namespace WIM_Plugin {
             }
 
             spotlight.color = color;
+        }
+
+        internal void configureCutoutView(Material material) {
+            var maskController = new GameObject("Mask Controller");
+            var controller = maskController.AddComponent<Controller_Mask_Cone>();
+            controller.materials = new[] {material};
+            var spotlightObj = new GameObject("Spotlight Mask");
+            var spotlight = spotlightObj.AddComponent<Light>();
+            controller.spotLight1 = spotlight;
+            spotlight.type = LightType.Spot;
+            spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
+        }
+
+        internal void configureMeltWalls(Material material) {
+            var maskController = new GameObject("Mask Controller");
+            var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
+            controller.materials = new[] {material};
+            var cylinderMask = new GameObject("Cylinder Mask");
+            controller.cylinder1 = cylinderMask;
+            cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
+        }
+
+        internal void cleanupOcclusionHandling() {
+            Object.DestroyImmediate(GameObject.Find("Cylinder Mask"));
+            Object.DestroyImmediate(GameObject.Find("Spotlight Mask"));
+            Object.DestroyImmediate(GameObject.Find("Mask Controller"));
+        }
+
+        private void enableScrolling(Material material, in MiniatureModel WIM) {
+            var maskController = new GameObject("Box Mask");
+            var controller = maskController.AddComponent<Controller_Mask_Box>();
+            controller.materials = new[] {material};
+            var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var mf = tmpGO.GetComponent<MeshFilter>();
+            var cubeMesh = Object.Instantiate(mf.sharedMesh) as Mesh;
+            maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
+            maskController.AddComponent<AlignWith>().Target = WIM.transform;
+            controller.box1 = maskController;
+            controller.invert = true;
+            removeAllColliders(WIM.transform);
+            WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
+            WIM.Generator.RemoveDissolveScript(WIM);
+            Object.DestroyImmediate(tmpGO);
+            maskController.transform.position = WIM.transform.position;
+        }
+
+        private void disableScrolling(in MiniatureModel WIM) {
+            Object.DestroyImmediate(GameObject.Find("Box Mask"));
+            removeAllColliders(WIM.transform);
+            WIM.Generator.GenerateColliders(WIM);
+        }
+
+        public void ConfigureWIM(in MiniatureModel WIM) {
+            // Cleanup old configuration.
+            disableScrolling(WIM);
+            cleanupOcclusionHandling();
+
+            // Setup new configuration.
+            var material = LoadAppropriateMaterial(WIM);
+            SetWIMMaterial(material, WIM);
+            SetupDissolveScript(WIM);
+            if (WIM.Configuration.AllowWIMScrolling) enableScrolling(material, WIM);
+            else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) configureCutoutView(material);
+            else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls) configureMeltWalls(material);
         }
     }
 }

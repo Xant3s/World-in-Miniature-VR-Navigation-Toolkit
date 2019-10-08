@@ -174,7 +174,7 @@ public class MiniatureModelEditor : Editor {
 
         if (Application.isPlaying) return;
         if (WIM.Generator.ScrollingPropertyChanged(WIM) || WIM.Generator.OcclusionHandlingStrategyChanged(WIM))
-            WIM.ConfigureWIM();
+            WIM.Generator.ConfigureWIM(WIM);
         WIM.Generator.UpdateCylinderMask(WIM);
         WIM.Generator.UpdateCutoutViewMask(WIM);
         WIM.Generator.UpdateScrollingMask(WIM);
