@@ -22,12 +22,10 @@ public class MiniatureModel : MonoBehaviour {
     private Transform HMDTransform;
     private Transform fingertipIndexR;
     private Transform OVRPlayerController;
-    private PostTravelPathTrace pathTrace;
     private float WIMHeightRelativeToPlayer;
     private Vector3 WIMLevelLocalPosOnTravel;
     private bool isNewDestination = false;
     private Vector3 WIMLevelLocalPos;
-
 
 
     public WIMGenerator Generator;
@@ -35,9 +33,11 @@ public class MiniatureModel : MonoBehaviour {
     public WIMData Data;
     public WIMSpaceConverter Converter;
 
-    public delegate void Action(WIMConfiguration config, WIMData data);
-    public static event Action OnUpdate;
-    public static event Action OnNewDestination;
+    public delegate void WIMAction(WIMConfiguration config, WIMData data);
+    public static event WIMAction OnUpdate;
+    public static event WIMAction OnNewDestination;
+    public static event WIMAction OnPreTravel;
+    public static event WIMAction OnPostTravel;
 
 
 
@@ -178,10 +178,6 @@ public class MiniatureModel : MonoBehaviour {
     public void ConfirmTeleport() {
         RemoveDestinationIndicators();
 
-        // Optional: post travel path trace
-        if (Configuration.PostTravelPathTrace)
-            createPostTravelPathTrace();
-
         // Travel.
         WIMLevelLocalPosOnTravel = transform.GetChild(0).localPosition;
         transform.parent = OVRPlayerController; // Maintain transform relative to player.
@@ -192,30 +188,6 @@ public class MiniatureModel : MonoBehaviour {
         OVRPlayerController.rotation = Data.DestinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
-
-        // Optional: post travel path trace
-        if (Configuration.PostTravelPathTrace)
-            initPostTravelPathTrace();
-    }
-
-    private void createPostTravelPathTrace() {
-        var emptyGO = new GameObject();
-        var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
-        pathTrace = postTravelPathTraceObj.AddComponent<PostTravelPathTrace>();
-        pathTrace.Converter = Converter;
-        pathTrace.TraceDurationInSeconds = Configuration.TraceDuration;
-        pathTrace.OldPositionInWIM = Instantiate(emptyGO, Data.WIMLevelTransform).transform;
-        pathTrace.OldPositionInWIM.position = Data.PlayerRepresentationTransform.position;
-        pathTrace.OldPositionInWIM.name = "PathTraceOldPosition";
-        pathTrace.NewPositionInWIM = Instantiate(emptyGO, Data.WIMLevelTransform).transform;
-        pathTrace.NewPositionInWIM.position = Data.DestinationIndicatorInWIM.position;
-        pathTrace.NewPositionInWIM.name = "PathTraceNewPosition";
-        Destroy(emptyGO);
-    }
-
-    private void initPostTravelPathTrace() {
-        pathTrace.WIMLevelTransform = transform.GetChild(0);
-        pathTrace.Init();
     }
 
     private void selectDestination() {

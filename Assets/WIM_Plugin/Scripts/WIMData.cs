@@ -21,7 +21,7 @@ namespace WIM_Plugin {
         public Transform FingertipIndexR { get; set; }
         public Transform OVRPlayerController { get; set; }
         public bool ArmLengthDetected { get; set; }
-        public PostTravelPathTrace PathTrace { get; set; }
+        public PostTravelPathTraceController PathTraceController { get; set; }
         public Material PreviewScreenMaterial { get; set; }
         public float WIMHeightRelativeToPlayer { get; set; }
         public Vector3 WIMLevelLocalPosOnTravel { get; set; }
