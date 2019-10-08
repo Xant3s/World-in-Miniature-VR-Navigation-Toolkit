@@ -10,7 +10,7 @@ public class Destroyer : MonoBehaviour {
     }
 
     void Update() {
-        if(!WIM.DestinationIndicatorInWIM) {
+        if(!WIM.Data.DestinationIndicatorInWIM) {
             Destroy(gameObject);
         }
     }

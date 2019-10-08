@@ -34,14 +34,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         }
     }
 
-    public Transform DestinationIndicatorInWIM {
-        get => destinationIndicatorInWIM;
-        set {
-            Destroy(destinationIndicatorInWIM);
-            destinationIndicatorInWIM = value;
-        }
-    }
-
     public Transform DestinationIndicatorInLevel { get; set; }
 
     private GameObject TravelPreviewAnimationObj {
@@ -55,7 +47,6 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public bool PrevSemiTransparent { get; set; } = false;
     public float PrevTransparency { get; set; } = 0;
 
-    public Transform PlayerRepresentationTransform { get; private set; }
 
     private GameObject travelPreviewAnimationObj;
     private Transform levelTransform;
@@ -69,9 +60,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     private float WIMHeightRelativeToPlayer;
     private Vector3 WIMLevelLocalPosOnTravel;
     private bool isNewDestination = false;
-    private Transform destinationIndicatorInWIM;
     private bool previewScreenEnabled;
     private Vector3 WIMLevelLocalPos;
+
 
 
     public WIMGenerator Generator;
@@ -115,9 +106,9 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     void Start() {
         if(EnsureConfigurationIsThere()) return;
         WIMLevelLocalPos = Data.WIMLevelTransform.localPosition;
-        PlayerRepresentationTransform = Instantiate(Configuration.PlayerRepresentation, Data.WIMLevelTransform).transform;
+        Data.PlayerRepresentationTransform = Instantiate(Configuration.PlayerRepresentation, Data.WIMLevelTransform).transform;
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup)
-            PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = Configuration.DoubleTapInterval;
+            Data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = Configuration.DoubleTapInterval;
         respawnWIM(false);
     }
 
@@ -130,23 +121,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        if (PlayerRepresentationTransform) updatePlayerRepresentationInWIM();
+        if (Data.PlayerRepresentationTransform) updatePlayerRepresentationInWIM();
         if (previewScreenEnabled) updatePreviewScreen();
 
         OnUpdate?.Invoke(Configuration, Data);
-
-
-
-        if (!Data.WIMLevelTransform) return;
-        if(!Configuration.AllowWIMScrolling) return;
-        if (Configuration.AutoScroll) autoScrollWIM();
-        else scrollWIM();
-    }
-
-    private void scrollWIM() {
-        var input = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
-        var direction = new Vector3(input.x, 0, input.y);
-        Data.WIMLevelTransform.Translate(-direction * Configuration.ScrollSpeed * Time.deltaTime, Space.World);
     }
 
     private void detectArmLength() {
@@ -175,7 +153,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         WIMLevel.parent = null;
         WIMLevel.name = "WIM Level Old";
-        PlayerRepresentationTransform.parent = null;
+        Data.PlayerRepresentationTransform.parent = null;
         var newWIMLevel = Instantiate(WIMLevel.gameObject, transform).transform;
         newWIMLevel.gameObject.name = "WIM Level";
         Data.WIMLevelTransform = newWIMLevel;
@@ -187,7 +165,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
-        PlayerRepresentationTransform.parent = newWIMLevel;
+        Data.PlayerRepresentationTransform.parent = newWIMLevel;
         
         if (!maintainTransformRelativeToPlayer) {
             var spawnDistanceZ = ((Configuration.PlayerArmLength <= 0) ? Configuration.WIMSpawnOffset.z : Configuration.PlayerArmLength);
@@ -268,10 +246,10 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         pathTrace.Converter = this;
         pathTrace.TraceDurationInSeconds = Configuration.TraceDuration;
         pathTrace.OldPositionInWIM = Instantiate(emptyGO, Data.WIMLevelTransform).transform;
-        pathTrace.OldPositionInWIM.position = PlayerRepresentationTransform.position;
+        pathTrace.OldPositionInWIM.position = Data.PlayerRepresentationTransform.position;
         pathTrace.OldPositionInWIM.name = "PathTraceOldPosition";
         pathTrace.NewPositionInWIM = Instantiate(emptyGO, Data.WIMLevelTransform).transform;
-        pathTrace.NewPositionInWIM.position = DestinationIndicatorInWIM.position;
+        pathTrace.NewPositionInWIM.position = Data.DestinationIndicatorInWIM.position;
         pathTrace.NewPositionInWIM.name = "PathTraceNewPosition";
         Destroy(emptyGO);
     }
@@ -305,12 +283,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
-        var currForward = getGroundPosition(DestinationIndicatorInWIM.position + DestinationIndicatorInWIM.forward)
-                          - getGroundPosition(DestinationIndicatorInWIM.position);
+        var currForward = getGroundPosition(Data.DestinationIndicatorInWIM.position + Data.DestinationIndicatorInWIM.forward)
+                          - getGroundPosition(Data.DestinationIndicatorInWIM.position);
         // Get signed angle between current forward vector and desired forward vector (pointing direction).
         var angle = Vector3.SignedAngle(currForward, fingertipForward, Data.WIMLevelTransform.up);
         // Rotate to align with pointing direction.
-        DestinationIndicatorInWIM.Rotate(Vector3.up, angle);
+        Data.DestinationIndicatorInWIM.Rotate(Vector3.up, angle);
 
         // Rotate destination indicator in level.
         updateDestinationRotationInLevel();
@@ -320,7 +298,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     }
 
     public Transform SpawnDestinationIndicatorInLevel() {
-        var levelPosition = ConvertToLevelSpace(DestinationIndicatorInWIM.position);
+        var levelPosition = ConvertToLevelSpace(Data.DestinationIndicatorInWIM.position);
         DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, levelTransform).transform;
         DestinationIndicatorInLevel.position = levelPosition;
 
@@ -331,19 +309,19 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if(Configuration.DestinationAlwaysOnTheGround) {
             DestinationIndicatorInLevel.position = getGroundPosition(levelPosition) +
                                                    new Vector3(0, Configuration.DestinationIndicator.transform.localScale.y, 0);
-            DestinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
+            Data.DestinationIndicatorInWIM.position = ConvertToWIMSpace(getGroundPosition(levelPosition))
                                                  + Data.WIMLevelTransform.up * Configuration.DestinationIndicator.transform.localScale.y *
                                                  ScaleFactor;
         }
 
         // Fix orientation.
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup && Configuration.DestinationAlwaysOnTheGround) {
-            DestinationIndicatorInLevel.rotation = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * DestinationIndicatorInWIM.rotation;
+            DestinationIndicatorInLevel.rotation = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
             var forwardPos = DestinationIndicatorInLevel.position + DestinationIndicatorInLevel.forward;
             forwardPos.y = DestinationIndicatorInLevel.position.y;
             var forwardInLevel = forwardPos - DestinationIndicatorInLevel.position;
             DestinationIndicatorInLevel.rotation = Quaternion.LookRotation(forwardInLevel, Vector3.up);
-            DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * DestinationIndicatorInLevel.rotation;
+            Data.DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * DestinationIndicatorInLevel.rotation;
         }
 
         return DestinationIndicatorInLevel;
@@ -352,12 +330,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     public Transform SpawnDestinationIndicatorInWIM() {
         Assert.IsNotNull(Data.WIMLevelTransform);
         Assert.IsNotNull(Configuration.DestinationIndicator);
-        DestinationIndicatorInWIM = Instantiate(Configuration.DestinationIndicator, Data.WIMLevelTransform).transform;
-        DestinationIndicatorInWIM.position = fingertipIndexR.position;
+        Data.DestinationIndicatorInWIM = Instantiate(Configuration.DestinationIndicator, Data.WIMLevelTransform).transform;
+        Data.DestinationIndicatorInWIM.position = fingertipIndexR.position;
         if(Configuration.PreviewScreen && !Configuration.AutoPositionPreviewScreen)
-            DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
+            Data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
         //DestinationIndicatorInWIM.Find("Camera").GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
-        return DestinationIndicatorInWIM;
+        return Data.DestinationIndicatorInWIM;
     }
 
     void onNewDestination() {
@@ -370,19 +348,11 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
         if (Configuration.TravelPreviewAnimation) createTravelPreviewAnimation();
     }
 
-    void autoScrollWIM() {
-        if(!Configuration.AllowWIMScrolling || !Configuration.AutoScroll) return;
-        var scrollOffset = DestinationIndicatorInWIM
-            ? -DestinationIndicatorInWIM.localPosition
-            : -PlayerRepresentationTransform.localPosition;
-        Data.WIMLevelTransform.localPosition = scrollOffset;
-    }
-
     private void createTravelPreviewAnimation() {
         TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
         var travelPreview = TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimation>();
-        travelPreview.DestinationInWIM = DestinationIndicatorInWIM;
-        travelPreview.PlayerRepresentationInWIM = PlayerRepresentationTransform;
+        travelPreview.DestinationInWIM = Data.DestinationIndicatorInWIM;
+        travelPreview.PlayerRepresentationInWIM = Data.PlayerRepresentationTransform;
         travelPreview.DestinationIndicator = Configuration.DestinationIndicator;
         travelPreview.AnimationSpeed = Configuration.TravelPreviewAnimationSpeed;
         travelPreview.WIMLevelTransform = Data.WIMLevelTransform;
@@ -391,7 +361,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void selectDestinationRotation() {
         // Only if there is a destination indicator in the WIM.
-        if(!DestinationIndicatorInWIM) return;
+        if(!Data.DestinationIndicatorInWIM) return;
 
         // Poll thumbstick input.
         var inputRotation = OVRInput.Get(Configuration.DestinationRotationThumbstick);
@@ -401,7 +371,7 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
         // Rotate destination indicator in WIM via thumbstick.
         var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
-        DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
+        Data.DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
 
         // Update destination indicator rotation in level.
         updateDestinationRotationInLevel();
@@ -413,26 +383,26 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
     /// </summary>
     private void updateDestinationRotationInLevel() {
         DestinationIndicatorInLevel.rotation =
-            Quaternion.Inverse(Data.WIMLevelTransform.rotation) * DestinationIndicatorInWIM.rotation;
+            Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
     }
 
     public void RemoveDestinationIndicators() {
-        if (!DestinationIndicatorInWIM) return;
+        if (!Data.DestinationIndicatorInWIM) return;
         RemovePreviewScreen();
         // Destroy uses another thread, so make sure they are not copied by removing from parent.
         if(TravelPreviewAnimationObj) {
             TravelPreviewAnimationObj.transform.parent = null;
             Destroy(TravelPreviewAnimationObj);
         }
-        DestinationIndicatorInWIM.parent = null;
-        Destroy(DestinationIndicatorInWIM.gameObject);
+        Data.DestinationIndicatorInWIM.parent = null;
+        Destroy(Data.DestinationIndicatorInWIM.gameObject);
         if(!DestinationIndicatorInLevel) return;
         DestinationIndicatorInLevel.parent = null;
         Destroy(DestinationIndicatorInLevel.gameObject);
     }
 
     public void RemoveDestionantionIndicatorsExceptWIM() {
-        if (!DestinationIndicatorInWIM) return;
+        if (!Data.DestinationIndicatorInWIM) return;
         RemovePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         DestroyImmediate(TravelPreviewAnimationObj);
@@ -516,12 +486,12 @@ public class MiniatureModel : MonoBehaviour, WIMSpaceConverter {
 
     private void updatePlayerRepresentationInWIM() {
         // Position.
-       PlayerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
-        PlayerRepresentationTransform.position += Data.WIMLevelTransform.up * Configuration.PlayerRepresentation.transform.localScale.y * ScaleFactor;
+        Data.PlayerRepresentationTransform.position = ConvertToWIMSpace(getGroundPosition(Camera.main.transform.position));
+        Data.PlayerRepresentationTransform.position += Data.WIMLevelTransform.up * Configuration.PlayerRepresentation.transform.localScale.y * ScaleFactor;
 
         // Rotation
         var rotationInLevel = Data.WIMLevelTransform.rotation * playerTransform.rotation;
-        PlayerRepresentationTransform.rotation = rotationInLevel;
+        Data.PlayerRepresentationTransform.rotation = rotationInLevel;
     }
 
     public void ConfigureWIM() {

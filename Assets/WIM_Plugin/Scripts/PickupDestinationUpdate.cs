@@ -84,9 +84,9 @@ public class PickupDestinationUpdate : MonoBehaviour {
         WIM.RemoveDestionantionIndicatorsExceptWIM();
 
         // Actually pick up the new destination indicator.
-        WIM.DestinationIndicatorInWIM.parent = index;
+        WIM.Data.DestinationIndicatorInWIM.parent = index;
         var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
-        WIM.DestinationIndicatorInWIM.position = midPos;
+        WIM.Data.DestinationIndicatorInWIM.position = midPos;
     }
 
     void stopGrabbing() {
@@ -95,7 +95,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Let go. 
-        WIM.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
+        WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
         // Create destination indicator in level. Includes snap to ground.
         if(!WIM.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();

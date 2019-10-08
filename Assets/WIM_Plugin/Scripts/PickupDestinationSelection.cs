@@ -56,10 +56,10 @@ public class PickupDestinationSelection : MonoBehaviour {
         WIM.SpawnDestinationIndicatorInWIM();
 
         // Actually pick up the new destination indicator.
-        WIM.DestinationIndicatorInWIM.parent = index;
+        WIM.Data.DestinationIndicatorInWIM.parent = index;
         var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
-        WIM.DestinationIndicatorInWIM.position = midPos;
-        WIM.DestinationIndicatorInWIM.rotation = WIM.PlayerRepresentationTransform.rotation;
+        WIM.Data.DestinationIndicatorInWIM.position = midPos;
+        WIM.Data.DestinationIndicatorInWIM.rotation = WIM.Data.PlayerRepresentationTransform.rotation;
     }
 
     void stopGrabbing() {
@@ -68,8 +68,8 @@ public class PickupDestinationSelection : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Let go.
-        if(!WIM.DestinationIndicatorInWIM) return;
-        WIM.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
+        if(!WIM.Data.DestinationIndicatorInWIM) return;
+        WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
         // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
         Invoke("allowUpdates", 1);
@@ -85,7 +85,7 @@ public class PickupDestinationSelection : MonoBehaviour {
         var WIMTransform = transform.root;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         Assert.IsNotNull(WIM);
-        Assert.IsNotNull(WIM.DestinationIndicatorInWIM);
-        WIM.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>().DoubleTapInterval = DoubleTapInterval;
+        Assert.IsNotNull(WIM.Data.DestinationIndicatorInWIM);
+        WIM.Data.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>().DoubleTapInterval = DoubleTapInterval;
     }
 }

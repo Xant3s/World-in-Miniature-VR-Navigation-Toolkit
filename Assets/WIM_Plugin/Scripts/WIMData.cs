@@ -6,16 +6,14 @@ namespace WIM_Plugin {
     // Data describing the current WIM state. Data only. Modified at runtime.
     public class WIMData : ScriptableObject {
         public Transform WIMLevelTransform;
-
-
+        public Transform PlayerRepresentationTransform;
+        public Transform DestinationIndicatorInWIM;
 
 
 
         public bool IsNewDestination { get; set; }
-        public Transform DestinationIndicatorInWIM { get; set; }
         public Transform DestinationIndicatorInLevel { get; set; }
         public GameObject TravelPreviewAnimationObj { get; set; }
-        public Transform PlayerRepresentationTransform { get; set; }
         public GameObject TravelPreviewAnimationObj2 { get; set; }
         public Transform LevelTransform { get; set; }
         public Transform PlayerTransform { get; set; }
