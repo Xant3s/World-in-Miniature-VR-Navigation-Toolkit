@@ -75,10 +75,9 @@ public class PickupDestinationSelection : MonoBehaviour {
         Invoke("allowUpdates", 1);
 
         // Create destination indicator in level. Includes snap to ground.
-        if (!WIM.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
+        if (!WIM.Data.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
 
         // New destination
-        WIM.IsNewDestination = true;
         WIM.NewDestination();
     }
 

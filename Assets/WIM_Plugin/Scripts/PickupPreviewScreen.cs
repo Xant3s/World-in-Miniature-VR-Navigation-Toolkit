@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIM_Plugin;
 
 public class PickupPreviewScreen : MonoBehaviour {
     private bool pickupMode = false;
@@ -63,7 +64,7 @@ public class PickupPreviewScreen : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Spawn new preview screen.
-        previewScreenTransform = WIM.showPreviewScreen(false);
+        WIMTransform.GetComponent<PreviewScreen>().ShowPreviewScreen(WIM.Configuration, WIM.Data);
         Assert.IsNotNull(previewScreenTransform);
 
         // Pick up the new preview screen.

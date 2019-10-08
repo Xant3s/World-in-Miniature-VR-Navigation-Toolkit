@@ -7,14 +7,15 @@ namespace WIM_Plugin {
     public class WIMData : ScriptableObject {
         public Transform WIMLevelTransform;
         public Transform PlayerRepresentationTransform;
+        public Transform DestinationIndicatorInLevel;
         public Transform DestinationIndicatorInWIM;
         public Transform LevelTransform;
         public Transform PlayerTransform;
         public GameObject TravelPreviewAnimationObj;
+        public bool PreviewScreenEnabled;
 
 
         public bool IsNewDestination { get; set; }
-        public Transform DestinationIndicatorInLevel { get; set; }
         public GameObject TravelPreviewAnimationObj2 { get; set; }
         public Transform HMDTransform { get; set; }
         public Transform FingertipIndexR { get; set; }
@@ -26,7 +27,6 @@ namespace WIM_Plugin {
         public Vector3 WIMLevelLocalPosOnTravel { get; set; }
         public bool isNewDestination { get; set; }
         public Transform DestinationIndicatorInWIM2 { get; set; }
-        public bool PreviewScreenEnabled { get; set; }
         public Vector3 WIMLevelLocalPos { get; set; }
         public bool PrevSemiTransparent { get; set; }
         public float PrevTransparency { get; set; }

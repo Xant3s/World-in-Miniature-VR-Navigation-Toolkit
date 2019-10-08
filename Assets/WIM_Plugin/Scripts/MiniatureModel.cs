@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AdvancedDissolve_Example;
-using MyBox;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIM_Plugin;
@@ -16,16 +15,6 @@ public class MiniatureModel : MonoBehaviour {
     public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.None;
     public float MaxWIMScaleFactorDelta { get; set; } = 0.005f;  // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
-    public bool IsNewDestination {
-        get => isNewDestination;
-        set {
-            isNewDestination = value;
-            if(isNewDestination) onNewDestination();
-        }
-    }
-
-    public Transform DestinationIndicatorInLevel { get; set; }
-
     public bool PrevSemiTransparent { get; set; } = false;
     public float PrevTransparency { get; set; } = 0;
 
@@ -37,10 +26,7 @@ public class MiniatureModel : MonoBehaviour {
     private float WIMHeightRelativeToPlayer;
     private Vector3 WIMLevelLocalPosOnTravel;
     private bool isNewDestination = false;
-    private bool previewScreenEnabled;
     private Vector3 WIMLevelLocalPos;
-    private Material previewScreenMaterial;
-
 
 
 
@@ -102,7 +88,6 @@ public class MiniatureModel : MonoBehaviour {
             selectDestinationRotation();
             checkConfirmTeleport();
         }
-        if (previewScreenEnabled) updatePreviewScreen();
 
         OnUpdate?.Invoke(Configuration, Data);
     }
@@ -186,7 +171,7 @@ public class MiniatureModel : MonoBehaviour {
 
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(Configuration.ConfirmTravelButton)) return;
-        if (!DestinationIndicatorInLevel) return;
+        if (!Data.DestinationIndicatorInLevel) return;
         ConfirmTeleport();
     }
 
@@ -203,8 +188,8 @@ public class MiniatureModel : MonoBehaviour {
         WIMHeightRelativeToPlayer =
             transform.position.y - OVRPlayerController.position.y; // Maintain height relative to player.
         var playerHeight = OVRPlayerController.position.y - MathUtils.GetGroundPosition(OVRPlayerController.position).y;
-        OVRPlayerController.position = MathUtils.GetGroundPosition(DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
-        OVRPlayerController.rotation = DestinationIndicatorInLevel.rotation;
+        OVRPlayerController.position = MathUtils.GetGroundPosition(Data.DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
+        OVRPlayerController.rotation = Data.DestinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
 
@@ -268,21 +253,20 @@ public class MiniatureModel : MonoBehaviour {
         updateDestinationRotationInLevel();
 
         // New destination.
-        IsNewDestination = true;
         NewDestination();
     }
 
     public Transform SpawnDestinationIndicatorInLevel() {
         var levelPosition = Converter.ConvertToLevelSpace(Data.DestinationIndicatorInWIM.position);
-        DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, Data.LevelTransform).transform;
-        DestinationIndicatorInLevel.position = levelPosition;
+        Data.DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, Data.LevelTransform).transform;
+        Data.DestinationIndicatorInLevel.position = levelPosition;
 
         // Remove frustum.
-        Destroy(DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
+        Destroy(Data.DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
 
         // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
         if(Configuration.DestinationAlwaysOnTheGround) {
-            DestinationIndicatorInLevel.position = MathUtils.GetGroundPosition(levelPosition) +
+            Data.DestinationIndicatorInLevel.position = MathUtils.GetGroundPosition(levelPosition) +
                                                    new Vector3(0, Configuration.DestinationIndicator.transform.localScale.y, 0);
             Data.DestinationIndicatorInWIM.position = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(levelPosition))
                                                  + Data.WIMLevelTransform.up * Configuration.DestinationIndicator.transform.localScale.y *
@@ -291,15 +275,15 @@ public class MiniatureModel : MonoBehaviour {
 
         // Fix orientation.
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup && Configuration.DestinationAlwaysOnTheGround) {
-            DestinationIndicatorInLevel.rotation = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
-            var forwardPos = DestinationIndicatorInLevel.position + DestinationIndicatorInLevel.forward;
-            forwardPos.y = DestinationIndicatorInLevel.position.y;
-            var forwardInLevel = forwardPos - DestinationIndicatorInLevel.position;
-            DestinationIndicatorInLevel.rotation = Quaternion.LookRotation(forwardInLevel, Vector3.up);
-            Data.DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * DestinationIndicatorInLevel.rotation;
+            Data.DestinationIndicatorInLevel.rotation = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
+            var forwardPos = Data.DestinationIndicatorInLevel.position + Data.DestinationIndicatorInLevel.forward;
+            forwardPos.y = Data.DestinationIndicatorInLevel.position.y;
+            var forwardInLevel = forwardPos - Data.DestinationIndicatorInLevel.position;
+            Data.DestinationIndicatorInLevel.rotation = Quaternion.LookRotation(forwardInLevel, Vector3.up);
+            Data.DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * Data.DestinationIndicatorInLevel.rotation;
         }
 
-        return DestinationIndicatorInLevel;
+        return Data.DestinationIndicatorInLevel;
     }
 
     public Transform SpawnDestinationIndicatorInWIM() {
@@ -309,15 +293,7 @@ public class MiniatureModel : MonoBehaviour {
         Data.DestinationIndicatorInWIM.position = fingertipIndexR.position;
         if(Configuration.PreviewScreen && !Configuration.AutoPositionPreviewScreen)
             Data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
-        //DestinationIndicatorInWIM.Find("Camera").GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
         return Data.DestinationIndicatorInWIM;
-    }
-
-    void onNewDestination() {
-        IsNewDestination = false;
-
-        // Optional: show preview screen.
-        if (Configuration.PreviewScreen && Configuration.AutoPositionPreviewScreen) showPreviewScreen(true);
     }
 
     private void selectDestinationRotation() {
@@ -343,13 +319,13 @@ public class MiniatureModel : MonoBehaviour {
     /// Rotation should match destination indicator rotation in WIM.
     /// </summary>
     private void updateDestinationRotationInLevel() {
-        DestinationIndicatorInLevel.rotation =
+        Data.DestinationIndicatorInLevel.rotation =
             Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
     }
 
     public void RemoveDestinationIndicators() {
         if (!Data.DestinationIndicatorInWIM) return;
-        RemovePreviewScreen();
+        GetComponent<PreviewScreen>().RemovePreviewScreen();
         // Destroy uses another thread, so make sure they are not copied by removing from parent.
         if(Data.TravelPreviewAnimationObj) {
             Data.TravelPreviewAnimationObj.transform.parent = null;
@@ -357,70 +333,17 @@ public class MiniatureModel : MonoBehaviour {
         }
         Data.DestinationIndicatorInWIM.parent = null;
         Destroy(Data.DestinationIndicatorInWIM.gameObject);
-        if(!DestinationIndicatorInLevel) return;
-        DestinationIndicatorInLevel.parent = null;
-        Destroy(DestinationIndicatorInLevel.gameObject);
+        if(!Data.DestinationIndicatorInLevel) return;
+        Data.DestinationIndicatorInLevel.parent = null;
+        Destroy(Data.DestinationIndicatorInLevel.gameObject);
     }
 
     public void RemoveDestinantionIndicatorsExceptWIM() {
         if (!Data.DestinationIndicatorInWIM) return;
-        RemovePreviewScreen();
+        GetComponent<PreviewScreen>().RemovePreviewScreen();
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         DestroyImmediate(Data.TravelPreviewAnimationObj);
-        if(DestinationIndicatorInLevel) DestroyImmediate(DestinationIndicatorInLevel.gameObject);
-    }
-
-    public Transform showPreviewScreen(bool autoPosition) {
-        RemovePreviewScreen();
-        var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
-
-        if(autoPosition) {
-            previewScreen.GetComponent<FloatAbove>().Target = transform;
-        }
-        else {
-            Destroy(previewScreen.GetComponent<FloatAbove>());
-            previewScreen.AddComponent<ClosePreviewScreen>();
-        }
-
-        initPreviewScreen(previewScreen);
-        previewScreenEnabled = true;
-        return previewScreen.transform;
-    }
-
-    private void initPreviewScreen(GameObject previewScreen) {
-        Assert.IsNotNull(DestinationIndicatorInLevel);
-        Assert.IsNotNull(DestinationIndicatorInLevel.GetChild(1));
-        var camObj = DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
-        Assert.IsNotNull(camObj);
-        var cam = camObj.GetOrAddComponent<Camera>();
-        Assert.IsNotNull(cam);
-        cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
-        cam.clearFlags = CameraClearFlags.SolidColor;
-        cam.backgroundColor = Color.gray;
-        previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit"));
-        previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
-        previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
-    }
-
-    private void updatePreviewScreen() {
-        if (!Configuration.PreviewScreen || !DestinationIndicatorInLevel) return;
-        var cam = DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
-        Destroy(cam.targetTexture);
-        cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
-        if(!previewScreenMaterial) {
-            Debug.LogError("Preview screen material is null");
-            previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit"));
-            GameObject.FindWithTag("PreviewScreen").GetComponent<Renderer>().material = previewScreenMaterial;
-        }
-        previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
-    }
-
-    public void RemovePreviewScreen() {
-        previewScreenEnabled = false;
-        var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
-        if(!previewScreen) return;
-        previewScreen.transform.parent = null;
-        Destroy(previewScreen);
+        if(Data.DestinationIndicatorInLevel) DestroyImmediate(Data.DestinationIndicatorInLevel.gameObject);
     }
 
     bool isInsideWIM(Vector3 point) {
