@@ -42,7 +42,6 @@ public class MiniatureModel : MonoBehaviour {
     private Transform HMDTransform;
     private Transform fingertipIndexR;
     private Transform OVRPlayerController;
-    private bool armLengthDetected = false;
     private PostTravelPathTrace pathTrace;
     private Material previewScreenMaterial;
     private float WIMHeightRelativeToPlayer;
@@ -68,7 +67,7 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     void Awake() {
-        if(EnsureConfigurationIsThere()) return;
+        if(!ConfigurationIsThere()) return;
         Data = new WIMData();
         Converter = new WIMSpaceConverterImpl(Configuration, Data);
         Data.WIMLevelTransform = GameObject.Find("WIM Level").transform;
@@ -87,14 +86,14 @@ public class MiniatureModel : MonoBehaviour {
         Assert.IsNotNull(Data.PlayerTransform);
     }
 
-    private bool EnsureConfigurationIsThere() {
-        if(Configuration) return false;
+    private bool ConfigurationIsThere() {
+        if(Configuration) return true;
         Debug.LogError("WIM configuration missing.");
-        return true;
+        return false;
     }
 
     void Start() {
-        if(EnsureConfigurationIsThere()) return;
+        if(!ConfigurationIsThere()) return;
         WIMLevelLocalPos = Data.WIMLevelTransform.localPosition;
         Data.PlayerRepresentationTransform = Instantiate(Configuration.PlayerRepresentation, Data.WIMLevelTransform).transform;
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup)
@@ -103,8 +102,8 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     void Update() {
-        if(EnsureConfigurationIsThere()) return;
-        detectArmLength();
+        if(!ConfigurationIsThere()) return;
+        //detectArmLength();
         checkSpawnWIM();
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Selection) {
             selectDestination();
@@ -114,16 +113,6 @@ public class MiniatureModel : MonoBehaviour {
         if (previewScreenEnabled) updatePreviewScreen();
 
         OnUpdate?.Invoke(Configuration, Data);
-    }
-
-    private void detectArmLength() {
-        if (!Configuration.AutoDetectArmLength || armLengthDetected) return;
-        if (OVRInput.GetDown(Configuration.ConfirmArmLengthButton)) {
-            armLengthDetected = true;
-            var controllerPos = GameObject.Find("CustomHandRight").transform.position;
-            var headPos = Camera.main.transform.position;
-            Configuration.PlayerArmLength = (controllerPos - headPos).magnitude;
-        }
     }
 
     private void checkSpawnWIM() {
