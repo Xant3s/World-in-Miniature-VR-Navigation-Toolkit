@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIM_Plugin;
 
 public class PickupDestinationUpdate : MonoBehaviour {
     public float DoubleTapInterval { get; set; } = 2;
@@ -81,12 +82,20 @@ public class PickupDestinationUpdate : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Remove existing destination indicator (except "this").
-        WIM.RemoveDestinantionIndicatorsExceptWIM();
+        RemoveDestinantionIndicatorsExceptWIM(WIM);
 
         // Actually pick up the new destination indicator.
         WIM.Data.DestinationIndicatorInWIM.parent = index;
         var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
         WIM.Data.DestinationIndicatorInWIM.position = midPos;
+    }
+
+    private void RemoveDestinantionIndicatorsExceptWIM(MiniatureModel WIM) {
+        if (!WIM.Data.DestinationIndicatorInWIM) return;
+        GetComponent<PreviewScreen>().RemovePreviewScreen();
+        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
+        DestroyImmediate(WIM.Data.TravelPreviewAnimationObj);
+        if(WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
     }
 
     void stopGrabbing() {
@@ -98,7 +107,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
         WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
         // Create destination indicator in level. Includes snap to ground.
-        if(!WIM.Data.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
+        if(!WIM.Data.DestinationIndicatorInLevel) DestinationIndicators.SpawnDestinationIndicatorInLevel(WIM.Configuration, WIM.Data);
 
         // New destination
         WIM.NewDestination();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIM_Plugin;
 
 public class PickupDestinationSelection : MonoBehaviour {
 
@@ -50,10 +51,10 @@ public class PickupDestinationSelection : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Remove existing destination indicator.
-        WIM.RemoveDestinationIndicators();
+        DestinationIndicators.RemoveDestinationIndicators(WIM);
 
         // Spawn new destination indicator.
-        WIM.SpawnDestinationIndicatorInWIM();
+        DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data);
 
         // Actually pick up the new destination indicator.
         WIM.Data.DestinationIndicatorInWIM.parent = index;
@@ -75,7 +76,7 @@ public class PickupDestinationSelection : MonoBehaviour {
         Invoke("allowUpdates", 1);
 
         // Create destination indicator in level. Includes snap to ground.
-        if (!WIM.Data.DestinationIndicatorInLevel) WIM.SpawnDestinationIndicatorInLevel();
+        if (!WIM.Data.DestinationIndicatorInLevel) DestinationIndicators.SpawnDestinationIndicatorInLevel(WIM.Configuration, WIM.Data);
 
         // New destination
         WIM.NewDestination();

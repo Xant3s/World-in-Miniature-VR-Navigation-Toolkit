@@ -37,13 +37,13 @@ namespace WIM_Plugin {
         if (!isInsideWIM(data.fingertipIndexR.position, WIM.gameObject)) return;
 
         // Remove previous destination point.
-        WIM.RemoveDestinationIndicators();
+        DestinationIndicators.RemoveDestinationIndicators(WIM);
 
         // Show destination in WIM.
-        WIM.SpawnDestinationIndicatorInWIM();
+        DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data);
 
         // Show destination in level.
-        WIM.SpawnDestinationIndicatorInLevel();
+        DestinationIndicators.SpawnDestinationIndicatorInLevel(WIM.Configuration, WIM.Data);
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.

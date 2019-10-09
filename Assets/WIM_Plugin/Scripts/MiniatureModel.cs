@@ -33,12 +33,12 @@ public class MiniatureModel : MonoBehaviour {
         Data = new WIMData();
         Converter = new WIMSpaceConverterImpl(Configuration, Data);
         travelStrategy = new InstantTravel();
-        Data.WIMLevelTransform = GameObject.Find("WIM Level").transform;
-        Data.LevelTransform = GameObject.Find("Level").transform;
-        Data.PlayerTransform = GameObject.Find("OVRCameraRig").transform;
-        Data.HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
-        Data.fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
-        Data.OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
+        Data.WIMLevelTransform = GameObject.Find("WIM Level")?.transform;
+        Data.LevelTransform = GameObject.Find("Level")?.transform;
+        Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
+        Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
+        Data.fingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
+        Data.OVRPlayerController = GameObject.Find("OVRPlayerController")?.transform;
         Assert.IsNotNull(Data.WIMLevelTransform);
         Assert.IsNotNull(Data.HMDTransform);
         Assert.IsNotNull(Data.fingertipIndexR);
@@ -81,7 +81,7 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     private void respawnWIM(bool maintainTransformRelativeToPlayer) {
-        RemoveDestinationIndicators();
+        DestinationIndicators.RemoveDestinationIndicators(this);
 
         var WIMLevel = transform.GetChild(0);
         var dissolveFX = Configuration.OcclusionHandlingMethod == OcclusionHandling.None;
@@ -149,7 +149,7 @@ public class MiniatureModel : MonoBehaviour {
     }
 
     public void ConfirmTravel() {
-        RemoveDestinationIndicators();
+        DestinationIndicators.RemoveDestinationIndicators(this);
 
         OnPreTravel?.Invoke(Configuration, Data);
 
@@ -159,68 +159,5 @@ public class MiniatureModel : MonoBehaviour {
         respawnWIM(true); // Assist player to orientate at new location.
 
         OnPostTravel?.Invoke(Configuration, Data);
-    }
-
-    public Transform SpawnDestinationIndicatorInLevel() {
-        var levelPosition = Converter.ConvertToLevelSpace(Data.DestinationIndicatorInWIM.position);
-        Data.DestinationIndicatorInLevel = Instantiate(Configuration.DestinationIndicator, Data.LevelTransform).transform;
-        Data.DestinationIndicatorInLevel.position = levelPosition;
-
-        // Remove frustum.
-        Destroy(Data.DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
-
-        // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
-        if(Configuration.DestinationAlwaysOnTheGround) {
-            Data.DestinationIndicatorInLevel.position = MathUtils.GetGroundPosition(levelPosition) +
-                                                   new Vector3(0, Configuration.DestinationIndicator.transform.localScale.y, 0);
-            Data.DestinationIndicatorInWIM.position = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(levelPosition))
-                                                 + Data.WIMLevelTransform.up * Configuration.DestinationIndicator.transform.localScale.y *
-                                                 Configuration.ScaleFactor;
-        }
-
-        // Fix orientation.
-        if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup && Configuration.DestinationAlwaysOnTheGround) {
-            Data.DestinationIndicatorInLevel.rotation = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
-            var forwardPos = Data.DestinationIndicatorInLevel.position + Data.DestinationIndicatorInLevel.forward;
-            forwardPos.y = Data.DestinationIndicatorInLevel.position.y;
-            var forwardInLevel = forwardPos - Data.DestinationIndicatorInLevel.position;
-            Data.DestinationIndicatorInLevel.rotation = Quaternion.LookRotation(forwardInLevel, Vector3.up);
-            Data.DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * Data.DestinationIndicatorInLevel.rotation;
-        }
-
-        return Data.DestinationIndicatorInLevel;
-    }
-
-    public Transform SpawnDestinationIndicatorInWIM() {
-        Assert.IsNotNull(Data.WIMLevelTransform);
-        Assert.IsNotNull(Configuration.DestinationIndicator);
-        Data.DestinationIndicatorInWIM = Instantiate(Configuration.DestinationIndicator, Data.WIMLevelTransform).transform;
-        Data.DestinationIndicatorInWIM.position = Data.fingertipIndexR.position;
-        if(Configuration.PreviewScreen && !Configuration.AutoPositionPreviewScreen)
-            Data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
-        return Data.DestinationIndicatorInWIM;
-    }
-
-    public void RemoveDestinationIndicators() {
-        if (!Data.DestinationIndicatorInWIM) return;
-        GetComponent<PreviewScreen>().RemovePreviewScreen();
-        // Destroy uses another thread, so make sure they are not copied by removing from parent.
-        if(Data.TravelPreviewAnimationObj) {
-            Data.TravelPreviewAnimationObj.transform.parent = null;
-            Destroy(Data.TravelPreviewAnimationObj);
-        }
-        Data.DestinationIndicatorInWIM.parent = null;
-        Destroy(Data.DestinationIndicatorInWIM.gameObject);
-        if(!Data.DestinationIndicatorInLevel) return;
-        Data.DestinationIndicatorInLevel.parent = null;
-        Destroy(Data.DestinationIndicatorInLevel.gameObject);
-    }
-
-    public void RemoveDestinantionIndicatorsExceptWIM() {
-        if (!Data.DestinationIndicatorInWIM) return;
-        GetComponent<PreviewScreen>().RemovePreviewScreen();
-        // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
-        DestroyImmediate(Data.TravelPreviewAnimationObj);
-        if(Data.DestinationIndicatorInLevel) DestroyImmediate(Data.DestinationIndicatorInLevel.gameObject);
     }
 }
