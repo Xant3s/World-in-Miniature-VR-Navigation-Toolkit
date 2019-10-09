@@ -10,12 +10,12 @@ namespace WIM_Plugin {
         private Material previewScreenMaterial;
 
         void OnEnable() {
-            MiniatureModel.OnNewDestination += ShowPreviewScreen;
+            MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
             MiniatureModel.OnUpdate += updatePreviewScreen;
         }
 
         void OnDisable() {
-            MiniatureModel.OnNewDestination -= ShowPreviewScreen;
+            MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
             MiniatureModel.OnUpdate -= updatePreviewScreen;
         }
 

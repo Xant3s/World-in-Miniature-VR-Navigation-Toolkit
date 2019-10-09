@@ -17,14 +17,22 @@ namespace WIM_Plugin {
         }
 
         void OnEnable() {
+            MiniatureModel.OnStart += setup;
             MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
         }
 
         void OnDisable() {
+            MiniatureModel.OnStart -= setup;
             MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
         }
 
-        void updatePlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
+        private void setup(WIMConfiguration config, WIMData data) {
+            data.PlayerRepresentationTransform = Instantiate(config.PlayerRepresentation, data.WIMLevelTransform).transform;
+            if(config.DestinationSelectionMethod == DestinationSelection.Pickup)
+                data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = config.DoubleTapInterval;
+        }
+
+        private void updatePlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
             if(!data.PlayerRepresentationTransform) return;
 
             // Position.

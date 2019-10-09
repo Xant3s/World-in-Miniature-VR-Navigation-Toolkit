@@ -16,7 +16,6 @@ namespace WIM_Plugin {
         public float WIMHeightRelativeToPlayer;
         public Vector3 WIMLevelLocalPosOnTravel;
         public Transform OVRPlayerController;
-        public Vector3 WIMLevelLocalPos;
         public Transform HMDTransform;
         public Transform fingertipIndexR;
     }

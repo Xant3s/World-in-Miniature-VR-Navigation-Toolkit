@@ -5,11 +5,11 @@ using WIM_Plugin;
 namespace WIM_Plugin {
     public class TravelPreviewAnimation : MonoBehaviour {
         void OnEnable() {
-            MiniatureModel.OnNewDestination += createController;
+            MiniatureModel.OnNewDestinationSelected += createController;
         }
 
         void OnDisable() {
-            MiniatureModel.OnNewDestination -= createController;
+            MiniatureModel.OnNewDestinationSelected -= createController;
         }
 
         private void createController(WIMConfiguration config, WIMData data) {

@@ -16,5 +16,6 @@ public class InstantTravel : TravelStrategy {
         var playerHeight = WIM.Data.OVRPlayerController.position.y - MathUtils.GetGroundPosition(WIM.Data.OVRPlayerController.position).y;
         WIM.Data.OVRPlayerController.position = MathUtils.GetGroundPosition(WIM.Data.DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
         WIM.Data.OVRPlayerController.rotation = WIM.Data.DestinationIndicatorInLevel.rotation;
+        WIM.GetComponent<Respawn>().respawnWIM(true); // Assist player to orientate at new location.
     }
 }
