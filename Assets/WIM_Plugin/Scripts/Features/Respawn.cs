@@ -8,12 +8,12 @@ namespace WIM_Plugin {
         private WIMData data;
 
         void OnEnable() {
-            MiniatureModel.OnStart += respawn;
+            MiniatureModel.OnLateInit += respawn;
             MiniatureModel.OnUpdate += checkRespawnWIM;
         }
 
         void OnDisable() {
-            MiniatureModel.OnStart -= respawn;
+            MiniatureModel.OnLateInit -= respawn;
             MiniatureModel.OnUpdate -= checkRespawnWIM;
         }
 

@@ -16,7 +16,8 @@ public class MiniatureModel : MonoBehaviour {
     public WIMSpaceConverter Converter;
 
     public delegate void WIMAction(WIMConfiguration config, WIMData data);
-    public static event WIMAction OnStart;
+    public static event WIMAction OnInit;
+    public static event WIMAction OnLateInit;
     public static event WIMAction OnUpdate;
     public static event WIMAction OnNewDestinationSelected;
     public static event WIMAction OnPreTravel;
@@ -52,7 +53,8 @@ public class MiniatureModel : MonoBehaviour {
 
     void Start() {
         if(!ConfigurationIsThere()) return;
-        OnStart?.Invoke(Configuration, Data);
+        OnInit?.Invoke(Configuration, Data);
+        OnLateInit?.Invoke(Configuration, Data);
     }
 
     void Update() {

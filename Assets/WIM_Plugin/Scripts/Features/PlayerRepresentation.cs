@@ -17,12 +17,12 @@ namespace WIM_Plugin {
         }
 
         void OnEnable() {
-            MiniatureModel.OnStart += setup;
+            MiniatureModel.OnInit += setup;
             MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
         }
 
         void OnDisable() {
-            MiniatureModel.OnStart -= setup;
+            MiniatureModel.OnInit -= setup;
             MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
         }
 

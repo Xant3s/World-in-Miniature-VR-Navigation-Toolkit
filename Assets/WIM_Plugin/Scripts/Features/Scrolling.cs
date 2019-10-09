@@ -27,14 +27,12 @@ namespace WIM_Plugin {
         }
 
         private void scrollWIM() {
-            Debug.Log("Scroll");
             var input = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
             var direction = new Vector3(input.x, 0, input.y);
             data.WIMLevelTransform.Translate(-direction * config.ScrollSpeed * Time.deltaTime, Space.World);
         }
         
         private void autoScrollWIM() {
-            Debug.Log("Auto Scroll");
             if(!config.AllowWIMScrolling || !config.AutoScroll) return;
             var scrollOffset = data.DestinationIndicatorInWIM
                 ? -data.DestinationIndicatorInWIM.localPosition
