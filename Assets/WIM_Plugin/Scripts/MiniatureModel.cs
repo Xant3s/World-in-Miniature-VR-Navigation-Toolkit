@@ -19,9 +19,9 @@ public class MiniatureModel : MonoBehaviour {
     public static event WIMAction OnUpdate;
     public static event WIMAction OnNewDestination;
     public static event WIMAction OnPreTravel;
-    public static event WIMAction OnTravel;
     public static event WIMAction OnPostTravel;
 
+    private TravelStrategy travelStrategy;
 
 
     public MiniatureModel() {
@@ -32,6 +32,7 @@ public class MiniatureModel : MonoBehaviour {
         if(!ConfigurationIsThere()) return;
         Data = new WIMData();
         Converter = new WIMSpaceConverterImpl(Configuration, Data);
+        travelStrategy = new InstantTravel();
         Data.WIMLevelTransform = GameObject.Find("WIM Level").transform;
         Data.LevelTransform = GameObject.Find("Level").transform;
         Data.PlayerTransform = GameObject.Find("OVRCameraRig").transform;
@@ -66,11 +67,6 @@ public class MiniatureModel : MonoBehaviour {
     void Update() {
         if(!ConfigurationIsThere()) return;
         checkSpawnWIM();
-        if(Configuration.DestinationSelectionMethod == DestinationSelection.Selection) {
-            selectDestination();
-            selectDestinationRotation();
-            checkConfirmTeleport();
-        }
 
         OnUpdate?.Invoke(Configuration, Data);
     }
@@ -152,68 +148,17 @@ public class MiniatureModel : MonoBehaviour {
         Destroy(GameObject.Find("WIM Level Old"));
     }
 
-    private void checkConfirmTeleport() {
-        if (!OVRInput.GetUp(Configuration.ConfirmTravelButton)) return;
-        if (!Data.DestinationIndicatorInLevel) return;
-        ConfirmTravel();
-    }
-
     public void ConfirmTravel() {
         RemoveDestinationIndicators();
 
         OnPreTravel?.Invoke(Configuration, Data);
 
         // Travel.
-        OnTravel?.Invoke(Configuration, Data);
-        Data.WIMLevelLocalPosOnTravel = transform.GetChild(0).localPosition;
-        transform.parent = Data.OVRPlayerController; // Maintain transform relative to player.
-        Data.WIMHeightRelativeToPlayer =
-            transform.position.y - Data.OVRPlayerController.position.y; // Maintain height relative to player.
-        var playerHeight = Data.OVRPlayerController.position.y - MathUtils.GetGroundPosition(Data.OVRPlayerController.position).y;
-        Data.OVRPlayerController.position = MathUtils.GetGroundPosition(Data.DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
-        Data.OVRPlayerController.rotation = Data.DestinationIndicatorInLevel.rotation;
+        travelStrategy.Travel(this);
 
         respawnWIM(true); // Assist player to orientate at new location.
 
         OnPostTravel?.Invoke(Configuration, Data);
-    }
-
-    private void selectDestination() {
-        // Only if select button is pressed.
-        if (!OVRInput.GetDown(Configuration.DestinationSelectionButton)) return;
-
-        // Check if in WIM bounds.
-        if (!isInsideWIM(Data.fingertipIndexR.position)) return;
-
-        // Remove previous destination point.
-        RemoveDestinationIndicators();
-
-        // Show destination in WIM.
-        SpawnDestinationIndicatorInWIM();
-
-        // Show destination in level.
-        SpawnDestinationIndicatorInLevel();
-
-        // Rotate destination indicator in WIM (align with pointing direction):
-        // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
-        var lookAtPoint = Data.fingertipIndexR.position + Data.fingertipIndexR.right; // fingertip.right because of Oculus prefab
-        var pointBFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(lookAtPoint));
-        var pointAFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Data.fingertipIndexR.position));
-        var fingertipForward = pointBFloor - pointAFloor;
-        fingertipForward = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * fingertipForward;
-        // Get current forward vector in WIM space. Set to floor.
-        var currForward = MathUtils.GetGroundPosition(Data.DestinationIndicatorInWIM.position + Data.DestinationIndicatorInWIM.forward)
-                          - MathUtils.GetGroundPosition(Data.DestinationIndicatorInWIM.position);
-        // Get signed angle between current forward vector and desired forward vector (pointing direction).
-        var angle = Vector3.SignedAngle(currForward, fingertipForward, Data.WIMLevelTransform.up);
-        // Rotate to align with pointing direction.
-        Data.DestinationIndicatorInWIM.Rotate(Vector3.up, angle);
-
-        // Rotate destination indicator in level.
-        updateDestinationRotationInLevel();
-
-        // New destination.
-        NewDestination();
     }
 
     public Transform SpawnDestinationIndicatorInLevel() {
@@ -256,33 +201,6 @@ public class MiniatureModel : MonoBehaviour {
         return Data.DestinationIndicatorInWIM;
     }
 
-    private void selectDestinationRotation() {
-        // Only if there is a destination indicator in the WIM.
-        if(!Data.DestinationIndicatorInWIM) return;
-
-        // Poll thumbstick input.
-        var inputRotation = OVRInput.Get(Configuration.DestinationRotationThumbstick);
-
-        // Only if rotation is changed via thumbstick.
-        if (System.Math.Abs(inputRotation.magnitude) < 0.01f) return;
-
-        // Rotate destination indicator in WIM via thumbstick.
-        var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
-        Data.DestinationIndicatorInWIM.rotation = Data.WIMLevelTransform.rotation * Quaternion.Euler(0, rotationAngle, 0);
-
-        // Update destination indicator rotation in level.
-        updateDestinationRotationInLevel();
-    }
-
-    /// <summary>
-    /// Update the destination indicator rotation in level.
-    /// Rotation should match destination indicator rotation in WIM.
-    /// </summary>
-    private void updateDestinationRotationInLevel() {
-        Data.DestinationIndicatorInLevel.rotation =
-            Quaternion.Inverse(Data.WIMLevelTransform.rotation) * Data.DestinationIndicatorInWIM.rotation;
-    }
-
     public void RemoveDestinationIndicators() {
         if (!Data.DestinationIndicatorInWIM) return;
         GetComponent<PreviewScreen>().RemovePreviewScreen();
@@ -304,9 +222,5 @@ public class MiniatureModel : MonoBehaviour {
         // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
         DestroyImmediate(Data.TravelPreviewAnimationObj);
         if(Data.DestinationIndicatorInLevel) DestroyImmediate(Data.DestinationIndicatorInLevel.gameObject);
-    }
-
-    bool isInsideWIM(Vector3 point) {
-        return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
     }
 }
