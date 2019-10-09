@@ -251,14 +251,6 @@ namespace WIM_Plugin {
             }
         }
 
-        internal void UpdateTransparency(in MiniatureModel WIM) {
-            if (WIM.Configuration.SemiTransparent == WIM.PrevSemiTransparent &&
-                Math.Abs(WIM.Configuration.Transparency - WIM.PrevTransparency) < .1f) return;
-            WIM.PrevTransparency = WIM.Configuration.Transparency;
-            WIM.PrevSemiTransparent = WIM.Configuration.SemiTransparent;
-            ConfigureWIM(WIM);
-        }
-
         internal void UpdateScrollingMask(in MiniatureModel WIM) {
             if (!WIM.Configuration.AllowWIMScrolling) return;
             var boxMaskObj = GameObject.Find("Box Mask");
@@ -283,25 +275,9 @@ namespace WIM_Plugin {
             }
         }
 
-        internal bool ScrollingPropertyChanged(in MiniatureModel WIM) {
-            if (WIM.Configuration.AllowWIMScrolling == WIM.PrevAllowWIMScrolling) return false;
-            WIM.PrevAllowWIMScrolling = WIM.Configuration.AllowWIMScrolling;
-            return true;
-        }
-
-        internal bool OcclusionHandlingStrategyChanged(in MiniatureModel WIM) {
-            if (WIM.Configuration.OcclusionHandlingMethod == WIM.prevOcclusionHandling) return false;
-            WIM.prevOcclusionHandling = WIM.Configuration.OcclusionHandlingMethod;
-            if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandling.None) {
-                WIM.Configuration.AllowWIMScrolling = WIM.PrevAllowWIMScrolling = false;
-            }
-
-            return true;
-        }
-
         internal void UpdateCylinderMask(in MiniatureModel WIM) {
             if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandling.MeltWalls) return;
-            var cylinderTransform = GameObject.Find("Cylinder Mask").transform;
+            var cylinderTransform = GameObject.Find("Cylinder Mask")?.transform;
             if (!cylinderTransform) return;
             cylinderTransform.localScale = new Vector3(WIM.Configuration.MeltRadius, WIM.Configuration.MeltHeight, 1);
         }
@@ -382,6 +358,7 @@ namespace WIM_Plugin {
             cleanupOcclusionHandling();
 
             // Setup new configuration.
+            if(WIM.Configuration.OcclusionHandlingMethod != OcclusionHandling.None) WIM.Configuration.AllowWIMScrolling = false;
             var material = LoadAppropriateMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);

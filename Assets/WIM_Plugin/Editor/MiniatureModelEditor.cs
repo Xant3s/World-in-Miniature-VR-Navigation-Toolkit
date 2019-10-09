@@ -63,15 +63,20 @@ public class MiniatureModelEditor : Editor {
 
 
         separator("Occlusion Handling");
+        EditorGUI.BeginChangeCheck();
         WIM.Configuration.SemiTransparent =
             EditorGUILayout.Toggle("Semi-Transparent", WIM.Configuration.SemiTransparent);
+        if(EditorGUI.EndChangeCheck()) WIM.Generator.ConfigureWIM(WIM);
         if (WIM.Configuration.SemiTransparent) {
-            WIM.Configuration.Transparency =
-                EditorGUILayout.Slider("Transparency", WIM.Configuration.Transparency, 0, 1);
+            EditorGUI.BeginChangeCheck();
+            WIM.Configuration.Transparency = EditorGUILayout.Slider("Transparency", WIM.Configuration.Transparency, 0, 1);
+            if(EditorGUI.EndChangeCheck()) WIM.Generator.ConfigureWIM(WIM);
         }
+        EditorGUI.BeginChangeCheck();
         WIM.Configuration.OcclusionHandlingMethod = (OcclusionHandling) EditorGUILayout.EnumPopup(
             new GUIContent("Occlusion Handling Method", "Select occlusion handling strategy. Disable for scrolling."),
             WIM.Configuration.OcclusionHandlingMethod);
+        if(EditorGUI.EndChangeCheck()) WIM.Generator.ConfigureWIM(WIM);
         if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls) {
             WIM.Configuration.MeltRadius = EditorGUILayout.FloatField("Melt Radius", WIM.Configuration.MeltRadius);
             WIM.Configuration.MeltHeight = EditorGUILayout.FloatField("Melt Height", WIM.Configuration.MeltHeight);
@@ -158,11 +163,16 @@ public class MiniatureModelEditor : Editor {
             EditorGUILayout.LabelField("Disable occlusion handling method to use scrolling.");
         }
         else {
+            EditorGUI.BeginChangeCheck();
             WIM.Configuration.AllowWIMScrolling =
                 EditorGUILayout.Toggle("Allow WIM Scrolling", WIM.Configuration.AllowWIMScrolling);
+            if (EditorGUI.EndChangeCheck()) WIM.Generator.ConfigureWIM(WIM);
+
             if (WIM.Configuration.AllowWIMScrolling) {
+                EditorGUI.BeginChangeCheck();
                 WIM.Configuration.ActiveAreaBounds =
                     EditorGUILayout.Vector3Field("Active Area Bounds", WIM.Configuration.ActiveAreaBounds);
+                if(EditorGUI.EndChangeCheck()) WIM.Generator.UpdateScrollingMask(WIM);
                 WIM.Configuration.AutoScroll = EditorGUILayout.Toggle("Auto Scroll", WIM.Configuration.AutoScroll);
                 if (WIM.Configuration.AutoScroll) {
                     WIM.Configuration.ScrollSpeed = EditorGUILayout.FloatField("Scroll Speed", WIM.Configuration.ScrollSpeed);
@@ -173,12 +183,8 @@ public class MiniatureModelEditor : Editor {
 
 
         if (Application.isPlaying) return;
-        if (WIM.Generator.ScrollingPropertyChanged(WIM) || WIM.Generator.OcclusionHandlingStrategyChanged(WIM))
-            WIM.Generator.ConfigureWIM(WIM);
         WIM.Generator.UpdateCylinderMask(WIM);
         WIM.Generator.UpdateCutoutViewMask(WIM);
-        WIM.Generator.UpdateScrollingMask(WIM);
-        WIM.Generator.UpdateTransparency(WIM);
         EditorUtility.SetDirty(WIM.Configuration);
     }
 

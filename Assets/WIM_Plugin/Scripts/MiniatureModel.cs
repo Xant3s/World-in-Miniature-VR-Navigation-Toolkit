@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using AdvancedDissolve_Example;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIM_Plugin;
@@ -11,30 +10,16 @@ using WIM_Plugin;
 [RequireComponent(typeof(OVRGrabbable))]
 [RequireComponent(typeof(DistanceGrabbable))]
 public class MiniatureModel : MonoBehaviour {
-    public bool PrevAllowWIMScrolling { get; set; } = true;
-    public OcclusionHandling prevOcclusionHandling { get; set; } = OcclusionHandling.None;
-
-    public bool PrevSemiTransparent { get; set; } = false;
-    public float PrevTransparency { get; set; } = 0;
-
-
-    private Transform HMDTransform;
-    private Transform fingertipIndexR;
-    private Transform OVRPlayerController;
-    private float WIMHeightRelativeToPlayer;
-    private Vector3 WIMLevelLocalPosOnTravel;
-    private Vector3 WIMLevelLocalPos;
-
-
-    public WIMGenerator Generator;
     public WIMConfiguration Configuration;
     public WIMData Data;
+    public WIMGenerator Generator;
     public WIMSpaceConverter Converter;
 
     public delegate void WIMAction(WIMConfiguration config, WIMData data);
     public static event WIMAction OnUpdate;
     public static event WIMAction OnNewDestination;
     public static event WIMAction OnPreTravel;
+    public static event WIMAction OnTravel;
     public static event WIMAction OnPostTravel;
 
 
@@ -50,15 +35,15 @@ public class MiniatureModel : MonoBehaviour {
         Data.WIMLevelTransform = GameObject.Find("WIM Level").transform;
         Data.LevelTransform = GameObject.Find("Level").transform;
         Data.PlayerTransform = GameObject.Find("OVRCameraRig").transform;
-        HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
-        fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
-        OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
+        Data.HMDTransform = GameObject.Find("CenterEyeAnchor").transform;
+        Data.fingertipIndexR = GameObject.Find("hands:b_r_index_ignore").transform;
+        Data.OVRPlayerController = GameObject.Find("OVRPlayerController").transform;
         Assert.IsNotNull(Data.WIMLevelTransform);
-        Assert.IsNotNull(HMDTransform);
-        Assert.IsNotNull(fingertipIndexR);
+        Assert.IsNotNull(Data.HMDTransform);
+        Assert.IsNotNull(Data.fingertipIndexR);
         Assert.IsNotNull(Configuration.PlayerRepresentation);
         Assert.IsNotNull(Configuration.DestinationIndicator);
-        Assert.IsNotNull(OVRPlayerController);
+        Assert.IsNotNull(Data.OVRPlayerController);
         Assert.IsNotNull(Data.LevelTransform);
         Assert.IsNotNull(Data.PlayerTransform);
     }
@@ -71,7 +56,7 @@ public class MiniatureModel : MonoBehaviour {
 
     void Start() {
         if(!ConfigurationIsThere()) return;
-        WIMLevelLocalPos = Data.WIMLevelTransform.localPosition;
+        Data.WIMLevelLocalPos = Data.WIMLevelTransform.localPosition;
         Data.PlayerRepresentationTransform = Instantiate(Configuration.PlayerRepresentation, Data.WIMLevelTransform).transform;
         if(Configuration.DestinationSelectionMethod == DestinationSelection.Pickup)
             Data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = Configuration.DoubleTapInterval;
@@ -118,7 +103,7 @@ public class MiniatureModel : MonoBehaviour {
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         newWIMLevel.position = Vector3.zero;
-        newWIMLevel.localPosition = maintainTransformRelativeToPlayer ? WIMLevelLocalPosOnTravel : WIMLevelLocalPos;
+        newWIMLevel.localPosition = maintainTransformRelativeToPlayer ? Data.WIMLevelLocalPosOnTravel : Data.WIMLevelLocalPos;
         newWIMLevel.rotation = Quaternion.identity;
         newWIMLevel.localRotation = Quaternion.identity;
         newWIMLevel.localScale = new Vector3(1, 1, 1);
@@ -127,16 +112,16 @@ public class MiniatureModel : MonoBehaviour {
         if (!maintainTransformRelativeToPlayer) {
             var spawnDistanceZ = ((Configuration.PlayerArmLength <= 0) ? Configuration.WIMSpawnOffset.z : Configuration.PlayerArmLength);
             var spawnDistanceY = (Configuration.WIMSpawnHeight - Configuration.PlayerHeightInCM) / 100;
-            var camForwardPosition = HMDTransform.position + HMDTransform.forward;
-            camForwardPosition.y = HMDTransform.position.y;
-            var camForwardIgnoreY = camForwardPosition - HMDTransform.position;
+            var camForwardPosition = Data.HMDTransform.position + Data.HMDTransform.forward;
+            camForwardPosition.y = Data.HMDTransform.position.y;
+            var camForwardIgnoreY = camForwardPosition - Data.HMDTransform.position;
             transform.rotation = Quaternion.identity;
-            transform.position = HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
+            transform.position = Data.HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
                                  Vector3.up * spawnDistanceY;
         }
         else {
             transform.position = new Vector3(transform.position.x,
-                OVRPlayerController.position.y + WIMHeightRelativeToPlayer, transform.position.z);
+                Data.OVRPlayerController.position.y + Data.WIMHeightRelativeToPlayer, transform.position.z);
         }
 
         if(dissolveFX) {
@@ -170,22 +155,23 @@ public class MiniatureModel : MonoBehaviour {
     private void checkConfirmTeleport() {
         if (!OVRInput.GetUp(Configuration.ConfirmTravelButton)) return;
         if (!Data.DestinationIndicatorInLevel) return;
-        ConfirmTeleport();
+        ConfirmTravel();
     }
 
-    public void ConfirmTeleport() {
+    public void ConfirmTravel() {
         RemoveDestinationIndicators();
 
         OnPreTravel?.Invoke(Configuration, Data);
 
         // Travel.
-        WIMLevelLocalPosOnTravel = transform.GetChild(0).localPosition;
-        transform.parent = OVRPlayerController; // Maintain transform relative to player.
-        WIMHeightRelativeToPlayer =
-            transform.position.y - OVRPlayerController.position.y; // Maintain height relative to player.
-        var playerHeight = OVRPlayerController.position.y - MathUtils.GetGroundPosition(OVRPlayerController.position).y;
-        OVRPlayerController.position = MathUtils.GetGroundPosition(Data.DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
-        OVRPlayerController.rotation = Data.DestinationIndicatorInLevel.rotation;
+        OnTravel?.Invoke(Configuration, Data);
+        Data.WIMLevelLocalPosOnTravel = transform.GetChild(0).localPosition;
+        transform.parent = Data.OVRPlayerController; // Maintain transform relative to player.
+        Data.WIMHeightRelativeToPlayer =
+            transform.position.y - Data.OVRPlayerController.position.y; // Maintain height relative to player.
+        var playerHeight = Data.OVRPlayerController.position.y - MathUtils.GetGroundPosition(Data.OVRPlayerController.position).y;
+        Data.OVRPlayerController.position = MathUtils.GetGroundPosition(Data.DestinationIndicatorInLevel.position) + Vector3.up * playerHeight;
+        Data.OVRPlayerController.rotation = Data.DestinationIndicatorInLevel.rotation;
 
         respawnWIM(true); // Assist player to orientate at new location.
 
@@ -197,7 +183,7 @@ public class MiniatureModel : MonoBehaviour {
         if (!OVRInput.GetDown(Configuration.DestinationSelectionButton)) return;
 
         // Check if in WIM bounds.
-        if (!isInsideWIM(fingertipIndexR.position)) return;
+        if (!isInsideWIM(Data.fingertipIndexR.position)) return;
 
         // Remove previous destination point.
         RemoveDestinationIndicators();
@@ -210,9 +196,9 @@ public class MiniatureModel : MonoBehaviour {
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
-        var lookAtPoint = fingertipIndexR.position + fingertipIndexR.right; // fingertip.right because of Oculus prefab
+        var lookAtPoint = Data.fingertipIndexR.position + Data.fingertipIndexR.right; // fingertip.right because of Oculus prefab
         var pointBFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(lookAtPoint));
-        var pointAFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(fingertipIndexR.position));
+        var pointAFloor = Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Data.fingertipIndexR.position));
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(Data.WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
@@ -264,7 +250,7 @@ public class MiniatureModel : MonoBehaviour {
         Assert.IsNotNull(Data.WIMLevelTransform);
         Assert.IsNotNull(Configuration.DestinationIndicator);
         Data.DestinationIndicatorInWIM = Instantiate(Configuration.DestinationIndicator, Data.WIMLevelTransform).transform;
-        Data.DestinationIndicatorInWIM.position = fingertipIndexR.position;
+        Data.DestinationIndicatorInWIM.position = Data.fingertipIndexR.position;
         if(Configuration.PreviewScreen && !Configuration.AutoPositionPreviewScreen)
             Data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
         return Data.DestinationIndicatorInWIM;

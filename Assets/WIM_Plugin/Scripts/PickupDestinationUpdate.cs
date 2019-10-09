@@ -59,7 +59,7 @@ public class PickupDestinationUpdate : MonoBehaviour {
                     // 2nd tap
                     tapState = TapState.SecondTap;
                     var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
-                    WIM.ConfirmTeleport();
+                    WIM.ConfirmTravel();
                     break;
             }
         }
