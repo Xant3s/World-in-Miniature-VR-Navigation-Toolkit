@@ -8,13 +8,14 @@ namespace WIM_Plugin {
         private WIMConfiguration config;
         private WIMData data;
         private Material previewScreenMaterial;
+        private static readonly int baseMap = Shader.PropertyToID("_BaseMap");
 
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
             MiniatureModel.OnUpdate += updatePreviewScreen;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
             MiniatureModel.OnUpdate -= updatePreviewScreen;
         }
@@ -48,7 +49,7 @@ namespace WIM_Plugin {
             cam.backgroundColor = Color.gray;
             previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit"));
             previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
-            previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
+            previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
         }
 
         private void updatePreviewScreen(WIMConfiguration config, WIMData data) {
@@ -65,7 +66,7 @@ namespace WIM_Plugin {
                 GameObject.FindWithTag("PreviewScreen").GetComponent<Renderer>().material = previewScreenMaterial;
             }
 
-            previewScreenMaterial.SetTexture("_BaseMap", cam.targetTexture);
+            previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
         }
 
         public void RemovePreviewScreen() {
@@ -82,23 +83,23 @@ namespace WIM_Plugin {
         private float DoubleTapInterval { get; set; } = 2;
 
         private Transform index;
-        private bool firstTap = false;
+        private bool firstTap;
 
-        void Awake() {
+        private void Awake() {
             index = GameObject.FindWithTag("IndexR").transform;
             Assert.IsNotNull(index);
         }
 
-        void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other) {
             if(other.transform != index) return;
-            if(transform.root.tag == "HandR") return;
+            if(transform.root.CompareTag("HandR")) return;
             if(firstTap) {
                 var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
                 WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
             }
             else {
                 firstTap = true;
-                Invoke("resetDoubleTap", DoubleTapInterval);
+                Invoke(nameof(resetDoubleTap), DoubleTapInterval);
             }
         }
 

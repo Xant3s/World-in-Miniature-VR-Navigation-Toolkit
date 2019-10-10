@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    [RequireComponent(typeof(Renderer))]
+    [RequireComponent(typeof(Rigidbody))]
     public class DistanceGrabbable : MonoBehaviour {
         public Transform Target { get; set; }
 
@@ -34,32 +36,24 @@ namespace WIM_Plugin {
         public float MinDistance { get; set; } = .1f;
 
         private Material defaultMaterial;
+        private Rigidbody rb;
 
-        void Awake() {
+        private void Awake() {
             defaultMaterial = GetComponentInChildren<Renderer>().material;
+            rb = GetComponent<Rigidbody>();
         }
 
-        void Update() {
+        private void Update() {
             HightlightFX = false;
             if(!IsBeingGrabbed || !Target) return;
 
             if(Vector3.Distance(Target.position, transform.position) < MinDistance) {
                 IsBeingGrabbed = false;
                 Target = null;
-                var rb = GetComponent<Rigidbody>();
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
             }
             else {
-                //if (Physics.Raycast(transform.position, Target.position - transform.position, out var hit,
-                //    Mathf.Infinity)) {
-                //    if (hit.transform.tag != "Hands") {
-                //        IsBeingGrabbed = false;
-                //        Target = null;
-                //        return;
-                //    }
-                //}
-
                 var step = SnapSpeed * Time.deltaTime;
                 transform.position = Vector3.MoveTowards(transform.position, Target.position, step);
             }

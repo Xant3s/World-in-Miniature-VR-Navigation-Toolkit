@@ -9,11 +9,11 @@ namespace WIM_Plugin {
         private WIMConfiguration config;
         private WIMData data;
 
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnUpdate += update;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnUpdate -= update;
         }
 
@@ -31,7 +31,7 @@ namespace WIM_Plugin {
         // Only if select button is pressed.
         if (!OVRInput.GetDown(config.DestinationSelectionButton)) return;
 
-        MiniatureModel WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+        var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
 
         // Check if in WIM bounds.
         if (!isInsideWIM(data.fingertipIndexR.position, WIM.gameObject)) return;
@@ -87,7 +87,7 @@ namespace WIM_Plugin {
             var inputRotation = OVRInput.Get(config.DestinationRotationThumbstick);
 
             // Only if rotation is changed via thumbstick.
-            if(System.Math.Abs(inputRotation.magnitude) < 0.01f) return;
+            if(Math.Abs(inputRotation.magnitude) < 0.01f) return;
 
             // Rotate destination indicator in WIM via thumbstick.
             var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;

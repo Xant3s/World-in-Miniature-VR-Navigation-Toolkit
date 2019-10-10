@@ -19,14 +19,14 @@ namespace WIM_Plugin {
         private bool stoppedGrabbing;
 
 
-        void Awake() {
+        private void Awake() {
             thumb = GameObject.FindWithTag("ThumbR").transform;
             index = GameObject.FindWithTag("IndexR").transform;
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
         }
 
-        void Update() {
+        private void Update() {
             var capLowerCenter = transform.position - transform.up * transform.localScale.y;
             var capUpperCenter = transform.position + transform.up * transform.localScale.y;
             var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().Configuration.ScaleFactor * 1.0f;
@@ -47,7 +47,7 @@ namespace WIM_Plugin {
             }
         }
 
-        void startGrabbing() {
+        private void startGrabbing() {
             var WIMTransform = transform.root;
             var WIM = WIMTransform.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -65,7 +65,7 @@ namespace WIM_Plugin {
             WIM.Data.DestinationIndicatorInWIM.rotation = WIM.Data.PlayerRepresentationTransform.rotation;
         }
 
-        void stopGrabbing() {
+        private void stopGrabbing() {
             var WIMTransform = transform.root;
             var WIM = WIMTransform.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -75,7 +75,7 @@ namespace WIM_Plugin {
             WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
             // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
-            Invoke("allowUpdates", 1);
+            Invoke(nameof(allowUpdates), 1);
 
             // Create destination indicator in level. Includes snap to ground.
             if(!WIM.Data.DestinationIndicatorInLevel)

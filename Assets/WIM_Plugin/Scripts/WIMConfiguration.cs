@@ -44,7 +44,7 @@ namespace WIM_Plugin {
         public OVRInput.RawButton ConfirmArmLengthButton = OVRInput.RawButton.A;
         public bool AdaptWIMSizeToPlayerHeight;
         public bool AllowWIMScaling;
-        public float MinScaleFactor = 0;
+        public float MinScaleFactor;
         public float MaxScaleFactor = .5f;
         public OVRInput.RawButton GrabButtonL = OVRInput.RawButton.LHandTrigger;
         public OVRInput.RawButton GrabButtonR = OVRInput.RawButton.RHandTrigger;

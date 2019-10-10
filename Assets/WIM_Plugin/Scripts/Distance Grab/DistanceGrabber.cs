@@ -16,20 +16,18 @@ namespace WIM_Plugin {
         private LineRenderer lineRenderer;
         private bool isDisabled;
 
-        void Awake() {
+        private void Awake() {
             if(!disableWhileInWIM) return;
             if(!this.enabled) {
                 isDisabled = true;
                 return;
             }
-
-            ;
             aimAssist = gameObject.GetComponentInChildren<AimAssist>();
             lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
         }
 
 
-        void LateUpdate() {
+        private void LateUpdate() {
             var WIMLayerOnly = 1 << 8;
             if(Physics.Raycast(transform.position, start.forward, out var hit,
                 Mathf.Infinity, WIMLayerOnly)) {
@@ -45,17 +43,17 @@ namespace WIM_Plugin {
             }
         }
 
-        void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other) {
             if(!disableWhileInWIM || isDisabled || other.name != "WIM") return;
             setEnable(false);
         }
 
-        void OnTriggerExit(Collider other) {
+        private void OnTriggerExit(Collider other) {
             if(!disableWhileInWIM || isDisabled || other.name != "WIM") return;
             setEnable(true);
         }
 
-        void setEnable(bool value) {
+        private void setEnable(bool value) {
             aimAssist.enabled = value;
             lineRenderer.enabled = value;
             this.enabled = value;

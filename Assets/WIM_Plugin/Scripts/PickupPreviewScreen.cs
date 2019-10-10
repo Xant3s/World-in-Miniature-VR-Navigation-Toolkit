@@ -15,14 +15,14 @@ public class PickupPreviewScreen : MonoBehaviour {
     private bool stoppedGrabbing;
 
 
-    void Awake() {
+    private void Awake() {
         thumb = GameObject.FindWithTag("ThumbR").transform;
         index = GameObject.FindWithTag("IndexR").transform;
         Assert.IsNotNull(thumb);
         Assert.IsNotNull(index);
     }
 
-    void Update() {
+    private void Update() {
         var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
         if(rightHandPinch && !isGrabbing) {
             isGrabbing = true;
@@ -40,7 +40,7 @@ public class PickupPreviewScreen : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter(Collider other) {
         if(other.transform == thumb) {
             thumbIsGrabbing = true;
         }
@@ -49,7 +49,7 @@ public class PickupPreviewScreen : MonoBehaviour {
         }
     }
 
-    void OnTriggerExit(Collider other) {
+    private void OnTriggerExit(Collider other) {
         if(other.transform == thumb) {
             thumbIsGrabbing = false;
         }
@@ -58,7 +58,7 @@ public class PickupPreviewScreen : MonoBehaviour {
         }
     }
 
-    void startGrabbing() {
+    private void startGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         Assert.IsNotNull(WIM);
@@ -72,7 +72,7 @@ public class PickupPreviewScreen : MonoBehaviour {
         previewScreenTransform.localPosition = Vector3.zero;
     }
 
-    void stopGrabbing() {
+    private void stopGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         Assert.IsNotNull(WIM);

@@ -6,13 +6,14 @@ namespace WIM_Plugin {
     public class Respawn : MonoBehaviour {
         private WIMConfiguration config;
         private WIMData data;
+        private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
 
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
             MiniatureModel.OnUpdate += checkRespawnWIM;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnLateInit -= respawn;
             MiniatureModel.OnUpdate -= checkRespawnWIM;
         }
@@ -56,9 +57,9 @@ namespace WIM_Plugin {
             data.PlayerRepresentationTransform.parent = newWIMLevel;
 
             if(!maintainTransformRelativeToPlayer) {
-                var spawnDistanceZ = ((config.PlayerArmLength <= 0)
+                var spawnDistanceZ = (config.PlayerArmLength <= 0)
                     ? config.WIMSpawnOffset.z
-                    : config.PlayerArmLength);
+                    : config.PlayerArmLength;
                 var spawnDistanceY = (config.WIMSpawnHeight - config.PlayerHeightInCM) / 100;
                 var camForwardPosition = data.HMDTransform.position + data.HMDTransform.forward;
                 camForwardPosition.y = data.HMDTransform.position.y;
@@ -74,7 +75,7 @@ namespace WIM_Plugin {
 
             if(dissolveFX) {
                 resolveWIM(newWIMLevel);
-                Invoke("destroyOldWIMLevel", 1.1f);
+                Invoke(nameof(destroyOldWIMLevel), 1.1f);
             }
             else {
                 destroyOldWIMLevel();
@@ -89,7 +90,7 @@ namespace WIM_Plugin {
                 var d = WIM.GetChild(i).GetComponent<Dissolve>();
                 if(d == null) continue;
                 d.durationInSeconds = resolveDuration;
-                WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", 1);
+                WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat(progress, 1);
                 d.PlayInverse();
             }
 

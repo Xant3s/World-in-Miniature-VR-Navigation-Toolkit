@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Debug = System.Diagnostics.Debug;
 
 namespace WIM_Plugin {
     // Show a player representation in the WIM. Used to indicate the player's position and orientation in the virtual environment.
@@ -9,19 +10,19 @@ namespace WIM_Plugin {
         private Transform playerTransform;
         private WIMSpaceConverter converter;
 
-        void Start() {
+        private void Start() {
             playerTransform = GameObject.Find("OVRCameraRig").transform;
             converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
             Assert.IsNotNull(playerTransform);
             Assert.IsNotNull(converter);
         }
 
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnInit += setup;
             MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnInit -= setup;
             MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
         }
@@ -36,6 +37,7 @@ namespace WIM_Plugin {
             if(!data.PlayerRepresentationTransform) return;
 
             // Position.
+            Debug.Assert(Camera.main != null, "Camera.main != null");
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * config.PlayerRepresentation.transform.localScale.y * config.ScaleFactor;
 

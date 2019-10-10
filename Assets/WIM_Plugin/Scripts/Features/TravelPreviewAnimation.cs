@@ -4,11 +4,11 @@ using WIM_Plugin;
 
 namespace WIM_Plugin {
     public class TravelPreviewAnimation : MonoBehaviour {
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnNewDestinationSelected += createController;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnNewDestinationSelected -= createController;
         }
 
@@ -47,7 +47,7 @@ namespace WIM_Plugin {
             lr = GetComponent<LineRenderer>();
         }
 
-        void Start() {
+        private void Start() {
             initLineRenderer();
             initAnimatedPlayerRepresentation();
             resetAnimation();
@@ -69,13 +69,13 @@ namespace WIM_Plugin {
                 Resources.Load<Material>("Materials/SemiTransparent");
         }
 
-        void OnDestroy() {
+        private void OnDestroy() {
             if(!animatedPlayerRepresentation) return;
             animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
             Destroy(animatedPlayerRepresentation.gameObject);
         }
 
-        void Update() {
+        private void Update() {
             updateLineRenderer();
             updateAnimatedPlayerRepresentation();
         }

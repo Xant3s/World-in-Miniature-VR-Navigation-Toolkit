@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIM_Plugin;
+using Debug = System.Diagnostics.Debug;
 
 namespace WIM_Plugin {
     public class PickupDestinationUpdate : MonoBehaviour {
@@ -25,7 +26,7 @@ namespace WIM_Plugin {
         private bool isGrabbing;
 
 
-        void Awake() {
+        private void Awake() {
             thumb = GameObject.FindWithTag("ThumbR").transform;
             index = GameObject.FindWithTag("IndexR").transform;
             Assert.IsNotNull(thumb);
@@ -33,14 +34,14 @@ namespace WIM_Plugin {
         }
 
 
-        void Start() {
+        private void Start() {
             var collider = gameObject.AddComponent<CapsuleCollider>();
             collider.height = 2.2f;
             collider.radius = .7f;
             collider.isTrigger = true;
         }
 
-        void Update() {
+        private void Update() {
             var capLowerCenter = transform.position - transform.up * transform.localScale.y;
             var capUpperCenter = transform.position + transform.up * transform.localScale.y;
             var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().Configuration.ScaleFactor * 1.0f;
@@ -57,7 +58,7 @@ namespace WIM_Plugin {
                     case TapState.None when indexIsTouching && !thumbIsTouching:
                         // First tap
                         tapState = TapState.FirstTap;
-                        Invoke("resetDoubleTap", DoubleTapInterval);
+                        Invoke(nameof(resetDoubleTap), DoubleTapInterval);
                         break;
                     case TapState.FirstTap when !indexIsTouching:
                         // Tapped once, now outside 
@@ -66,7 +67,8 @@ namespace WIM_Plugin {
                     case TapState.WaitingForSecondTap when indexIsTouching && !thumbIsTouching:
                         // 2nd tap
                         tapState = TapState.SecondTap;
-                        var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+                        var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
+                        Debug.Assert(WIM != null, nameof(WIM) + " != null");
                         WIM.ConfirmTravel();
                         break;
                 }
@@ -83,13 +85,13 @@ namespace WIM_Plugin {
             }
         }
 
-        void startGrabbing() {
+        private void startGrabbing() {
             var WIMTransform = GameObject.Find("WIM").transform;
             var WIM = WIMTransform.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
 
             // Remove existing destination indicator (except "this").
-            RemoveDestinantionIndicatorsExceptWIM(WIM);
+            RemoveDestinationIndicatorsExceptWIM(WIM);
 
             // Actually pick up the new destination indicator.
             WIM.Data.DestinationIndicatorInWIM.parent = index;
@@ -97,7 +99,7 @@ namespace WIM_Plugin {
             WIM.Data.DestinationIndicatorInWIM.position = midPos;
         }
 
-        private void RemoveDestinantionIndicatorsExceptWIM(MiniatureModel WIM) {
+        private void RemoveDestinationIndicatorsExceptWIM(MiniatureModel WIM) {
             if(!WIM.Data.DestinationIndicatorInWIM) return;
             GetComponent<PreviewScreen>().RemovePreviewScreen();
             // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
@@ -105,7 +107,7 @@ namespace WIM_Plugin {
             if(WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
         }
 
-        void stopGrabbing() {
+        private void stopGrabbing() {
             var WIMTransform = GameObject.Find("WIM").transform;
             var WIM = WIMTransform.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -124,7 +126,7 @@ namespace WIM_Plugin {
         private void resetDoubleTap() {
             //firstTap = false;
             tapState = TapState.None;
-            CancelInvoke("resetDoubleTap");
+            CancelInvoke(nameof(resetDoubleTap));
         }
     }
 }

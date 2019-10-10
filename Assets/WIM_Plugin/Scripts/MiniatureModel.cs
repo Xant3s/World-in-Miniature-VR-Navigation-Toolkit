@@ -32,9 +32,9 @@ namespace WIM_Plugin {
             Generator = new WIMGenerator();
         }
 
-        void Awake() {
+        private void Awake() {
             if(!ConfigurationIsThere()) return;
-            Data = new WIMData();
+            Data = ScriptableObject.CreateInstance<WIMData>();
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             travelStrategy = new InstantTravel();
             Data.WIMLevelTransform = GameObject.Find("WIM Level")?.transform;
@@ -53,13 +53,13 @@ namespace WIM_Plugin {
             Assert.IsNotNull(Data.PlayerTransform);
         }
 
-        void Start() {
+        private void Start() {
             if(!ConfigurationIsThere()) return;
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
         }
 
-        void Update() {
+        private void Update() {
             if(!ConfigurationIsThere()) return;
             OnUpdate?.Invoke(Configuration, Data);
         }

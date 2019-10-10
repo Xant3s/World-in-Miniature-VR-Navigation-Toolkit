@@ -7,11 +7,11 @@ namespace WIM_Plugin {
     public class Destroyer : MonoBehaviour {
         private MiniatureModel WIM;
 
-        void Start() {
+        private void Start() {
             WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
         }
 
-        void Update() {
+        private void Update() {
             if(!WIM.Data.DestinationIndicatorInWIM) {
                 Destroy(gameObject);
             }

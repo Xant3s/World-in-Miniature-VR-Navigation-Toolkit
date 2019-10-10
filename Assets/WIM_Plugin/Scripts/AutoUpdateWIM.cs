@@ -7,13 +7,13 @@ namespace WIM_Plugin {
     public class AutoUpdateWIM : MonoBehaviour {
         public MiniatureModel WIM { get; set; }
 
-        private static bool alreadyUpdatedThisFrame = false;
+        private static bool alreadyUpdatedThisFrame;
         private Vector3 position;
         private Quaternion rotation;
         private Vector3 localScale;
         private int childCount;
 
-        void Start() {
+        private void Start() {
             // Add to children (recursive).
             foreach(Transform child in transform) {
                 if(!child.GetComponent<AutoUpdateWIM>())
@@ -27,19 +27,19 @@ namespace WIM_Plugin {
 
 
 #if UNITY_EDITOR
-        void Update() {
+        private void Update() {
             var somethingChanged = getIsChanged();
             if(!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
             updateValues();
             triggerWIMUpdate();
         }
 
-        void LateUpdate() {
+        private void LateUpdate() {
             alreadyUpdatedThisFrame = false;
         }
 #endif
 
-        void OnDestroy() {
+        private void OnDestroy() {
             // Remove from children (recursive).
             foreach(Transform child in transform) {
                 DestroyImmediate(child.GetComponent<AutoUpdateWIM>());

@@ -6,14 +6,14 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     public class FloatAbove : MonoBehaviour {
-        public Transform Target = null;
+        public Transform Target;
         [SerializeField] private Vector3 offset;
 
-        void Start() {
+        private void Start() {
             Assert.IsNotNull(Target);
         }
 
-        void Update() {
+        private void Update() {
             transform.position = Target.position + offset;
         }
     }

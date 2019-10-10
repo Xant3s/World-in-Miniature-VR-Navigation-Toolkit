@@ -16,15 +16,15 @@ namespace WIM_Plugin {
         private float prevInterHandDistance;
 
 
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnUpdate += ScaleWIM;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnUpdate -= ScaleWIM;
         }
 
-        void Awake() {
+        private void Awake() {
             grabbable = GameObject.Find("WIM").GetComponent<OVRGrabbable>();
             handL = GameObject.FindWithTag("HandL").transform;
             handR = GameObject.FindWithTag("HandR").transform;
@@ -33,7 +33,7 @@ namespace WIM_Plugin {
             Assert.IsNotNull(handR);
         }
 
-        void ScaleWIM(WIMConfiguration configuration, WIMData data) {
+        private void ScaleWIM(WIMConfiguration configuration, WIMData data) {
             this.config = configuration;
             this.data = data;
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
@@ -77,7 +77,7 @@ namespace WIM_Plugin {
         }
 
         private Hand getGrabbingHand() {
-            return (grabbable.grabbedBy.tag == "HandL") ? Hand.HAND_L : Hand.HAND_R;
+            return grabbable.grabbedBy.CompareTag("HandL") ? Hand.HAND_L : Hand.HAND_R;
         }
 
         private Hand getOppositeHand(Hand hand) {
@@ -90,7 +90,7 @@ namespace WIM_Plugin {
             var handTag = hand == Hand.HAND_L ? "HandL" : "HandR";
             var hitColliders = Physics.OverlapBox(transform.position, config.ActiveAreaBounds,
                 data.WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
-            return hitColliders.Any(col => col.transform.root.tag == handTag);
+            return hitColliders.Any(col => col.transform.root.CompareTag(handTag));
         }
     }
 }

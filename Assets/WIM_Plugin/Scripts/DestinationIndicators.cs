@@ -10,11 +10,11 @@ namespace WIM_Plugin {
             var converter = new WIMSpaceConverterImpl(config, data);
             var levelPosition = converter.ConvertToLevelSpace(data.DestinationIndicatorInWIM.position);
             data.DestinationIndicatorInLevel =
-                GameObject.Instantiate(config.DestinationIndicator, data.LevelTransform).transform;
+                Object.Instantiate(config.DestinationIndicator, data.LevelTransform).transform;
             data.DestinationIndicatorInLevel.position = levelPosition;
 
             // Remove frustum.
-            GameObject.Destroy(data.DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
+            Object.Destroy(data.DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
 
             // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
             if(config.DestinationAlwaysOnTheGround) {
@@ -23,8 +23,8 @@ namespace WIM_Plugin {
                                                                 config.DestinationIndicator.transform.localScale.y, 0);
                 data.DestinationIndicatorInWIM.position =
                     converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(levelPosition))
-                    + data.WIMLevelTransform.up * config.DestinationIndicator.transform.localScale.y *
-                    config.ScaleFactor;
+                    + config.ScaleFactor * config.DestinationIndicator.transform.localScale.y *
+                    data.WIMLevelTransform.up;
             }
 
             // Fix orientation.
@@ -47,7 +47,7 @@ namespace WIM_Plugin {
             Assert.IsNotNull(data.WIMLevelTransform);
             Assert.IsNotNull(config.DestinationIndicator);
             data.DestinationIndicatorInWIM =
-                GameObject.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
+                Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
             data.DestinationIndicatorInWIM.position = data.fingertipIndexR.position;
             if(config.PreviewScreen && !config.AutoPositionPreviewScreen)
                 data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
@@ -61,14 +61,14 @@ namespace WIM_Plugin {
             // Destroy uses another thread, so make sure they are not copied by removing from parent.
             if(data.TravelPreviewAnimationObj) {
                 data.TravelPreviewAnimationObj.transform.parent = null;
-                GameObject.Destroy(data.TravelPreviewAnimationObj);
+                Object.Destroy(data.TravelPreviewAnimationObj);
             }
 
             data.DestinationIndicatorInWIM.parent = null;
-            GameObject.Destroy(data.DestinationIndicatorInWIM.gameObject);
+            Object.Destroy(data.DestinationIndicatorInWIM.gameObject);
             if(!data.DestinationIndicatorInLevel) return;
             data.DestinationIndicatorInLevel.parent = null;
-            GameObject.Destroy(data.DestinationIndicatorInLevel.gameObject);
+            Object.Destroy(data.DestinationIndicatorInLevel.gameObject);
         }
     }
 }

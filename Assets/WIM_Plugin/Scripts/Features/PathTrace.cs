@@ -8,12 +8,12 @@ namespace WIM_Plugin {
     public class PathTrace : MonoBehaviour {
         private PostTravelPathTraceController controller;
 
-        void OnEnable() {
+        private void OnEnable() {
             MiniatureModel.OnPreTravel += createPostTravelPathTrace;
             MiniatureModel.OnPostTravel += initPostTravelPathTrace;
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             MiniatureModel.OnPreTravel -= createPostTravelPathTrace;
             MiniatureModel.OnPostTravel -= initPostTravelPathTrace;
         }
@@ -53,7 +53,7 @@ namespace WIM_Plugin {
         private float endTime;
 
 
-        void Awake() {
+        private void Awake() {
             lr = GetComponent<LineRenderer>();
         }
 
@@ -75,7 +75,7 @@ namespace WIM_Plugin {
             endTime = Time.time + TraceDurationInSeconds;
         }
 
-        void Update() {
+        private void Update() {
             if(!WIMLevelTransform) Destroy(gameObject);
 
             if(Time.time >= endTime) {
@@ -93,7 +93,7 @@ namespace WIM_Plugin {
             lr.SetPosition(1, NewPositionInWIM.position);
         }
 
-        void OnDestroy() {
+        private void OnDestroy() {
             if(OldPositionInWIM) Destroy(OldPositionInWIM.gameObject);
             if(NewPositionInWIM) Destroy(NewPositionInWIM.gameObject);
         }

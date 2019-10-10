@@ -11,8 +11,11 @@ using Object = UnityEngine.Object;
 namespace WIM_Plugin {
     // Generates the actual WIM. Also takes care of configurating the WIM, i.e. set materials and shaders etc.
     public class WIMGenerator {
+        private static readonly int transparency = Shader.PropertyToID("Vector1_964AF7C");
+        private static readonly int baseColor = Shader.PropertyToID("_BaseColor");
+
         // Load the material appropriate to current WIM configuration.
-        internal Material LoadAppropriateMaterial(in MiniatureModel WIM) {
+        private Material LoadAppropriateMaterial(in MiniatureModel WIM) {
             Material material;
             if (WIM.Configuration.AllowWIMScrolling) {
                 material = Resources.Load<Material>("Materials/ScrollDissolve");
@@ -23,9 +26,9 @@ namespace WIM_Plugin {
             switch (WIM.Configuration.OcclusionHandlingMethod) {
                 case OcclusionHandling.MeltWalls: {
                     material = Resources.Load<Material>("Materials/MeltWalls");
-                    var color = material.GetColor("_BaseColor");
+                    var color = material.GetColor(baseColor);
                     color.a = 1 - WIM.Configuration.Transparency;
-                    material.SetColor("_BaseColor", color);
+                    material.SetColor(baseColor, color);
                     break;
                 }
                 case OcclusionHandling.CutoutView: {
@@ -33,12 +36,11 @@ namespace WIM_Plugin {
                     setBaseColorAlpha(material, 1 - WIM.Configuration.Transparency);
                     break;
                 }
-                case OcclusionHandling.None:
                 default:
                     if (WIM.Configuration.SemiTransparent) {
                         material = Resources.Load<Material>("Materials/Dissolve");
                         material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                        material.SetFloat("Vector1_964AF7C", 1 - WIM.Configuration.Transparency);
+                        material.SetFloat(transparency, 1 - WIM.Configuration.Transparency);
                     }
                     else {
                         material = Resources.Load<Material>("Materials/Dissolve");
@@ -53,12 +55,12 @@ namespace WIM_Plugin {
 
         // Set the color.alpha of the given material.
         private void setBaseColorAlpha(Material material, float value) {
-            var color = material.GetColor("_BaseColor");
+            var color = material.GetColor(baseColor);
             color.a = value;
-            material.SetColor("_BaseColor", color);
+            material.SetColor(baseColor, color);
         }
 
-        public void SetupDissolveScript(in MiniatureModel WIM) {
+        private void SetupDissolveScript(in MiniatureModel WIM) {
             if (WIM.Configuration.AllowWIMScrolling || WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls ||
                 WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) {
                 RemoveDissolveScript(WIM);
@@ -68,14 +70,14 @@ namespace WIM_Plugin {
             }
         }
 
-        public void RemoveDissolveScript(in MiniatureModel WIM) {
+        private void RemoveDissolveScript(in MiniatureModel WIM) {
             var WIMLevelTransform = WIM.transform.GetChild(0);
             foreach (Transform child in WIMLevelTransform) {
                 Object.DestroyImmediate(child.GetComponent<Dissolve>());
             }
         }
 
-        public void AddDissolveScript(in MiniatureModel WIM) {
+        private void AddDissolveScript(in MiniatureModel WIM) {
             var WIMLevelTransform = WIM.transform.GetChild(0);
             foreach (Transform child in WIMLevelTransform) {
                 if (!child.GetComponent<Dissolve>())
@@ -83,7 +85,7 @@ namespace WIM_Plugin {
             }
         }
 
-        public void SetWIMMaterial(Material material, in MiniatureModel WIM) {
+        private void SetWIMMaterial(Material material, in MiniatureModel WIM) {
             var WIMLevelTransform = WIM.transform.GetChild(0);
             foreach (Transform child in WIMLevelTransform) {
                 var renderer = child.GetComponent<Renderer>();
@@ -114,7 +116,7 @@ namespace WIM_Plugin {
         }
 
         private void pruneColliders(in MiniatureModel WIM) {
-            var destoryList = new List<Collider>();
+            var destroyList = new List<Collider>();
             var colliders = WIM.gameObject.GetComponents<Collider>();
             for (var i = 0; i < colliders.Length; i++) {
                 var col = (BoxCollider) colliders[i];
@@ -130,19 +132,18 @@ namespace WIM_Plugin {
                     }
 
                     if (skip) continue;
-                    destoryList.Add(col);
+                    destroyList.Add(col);
                     break;
                 }
             }
 
-            while (destoryList.Count() != 0) {
-                Object.DestroyImmediate(destoryList[0]);
-                destoryList.RemoveAt(0);
+            while (destroyList.Count != 0) {
+                Object.DestroyImmediate(destroyList[0]);
+                destroyList.RemoveAt(0);
             }
         }
 
-        [ExecuteInEditMode]
-        internal void GenerateColliders(in MiniatureModel WIM) {
+        private void GenerateColliders(in MiniatureModel WIM) {
             // Generate colliders:
             // 1. Copy colliders from actual level (to determine which objects should have a collider)
             // [alternatively don't delete them while generating the WIM]
@@ -189,8 +190,8 @@ namespace WIM_Plugin {
 
         private void removeAllColliders(Transform t) {
             Collider collider;
-            while (collider = t.GetComponent<Collider>()) {
-                // Assignment
+            // ReSharper disable once AssignmentInConditionalExpression
+            while (collider = t.GetComponent<Collider>()) { // Assignment
                 Object.DestroyImmediate(collider);
             }
         }
@@ -220,7 +221,7 @@ namespace WIM_Plugin {
             ConfigureWIM(WIM);
         }
 
-        internal void adaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
+        private void adaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
             var config = WIM.Configuration;
             if (!config.AdaptWIMSizeToPlayerHeight) return;
             var playerHeight = config.PlayerHeightInCM;
@@ -244,7 +245,7 @@ namespace WIM_Plugin {
                 const float maxDelta = defaultHeight - minHeight;
                 var actualDelta = defaultHeight - playerHeight;
                 var factor = actualDelta / maxDelta;
-                var resultingScaleFactorDelta = maxScaleFactorDelta * (-factor);
+                var resultingScaleFactorDelta = maxScaleFactorDelta * -factor;
                 config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
                 config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, config.MinScaleFactor, config.MaxScaleFactor);
                 WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
@@ -302,7 +303,7 @@ namespace WIM_Plugin {
             spotlight.color = color;
         }
 
-        internal void configureCutoutView(Material material) {
+        private void configureCutoutView(Material material) {
             var maskController = new GameObject("Mask Controller");
             var controller = maskController.AddComponent<Controller_Mask_Cone>();
             controller.materials = new[] {material};
@@ -310,10 +311,12 @@ namespace WIM_Plugin {
             var spotlight = spotlightObj.AddComponent<Light>();
             controller.spotLight1 = spotlight;
             spotlight.type = LightType.Spot;
-            spotlightObj.AddComponent<AlignWith>().Target = Camera.main.transform;
+            var mainCamera = Camera.main;
+            if(mainCamera)
+                spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
         }
 
-        internal void configureMeltWalls(Material material) {
+        private void configureMeltWalls(Material material) {
             var maskController = new GameObject("Mask Controller");
             var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
             controller.materials = new[] {material};
@@ -322,7 +325,7 @@ namespace WIM_Plugin {
             cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
         }
 
-        internal void cleanupOcclusionHandling() {
+        private void cleanupOcclusionHandling() {
             Object.DestroyImmediate(GameObject.Find("Cylinder Mask"));
             Object.DestroyImmediate(GameObject.Find("Spotlight Mask"));
             Object.DestroyImmediate(GameObject.Find("Mask Controller"));

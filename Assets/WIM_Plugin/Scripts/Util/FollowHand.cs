@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WIM_Plugin;
@@ -10,16 +11,18 @@ namespace WIM_Plugin {
 
         private Transform target;
 
-        void Start() {
-            if(hand == Hand.HAND_L) {
-                target = GameObject.FindWithTag("HandL").transform;
-            }
-            else if(hand == Hand.HAND_R) {
-                target = GameObject.FindWithTag("HandR").transform;
+        private void Start() {
+            switch(hand) {
+                case Hand.HAND_L:
+                    target = GameObject.FindWithTag("HandL").transform;
+                    break;
+                case Hand.HAND_R:
+                    target = GameObject.FindWithTag("HandR").transform;
+                    break;
             }
         }
 
-        void Update() {
+        private void Update() {
             if(!target) return;
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
