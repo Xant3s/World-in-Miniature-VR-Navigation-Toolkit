@@ -2,66 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class AutoUpdateWIM : MonoBehaviour {
-    public MiniatureModel WIM { get; set; }
+namespace WIM_Plugin {
+    [ExecuteInEditMode]
+    public class AutoUpdateWIM : MonoBehaviour {
+        public MiniatureModel WIM { get; set; }
 
-    private static bool alreadyUpdatedThisFrame = false;
-    private Vector3 position;
-    private Quaternion rotation;
-    private Vector3 localScale;
-    private int childCount;
+        private static bool alreadyUpdatedThisFrame = false;
+        private Vector3 position;
+        private Quaternion rotation;
+        private Vector3 localScale;
+        private int childCount;
 
-    void Start() {
-        // Add to children (recursive).
-        foreach(Transform child in transform) {
-            if(!child.GetComponent<AutoUpdateWIM>())
-                child.gameObject.AddComponent<AutoUpdateWIM>();
-        }
-
-#if UNITY_EDITOR
-        updateValues();
-#endif
-    }
-
+        void Start() {
+            // Add to children (recursive).
+            foreach(Transform child in transform) {
+                if(!child.GetComponent<AutoUpdateWIM>())
+                    child.gameObject.AddComponent<AutoUpdateWIM>();
+            }
 
 #if UNITY_EDITOR
-    void Update() {
-        var somethingChanged = getIsChanged();
-        if(!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
-        updateValues();
-        triggerWIMUpdate();
-    }
+            updateValues();
+#endif
+        }
 
-    void LateUpdate() {
-        alreadyUpdatedThisFrame = false;
-    }
+
+#if UNITY_EDITOR
+        void Update() {
+            var somethingChanged = getIsChanged();
+            if(!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
+            updateValues();
+            triggerWIMUpdate();
+        }
+
+        void LateUpdate() {
+            alreadyUpdatedThisFrame = false;
+        }
 #endif
 
-    void OnDestroy() {
-        // Remove from children (recursive).
-        foreach(Transform child in transform) {
-            DestroyImmediate(child.GetComponent<AutoUpdateWIM>());
+        void OnDestroy() {
+            // Remove from children (recursive).
+            foreach(Transform child in transform) {
+                DestroyImmediate(child.GetComponent<AutoUpdateWIM>());
+            }
         }
-    }
 
-    private bool getIsChanged() {
-        var somethingChanged = position != transform.position ||
-                               rotation != transform.rotation ||
-                               localScale != transform.localScale ||
-                               childCount != transform.childCount;
-        return somethingChanged;
-    }
+        private bool getIsChanged() {
+            var somethingChanged = position != transform.position ||
+                                   rotation != transform.rotation ||
+                                   localScale != transform.localScale ||
+                                   childCount != transform.childCount;
+            return somethingChanged;
+        }
 
-    private void updateValues() {
-        position = transform.position;
-        rotation = transform.rotation;
-        localScale = transform.localScale;
-        childCount = transform.childCount;
-    }
+        private void updateValues() {
+            position = transform.position;
+            rotation = transform.rotation;
+            localScale = transform.localScale;
+            childCount = transform.childCount;
+        }
 
-    private void triggerWIMUpdate() {
-        alreadyUpdatedThisFrame = true;
-        WIM.Generator.GenerateNewWIM(WIM);
+        private void triggerWIMUpdate() {
+            alreadyUpdatedThisFrame = true;
+            WIM.Generator.GenerateNewWIM(WIM);
+        }
     }
 }
