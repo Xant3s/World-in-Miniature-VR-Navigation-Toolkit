@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
-    [RequireComponent(typeof(Renderer))]
-    [RequireComponent(typeof(Rigidbody))]
     public class DistanceGrabbable : MonoBehaviour {
         public Transform Target { get; set; }
 
@@ -40,7 +38,6 @@ namespace WIM_Plugin {
 
         private void Awake() {
             defaultMaterial = GetComponentInChildren<Renderer>().material;
-            rb = GetComponent<Rigidbody>();
         }
 
         private void Update() {
@@ -50,6 +47,7 @@ namespace WIM_Plugin {
             if(Vector3.Distance(Target.position, transform.position) < MinDistance) {
                 IsBeingGrabbed = false;
                 Target = null;
+                rb = GetComponent<Rigidbody>();
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
             }
