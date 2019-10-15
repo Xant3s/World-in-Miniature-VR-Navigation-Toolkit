@@ -66,8 +66,7 @@ namespace WIM_Plugin {
 
         private bool ConfigurationIsThere() {
             if(Configuration) return true;
-            Debug.LogError("WIM configuration missing.");
-            return false;
+            throw new Exception("WIM configuration missing.");
         }
 
         public void NewDestination() {
