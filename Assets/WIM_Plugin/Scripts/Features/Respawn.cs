@@ -41,20 +41,18 @@ namespace WIM_Plugin {
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
             data.PlayerRepresentationTransform.parent = null;
-            var newWIMLevel = Instantiate(WIMLevel.gameObject, transform).transform;
-            newWIMLevel.gameObject.name = "WIM Level";
-            data.WIMLevelTransform = newWIMLevel;
+            data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
+            data.WIMLevelTransform.gameObject.name = "WIM Level";
             var rb = GetComponent<Rigidbody>();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            newWIMLevel.position = Vector3.zero;
-            newWIMLevel.localPosition = maintainTransformRelativeToPlayer
+            data.WIMLevelTransform.localPosition = maintainTransformRelativeToPlayer
                 ? data.WIMLevelLocalPosOnTravel
-                : data.WIMLevelTransform.localPosition;
-            newWIMLevel.rotation = Quaternion.identity;
-            newWIMLevel.localRotation = Quaternion.identity;
-            newWIMLevel.localScale = new Vector3(1, 1, 1);
-            data.PlayerRepresentationTransform.parent = newWIMLevel;
+                : config.WIMLevelOffset;
+            data.WIMLevelTransform.rotation = Quaternion.identity;
+            data.WIMLevelTransform.localRotation = Quaternion.identity;
+            data.WIMLevelTransform.localScale = new Vector3(1, 1, 1);
+            data.PlayerRepresentationTransform.parent = data.WIMLevelTransform;
 
             if(!maintainTransformRelativeToPlayer) {
                 var spawnDistanceZ = (config.PlayerArmLength <= 0)
@@ -74,7 +72,7 @@ namespace WIM_Plugin {
             }
 
             if(dissolveFX) {
-                resolveWIM(newWIMLevel);
+                resolveWIM(data.WIMLevelTransform);
                 Invoke(nameof(destroyOldWIMLevel), 1.1f);
             }
             else {
