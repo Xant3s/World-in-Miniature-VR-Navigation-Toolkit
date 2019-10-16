@@ -101,7 +101,7 @@ namespace WIM_Plugin {
 
         private void RemoveDestinationIndicatorsExceptWIM(MiniatureModel WIM) {
             if(!WIM.Data.DestinationIndicatorInWIM) return;
-            GetComponent<PreviewScreen>().RemovePreviewScreen();
+            if(WIM.Configuration.PreviewScreen) GetComponent<PreviewScreen>().RemovePreviewScreen();
             // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
             DestroyImmediate(WIM.Data.TravelPreviewAnimationObj);
             if(WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
