@@ -41,11 +41,11 @@ namespace WIM_Plugin {
             Data.LevelTransform = GameObject.Find("Level")?.transform;
             Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
             Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
-            Data.fingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
+            Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
             Data.OVRPlayerController = GameObject.Find("OVRPlayerController")?.transform;
             Assert.IsNotNull(Data.WIMLevelTransform);
             Assert.IsNotNull(Data.HMDTransform);
-            Assert.IsNotNull(Data.fingertipIndexR);
+            Assert.IsNotNull(Data.FingertipIndexR);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
             Assert.IsNotNull(Configuration.DestinationIndicator);
             Assert.IsNotNull(Data.OVRPlayerController);

@@ -8,7 +8,6 @@ public class PickupPreviewScreen : MonoBehaviour {
     private bool pickupMode = false;
     private Transform thumb;
     private Transform index;
-    private Transform previewScreenTransform;
     private bool thumbIsGrabbing;
     private bool indexIsGrabbing;
     private bool isGrabbing;
@@ -61,11 +60,12 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void startGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
+        var previewScreenTransform = WIM.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);
+        Assert.IsNotNull(previewScreenTransform);
 
         // Spawn new preview screen.
         WIMTransform.GetComponent<PreviewScreen>().ShowPreviewScreen(WIM.Configuration, WIM.Data);
-        Assert.IsNotNull(previewScreenTransform);
 
         // Pick up the new preview screen.
         previewScreenTransform.parent = index;
@@ -75,7 +75,9 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void stopGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
+        var previewScreenTransform = WIM.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);
+        Assert.IsNotNull(previewScreenTransform);
 
         // Let go.
         if(!previewScreenTransform) return;

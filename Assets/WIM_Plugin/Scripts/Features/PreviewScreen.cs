@@ -23,17 +23,17 @@ namespace WIM_Plugin {
         public void ShowPreviewScreen(WIMConfiguration config, WIMData data) {
             if(!config.PreviewScreen) return;
             RemovePreviewScreen();
-            var previewScreen = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen"));
+            data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
 
             if(config.AutoPositionPreviewScreen) {
-                previewScreen.GetComponent<FloatAbove>().Target = transform;
+                data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
             }
             else {
-                Destroy(previewScreen.GetComponent<FloatAbove>());
-                previewScreen.AddComponent<ClosePreviewScreen>();
+                Destroy(data.PreviewScreenTransform.GetComponent<FloatAbove>());
+                data.PreviewScreenTransform.gameObject.AddComponent<ClosePreviewScreen>();
             }
 
-            initPreviewScreen(previewScreen);
+            initPreviewScreen(data.PreviewScreenTransform.gameObject);
             data.PreviewScreenEnabled = true;
         }
 

@@ -24,7 +24,7 @@ MonoBehaviour:
   ExpandCollidersZ: {x: 0.5, y: 0.5}
   DestinationAlwaysOnTheGround: 1
   ShowWIMButton: 256
-  DestinationSelectionMethod: 1
+  DestinationSelectionMethod: 0
   DestinationSelectionButton: 1
   DestinationRotationThumbstick: 2
   ConfirmTravelButton: 2
@@ -38,11 +38,11 @@ MonoBehaviour:
   CutoutAngle: 30
   ShowCutoutLight: 0
   CutoutLightColor: {r: 1, g: 1, b: 1, a: 1}
-  PreviewScreen: 1
+  PreviewScreen: 0
   AutoPositionPreviewScreen: 0
-  TravelPreviewAnimation: 1
+  TravelPreviewAnimation: 0
   TravelPreviewAnimationSpeed: 0.3
-  PostTravelPathTrace: 1
+  PostTravelPathTrace: 0
   TraceDuration: 5
   WIMSpawnOffset: {x: 0, y: -0.25, z: 0.35}
   WIMSpawnHeight: 150
@@ -51,7 +51,7 @@ MonoBehaviour:
   AutoDetectArmLength: 0
   ConfirmArmLengthButton: 1
   AdaptWIMSizeToPlayerHeight: 0
-  AllowWIMScaling: 1
+  AllowWIMScaling: 0
   MinScaleFactor: 0.01
   MaxScaleFactor: 0.02
   GrabButtonL: 536870912

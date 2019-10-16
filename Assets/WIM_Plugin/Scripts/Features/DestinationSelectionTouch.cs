@@ -34,7 +34,7 @@ namespace WIM_Plugin {
         var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
 
         // Check if in WIM bounds.
-        if (!isInsideWIM(data.fingertipIndexR.position, WIM.gameObject)) return;
+        if (!isInsideWIM(data.FingertipIndexR.position, WIM.gameObject)) return;
 
         // Remove previous destination point.
         DestinationIndicators.RemoveDestinationIndicators(WIM);
@@ -47,9 +47,9 @@ namespace WIM_Plugin {
 
         // Rotate destination indicator in WIM (align with pointing direction):
         // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
-        var lookAtPoint = data.fingertipIndexR.position + data.fingertipIndexR.right; // fingertip.right because of Oculus prefab
+        var lookAtPoint = data.FingertipIndexR.position + data.FingertipIndexR.right; // fingertip.right because of Oculus prefab
         var pointBFloor = WIM.Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(lookAtPoint));
-        var pointAFloor = WIM.Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(data.fingertipIndexR.position));
+        var pointAFloor = WIM.Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(data.FingertipIndexR.position));
         var fingertipForward = pointBFloor - pointAFloor;
         fingertipForward = Quaternion.Inverse(data.WIMLevelTransform.rotation) * fingertipForward;
         // Get current forward vector in WIM space. Set to floor.
