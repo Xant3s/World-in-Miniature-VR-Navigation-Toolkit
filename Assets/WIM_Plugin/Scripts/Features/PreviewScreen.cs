@@ -23,18 +23,23 @@ namespace WIM_Plugin {
         public void ShowPreviewScreen(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
-            if(!config.PreviewScreen) return;
+            if(!config.PreviewScreen || !config.AutoPositionPreviewScreen) return;
             RemovePreviewScreen();
             data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
+            data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
+            initPreviewScreen(data.PreviewScreenTransform.gameObject);
+            data.PreviewScreenEnabled = true;
+        }
 
-            if(config.AutoPositionPreviewScreen) {
-                data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
-            }
-            else {
-                Destroy(data.PreviewScreenTransform.GetComponent<FloatAbove>());
-                data.PreviewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
-            }
-
+        public void ShowPreviewScreenPickup(WIMConfiguration config, WIMData data) {
+            this.config = config;
+            this.data = data;
+            if(!config.PreviewScreen) return;
+            Assert.IsFalse(config.AutoPositionPreviewScreen);
+            RemovePreviewScreen();
+            data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
+            Destroy(data.PreviewScreenTransform.GetComponent<FloatAbove>());
+            data.PreviewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
             initPreviewScreen(data.PreviewScreenTransform.gameObject);
             data.PreviewScreenEnabled = true;
         }
@@ -49,15 +54,16 @@ namespace WIM_Plugin {
             cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
-            previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit"));
+            previewScreenMaterial = new Material(Shader.Find("Lightweight Render Pipeline/Unlit")); // TODO: Universal Render Pipeline in newer Unity versions.
             previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
             previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
         }
 
         private void updatePreviewScreen(WIMConfiguration config, WIMData data) {
-            //this.config = config;
-            //this.data = data;
-            if(!data.PreviewScreenEnabled) return;
+            this.config = config;
+            this.data = data;
+
+            if (!data.PreviewScreenEnabled) return;
             if(!config.PreviewScreen || !data.DestinationIndicatorInLevel) return;
             var cam = data.DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
             Destroy(cam.targetTexture);

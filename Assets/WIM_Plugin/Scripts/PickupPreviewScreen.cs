@@ -60,18 +60,16 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void startGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
-        var previewScreenTransform = WIM.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);
-        Assert.IsNotNull(previewScreenTransform);
 
         // Spawn new preview screen.
-        WIMTransform.GetComponent<PreviewScreen>().ShowPreviewScreen(WIM.Configuration, WIM.Data);
+        WIMTransform.GetComponent<PreviewScreen>().ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
+        var previewScreenTransform = WIM.Data.PreviewScreenTransform;
+        Assert.IsNotNull(previewScreenTransform);
 
         // Pick up the new preview screen.
         previewScreenTransform.parent = index;
         previewScreenTransform.localPosition = Vector3.zero;
-
-        Debug.LogError("CHECKPOINT GRABBING");
     }
 
     private void stopGrabbing() {
@@ -79,7 +77,6 @@ public class PickupPreviewScreen : MonoBehaviour {
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         var previewScreenTransform = WIM.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);
-        Assert.IsNotNull(previewScreenTransform);
 
         // Let go.
         if(!previewScreenTransform) return;
