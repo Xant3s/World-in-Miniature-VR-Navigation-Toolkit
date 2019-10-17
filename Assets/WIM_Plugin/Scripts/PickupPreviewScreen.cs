@@ -70,6 +70,8 @@ public class PickupPreviewScreen : MonoBehaviour {
         // Pick up the new preview screen.
         previewScreenTransform.parent = index;
         previewScreenTransform.localPosition = Vector3.zero;
+
+        Debug.LogError("CHECKPOINT GRABBING");
     }
 
     private void stopGrabbing() {

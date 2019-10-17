@@ -21,6 +21,8 @@ namespace WIM_Plugin {
         }
 
         public void ShowPreviewScreen(WIMConfiguration config, WIMData data) {
+            this.config = config;
+            this.data = data;
             if(!config.PreviewScreen) return;
             RemovePreviewScreen();
             data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
@@ -30,7 +32,7 @@ namespace WIM_Plugin {
             }
             else {
                 Destroy(data.PreviewScreenTransform.GetComponent<FloatAbove>());
-                data.PreviewScreenTransform.gameObject.AddComponent<ClosePreviewScreen>();
+                data.PreviewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
             }
 
             initPreviewScreen(data.PreviewScreenTransform.gameObject);
@@ -53,8 +55,8 @@ namespace WIM_Plugin {
         }
 
         private void updatePreviewScreen(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
+            //this.config = config;
+            //this.data = data;
             if(!data.PreviewScreenEnabled) return;
             if(!config.PreviewScreen || !data.DestinationIndicatorInLevel) return;
             var cam = data.DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
@@ -75,36 +77,6 @@ namespace WIM_Plugin {
             if(!previewScreen) return;
             previewScreen.transform.parent = null;
             Destroy(previewScreen);
-        }
-    }
-
-
-    public class ClosePreviewScreen : MonoBehaviour {
-        private float DoubleTapInterval { get; set; } = 2;
-
-        private Transform index;
-        private bool firstTap;
-
-        private void Awake() {
-            index = GameObject.FindWithTag("IndexR").transform;
-            Assert.IsNotNull(index);
-        }
-
-        private void OnTriggerEnter(Collider other) {
-            if(other.transform != index) return;
-            if(transform.root.CompareTag("HandR")) return;
-            if(firstTap) {
-                var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
-                WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
-            }
-            else {
-                firstTap = true;
-                Invoke(nameof(resetDoubleTap), DoubleTapInterval);
-            }
-        }
-
-        private void resetDoubleTap() {
-            firstTap = false;
         }
     }
 }
