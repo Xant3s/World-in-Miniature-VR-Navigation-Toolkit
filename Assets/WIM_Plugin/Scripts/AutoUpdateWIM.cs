@@ -29,7 +29,8 @@ namespace WIM_Plugin {
 #if UNITY_EDITOR
         private void Update() {
             var somethingChanged = getIsChanged();
-            if(!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
+            if(!WIM) WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+            if (!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
             updateValues();
             triggerWIMUpdate();
         }
