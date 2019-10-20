@@ -68,6 +68,9 @@ namespace WIM_Plugin {
                 config.ScaleFactor -= config.ScaleStep;
             }
 
+            // Apply scale factor.
+            GameObject.Find("WIM").transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
+
             prevInterHandDistance = currInterHandDistance;
         }
 
