@@ -31,7 +31,7 @@ MonoBehaviour:
   DoubleTapInterval: 2
   SemiTransparent: 1
   Transparency: 0.33
-  OcclusionHandlingMethod: 2
+  OcclusionHandlingMethod: 0
   MeltRadius: 0.1
   MeltHeight: 0.2
   CutoutRange: 0.2
@@ -40,9 +40,9 @@ MonoBehaviour:
   CutoutLightColor: {r: 1, g: 1, b: 1, a: 1}
   PreviewScreen: 1
   AutoPositionPreviewScreen: 0
-  TravelPreviewAnimation: 0
+  TravelPreviewAnimation: 1
   TravelPreviewAnimationSpeed: 0.3
-  PostTravelPathTrace: 0
+  PostTravelPathTrace: 1
   TraceDuration: 5
   WIMSpawnOffset: {x: 0, y: -0.25, z: 0.35}
   WIMSpawnHeight: 150
@@ -58,8 +58,8 @@ MonoBehaviour:
   GrabButtonR: 134217728
   ScaleStep: 0.0001
   InterHandDistanceDeltaThreshold: 0.003
-  AllowWIMScrolling: 0
-  ActiveAreaBounds: {x: 0.5, y: 0.5, z: 0.5}
+  AllowWIMScrolling: 1
+  ActiveAreaBounds: {x: 0.66, y: 0.5, z: 0.5}
   AutoScroll: 0
   ScrollSpeed: 0.1
   MaxWIMScaleFactorDelta: 0
