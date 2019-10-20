@@ -47,14 +47,14 @@ public class MiniatureModelEditor : Editor {
 
 
         separator("Input");
-        WIM.Configuration.ShowWIMButton = (OVRInput.RawButton) EditorGUILayout.EnumPopup("Show WIM Button", WIM.Configuration.ShowWIMButton);
+        WIM.Configuration.ShowWIMButton = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Show WIM Button", WIM.Configuration.ShowWIMButton);
         WIM.Configuration.DestinationSelectionMethod =
             (DestinationSelection) EditorGUILayout.EnumPopup("Destination Selection Method",
                 WIM.Configuration.DestinationSelectionMethod);
         if (WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Selection) {
-            WIM.Configuration.DestinationSelectionButton = (OVRInput.RawButton)EditorGUILayout.EnumPopup("Destination Selection Button", WIM.Configuration.DestinationSelectionButton);
-            WIM.Configuration.DestinationRotationThumbstick = (OVRInput.RawAxis2D)EditorGUILayout.EnumPopup("Destination Rotation Thumbstick", WIM.Configuration.DestinationRotationThumbstick);
-            WIM.Configuration.ConfirmTravelButton = (OVRInput.RawButton)EditorGUILayout.EnumPopup("Confirm Travel Button", WIM.Configuration.ConfirmTravelButton);
+            WIM.Configuration.DestinationSelectionButton = (OVRInput.RawButton)EditorGUILayout.EnumFlagsField("Destination Selection Button", WIM.Configuration.DestinationSelectionButton);
+            WIM.Configuration.DestinationRotationThumbstick = (OVRInput.RawAxis2D)EditorGUILayout.EnumFlagsField("Destination Rotation Thumbstick", WIM.Configuration.DestinationRotationThumbstick);
+            WIM.Configuration.ConfirmTravelButton = (OVRInput.RawButton)EditorGUILayout.EnumFlagsField("Confirm Travel Button", WIM.Configuration.ConfirmTravelButton);
         }
         else if (WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup) {
             WIM.Configuration.DoubleTapInterval =
@@ -128,7 +128,7 @@ public class MiniatureModelEditor : Editor {
             WIM.Configuration.AutoDetectArmLength);
         if (WIM.Configuration.AutoDetectArmLength) {
             WIM.Configuration.ConfirmArmLengthButton =
-                (OVRInput.RawButton) EditorGUILayout.EnumPopup("Confirm Arm Lenght Button",
+                (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Confirm Arm Lenght Button",
                     WIM.Configuration.ConfirmArmLengthButton);
         }
 
@@ -145,10 +145,10 @@ public class MiniatureModelEditor : Editor {
             WIM.Configuration.MaxScaleFactor =
                 EditorGUILayout.FloatField("Max Scale Factor", WIM.Configuration.MaxScaleFactor);
             WIM.Configuration.GrabButtonL =
-                (OVRInput.RawButton)EditorGUILayout.EnumPopup("Grab Button L",
+                (OVRInput.RawButton)EditorGUILayout.EnumFlagsField("Grab Button L",
                     WIM.Configuration.GrabButtonL);
             WIM.Configuration.GrabButtonR =
-                (OVRInput.RawButton)EditorGUILayout.EnumPopup("Grab Button R",
+                (OVRInput.RawButton)EditorGUILayout.EnumFlagsField("Grab Button R",
                     WIM.Configuration.GrabButtonR);
             WIM.Configuration.ScaleStep = EditorGUILayout.FloatField("Scale Step", WIM.Configuration.ScaleStep);
             WIM.Configuration.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
