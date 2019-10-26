@@ -368,6 +368,7 @@ namespace WIM_Plugin {
             if (WIM.Configuration.AllowWIMScrolling) enableScrolling(material, WIM);
             else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.CutoutView) configureCutoutView(material);
             else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandling.MeltWalls) configureMeltWalls(material);
+            UpdateScrollingMask(WIM);
         }
     }
 }
