@@ -55,9 +55,7 @@ namespace WIM_Plugin {
             data.PlayerRepresentationTransform.parent = data.WIMLevelTransform;
 
             if(!maintainTransformRelativeToPlayer) {
-                var spawnDistanceZ = (config.PlayerArmLength <= 0)
-                    ? config.WIMSpawnOffset.z
-                    : config.PlayerArmLength;
+                var spawnDistanceZ = config.SpawnDistance;
                 var spawnDistanceY = (config.WIMSpawnHeight - config.PlayerHeightInCM) / 100;
                 var camForwardPosition = data.HMDTransform.position + data.HMDTransform.forward;
                 camForwardPosition.y = data.HMDTransform.position.y;
