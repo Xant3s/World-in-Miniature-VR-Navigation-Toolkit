@@ -128,7 +128,7 @@ public class MiniatureModelEditor : Editor {
             WIM.Configuration.AutoDetectArmLength);
         if (WIM.Configuration.AutoDetectArmLength) {
             WIM.Configuration.ConfirmArmLengthButton =
-                (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Confirm Arm Lenght Button",
+                (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Confirm Arm Length Button",
                     WIM.Configuration.ConfirmArmLengthButton);
         }
 
@@ -176,6 +176,15 @@ public class MiniatureModelEditor : Editor {
                 WIM.Configuration.AutoScroll = EditorGUILayout.Toggle("Auto Scroll", WIM.Configuration.AutoScroll);
                 if (WIM.Configuration.AutoScroll) {
                     WIM.Configuration.ScrollSpeed = EditorGUILayout.FloatField("Scroll Speed", WIM.Configuration.ScrollSpeed);
+                }
+                if(!WIM.Configuration.AutoScroll) {
+                    WIM.Configuration.AllowVerticalScrolling = EditorGUILayout.Toggle("Allow Vertical Scrolling", WIM.Configuration.AllowVerticalScrolling);
+                }
+                else {
+                    WIM.Configuration.AllowVerticalScrolling = false;
+                }
+                if(WIM.Configuration.AllowVerticalScrolling) {
+                    WIM.Configuration.VerticalScrollingAxis = (OVRInput.RawAxis2D)EditorGUILayout.EnumFlagsField("Vertical Scrolling Axis", WIM.Configuration.VerticalScrollingAxis);
                 }
             }
         }
