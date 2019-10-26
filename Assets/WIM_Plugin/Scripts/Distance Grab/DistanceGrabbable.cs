@@ -14,7 +14,7 @@ namespace WIM_Plugin {
                 hightlightFX = value;
                 if(GetComponent<Renderer>()) {
                     GetComponent<Renderer>().material =
-                        hightlightFX ? Resources.Load<Material>("Materials/outline") : defaultMaterial;
+                        hightlightFX ? Resources.Load<Material>("Materials/Blue") : defaultMaterial;
                 }
                 else {
                     // WIM
@@ -22,7 +22,7 @@ namespace WIM_Plugin {
                     //    var child  = transform.GetChild(0).GetChild(i);
                     //    var renderer = child.GetComponent<Renderer>();
                     //    if (!renderer) continue;
-                    //    renderer.material = hightlightFX ? Resources.Load<Material>("Materials/outline") : defaultMaterial;
+                    //    renderer.material = hightlightFX ? Resources.Load<Material>("Materials/Blue") : defaultMaterial;
                     //}
                 }
             }
