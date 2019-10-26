@@ -28,7 +28,8 @@ namespace WIM_Plugin {
 
         private void scrollWIM() {
             var input = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
-            var direction = new Vector3(input.x, 0, input.y);
+            var verticalInput = OVRInput.Get(config.VerticalScrollingAxis).y;
+            var direction = new Vector3(input.x, verticalInput, input.y);
             data.WIMLevelTransform.Translate(Time.deltaTime * config.ScrollSpeed * -direction, Space.World);
         }
         
