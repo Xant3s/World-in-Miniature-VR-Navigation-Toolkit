@@ -114,17 +114,18 @@ public class MiniatureModelEditor : Editor {
 
 
         separator("Usability");
-        WIM.Configuration.WIMSpawnOffset =
-            EditorGUILayout.Vector3Field("WIM Spawn Offset", WIM.Configuration.WIMSpawnOffset);
         WIM.Configuration.WIMSpawnHeight =
             EditorGUILayout.FloatField("WIM Spawn at Height", WIM.Configuration.WIMSpawnHeight);
         WIM.Configuration.PlayerHeightInCM =
             EditorGUILayout.FloatField("Player Height (in cm)", WIM.Configuration.PlayerHeightInCM);
-        WIM.Configuration.PlayerArmLength =
-            EditorGUILayout.FloatField("Player Arm Length", WIM.Configuration.PlayerArmLength);
+        if(!WIM.Configuration.AutoDetectArmLength) {
+            WIM.Configuration.SpawnDistance =
+                EditorGUILayout.FloatField("WIM Spawn Distance", WIM.Configuration.SpawnDistance);
+        }
         WIM.Configuration.AutoDetectArmLength = EditorGUILayout.Toggle(
             new GUIContent("Auto Detect Arm Length",
-                "At the start of the application, player has to extend the arm and press the confirm teleport button."),
+                "At the start of the application, player has to extend the arm and press the confirm teleport button." +
+                "The detected arm length will be used instead of the spawn distance."),
             WIM.Configuration.AutoDetectArmLength);
         if (WIM.Configuration.AutoDetectArmLength) {
             WIM.Configuration.ConfirmArmLengthButton =

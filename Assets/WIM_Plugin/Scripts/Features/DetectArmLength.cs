@@ -24,7 +24,7 @@ namespace WIM_Plugin {
             if(!rightHand || !mainCamera) return;
             var controllerPos = rightHand.transform.position;
             var headPos = mainCamera.transform.position;
-            config.PlayerArmLength = (controllerPos - headPos).magnitude;
+            config.SpawnDistance = (controllerPos - headPos).magnitude;
         }
     }
 }
