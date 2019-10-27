@@ -31,6 +31,17 @@ MonoBehaviour:
   DoubleTapInterval: 2
   SemiTransparent: 1
   Transparency: 0.33
+  WIMSpawnHeight: 150
+  PlayerHeightInCM: 170
+  SpawnDistance: 0
+  AutoDetectArmLength: 0
+  ConfirmArmLengthButton: 1
+  AdaptWIMSizeToPlayerHeight: 0
+  GrabButtonL: 536870912
+  GrabButtonR: 134217728
+  ActiveAreaBounds: {x: 0.5, y: 0.5, z: 0.5}
+  VerticalScrollingAxis: 1
+  MaxWIMScaleFactorDelta: 0
   OcclusionHandlingMethod: 0
   MeltRadius: 0.1
   MeltHeight: 0.2
@@ -44,24 +55,12 @@ MonoBehaviour:
   TravelPreviewAnimationSpeed: 0.3
   PostTravelPathTrace: 1
   TraceDuration: 5
-  WIMSpawnOffset: {x: 0, y: -0.25, z: 0.35}
-  WIMSpawnHeight: 150
-  PlayerHeightInCM: 170
-  PlayerArmLength: 0
-  AutoDetectArmLength: 0
-  ConfirmArmLengthButton: 1
-  AdaptWIMSizeToPlayerHeight: 0
   AllowWIMScaling: 1
   MinScaleFactor: 0.01
   MaxScaleFactor: 0.02
-  GrabButtonL: 536870912
-  GrabButtonR: 134217728
   ScaleStep: 0.0001
   InterHandDistanceDeltaThreshold: 0.003
   AllowWIMScrolling: 1
-  ActiveAreaBounds: {x: 0.5, y: 0.5, z: 0.5}
   AutoScroll: 0
   AllowVerticalScrolling: 1
-  VerticalScrollingAxis: 1
   ScrollSpeed: 0.1
-  MaxWIMScaleFactorDelta: 0

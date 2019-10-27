@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
 
 namespace WIM_Plugin {
     [RequireComponent(typeof(Rigidbody))]
@@ -13,7 +12,6 @@ namespace WIM_Plugin {
     public class MiniatureModel : MonoBehaviour {
         public WIMConfiguration Configuration;
         public WIMData Data;
-        public readonly WIMGenerator Generator;
         public WIMSpaceConverter Converter;
 
         public delegate void WIMAction(WIMConfiguration config, WIMData data);
@@ -27,10 +25,6 @@ namespace WIM_Plugin {
 
         private TravelStrategy travelStrategy;
 
-
-        public MiniatureModel() {
-            Generator = new WIMGenerator();
-        }
 
         private void Awake() {
             if(!ConfigurationIsThere()) return;

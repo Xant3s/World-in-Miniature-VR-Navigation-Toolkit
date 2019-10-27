@@ -33,7 +33,7 @@ namespace WIM_Plugin {
             DestinationIndicators.RemoveDestinationIndicators(GameObject.Find("WIM").GetComponent<MiniatureModel>());
 
             var WIMLevel = transform.GetChild(0);
-            var dissolveFX = config.OcclusionHandlingMethod == OcclusionHandling.None;
+            var dissolveFX = config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
             if(config.AllowWIMScrolling) dissolveFX = false;
             if(dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);
             if(maintainTransformRelativeToPlayer) WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);

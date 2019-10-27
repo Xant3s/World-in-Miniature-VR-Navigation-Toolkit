@@ -37,7 +37,7 @@ namespace WIM_Plugin {
 
 
         // Occlusion Handling: Melt Walls
-        public OcclusionHandling OcclusionHandlingMethod;
+        public OcclusionHandlingMethod OcclusionHandlingMethod;
         public float MeltRadius = 1.0f;
         public float MeltHeight = 2.0f;
 
