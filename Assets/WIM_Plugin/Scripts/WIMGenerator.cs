@@ -17,7 +17,7 @@ namespace WIM_Plugin {
         // Load the material appropriate to current WIM configuration.
         private static Material LoadAppropriateMaterial(in MiniatureModel WIM) {
             Material material;
-            if (WIM.Configuration.AllowWIMScrolling) {
+            if (WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling) {
                 material = Resources.Load<Material>("Materials/ScrollDissolve");
                 setBaseColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1 - 0);
                 return material;
@@ -61,7 +61,7 @@ namespace WIM_Plugin {
         }
 
         private static void SetupDissolveScript(in MiniatureModel WIM) {
-            if (WIM.Configuration.AllowWIMScrolling || WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
+            if (WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling || WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
                 WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
                 RemoveDissolveScript(WIM);
             }
@@ -254,7 +254,7 @@ namespace WIM_Plugin {
         }
 
         internal static void UpdateScrollingMask(in MiniatureModel WIM) {
-            if (!WIM.Configuration.AllowWIMScrolling) return;
+            if (!WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling) return;
             var boxMaskObj = GameObject.Find("Box Mask");
             if (!boxMaskObj) return;
             boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
@@ -362,11 +362,12 @@ namespace WIM_Plugin {
             cleanupOcclusionHandling();
 
             // Setup new configuration.
-            if(WIM.Configuration.OcclusionHandlingMethod != OcclusionHandlingMethod.None) WIM.Configuration.AllowWIMScrolling = false;
+            var s = WIM.GetComponent<Scrolling>();
+            if(WIM.Configuration.OcclusionHandlingMethod != OcclusionHandlingMethod.None) s.ScrollingConfig.AllowWIMScrolling = false;
             var material = LoadAppropriateMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);
-            if (WIM.Configuration.AllowWIMScrolling) enableScrolling(material, WIM);
+            if (s.ScrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
             else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
             else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
             UpdateScrollingMask(WIM);

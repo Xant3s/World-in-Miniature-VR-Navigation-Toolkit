@@ -25,38 +25,45 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.Separator("Scrolling");
+            //var scrollingConfig = ((Scrolling)target).ScrollingConfig;
+            var s = (Scrolling) target;
+            if(!s.ScrollingConfig) {
+                EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
+                ((Scrolling)target).ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Configuration", ((Scrolling)target).ScrollingConfig, typeof(ScrollingConfiguration), false);
+                return;
+            }
             if(config.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
                 EditorGUILayout.LabelField("Disable occlusion handling method to use scrolling.");
             }
             else {
                 EditorGUI.BeginChangeCheck();
-                config.AllowWIMScrolling =
-                    EditorGUILayout.Toggle("Allow WIM Scrolling", config.AllowWIMScrolling);
+                s.ScrollingConfig.AllowWIMScrolling =
+                    EditorGUILayout.Toggle("Allow WIM Scrolling", s.ScrollingConfig.AllowWIMScrolling);
                 if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
 
-                if(config.AllowWIMScrolling) {
+                if(s.ScrollingConfig.AllowWIMScrolling) {
                     EditorGUI.BeginChangeCheck();
                     config.ActiveAreaBounds =
                         EditorGUILayout.Vector3Field("Active Area Bounds", config.ActiveAreaBounds);
                     if(EditorGUI.EndChangeCheck()) WIMGenerator.UpdateScrollingMask(WIM);
-                    config.AutoScroll = EditorGUILayout.Toggle("Auto Scroll", config.AutoScroll);
-                    if(config.AutoScroll) {
-                        config.ScrollSpeed =
-                            EditorGUILayout.FloatField("Scroll Speed", config.ScrollSpeed);
+                    s.ScrollingConfig.AutoScroll = EditorGUILayout.Toggle("Auto Scroll", s.ScrollingConfig.AutoScroll);
+                    if(s.ScrollingConfig.AutoScroll) {
+                        s.ScrollingConfig.ScrollSpeed =
+                            EditorGUILayout.FloatField("Scroll Speed", s.ScrollingConfig.ScrollSpeed);
                     }
 
-                    if(!config.AutoScroll) {
-                        config.AllowVerticalScrolling = EditorGUILayout.Toggle("Allow Vertical Scrolling",
-                            config.AllowVerticalScrolling);
+                    if(!s.ScrollingConfig.AutoScroll) {
+                        s.ScrollingConfig.AllowVerticalScrolling = EditorGUILayout.Toggle("Allow Vertical Scrolling",
+                            s.ScrollingConfig.AllowVerticalScrolling);
                     }
                     else {
-                        config.AllowVerticalScrolling = false;
+                        s.ScrollingConfig.AllowVerticalScrolling = false;
                     }
 
-                    if(config.AllowVerticalScrolling) {
-                        config.VerticalScrollingAxis =
+                    if(s.ScrollingConfig.AllowVerticalScrolling) {
+                        s.ScrollingConfig.VerticalScrollingAxis =
                             (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField("Vertical Scrolling Axis",
-                                config.VerticalScrollingAxis);
+                                s.ScrollingConfig.VerticalScrollingAxis);
                     }
                 }
             }

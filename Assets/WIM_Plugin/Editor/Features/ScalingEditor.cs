@@ -19,20 +19,24 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.Separator("Scaling");
-            var scalingConfig = ((Scaling)target).ScalingConfig;
-            if(!scalingConfig) 
+            //var scalingConfig = ((Scaling)target).ScalingConfig;
+            var s = (Scaling) target;
+            if(!s.ScalingConfig) {
                 EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
-            scalingConfig.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", scalingConfig.AllowWIMScaling);
-            if(!scalingConfig.AllowWIMScaling) return;
-            scalingConfig.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", scalingConfig.MinScaleFactor);
-            scalingConfig.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", scalingConfig.MaxScaleFactor);
+                ((Scaling)target).ScalingConfig = (ScalingConfiguration) EditorGUILayout.ObjectField("Configuration", ((Scaling)target).ScalingConfig, typeof(ScalingConfiguration), false);
+                return;
+            }
+            s.ScalingConfig.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", s.ScalingConfig.AllowWIMScaling);
+            if(!s.ScalingConfig.AllowWIMScaling) return;
+            s.ScalingConfig.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", s.ScalingConfig.MinScaleFactor);
+            s.ScalingConfig.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", s.ScalingConfig.MaxScaleFactor);
             config.GrabButtonL = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button L", config.GrabButtonL);
             config.GrabButtonR = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button R", config.GrabButtonR);
-            scalingConfig.ScaleStep = EditorGUILayout.FloatField("Scale Step", scalingConfig.ScaleStep);
-            scalingConfig.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
+            s.ScalingConfig.ScaleStep = EditorGUILayout.FloatField("Scale Step", s.ScalingConfig.ScaleStep);
+            s.ScalingConfig.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
                 new GUIContent("Inter Hand Distance Delta Threshold",
                     "Ignore inter hand distance deltas below this threshold for scaling."),
-                scalingConfig.InterHandDistanceDeltaThreshold);
+                s.ScalingConfig.InterHandDistanceDeltaThreshold);
         }
     }
 }

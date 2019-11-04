@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: ScalingConfig
-  m_EditorClassIdentifier: Assembly-CSharp:WIM_Plugin:ScalingConfiguration
-  AllowWIMScaling: 1
-  MinScaleFactor: 0.1
-  MaxScaleFactor: 0.2
-  ScaleStep: 0.0001
-  InterHandDistanceDeltaThreshold: 0.003
+  m_Name: ScrollingConfig
+  m_EditorClassIdentifier: Assembly-CSharp:WIM_Plugin:ScrollingConfiguration
+  AllowWIMScrolling: 1
+  AutoScroll: 0
+  AllowVerticalScrolling: 1
+  ScrollSpeed: 1
+  VerticalScrollingAxis: 1

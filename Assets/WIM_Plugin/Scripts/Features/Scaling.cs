@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     // Allow scaling the WIM at runtime.
     public class Scaling : MonoBehaviour {
-        public ScalingConfig ScalingConfig;
+        public ScalingConfiguration ScalingConfig;
 
         private WIMConfiguration config;
         private WIMData data;
@@ -103,7 +103,7 @@ namespace WIM_Plugin {
 
 
     [CreateAssetMenu(menuName = "WIM/Features/Scaling/Configuration")]
-    public class ScalingConfig : ScriptableObject {
+    public class ScalingConfiguration : ScriptableObject {
         public bool AllowWIMScaling;
         public float MinScaleFactor;
         public float MaxScaleFactor = .5f;

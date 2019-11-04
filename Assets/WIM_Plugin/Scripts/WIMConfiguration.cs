@@ -32,7 +32,6 @@ namespace WIM_Plugin {
         public OVRInput.RawButton GrabButtonL = OVRInput.RawButton.LHandTrigger;
         public OVRInput.RawButton GrabButtonR = OVRInput.RawButton.RHandTrigger;
         public Vector3 ActiveAreaBounds = new Vector3(10, 10, 10);
-        public OVRInput.RawAxis2D VerticalScrollingAxis = OVRInput.RawAxis2D.LThumbstick;
         public float MaxWIMScaleFactorDelta = 0.005f;   // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
 
 
@@ -58,12 +57,5 @@ namespace WIM_Plugin {
         // Path Trace
         public bool PostTravelPathTrace;
         public float TraceDuration = 1.0f;
-
-        // Scrolling
-        public bool AllowWIMScrolling;
-        public bool AutoScroll;
-        public bool AllowVerticalScrolling = true;
-        public float ScrollSpeed = 1;
-
     }
 }
