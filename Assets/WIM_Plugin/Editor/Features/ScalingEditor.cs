@@ -19,11 +19,10 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.Separator("Scaling");
-            //var scalingConfig = ((Scaling)target).ScalingConfig;
             var s = (Scaling) target;
             if(!s.ScalingConfig) {
                 EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
-                ((Scaling)target).ScalingConfig = (ScalingConfiguration) EditorGUILayout.ObjectField("Configuration", ((Scaling)target).ScalingConfig, typeof(ScalingConfiguration), false);
+                s.ScalingConfig = (ScalingConfiguration) EditorGUILayout.ObjectField("Configuration", ((Scaling)target).ScalingConfig, typeof(ScalingConfiguration), false);
                 return;
             }
             s.ScalingConfig.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", s.ScalingConfig.AllowWIMScaling);

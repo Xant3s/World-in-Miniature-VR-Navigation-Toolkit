@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     // Allow scrolling the WIM at runtime.
@@ -21,6 +22,8 @@ namespace WIM_Plugin {
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
+            Assert.IsNotNull(ScrollingConfig, "Scrolling configuration is missing.");
+
 
             if (!data.WIMLevelTransform) return;    // TODO: Useless?
             if(!ScrollingConfig.AllowWIMScrolling) return;

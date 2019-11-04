@@ -53,9 +53,5 @@ namespace WIM_Plugin {
         // Travel Preview Animation
         public bool TravelPreviewAnimation;
         public float TravelPreviewAnimationSpeed = 1.0f;
-
-        // Path Trace
-        public bool PostTravelPathTrace;
-        public float TraceDuration = 1.0f;
     }
 }
