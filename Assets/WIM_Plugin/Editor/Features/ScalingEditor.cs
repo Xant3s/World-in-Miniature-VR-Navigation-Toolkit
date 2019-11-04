@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
@@ -18,17 +19,20 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.Separator("Scaling");
-            config.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", config.AllowWIMScaling);
-            if(!config.AllowWIMScaling) return;
-            config.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", config.MinScaleFactor);
-            config.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", config.MaxScaleFactor);
+            var scalingConfig = ((Scaling)target).ScalingConfig;
+            if(!scalingConfig) 
+                EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
+            scalingConfig.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", scalingConfig.AllowWIMScaling);
+            if(!scalingConfig.AllowWIMScaling) return;
+            scalingConfig.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", scalingConfig.MinScaleFactor);
+            scalingConfig.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", scalingConfig.MaxScaleFactor);
             config.GrabButtonL = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button L", config.GrabButtonL);
             config.GrabButtonR = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button R", config.GrabButtonR);
-            config.ScaleStep = EditorGUILayout.FloatField("Scale Step", config.ScaleStep);
-            config.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
+            scalingConfig.ScaleStep = EditorGUILayout.FloatField("Scale Step", scalingConfig.ScaleStep);
+            scalingConfig.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
                 new GUIContent("Inter Hand Distance Delta Threshold",
                     "Ignore inter hand distance deltas below this threshold for scaling."),
-                config.InterHandDistanceDeltaThreshold);
+                scalingConfig.InterHandDistanceDeltaThreshold);
         }
     }
 }

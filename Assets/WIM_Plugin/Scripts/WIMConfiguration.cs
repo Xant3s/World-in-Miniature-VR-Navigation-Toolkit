@@ -59,13 +59,6 @@ namespace WIM_Plugin {
         public bool PostTravelPathTrace;
         public float TraceDuration = 1.0f;
 
-        // Scaling
-        public bool AllowWIMScaling;
-        public float MinScaleFactor;
-        public float MaxScaleFactor = .5f;
-        public float ScaleStep = .0001f;
-        public float InterHandDistanceDeltaThreshold = .1f;
-
         // Scrolling
         public bool AllowWIMScrolling;
         public bool AutoScroll;
