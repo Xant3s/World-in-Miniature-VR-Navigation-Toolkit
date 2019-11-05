@@ -25,7 +25,9 @@ namespace WIM_Plugin {
                 scaling.ScalingConfig = (ScalingConfiguration) EditorGUILayout.ObjectField("Configuration", scaling.ScalingConfig, typeof(ScalingConfiguration), false);
                 return;
             }
-            scaling.ScalingConfig.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", scaling.ScalingConfig.AllowWIMScaling);
+
+            ref var sconfig = ref scaling.ScalingConfig;
+            sconfig.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", sconfig.AllowWIMScaling);
             if(!scaling.ScalingConfig.AllowWIMScaling) return;
             scaling.ScalingConfig.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", scaling.ScalingConfig.MinScaleFactor);
             scaling.ScalingConfig.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", scaling.ScalingConfig.MaxScaleFactor);

@@ -19,15 +19,15 @@ namespace WIM_Plugin {
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
             var previewScreen = (PreviewScreen) target;
-            if(!previewScreen.PreviewScreenConfig) {
+            if(!previewScreen.Config) {
                 EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
-                previewScreen.PreviewScreenConfig = (PreviewScreenConfiguration) EditorGUILayout.ObjectField("Configuration", previewScreen.PreviewScreenConfig, typeof(PreviewScreenConfiguration), false);
+                previewScreen.Config = (PreviewScreenConfiguration) EditorGUILayout.ObjectField("Configuration", previewScreen.Config, typeof(PreviewScreenConfiguration), false);
                 return;
             }
-            previewScreen.PreviewScreenConfig.PreviewScreen = EditorGUILayout.Toggle("Show Preview Screen", previewScreen.PreviewScreenConfig.PreviewScreen);
-            if(previewScreen.PreviewScreenConfig.PreviewScreen) {
-                previewScreen.PreviewScreenConfig.AutoPositionPreviewScreen = EditorGUILayout.Toggle("Auto Position Preview Screen",
-                    previewScreen.PreviewScreenConfig.AutoPositionPreviewScreen);
+            previewScreen.Config.PreviewScreen = EditorGUILayout.Toggle("Show Preview Screen", previewScreen.Config.PreviewScreen);
+            if(previewScreen.Config.PreviewScreen) {
+                previewScreen.Config.AutoPositionPreviewScreen = EditorGUILayout.Toggle("Auto Position Preview Screen",
+                    previewScreen.Config.AutoPositionPreviewScreen);
             }
         }
     }
