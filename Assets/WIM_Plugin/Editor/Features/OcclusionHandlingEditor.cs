@@ -21,26 +21,32 @@ namespace WIM_Plugin {
         }
 
         void Draw(WIMConfiguration config) {
+            var occlusionHandling = (OcclusionHandling) target;
+            if(!occlusionHandling.OcclusionHandlingConfig) {
+                EditorGUILayout.HelpBox("Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.", MessageType.Error);
+                occlusionHandling.OcclusionHandlingConfig = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Configuration", occlusionHandling.OcclusionHandlingConfig, typeof(OcclusionHandlingConfiguration), false);
+                return;
+            }
             EditorGUI.BeginChangeCheck();
-            config.OcclusionHandlingMethod = (OcclusionHandlingMethod) EditorGUILayout.EnumPopup(
+            occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod = (OcclusionHandlingMethod) EditorGUILayout.EnumPopup(
                 new GUIContent("Occlusion Handling Method",
                     "Select occlusion handling strategy. Disable for scrolling."),
-                config.OcclusionHandlingMethod);
+                occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod);
             if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
-            if(config.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) {
-                config.MeltRadius = EditorGUILayout.FloatField("Melt Radius", config.MeltRadius);
-                config.MeltHeight = EditorGUILayout.FloatField("Melt Height", config.MeltHeight);
+            if(occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) {
+                occlusionHandling.OcclusionHandlingConfig.MeltRadius = EditorGUILayout.FloatField("Melt Radius", occlusionHandling.OcclusionHandlingConfig.MeltRadius);
+                occlusionHandling.OcclusionHandlingConfig.MeltHeight = EditorGUILayout.FloatField("Melt Height", occlusionHandling.OcclusionHandlingConfig.MeltHeight);
             }
-            else if(config.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
-                config.CutoutRange =
-                    EditorGUILayout.FloatField("Cutout Range", config.CutoutRange);
-                config.CutoutAngle =
-                    EditorGUILayout.FloatField("Cutout Angle", config.CutoutAngle);
-                config.ShowCutoutLight =
-                    EditorGUILayout.Toggle("Show Cutout Light", config.ShowCutoutLight);
-                if(config.ShowCutoutLight) {
-                    config.CutoutLightColor =
-                        EditorGUILayout.ColorField("Cutout Light Color", config.CutoutLightColor);
+            else if(occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
+                occlusionHandling.OcclusionHandlingConfig.CutoutRange =
+                    EditorGUILayout.FloatField("Cutout Range", occlusionHandling.OcclusionHandlingConfig.CutoutRange);
+                occlusionHandling.OcclusionHandlingConfig.CutoutAngle =
+                    EditorGUILayout.FloatField("Cutout Angle", occlusionHandling.OcclusionHandlingConfig.CutoutAngle);
+                occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight =
+                    EditorGUILayout.Toggle("Show Cutout Light", occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight);
+                if(occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight) {
+                    occlusionHandling.OcclusionHandlingConfig.CutoutLightColor =
+                        EditorGUILayout.ColorField("Cutout Light Color", occlusionHandling.OcclusionHandlingConfig.CutoutLightColor);
                 }
             }
         }
@@ -49,6 +55,7 @@ namespace WIM_Plugin {
             if(Application.isPlaying) return;
             WIMGenerator.UpdateCylinderMask(WIM);
             WIMGenerator.UpdateCutoutViewMask(WIM);
+            DrawDefaultInspector();
         }
     }
 }

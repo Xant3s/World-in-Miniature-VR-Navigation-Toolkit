@@ -18,10 +18,16 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
-            config.PreviewScreen = EditorGUILayout.Toggle("Show Preview Screen", config.PreviewScreen);
-            if(config.PreviewScreen) {
-                config.AutoPositionPreviewScreen = EditorGUILayout.Toggle("Auto Position Preview Screen",
-                    config.AutoPositionPreviewScreen);
+            var previewScreen = (PreviewScreen) target;
+            if(!previewScreen.PreviewScreenConfig) {
+                EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
+                previewScreen.PreviewScreenConfig = (PreviewScreenConfiguration) EditorGUILayout.ObjectField("Configuration", previewScreen.PreviewScreenConfig, typeof(PreviewScreenConfiguration), false);
+                return;
+            }
+            previewScreen.PreviewScreenConfig.PreviewScreen = EditorGUILayout.Toggle("Show Preview Screen", previewScreen.PreviewScreenConfig.PreviewScreen);
+            if(previewScreen.PreviewScreenConfig.PreviewScreen) {
+                previewScreen.PreviewScreenConfig.AutoPositionPreviewScreen = EditorGUILayout.Toggle("Auto Position Preview Screen",
+                    previewScreen.PreviewScreenConfig.AutoPositionPreviewScreen);
             }
         }
     }

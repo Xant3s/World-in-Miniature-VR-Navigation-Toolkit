@@ -10,7 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: PathTraceConfig
-  m_EditorClassIdentifier: Assembly-CSharp:WIM_Plugin:PathTraceConfiguration
-  PostTravelPathTrace: 1
-  TraceDuration: 5
+  m_Name: OcclusionHandlingConfig
+  m_EditorClassIdentifier: Assembly-CSharp:WIM_Plugin:OcclusionHandlingConfiguration
+  OcclusionHandlingMethod: 0
+  MeltRadius: 0.1
+  MeltHeight: 0.2
+  CutoutRange: 0.2
+  CutoutAngle: 30
+  ShowCutoutLight: 0
+  CutoutLightColor: {r: 1, g: 1, b: 1, a: 1}

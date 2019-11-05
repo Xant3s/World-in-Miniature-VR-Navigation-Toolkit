@@ -4,6 +4,9 @@ using WIM_Plugin;
 
 namespace WIM_Plugin {
     public class TravelPreviewAnimation : MonoBehaviour {
+        public TravelPreviewConfiguration TravelPreviewConfig;
+
+
         private void OnEnable() {
             MiniatureModel.OnNewDestinationSelected += createController;
         }
@@ -13,7 +16,8 @@ namespace WIM_Plugin {
         }
 
         private void createController(WIMConfiguration config, WIMData data) {
-            if(!config.TravelPreviewAnimation) return;
+            if(!TravelPreviewConfig.TravelPreviewAnimation) return;
+            Assert.IsNotNull(TravelPreviewConfig, "Travel preview configuration is missing.");
             if(data.TravelPreviewAnimationObj) data.TravelPreviewAnimationObj.transform.parent = null;
             Destroy(data.TravelPreviewAnimationObj);
             data.TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
@@ -21,9 +25,16 @@ namespace WIM_Plugin {
             travelPreview.DestinationInWIM = data.DestinationIndicatorInWIM;
             travelPreview.PlayerRepresentationInWIM = data.PlayerRepresentationTransform;
             travelPreview.DestinationIndicator = config.DestinationIndicator;
-            travelPreview.AnimationSpeed = config.TravelPreviewAnimationSpeed;
+            travelPreview.AnimationSpeed = TravelPreviewConfig.TravelPreviewAnimationSpeed;
             travelPreview.WIMLevelTransform = data.WIMLevelTransform;
             travelPreview.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
         }
+    }
+
+
+    [CreateAssetMenu(menuName = "WIM/Features/Travel Preview Animation/Configuration")]
+    public class TravelPreviewConfiguration : ScriptableObject {
+        public bool TravelPreviewAnimation;
+        public float TravelPreviewAnimationSpeed = 1.0f;
     }
 }

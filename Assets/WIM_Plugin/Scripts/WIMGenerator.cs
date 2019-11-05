@@ -23,7 +23,8 @@ namespace WIM_Plugin {
                 return material;
             }
 
-            switch (WIM.Configuration.OcclusionHandlingMethod) {
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+            switch (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod) {
                 case OcclusionHandlingMethod.MeltWalls: {
                     material = Resources.Load<Material>("Materials/MeltWalls");
                     var color = material.GetColor(baseColor);
@@ -61,8 +62,9 @@ namespace WIM_Plugin {
         }
 
         private static void SetupDissolveScript(in MiniatureModel WIM) {
-            if (WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling || WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
-                WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+            if (WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling || occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
+                occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
                 RemoveDissolveScript(WIM);
             }
             else {
@@ -278,23 +280,27 @@ namespace WIM_Plugin {
         }
 
         internal static void UpdateCylinderMask(in MiniatureModel WIM) {
-            if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+
+            if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
             var cylinderTransform = GameObject.Find("Cylinder Mask")?.transform;
             if (!cylinderTransform) return;
-            cylinderTransform.localScale = new Vector3(WIM.Configuration.MeltRadius, WIM.Configuration.MeltHeight, 1);
+            cylinderTransform.localScale = new Vector3(occlusionHandling.OcclusionHandlingConfig.MeltRadius, occlusionHandling.OcclusionHandlingConfig.MeltHeight, 1);
         }
 
         internal static void UpdateCutoutViewMask(in MiniatureModel WIM) {
-            if (WIM.Configuration.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+
+            if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
             var spotlightObj = GameObject.Find("Spotlight Mask");
             if (!spotlightObj) return;
             var spotlight = spotlightObj.GetComponent<Light>();
-            spotlight.range = WIM.Configuration.CutoutRange;
-            spotlight.spotAngle = WIM.Configuration.CutoutAngle;
+            spotlight.range = occlusionHandling.OcclusionHandlingConfig.CutoutRange;
+            spotlight.spotAngle = occlusionHandling.OcclusionHandlingConfig.CutoutAngle;
 
             Color color;
-            if (WIM.Configuration.ShowCutoutLight) {
-                color = WIM.Configuration.CutoutLightColor;
+            if (occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight) {
+                color = occlusionHandling.OcclusionHandlingConfig.CutoutLightColor;
                 color.a = 1;
             }
             else {
@@ -362,14 +368,15 @@ namespace WIM_Plugin {
             cleanupOcclusionHandling();
 
             // Setup new configuration.
-            var s = WIM.GetComponent<Scrolling>();
-            if(WIM.Configuration.OcclusionHandlingMethod != OcclusionHandlingMethod.None) s.ScrollingConfig.AllowWIMScrolling = false;
+            var scrolling = WIM.GetComponent<Scrolling>();
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+            if(occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) scrolling.ScrollingConfig.AllowWIMScrolling = false;
             var material = LoadAppropriateMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);
-            if (s.ScrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
-            else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
-            else if (WIM.Configuration.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
+            if (scrolling.ScrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
+            else if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
+            else if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
             UpdateScrollingMask(WIM);
         }
     }

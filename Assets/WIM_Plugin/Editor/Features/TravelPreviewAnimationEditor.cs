@@ -18,10 +18,16 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
-            config.TravelPreviewAnimation = EditorGUILayout.Toggle("Travel Preview Animation", config.TravelPreviewAnimation);
-            if(config.TravelPreviewAnimation) {
-                config.TravelPreviewAnimationSpeed = EditorGUILayout.Slider("Travel Preview Animation Speed",
-                    config.TravelPreviewAnimationSpeed, 0, 1);
+            var travelPreview = (TravelPreviewAnimation) target;
+            if(!travelPreview.TravelPreviewConfig) {
+                EditorGUILayout.HelpBox("Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script.", MessageType.Error);
+                travelPreview.TravelPreviewConfig = (TravelPreviewConfiguration) EditorGUILayout.ObjectField("Configuration", ((TravelPreviewAnimation)target).TravelPreviewConfig, typeof(TravelPreviewConfiguration), false);
+                return;
+            }
+            travelPreview.TravelPreviewConfig.TravelPreviewAnimation = EditorGUILayout.Toggle("Travel Preview Animation", travelPreview.TravelPreviewConfig.TravelPreviewAnimation);
+            if(travelPreview.TravelPreviewConfig.TravelPreviewAnimation) {
+                travelPreview.TravelPreviewConfig.TravelPreviewAnimationSpeed = EditorGUILayout.Slider("Travel Preview Animation Speed",
+                    travelPreview.TravelPreviewConfig.TravelPreviewAnimationSpeed, 0, 1);
             }
         }
     }

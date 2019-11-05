@@ -49,7 +49,9 @@ namespace WIM_Plugin {
             data.DestinationIndicatorInWIM =
                 Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
             data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
-            if(config.PreviewScreen && !config.AutoPositionPreviewScreen)
+            // TODO: Decouple Preview screen config
+            var p = GameObject.Find("WIM").GetComponent<PreviewScreen>();
+            if(p && p.PreviewScreenConfig.PreviewScreen && !p.PreviewScreenConfig.AutoPositionPreviewScreen)
                 data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
             return data.DestinationIndicatorInWIM;
         }

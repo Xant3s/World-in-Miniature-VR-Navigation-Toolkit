@@ -5,6 +5,8 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     public class PreviewScreen : MonoBehaviour {
+        public PreviewScreenConfiguration PreviewScreenConfig;
+
         private WIMConfiguration config;
         private WIMData data;
         private Material previewScreenMaterial;
@@ -23,7 +25,9 @@ namespace WIM_Plugin {
         public void ShowPreviewScreen(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
-            if(!config.PreviewScreen || !config.AutoPositionPreviewScreen) return;
+            Assert.IsNotNull(PreviewScreenConfig, "Preview screen configuration is missing.");
+
+            if(!PreviewScreenConfig.PreviewScreen || !PreviewScreenConfig.AutoPositionPreviewScreen) return;
             RemovePreviewScreen();
             data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
             data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
@@ -34,8 +38,8 @@ namespace WIM_Plugin {
         public void ShowPreviewScreenPickup(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
-            if(!config.PreviewScreen) return;
-            Assert.IsFalse(config.AutoPositionPreviewScreen);
+            if(!PreviewScreenConfig.PreviewScreen) return;
+            Assert.IsFalse(PreviewScreenConfig.AutoPositionPreviewScreen);
             RemovePreviewScreen();
             data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
             Destroy(data.PreviewScreenTransform.GetComponent<FloatAbove>());
@@ -62,9 +66,10 @@ namespace WIM_Plugin {
         private void updatePreviewScreen(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
+            Assert.IsNotNull(PreviewScreenConfig, "Preview screen configuration is missing.");
 
             if (!data.PreviewScreenEnabled) return;
-            if(!config.PreviewScreen || !data.DestinationIndicatorInLevel) return;
+            if(!PreviewScreenConfig.PreviewScreen || !data.DestinationIndicatorInLevel) return;
             var cam = data.DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
             Destroy(cam.targetTexture);
             cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
@@ -84,5 +89,12 @@ namespace WIM_Plugin {
             previewScreen.transform.parent = null;
             Destroy(previewScreen);
         }
+    }
+
+
+    [CreateAssetMenu(menuName = "WIM/Features/Preview Screen/Configuration")]
+    public class PreviewScreenConfiguration : ScriptableObject {
+        public bool PreviewScreen;
+        public bool AutoPositionPreviewScreen;
     }
 }

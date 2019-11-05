@@ -25,14 +25,13 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration config) {
             MiniatureModelEditor.Separator("Scrolling");
-            //var scrollingConfig = ((Scrolling)target).ScrollingConfig;
             var s = (Scrolling) target;
             if(!s.ScrollingConfig) {
                 EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
-                ((Scrolling)target).ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Configuration", ((Scrolling)target).ScrollingConfig, typeof(ScrollingConfiguration), false);
+                s.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Configuration", s.ScrollingConfig, typeof(ScrollingConfiguration), false);
                 return;
             }
-            if(config.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
+            if(GameObject.Find("WIM").GetComponent<OcclusionHandling>().OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
                 EditorGUILayout.LabelField("Disable occlusion handling method to use scrolling.");
             }
             else {
