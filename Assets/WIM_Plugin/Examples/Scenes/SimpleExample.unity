@@ -1676,13 +1676,7 @@ GameObject:
   - component: {fileID: 460360238}
   - component: {fileID: 460360210}
   - component: {fileID: 460360239}
-  - component: {fileID: 460360241}
-  - component: {fileID: 460360240}
-  - component: {fileID: 460360237}
-  - component: {fileID: 460360209}
   - component: {fileID: 460360208}
-  - component: {fileID: 460360245}
-  - component: {fileID: 460360244}
   - component: {fileID: 460360204}
   - component: {fileID: 460360243}
   - component: {fileID: 460360242}
@@ -1712,6 +1706,12 @@ GameObject:
   - component: {fileID: 460360213}
   - component: {fileID: 460360212}
   - component: {fileID: 460360205}
+  - component: {fileID: 460360209}
+  - component: {fileID: 460360244}
+  - component: {fileID: 460360241}
+  - component: {fileID: 460360240}
+  - component: {fileID: 460360237}
+  - component: {fileID: 460360245}
   m_Layer: 8
   m_Name: WIM
   m_TagString: Untagged
@@ -1815,10 +1815,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 460360202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 434edf65677bf2940bb200cd253674da, type: 3}
+  m_Script: {fileID: 11500000, guid: 8917aad1e0d34a24aa9d637e5ae23f61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PathTraceConfig: {fileID: 11400000, guid: 52f55b5e01491fd489f9ca9ce24257a2, type: 2}
+  ScrollingConfig: {fileID: 11400000, guid: 781e9325602939b4ca8f255703b7ca46, type: 2}
 --- !u!114 &460360210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2177,10 +2177,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 460360202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8917aad1e0d34a24aa9d637e5ae23f61, type: 3}
+  m_Script: {fileID: 11500000, guid: c16a8ac0d6ad3f343841e2c64137c7b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScrollingConfig: {fileID: 11400000, guid: 781e9325602939b4ca8f255703b7ca46, type: 2}
+  OcclusionHandlingConfig: {fileID: 11400000, guid: 18057b861a1637e41b2f22a39e9108bb,
+    type: 2}
 --- !u!114 &460360238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2217,8 +2218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a82fbc9276bdb540806aa3c4f39119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TravelPreviewConfig: {fileID: 11400000, guid: 462ecc8e53f16f1499b71c050c6326dd,
-    type: 2}
+  Config: {fileID: 11400000, guid: 462ecc8e53f16f1499b71c050c6326dd, type: 2}
+  Data: {fileID: 0}
 --- !u!114 &460360241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2231,8 +2232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8518411eedec18643b336b2a0a449a23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PreviewScreenConfig: {fileID: 11400000, guid: 152e5a98623860c45ae739f5bb032067,
-    type: 2}
+  Config: {fileID: 11400000, guid: 152e5a98623860c45ae739f5bb032067, type: 2}
+  Data: {fileID: 0}
 --- !u!65 &460360242
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2268,10 +2269,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 460360202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a63a9c21673deb34989e1bc9b568e1a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 434edf65677bf2940bb200cd253674da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScalingConfig: {fileID: 0}
+  PathTraceConfig: {fileID: 11400000, guid: 52f55b5e01491fd489f9ca9ce24257a2, type: 2}
 --- !u!114 &460360245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2281,11 +2282,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 460360202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c16a8ac0d6ad3f343841e2c64137c7b6, type: 3}
+  m_Script: {fileID: 11500000, guid: a63a9c21673deb34989e1bc9b568e1a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OcclusionHandlingConfig: {fileID: 11400000, guid: 18057b861a1637e41b2f22a39e9108bb,
-    type: 2}
+  ScalingConfig: {fileID: 11400000, guid: 1e71a09ebaf41b74e83c944f3f8b6761, type: 2}
 --- !u!1 &483032670
 GameObject:
   m_ObjectHideFlags: 0

@@ -281,7 +281,7 @@ namespace WIM_Plugin {
 
         internal static void UpdateCylinderMask(in MiniatureModel WIM) {
             var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-
+            if(!occlusionHandling || !occlusionHandling.OcclusionHandlingConfig) return;
             if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
             var cylinderTransform = GameObject.Find("Cylinder Mask")?.transform;
             if (!cylinderTransform) return;
@@ -290,7 +290,7 @@ namespace WIM_Plugin {
 
         internal static void UpdateCutoutViewMask(in MiniatureModel WIM) {
             var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-
+            if(!occlusionHandling || !occlusionHandling.OcclusionHandlingConfig) return;
             if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
             var spotlightObj = GameObject.Find("Spotlight Mask");
             if (!spotlightObj) return;

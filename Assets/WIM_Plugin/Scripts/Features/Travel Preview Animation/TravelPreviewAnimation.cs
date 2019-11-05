@@ -5,7 +5,7 @@ using WIM_Plugin;
 namespace WIM_Plugin {
     public class TravelPreviewAnimation : MonoBehaviour {
         public TravelPreviewConfiguration Config;
-        public TravelPreviewData Data;
+        [HideInInspector] public TravelPreviewData Data;
 
 
         private void Awake() {

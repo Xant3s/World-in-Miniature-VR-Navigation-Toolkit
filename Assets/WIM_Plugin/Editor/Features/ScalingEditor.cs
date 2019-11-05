@@ -19,6 +19,7 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration WIMConfig) {
             MiniatureModelEditor.Separator("Scaling");
+            if(!target) return;
             ref var config = ref ((Scaling) target).ScalingConfig;
             if(!config) {
                 EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);

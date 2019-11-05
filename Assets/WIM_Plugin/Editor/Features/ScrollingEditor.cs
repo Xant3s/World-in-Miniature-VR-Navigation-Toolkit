@@ -31,7 +31,10 @@ namespace WIM_Plugin {
                 config = (ScrollingConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(ScrollingConfiguration), false);
                 return;
             }
-            if(GameObject.Find("WIM").GetComponent<OcclusionHandling>().OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
+
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+            if(occlusionHandling && occlusionHandling.OcclusionHandlingConfig&&
+               occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
                 EditorGUILayout.LabelField("Disable occlusion handling method to use scrolling.");
             }
             else {

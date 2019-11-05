@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     public class PreviewScreen : MonoBehaviour {
         public PreviewScreenConfiguration Config;
-        public PreviewScreenData Data;
+        [HideInInspector] public PreviewScreenData Data;
 
         private WIMConfiguration WIMConfig;
         private WIMData WIMData;
