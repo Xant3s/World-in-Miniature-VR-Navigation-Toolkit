@@ -16,17 +16,17 @@ namespace WIM_Plugin {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
         }
 
-        private void Draw(WIMConfiguration config) {
+        private void Draw(WIMConfiguration WIMConfig) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
-            var pathTrace = (PathTrace) target;
-            if(!pathTrace.PathTraceConfig) {
+            ref var config = ref ((PathTrace) target).PathTraceConfig;
+            if(!config) {
                 EditorGUILayout.HelpBox("Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script.", MessageType.Error);
-                pathTrace.PathTraceConfig = (PathTraceConfiguration) EditorGUILayout.ObjectField("Configuration", ((PathTrace)target).PathTraceConfig, typeof(PathTraceConfiguration), false);
+                config = (PathTraceConfiguration) EditorGUILayout.ObjectField("Configuration", ((PathTrace)target).PathTraceConfig, typeof(PathTraceConfiguration), false);
                 return;
             }
-            pathTrace.PathTraceConfig.PostTravelPathTrace = EditorGUILayout.Toggle("Post Travel Path Trace", pathTrace.PathTraceConfig.PostTravelPathTrace);
-            if(pathTrace.PathTraceConfig.PostTravelPathTrace) {
-                pathTrace.PathTraceConfig.TraceDuration = EditorGUILayout.FloatField("Trace Duration", pathTrace.PathTraceConfig.TraceDuration);
+            config.PostTravelPathTrace = EditorGUILayout.Toggle("Post Travel Path Trace", config.PostTravelPathTrace);
+            if(config.PostTravelPathTrace) {
+                config.TraceDuration = EditorGUILayout.FloatField("Trace Duration", config.TraceDuration);
             }
         }
     }

@@ -20,33 +20,29 @@ namespace WIM_Plugin {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw, "Occlusion Handling");
         }
 
-        void Draw(WIMConfiguration config) {
-            var occlusionHandling = (OcclusionHandling) target;
-            if(!occlusionHandling.OcclusionHandlingConfig) {
+        void Draw(WIMConfiguration WIMConfig) {
+            ref var config = ref ((OcclusionHandling) target).OcclusionHandlingConfig;
+            if(!config) {
                 EditorGUILayout.HelpBox("Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.", MessageType.Error);
-                occlusionHandling.OcclusionHandlingConfig = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Configuration", occlusionHandling.OcclusionHandlingConfig, typeof(OcclusionHandlingConfiguration), false);
+                config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(OcclusionHandlingConfiguration), false);
                 return;
             }
             EditorGUI.BeginChangeCheck();
-            occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod = (OcclusionHandlingMethod) EditorGUILayout.EnumPopup(
+            config.OcclusionHandlingMethod = (OcclusionHandlingMethod) EditorGUILayout.EnumPopup(
                 new GUIContent("Occlusion Handling Method",
                     "Select occlusion handling strategy. Disable for scrolling."),
-                occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod);
+                config.OcclusionHandlingMethod);
             if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
-            if(occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) {
-                occlusionHandling.OcclusionHandlingConfig.MeltRadius = EditorGUILayout.FloatField("Melt Radius", occlusionHandling.OcclusionHandlingConfig.MeltRadius);
-                occlusionHandling.OcclusionHandlingConfig.MeltHeight = EditorGUILayout.FloatField("Melt Height", occlusionHandling.OcclusionHandlingConfig.MeltHeight);
+            if(config.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) {
+                config.MeltRadius = EditorGUILayout.FloatField("Melt Radius", config.MeltRadius);
+                config.MeltHeight = EditorGUILayout.FloatField("Melt Height", config.MeltHeight);
             }
-            else if(occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
-                occlusionHandling.OcclusionHandlingConfig.CutoutRange =
-                    EditorGUILayout.FloatField("Cutout Range", occlusionHandling.OcclusionHandlingConfig.CutoutRange);
-                occlusionHandling.OcclusionHandlingConfig.CutoutAngle =
-                    EditorGUILayout.FloatField("Cutout Angle", occlusionHandling.OcclusionHandlingConfig.CutoutAngle);
-                occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight =
-                    EditorGUILayout.Toggle("Show Cutout Light", occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight);
-                if(occlusionHandling.OcclusionHandlingConfig.ShowCutoutLight) {
-                    occlusionHandling.OcclusionHandlingConfig.CutoutLightColor =
-                        EditorGUILayout.ColorField("Cutout Light Color", occlusionHandling.OcclusionHandlingConfig.CutoutLightColor);
+            else if(config.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) {
+                config.CutoutRange = EditorGUILayout.FloatField("Cutout Range", config.CutoutRange);
+                config.CutoutAngle = EditorGUILayout.FloatField("Cutout Angle", config.CutoutAngle);
+                config.ShowCutoutLight = EditorGUILayout.Toggle("Show Cutout Light", config.ShowCutoutLight);
+                if(config.ShowCutoutLight) {
+                    config.CutoutLightColor = EditorGUILayout.ColorField("Cutout Light Color", config.CutoutLightColor);
                 }
             }
         }

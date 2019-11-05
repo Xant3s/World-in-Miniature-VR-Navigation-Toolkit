@@ -16,8 +16,5 @@ namespace WIM_Plugin {
         public Transform OVRPlayerController;
         public Transform HMDTransform;
         public Transform FingertipIndexR;
-
-        // Travel preview animation
-        //public GameObject TravelPreviewAnimationObj;
     }
 }
