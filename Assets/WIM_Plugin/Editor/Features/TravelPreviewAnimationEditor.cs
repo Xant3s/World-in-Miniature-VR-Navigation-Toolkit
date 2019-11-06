@@ -29,6 +29,7 @@ namespace WIM_Plugin {
                 config.TravelPreviewAnimationSpeed = EditorGUILayout.Slider("Travel Preview Animation Speed",
                     config.TravelPreviewAnimationSpeed, 0, 1);
             }
+            EditorUtility.SetDirty(config);
         }
     }
 }

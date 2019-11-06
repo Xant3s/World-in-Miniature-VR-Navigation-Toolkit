@@ -70,6 +70,7 @@ namespace WIM_Plugin {
                     }
                 }
             }
+            EditorUtility.SetDirty(config);
         }
     }
 }

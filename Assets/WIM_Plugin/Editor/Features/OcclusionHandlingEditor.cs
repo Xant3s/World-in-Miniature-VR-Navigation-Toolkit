@@ -45,6 +45,7 @@ namespace WIM_Plugin {
                     config.CutoutLightColor = EditorGUILayout.ColorField("Cutout Light Color", config.CutoutLightColor);
                 }
             }
+            EditorUtility.SetDirty(config);
         }
 
         public override void OnInspectorGUI() {

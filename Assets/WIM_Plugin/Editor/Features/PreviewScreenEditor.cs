@@ -29,6 +29,7 @@ namespace WIM_Plugin {
                 config.AutoPositionPreviewScreen = EditorGUILayout.Toggle("Auto Position Preview Screen",
                     config.AutoPositionPreviewScreen);
             }
+            EditorUtility.SetDirty(config);
         }
     }
 }

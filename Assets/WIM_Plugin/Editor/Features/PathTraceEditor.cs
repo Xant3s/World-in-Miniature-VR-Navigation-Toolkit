@@ -29,6 +29,7 @@ namespace WIM_Plugin {
             if(config.PostTravelPathTrace) {
                 config.TraceDuration = EditorGUILayout.FloatField("Trace Duration", config.TraceDuration);
             }
+            EditorUtility.SetDirty(config);
         }
     }
 }

@@ -38,6 +38,7 @@ namespace WIM_Plugin {
                 new GUIContent("Inter Hand Distance Delta Threshold",
                     "Ignore inter hand distance deltas below this threshold for scaling."),
                 config.InterHandDistanceDeltaThreshold);
+            EditorUtility.SetDirty(config);
         }
     }
 }
