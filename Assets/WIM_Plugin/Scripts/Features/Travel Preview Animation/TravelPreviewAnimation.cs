@@ -36,16 +36,4 @@ namespace WIM_Plugin {
             travelPreviewController.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
         }
     }
-
-
-    [CreateAssetMenu(menuName = "WIM/Features/Travel Preview Animation/Configuration")]
-    public class TravelPreviewConfiguration : ScriptableObject {
-        public bool TravelPreviewAnimation;
-        public float TravelPreviewAnimationSpeed = 1.0f;
-    }
-
-
-    public class TravelPreviewData: ScriptableObject {
-        public GameObject TravelPreviewAnimationObj;
-    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -19,6 +20,7 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
+            EditorUtility.SetDirty(ScalingConfig);
             MiniatureModel.OnUpdate += ScaleWIM;
         }
 
@@ -99,15 +101,5 @@ namespace WIM_Plugin {
                 data.WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
             return hitColliders.Any(col => col.transform.root.CompareTag(handTag));
         }
-    }
-
-
-    [CreateAssetMenu(menuName = "WIM/Features/Scaling/Configuration")]
-    public class ScalingConfiguration : ScriptableObject {
-        public bool AllowWIMScaling;
-        public float MinScaleFactor;
-        public float MaxScaleFactor = .5f;
-        public float ScaleStep = .0001f;
-        public float InterHandDistanceDeltaThreshold = .1f;
     }
 }

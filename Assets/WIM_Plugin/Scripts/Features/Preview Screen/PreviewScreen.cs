@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -95,18 +96,5 @@ namespace WIM_Plugin {
             previewScreen.transform.parent = null;
             Destroy(previewScreen);
         }
-    }
-
-
-    [CreateAssetMenu(menuName = "WIM/Features/Preview Screen/Configuration")]
-    public class PreviewScreenConfiguration : ScriptableObject {
-        public bool PreviewScreen;
-        public bool AutoPositionPreviewScreen;
-    }
-
-
-    public class PreviewScreenData: ScriptableObject {
-        public bool PreviewScreenEnabled;
-        public Transform PreviewScreenTransform;
     }
 }

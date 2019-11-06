@@ -43,11 +43,4 @@ namespace WIM_Plugin {
             controller.Init();
         }
     }
-
-
-    [CreateAssetMenu(menuName = "WIM/Features/Path Trace/Configuration")]
-    public class PathTraceConfiguration : ScriptableObject {
-        public bool PostTravelPathTrace;
-        public float TraceDuration = 1.0f;
-    }
 }

@@ -21,7 +21,7 @@ namespace WIM_Plugin {
             ref var config = ref ((PreviewScreen) target).Config;
             if(!config) {
                 EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
-                config = (PreviewScreenConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(PreviewScreenConfiguration), false);
+                config = (PreviewScreenConfiguration)EditorGUILayout.ObjectField("Configuration", config, typeof(PreviewScreenConfiguration), false);
                 return;
             }
             config.PreviewScreen = EditorGUILayout.Toggle("Show Preview Screen", config.PreviewScreen);

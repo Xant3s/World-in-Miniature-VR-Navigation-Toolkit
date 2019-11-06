@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WIM_Plugin {
-    internal sealed class OcclusionHandling : MonoBehaviour {
-        public OcclusionHandlingConfiguration OcclusionHandlingConfig;
-    }
 
-    [CreateAssetMenu(menuName = "WIM/Features/Occlusion Handling/Configuration")]
+namespace WIM_Plugin {
+    [CreateAssetMenu(menuName = "WIM/Feature Configuration/Occlusion Handling")]
     public class OcclusionHandlingConfiguration : ScriptableObject {
         // Occlusion Handling: Melt Walls
         public OcclusionHandlingMethod OcclusionHandlingMethod;

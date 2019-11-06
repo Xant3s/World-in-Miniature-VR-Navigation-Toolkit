@@ -25,10 +25,11 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration WIMConfig) {
             MiniatureModelEditor.Separator("Scrolling");
+            if(!target) return;
             ref var config = ref ((Scrolling) target).ScrollingConfig;
             if(!config) {
                 EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
-                config = (ScrollingConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(ScrollingConfiguration), false);
+                config = (ScrollingConfiguration)EditorGUILayout.ObjectField("Configuration", config, typeof(ScrollingConfiguration), false);
                 return;
             }
 

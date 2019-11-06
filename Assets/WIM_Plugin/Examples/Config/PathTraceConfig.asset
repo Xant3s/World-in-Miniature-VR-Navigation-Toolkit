@@ -9,11 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: ScalingConfig
-  m_EditorClassIdentifier: Assembly-CSharp:WIM_Plugin:ScalingConfiguration
-  AllowWIMScaling: 1
-  MinScaleFactor: 0.1
-  MaxScaleFactor: 0.2
-  ScaleStep: 0.0001
-  InterHandDistanceDeltaThreshold: 0.003
+  m_Script: {fileID: 11500000, guid: 51dc7154671a5a647a948e16c6ef2f1b, type: 3}
+  m_Name: PathTraceConfig
+  m_EditorClassIdentifier: 
+  PostTravelPathTrace: 1
+  TraceDuration: 5

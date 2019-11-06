@@ -23,7 +23,7 @@ namespace WIM_Plugin {
             ref var config = ref ((Scaling) target).ScalingConfig;
             if(!config) {
                 EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
-                config = (ScalingConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(ScalingConfiguration), false);
+                config = (ScalingConfiguration)EditorGUILayout.ObjectField("Configuration", config, typeof(ScalingConfiguration), false);
                 return;
             }
 

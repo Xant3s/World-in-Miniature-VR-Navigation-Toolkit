@@ -18,6 +18,7 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration WIMConfig) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
+            if(!target) return;
             ref var config = ref ((PathTrace) target).PathTraceConfig;
             if(!config) {
                 EditorGUILayout.HelpBox("Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script.", MessageType.Error);

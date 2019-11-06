@@ -46,14 +46,5 @@ namespace WIM_Plugin {
             data.WIMLevelTransform.localPosition = scrollOffset;
         }
     }
-
-    [CreateAssetMenu(menuName = "WIM/Features/Scrolling/Configuration")]
-    public class ScrollingConfiguration : ScriptableObject {
-        public bool AllowWIMScrolling;
-        public bool AutoScroll;
-        public bool AllowVerticalScrolling = true;
-        public float ScrollSpeed = 1;
-        public OVRInput.RawAxis2D VerticalScrollingAxis = OVRInput.RawAxis2D.LThumbstick;
-    }
 }
 
