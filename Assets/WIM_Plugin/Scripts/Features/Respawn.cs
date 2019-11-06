@@ -30,11 +30,14 @@ namespace WIM_Plugin {
         }
 
         public void respawnWIM(bool maintainTransformRelativeToPlayer) {
-            DestinationIndicators.RemoveDestinationIndicators(GameObject.Find("WIM").GetComponent<MiniatureModel>());
+            var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+            DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             var WIMLevel = transform.GetChild(0);
-            var dissolveFX = config.OcclusionHandlingMethod == OcclusionHandling.None;
-            if(config.AllowWIMScrolling) dissolveFX = false;
+            // TODO: decouple occlusion handling
+            var dissolveFX = WIM.GetComponent<OcclusionHandling>().OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
+            // TODO: decouple scrolling
+            if(WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling) dissolveFX = false;
             if(dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);
             if(maintainTransformRelativeToPlayer) WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 

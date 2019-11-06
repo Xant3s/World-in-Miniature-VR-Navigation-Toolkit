@@ -4,6 +4,14 @@ using WIM_Plugin;
 
 namespace WIM_Plugin {
     public class TravelPreviewAnimation : MonoBehaviour {
+        public TravelPreviewConfiguration Config;
+        [HideInInspector] public TravelPreviewData Data;
+
+
+        private void Awake() {
+            Data = ScriptableObject.CreateInstance<TravelPreviewData>();
+        }
+
         private void OnEnable() {
             MiniatureModel.OnNewDestinationSelected += createController;
         }
@@ -13,17 +21,19 @@ namespace WIM_Plugin {
         }
 
         private void createController(WIMConfiguration config, WIMData data) {
-            if(!config.TravelPreviewAnimation) return;
-            if(data.TravelPreviewAnimationObj) data.TravelPreviewAnimationObj.transform.parent = null;
-            Destroy(data.TravelPreviewAnimationObj);
-            data.TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
-            var travelPreview = data.TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimationController>();
-            travelPreview.DestinationInWIM = data.DestinationIndicatorInWIM;
-            travelPreview.PlayerRepresentationInWIM = data.PlayerRepresentationTransform;
-            travelPreview.DestinationIndicator = config.DestinationIndicator;
-            travelPreview.AnimationSpeed = config.TravelPreviewAnimationSpeed;
-            travelPreview.WIMLevelTransform = data.WIMLevelTransform;
-            travelPreview.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
+            if(!this.Config.TravelPreviewAnimation) return;
+            Assert.IsNotNull(this.Config, "Travel preview configuration is missing.");
+            var travelPreview = GameObject.Find("WIM").GetComponent<TravelPreviewAnimation>();
+            if (travelPreview.Data.TravelPreviewAnimationObj) travelPreview.Data.TravelPreviewAnimationObj.transform.parent = null;
+            Destroy(travelPreview.Data.TravelPreviewAnimationObj);
+            travelPreview.Data.TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
+            var travelPreviewController = travelPreview.Data.TravelPreviewAnimationObj.AddComponent<TravelPreviewAnimationController>();
+            travelPreviewController.DestinationInWIM = data.DestinationIndicatorInWIM;
+            travelPreviewController.PlayerRepresentationInWIM = data.PlayerRepresentationTransform;
+            travelPreviewController.DestinationIndicator = config.DestinationIndicator;
+            travelPreviewController.AnimationSpeed = this.Config.TravelPreviewAnimationSpeed;
+            travelPreviewController.WIMLevelTransform = data.WIMLevelTransform;
+            travelPreviewController.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
         }
     }
 }

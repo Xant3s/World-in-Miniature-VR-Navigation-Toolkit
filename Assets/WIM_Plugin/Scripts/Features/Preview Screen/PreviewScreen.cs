@@ -1,14 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     public class PreviewScreen : MonoBehaviour {
-        private WIMConfiguration config;
-        private WIMData data;
+        public PreviewScreenConfiguration Config;
+        [HideInInspector] public PreviewScreenData Data;
+
+        private WIMConfiguration WIMConfig;
+        private WIMData WIMData;
         private Material previewScreenMaterial;
         private static readonly int baseMap = Shader.PropertyToID("_BaseMap");
+
+
+        private void Awake() {
+            Data = ScriptableObject.CreateInstance<PreviewScreenData>();
+        }
 
         private void OnEnable() {
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
@@ -20,34 +29,36 @@ namespace WIM_Plugin {
             MiniatureModel.OnUpdate -= updatePreviewScreen;
         }
 
-        public void ShowPreviewScreen(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
-            if(!config.PreviewScreen || !config.AutoPositionPreviewScreen) return;
+        public void ShowPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
+            this.WIMConfig = WIMConfig;
+            this.WIMData = WIMData;
+            Assert.IsNotNull(this.Config, "Preview screen configuration is missing.");
+
+            if(!this.Config.PreviewScreen || !this.Config.AutoPositionPreviewScreen) return;
             RemovePreviewScreen();
-            data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
-            data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
-            initPreviewScreen(data.PreviewScreenTransform.gameObject);
-            data.PreviewScreenEnabled = true;
+            Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
+            Data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
+            initPreviewScreen(Data.PreviewScreenTransform.gameObject);
+            Data.PreviewScreenEnabled = true;
         }
 
-        public void ShowPreviewScreenPickup(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
-            if(!config.PreviewScreen) return;
-            Assert.IsFalse(config.AutoPositionPreviewScreen);
+        public void ShowPreviewScreenPickup(WIMConfiguration WIMConfig, WIMData WIMData) {
+            this.WIMConfig = WIMConfig;
+            this.WIMData = WIMData;
+            if(!this.Config.PreviewScreen) return;
+            Assert.IsFalse(this.Config.AutoPositionPreviewScreen);
             RemovePreviewScreen();
-            data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
-            Destroy(data.PreviewScreenTransform.GetComponent<FloatAbove>());
-            data.PreviewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
-            initPreviewScreen(data.PreviewScreenTransform.gameObject);
-            data.PreviewScreenEnabled = true;
+            Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
+            Destroy(Data.PreviewScreenTransform.GetComponent<FloatAbove>());
+            Data.PreviewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
+            initPreviewScreen(Data.PreviewScreenTransform.gameObject);
+            Data.PreviewScreenEnabled = true;
         }
 
         private void initPreviewScreen(GameObject previewScreen) {
-            Assert.IsNotNull(data.DestinationIndicatorInLevel);
-            Assert.IsNotNull(data.DestinationIndicatorInLevel.GetChild(1));
-            var camObj = data.DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
+            Assert.IsNotNull(WIMData.DestinationIndicatorInLevel);
+            Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(1));
+            var camObj = WIMData.DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
             Assert.IsNotNull(camObj);
             var cam = camObj.GetComponent<Camera>() ?? camObj.AddComponent<Camera>();
             Assert.IsNotNull(cam);
@@ -59,13 +70,14 @@ namespace WIM_Plugin {
             previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
         }
 
-        private void updatePreviewScreen(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
+        private void updatePreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
+            this.WIMConfig = WIMConfig;
+            this.WIMData = WIMData;
+            Assert.IsNotNull(this.Config, "Preview screen configuration is missing.");
 
-            if (!data.PreviewScreenEnabled) return;
-            if(!config.PreviewScreen || !data.DestinationIndicatorInLevel) return;
-            var cam = data.DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
+            if (!Data.PreviewScreenEnabled) return;
+            if(!this.Config.PreviewScreen || !WIMData.DestinationIndicatorInLevel) return;
+            var cam = WIMData.DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
             Destroy(cam.targetTexture);
             cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
             if(!previewScreenMaterial) {
@@ -78,7 +90,7 @@ namespace WIM_Plugin {
         }
 
         public void RemovePreviewScreen() {
-            data.PreviewScreenEnabled = false;
+            Data.PreviewScreenEnabled = false;
             var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
             if(!previewScreen) return;
             previewScreen.transform.parent = null;

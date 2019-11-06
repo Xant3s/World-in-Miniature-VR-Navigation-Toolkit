@@ -63,8 +63,9 @@ public class PickupPreviewScreen : MonoBehaviour {
         Assert.IsNotNull(WIM);
 
         // Spawn new preview screen.
-        WIMTransform.GetComponent<PreviewScreen>().ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
-        var previewScreenTransform = WIM.Data.PreviewScreenTransform;
+        var previewScreen = WIMTransform.GetComponent<PreviewScreen>();
+        previewScreen.ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
+        var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
         Assert.IsNotNull(previewScreenTransform);
 
         // Pick up the new preview screen.
@@ -75,7 +76,8 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void stopGrabbing() {
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
-        var previewScreenTransform = WIM.Data.PreviewScreenTransform;
+        var previewScreen = WIM.GetComponent<PreviewScreen>();
+        var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);
 
         // Let go.

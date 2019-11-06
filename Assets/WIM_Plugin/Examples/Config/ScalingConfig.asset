@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20553fac56ec59645857c0732b787431, type: 3}
-  m_Name: OVRBuildConfig
+  m_Script: {fileID: 11500000, guid: 3fb9ce127a19b9045ad8aeb41d9e56ac, type: 3}
+  m_Name: ScalingConfig
   m_EditorClassIdentifier: 
-  androidSDKPath: B:\Programme\Unity\2019.2.9f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK
-  gradlePath: 
-  jdkPath: 
+  AllowWIMScaling: 1
+  MinScaleFactor: 0.1
+  MaxScaleFactor: 0.2
+  ScaleStep: 0.0001
+  InterHandDistanceDeltaThreshold: 0.003

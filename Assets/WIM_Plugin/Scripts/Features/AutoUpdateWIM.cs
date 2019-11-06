@@ -64,7 +64,7 @@ namespace WIM_Plugin {
 
         private void triggerWIMUpdate() {
             alreadyUpdatedThisFrame = true;
-            WIM.Generator.GenerateNewWIM(WIM);
+            WIMGenerator.GenerateNewWIM(WIM);
         }
     }
 }

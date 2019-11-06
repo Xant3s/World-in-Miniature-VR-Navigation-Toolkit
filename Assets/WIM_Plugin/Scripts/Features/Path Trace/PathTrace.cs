@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
 
 namespace WIM_Plugin {
     public class PathTrace : MonoBehaviour {
+        public PathTraceConfiguration PathTraceConfig;
+
         private PathTraceController controller;
 
         private void OnEnable() {
@@ -19,12 +20,14 @@ namespace WIM_Plugin {
         }
 
         private void createPostTravelPathTrace(WIMConfiguration config, WIMData data) {
-            if(!config.PostTravelPathTrace) return;
+            Assert.IsNotNull(PathTraceConfig, "Path trace configuration is missing.");
+
+            if(!PathTraceConfig.PostTravelPathTrace) return;
             var emptyGO = new GameObject();
             var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
             controller = postTravelPathTraceObj.AddComponent<PathTraceController>();
             controller.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
-            controller.TraceDurationInSeconds = config.TraceDuration;
+            controller.TraceDurationInSeconds = PathTraceConfig.TraceDuration;
             controller.OldPositionInWIM = Instantiate(emptyGO, data.WIMLevelTransform).transform;
             controller.OldPositionInWIM.position = data.PlayerRepresentationTransform.position;
             controller.OldPositionInWIM.name = "PathTraceOldPosition";
@@ -35,7 +38,7 @@ namespace WIM_Plugin {
         }
 
         private void initPostTravelPathTrace(WIMConfiguration config, WIMData data) {
-            if(!config.PostTravelPathTrace) return;
+            if(!PathTraceConfig.PostTravelPathTrace) return;
             controller.WIMLevelTransform = transform.GetChild(0);
             controller.Init();
         }

@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     // Allow scaling the WIM at runtime.
     public class Scaling : MonoBehaviour {
+        public ScalingConfiguration ScalingConfig;
+
         private WIMConfiguration config;
         private WIMData data;
         private OVRGrabbable grabbable;
@@ -17,6 +20,7 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
+            EditorUtility.SetDirty(ScalingConfig);
             MiniatureModel.OnUpdate += ScaleWIM;
         }
 
@@ -36,8 +40,10 @@ namespace WIM_Plugin {
         private void ScaleWIM(WIMConfiguration configuration, WIMData data) {
             this.config = configuration;
             this.data = data;
+            Assert.IsNotNull(ScalingConfig, "Scaling configuration is missing.");
+
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
-            if(!config.AllowWIMScaling || !grabbable.isGrabbed) return;
+            if(!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
 
             var grabbingHand = getGrabbingHand();
             var oppositeHand = getOppositeHand(grabbingHand); // This is the potential scaling hand.
@@ -60,12 +66,12 @@ namespace WIM_Plugin {
             // Scale using inter hand distance delta.
             var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
             var distanceDelta = currInterHandDistance - prevInterHandDistance;
-            var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= config.InterHandDistanceDeltaThreshold;
+            var deltaBeyondThreshold = Mathf.Abs(distanceDelta) >= ScalingConfig.InterHandDistanceDeltaThreshold;
             if(distanceDelta > 0 && deltaBeyondThreshold) {
-                config.ScaleFactor += config.ScaleStep;
+                config.ScaleFactor += ScalingConfig.ScaleStep;
             }
             else if(distanceDelta < 0 && deltaBeyondThreshold) {
-                config.ScaleFactor -= config.ScaleStep;
+                config.ScaleFactor -= ScalingConfig.ScaleStep;
             }
 
             // Apply scale factor.
