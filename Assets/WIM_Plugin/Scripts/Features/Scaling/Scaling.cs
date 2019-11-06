@@ -20,7 +20,6 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
-            EditorUtility.SetDirty(ScalingConfig);
             MiniatureModel.OnUpdate += ScaleWIM;
         }
 

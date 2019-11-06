@@ -374,8 +374,8 @@ namespace WIM_Plugin {
             var material = LoadAppropriateMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);
-            //if (scrolling.ScrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
-             if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
+            if (scrolling.ScrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
+            else if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
             else if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
             UpdateScrollingMask(WIM);
         }
