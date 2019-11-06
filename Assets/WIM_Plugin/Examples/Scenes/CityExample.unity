@@ -3966,6 +3966,7 @@ GameObject:
   - component: {fileID: 460360207}
   - component: {fileID: 460360204}
   - component: {fileID: 460360205}
+  - component: {fileID: 460360208}
   m_Layer: 8
   m_Name: WIM
   m_TagString: Untagged
@@ -4046,55 +4047,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f87a198d4b48dae4f80416f74654e637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRepresentation: {fileID: 5020577797115686040, guid: 4f09f03f58c74f045806ff09836173f9,
-    type: 3}
-  destinationIndicator: {fileID: 907253364186412919, guid: ffbefa073bba5474ebf0b81207a07e26,
-    type: 3}
-  scaleFactor: 0.01
-  WIMLevelOffset: {x: -113.4, y: -463, z: -192}
-  expandCollidersX: {x: 0.5, y: 0.5}
-  expandCollidersY: {x: 3, y: 0.5}
-  expandCollidersZ: {x: 0.5, y: 0.5}
-  destinationAlwaysOnTheGround: 1
-  showWIMButton: 256
-  destinationSelectionMethod: 1
-  destinationSelectButton: 5
-  destinationRotationThumbstick: 2
-  confirmTeleportButton: 2
-  DoubleTapInterval: 2
-  SemiTransparent: 1
-  transparency: 0.33
-  occlusionHandling: 0
-  meltRadius: 0.1
-  meltHeight: 0.2
-  cutoutRange: 0.2
-  cutoutAngle: 30
-  showCutoutLight: 0
-  cutoutLightColor: {r: 1, g: 1, b: 1, a: 1}
-  previewScreen: 1
-  autoPositionPreviewScreen: 0
-  travelPreviewAnimation: 1
-  TravelPreviewAnimationSpeed: 0.3
-  postTravelPathTrace: 1
-  traceDuration: 5
-  WIMSpawnOffset: {x: 0, y: 0, z: 0.35}
-  WIMSpawnAtHeight: 150
-  playerHeightInCM: 170
-  playerArmLength: 0
-  autoDetectArmLength: 0
-  confirmArmLengthButton: 5
-  adaptWIMSizeToPlayerHeight: 0
-  AllowWIMScaling: 1
-  minScaleFactor: 0.01
-  maxScaleFactor: 0.02
-  grabButtonL: 536870912
-  grabButtonR: 134217728
-  ScaleStep: 0.0001
-  interHandDistanceDeltaThreshold: 0.003
-  AllowWIMScrolling: 1
-  activeAreaBounds: {x: 0.5, y: 1, z: 0.5}
-  AutoScroll: 0
-  ScrollSpeed: 0.1
+  Configuration: {fileID: 11400000, guid: 5309d2cee74f2294697d7494c65d6cbe, type: 2}
+  Data: {fileID: 0}
+--- !u!114 &460360208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460360202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8917aad1e0d34a24aa9d637e5ae23f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScrollingConfig: {fileID: 11400000, guid: 6f57c7dfa874a1d42b0392d4369b04ea, type: 2}
 --- !u!114 &460360211
 MonoBehaviour:
   m_ObjectHideFlags: 0
