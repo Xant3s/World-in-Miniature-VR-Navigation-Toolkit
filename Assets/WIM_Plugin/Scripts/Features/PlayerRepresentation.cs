@@ -41,6 +41,8 @@ namespace WIM_Plugin {
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * config.PlayerRepresentation.transform.localScale.y * config.ScaleFactor;
             // TODO: clamp player representation to visible WIM
+            // check whether inside WIM
+            // if not inside WIM, move to closest border of WIM
 
             // Rotation
             var rotationInLevel = data.WIMLevelTransform.rotation * playerTransform.rotation;
