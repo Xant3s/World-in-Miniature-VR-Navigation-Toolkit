@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     // Allow scrolling the WIM at runtime.
+    [ExecuteAlways]
     public class Scrolling : MonoBehaviour {
         public ScrollingConfiguration ScrollingConfig;
 
@@ -12,11 +14,17 @@ namespace WIM_Plugin {
         private WIMData data;
 
         private void OnEnable() {
+            if(!Application.isPlaying) return;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
         private void OnDisable() {
+            if(!Application.isPlaying) return;
             MiniatureModel.OnUpdate -= ScrollWIM;
+        }
+
+        private void OnDestroy() {
+            WIMGenerator.DisableScrolling(GameObject.Find("WIM").GetComponent<MiniatureModel>());
         }
 
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
