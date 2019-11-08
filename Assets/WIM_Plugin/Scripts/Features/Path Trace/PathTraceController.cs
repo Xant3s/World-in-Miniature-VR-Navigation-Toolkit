@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -24,8 +25,12 @@ namespace WIM_Plugin {
 
         public void Init() {
             Assert.IsNotNull(WIMLevelTransform);
-            OldPositionInWIM = WIMLevelTransform.Find("PathTraceOldPosition").transform;
-            NewPositionInWIM = WIMLevelTransform.Find("PathTraceNewPosition").transform;
+
+            Transform FindLastChild(Transform p, string name) {
+                return p.Cast<Transform>().LastOrDefault(c => c.name.Equals(name));
+            }
+            OldPositionInWIM = FindLastChild(WIMLevelTransform, "PathTraceOldPosition");
+            NewPositionInWIM = FindLastChild(WIMLevelTransform, "PathTraceNewPosition");
             Assert.IsNotNull(OldPositionInWIM);
             Assert.IsNotNull(NewPositionInWIM);
             lr.widthMultiplier = .001f;
@@ -41,10 +46,10 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            if(!WIMLevelTransform) Destroy(gameObject);
-
-            if(Time.time >= endTime) {
+            var timeIsUp = Time.time >= endTime;
+            if(!WIMLevelTransform || timeIsUp) {
                 Destroy(gameObject);
+                return;
             }
 
             var timeLeft = (endTime - Time.time);
