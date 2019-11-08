@@ -28,16 +28,17 @@ namespace WIM_Plugin {
             }
 
             config.AllowWIMScaling = EditorGUILayout.Toggle("Allow WIM Scaling", config.AllowWIMScaling);
-            if(!config.AllowWIMScaling) return;
-            config.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", config.MinScaleFactor);
-            config.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", config.MaxScaleFactor);
-            WIMConfig.GrabButtonL = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button L", WIMConfig.GrabButtonL);
-            WIMConfig.GrabButtonR = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button R", WIMConfig.GrabButtonR);
-            config.ScaleStep = EditorGUILayout.FloatField("Scale Step", config.ScaleStep);
-            config.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
-                new GUIContent("Inter Hand Distance Delta Threshold",
-                    "Ignore inter hand distance deltas below this threshold for scaling."),
-                config.InterHandDistanceDeltaThreshold);
+            if(config.AllowWIMScaling) {
+                config.MinScaleFactor = EditorGUILayout.FloatField("Min Scale Factor", config.MinScaleFactor);
+                config.MaxScaleFactor = EditorGUILayout.FloatField("Max Scale Factor", config.MaxScaleFactor);
+                WIMConfig.GrabButtonL = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button L", WIMConfig.GrabButtonL);
+                WIMConfig.GrabButtonR = (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Grab Button R", WIMConfig.GrabButtonR);
+                config.ScaleStep = EditorGUILayout.FloatField("Scale Step", config.ScaleStep);
+                config.InterHandDistanceDeltaThreshold = EditorGUILayout.FloatField(
+                    new GUIContent("Inter Hand Distance Delta Threshold",
+                        "Ignore inter hand distance deltas below this threshold for scaling."),
+                    config.InterHandDistanceDeltaThreshold);
+            }
             EditorUtility.SetDirty(config);
         }
     }

@@ -35,7 +35,7 @@ namespace WIM_Plugin {
 
             var WIMLevel = transform.GetChild(0);
             // TODO: decouple occlusion handling
-            var dissolveFX = WIM.GetComponent<OcclusionHandling>().OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
+            var dissolveFX = WIM.GetComponent<OcclusionHandling>().Config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
             // TODO: decouple scrolling
             if(WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling) dissolveFX = false;
             if(dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);

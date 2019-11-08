@@ -21,7 +21,8 @@ namespace WIM_Plugin {
         }
 
         void Draw(WIMConfiguration WIMConfig) {
-            ref var config = ref ((OcclusionHandling) target).OcclusionHandlingConfig;
+            if(!target) return;
+            ref var config = ref ((OcclusionHandling) target).Config;
             if(!config) {
                 EditorGUILayout.HelpBox("Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.", MessageType.Error);
                 config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(OcclusionHandlingConfiguration), false);

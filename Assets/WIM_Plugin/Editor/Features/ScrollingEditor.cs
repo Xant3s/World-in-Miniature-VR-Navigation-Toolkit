@@ -34,8 +34,8 @@ namespace WIM_Plugin {
             }
 
             var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-            if(occlusionHandling && occlusionHandling.OcclusionHandlingConfig&&
-               occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
+            if(occlusionHandling && occlusionHandling.Config&&
+               occlusionHandling.Config.OcclusionHandlingMethod != OcclusionHandlingMethod.None) {
                 EditorGUILayout.LabelField("Disable occlusion handling method to use scrolling.");
             }
             else {
