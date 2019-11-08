@@ -40,7 +40,13 @@ namespace WIM_Plugin {
             Debug.Assert(Camera.main != null, "Camera.main != null");
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * config.PlayerRepresentation.transform.localScale.y * config.ScaleFactor;
-            // TODO: clamp player representation to visible WIM
+            var WIM = GameObject.Find("WIM");
+            var scrolling = WIM.GetComponent<Scrolling>();
+            if(scrolling && scrolling.ScrollingConfig.AllowWIMScrolling) {
+                // Get closest point on active area bounds. Won't have any effect if already inside active area.
+                data.PlayerRepresentationTransform.position =
+                    WIM.GetComponent<Collider>().ClosestPoint(data.PlayerRepresentationTransform.position);
+            }
 
             // Rotation
             var rotationInLevel = data.WIMLevelTransform.rotation * playerTransform.rotation;

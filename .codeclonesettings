@@ -1,0 +1,20 @@
+<CodeCloneSettings>  
+  <Exclusions>  
+    <!-- Add any combination of the following node types. -->  
+    <!-- Absolute or relative path names: -->  
+    <!-- <File>MyFile.cs</File>  -->
+    <!-- Filepaths may contain wildcards: -->  
+    <!--<File>GeneratedFiles\*.cs</File>  -->
+    <!-- Namespace, Type, and FunctionName must be fully qualified: -->  
+    <!--<Namespace>MyCompany.MyProject</Namespace>  -->
+    <!--<Type>MyCompany.MyProject.MyClass1</Type>  -->
+    <!--<FunctionName>MyCompany.MyProject.MyClass2.MyMethod</FunctionName>  -->
+    <!-- Names may contain wildcards: -->  
+    <!--<Namespace>*.AnotherProject</Namespace>  -->
+    <!--<Type>*.AnotherClass*</Type>  -->
+    <!--<FunctionName>MyProject.*.AnotherMethod</FunctionName>  -->
+
+    <File>*\Oculus\*.cs</File>
+    <File>*\Plugins\*.cs</File>
+  </Exclusions>  
+</CodeCloneSettings>        

@@ -205,7 +205,9 @@ namespace WIM_Plugin {
             var levelTransform = GameObject.Find("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
             var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
+#if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (WIMLevel.gameObject, "GenerateNewWIM");
+#endif
             WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
             WIMLevel.name = "WIM Level";
             WIMLevel.gameObject.isStatic = false;
@@ -314,11 +316,15 @@ namespace WIM_Plugin {
 
         private static void configureCutoutView(Material material) {
             var maskController = new GameObject("Mask Controller");
+#if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (maskController, "configureCutoutView");
+#endif
             var controller = maskController.AddComponent<Controller_Mask_Cone>();
             controller.materials = new[] {material};
             var spotlightObj = new GameObject("Spotlight Mask");
+#if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (spotlightObj, "Spotlight Mask");
+#endif
             var spotlight = spotlightObj.AddComponent<Light>();
             controller.spotLight1 = spotlight;
             spotlight.type = LightType.Spot;
@@ -329,27 +335,40 @@ namespace WIM_Plugin {
 
         private static void configureMeltWalls(Material material) {
             var maskController = new GameObject("Mask Controller");
+#if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (maskController, "configureMeltWalls");
+#endif
             var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
             controller.materials = new[] {material};
             var cylinderMask = new GameObject("Cylinder Mask");
+#if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (cylinderMask, "configureMeltWalls");
+#endif
             controller.cylinder1 = cylinderMask;
             cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
         }
 
         private static void cleanupOcclusionHandling() {
             var cylinderMask = GameObject.Find("Cylinder Mask");
-            if(cylinderMask) Undo.DestroyObjectImmediate (cylinderMask);
             var spotlightMask = GameObject.Find("Spotlight Mask");
-            if(spotlightMask) Undo.DestroyObjectImmediate (spotlightMask);
             var maskController = GameObject.Find("Mask Controller");
-            if(maskController) Undo.DestroyObjectImmediate (maskController);
+
+#if UNITY_EDITOR
+            if(cylinderMask) Undo.DestroyObjectImmediate (cylinderMask);
+            if(spotlightMask) Undo.DestroyObjectImmediate (spotlightMask);
+            if(maskController) Undo.DestroyObjectImmediate (maskController);          
+#else
+            GameObject.DestroyImmediate(cylinderMask);
+            GameObject.DestroyImmediate(spotlightMask);
+            GameObject.DestroyImmediate(maskController);
+#endif
         }
 
         private static void enableScrolling(Material material, in MiniatureModel WIM) {
             var maskController = new GameObject("Box Mask");
+#if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (maskController, "Created Box Mask");
+#endif
             var controller = maskController.AddComponent<Controller_Mask_Box>();
             controller.materials = new[] {material};
             var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -368,7 +387,11 @@ namespace WIM_Plugin {
 
         private static void disableScrolling(in MiniatureModel WIM) {
             var boxMask = GameObject.Find("Box Mask");
+#if UNITY_EDITOR
             if(boxMask) Undo.DestroyObjectImmediate (boxMask);
+#else
+            GameObject.DestroyImmediate(boxMask);
+#endif
             removeAllColliders(WIM.transform);
             GenerateColliders(WIM);
         }
@@ -381,13 +404,13 @@ namespace WIM_Plugin {
             // Setup new configuration.
             var scrolling = WIM.GetComponent<Scrolling>();
             var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-            if(occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) scrolling.ScrollingConfig.AllowWIMScrolling = false;
+            if(occlusionHandling && occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) scrolling.ScrollingConfig.AllowWIMScrolling = false;
             var material = LoadAppropriateMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);
             if (scrolling.ScrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
-            else if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
-            else if (occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
+            else if (occlusionHandling && occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
+            else if (occlusionHandling && occlusionHandling.OcclusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
             UpdateScrollingMask(WIM);
         }
     }
