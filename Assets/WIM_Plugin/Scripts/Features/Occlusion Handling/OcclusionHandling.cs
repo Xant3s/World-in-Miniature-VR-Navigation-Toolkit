@@ -12,7 +12,7 @@ namespace WIM_Plugin {
             var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
             if(!WIM) return;
             WIMGenerator.CleanupOcclusionHandling();
-            WIMGenerator.SetWIMMaterial(WIMGenerator.LoadAppropriateMaterial(WIM), WIM);
+            WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);
         }
     }
 }

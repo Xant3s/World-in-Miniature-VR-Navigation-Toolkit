@@ -24,7 +24,10 @@ namespace WIM_Plugin {
         }
 
         private void OnDestroy() {
-            WIMGenerator.DisableScrolling(GameObject.Find("WIM").GetComponent<MiniatureModel>());
+            var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
+            if(!WIM) return;
+            WIMGenerator.DisableScrolling(WIM);
+            WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);
         }
 
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
