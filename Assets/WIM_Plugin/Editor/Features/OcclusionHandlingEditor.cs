@@ -25,7 +25,9 @@ namespace WIM_Plugin {
             ref var config = ref ((OcclusionHandling) target).Config;
             if(!config) {
                 EditorGUILayout.HelpBox("Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.", MessageType.Error);
+                EditorGUI.BeginChangeCheck();
                 config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Configuration", config, typeof(OcclusionHandlingConfiguration), false);
+                if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
                 return;
             }
             EditorGUI.BeginChangeCheck();
@@ -54,6 +56,10 @@ namespace WIM_Plugin {
             WIMGenerator.UpdateCylinderMask(WIM);
             WIMGenerator.UpdateCutoutViewMask(WIM);
             DrawDefaultInspector();
+            var occlusionHandling = (OcclusionHandling) target;
+            EditorGUI.BeginChangeCheck();
+            occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config", occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
+            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
         }
     }
 }
