@@ -8,7 +8,7 @@ namespace WIM_Plugin {
     // Allow scrolling the WIM at runtime.
     [ExecuteAlways]
     public class Scrolling : MonoBehaviour {
-        public ScrollingConfiguration ScrollingConfig;
+        [HideInInspector] public ScrollingConfiguration ScrollingConfig;
 
         private WIMConfiguration config;
         private WIMData data;

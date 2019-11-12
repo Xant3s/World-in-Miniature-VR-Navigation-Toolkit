@@ -29,7 +29,9 @@ namespace WIM_Plugin {
             ref var config = ref ((Scrolling) target).ScrollingConfig;
             if(!config) {
                 EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
+                EditorGUI.BeginChangeCheck();
                 config = (ScrollingConfiguration)EditorGUILayout.ObjectField("Configuration", config, typeof(ScrollingConfiguration), false);
+                if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
                 return;
             }
 
@@ -71,6 +73,14 @@ namespace WIM_Plugin {
                 }
             }
             EditorUtility.SetDirty(config);
+        }
+
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            var scrolling = (Scrolling) target;
+            EditorGUI.BeginChangeCheck();
+            scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
+            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
         }
     }
 }

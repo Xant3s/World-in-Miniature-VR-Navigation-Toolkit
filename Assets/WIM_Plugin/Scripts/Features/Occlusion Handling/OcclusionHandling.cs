@@ -6,7 +6,7 @@ using UnityEngine;
 namespace WIM_Plugin {
     [ExecuteAlways]
     internal sealed class OcclusionHandling : MonoBehaviour {
-        public OcclusionHandlingConfiguration Config;
+        [HideInInspector] public OcclusionHandlingConfiguration Config;
 
         private void OnDestroy() {
             var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
