@@ -22,7 +22,7 @@ namespace WIM_Plugin {
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
                 material = Resources.Load<Material>("Materials/ScrollDissolve");
-                setBaseColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1 - 0);
+                setBaseColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                 return material;
             }
 
@@ -31,7 +31,7 @@ namespace WIM_Plugin {
                 switch (occlusionHandlingConfig.OcclusionHandlingMethod) {
                     case OcclusionHandlingMethod.MeltWalls: {
                         material = Resources.Load<Material>("Materials/CapsuleCutout");
-                        setBaseMapColorAlpha(material, WIM.Configuration.Transparency);
+                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? WIM.Configuration.Transparency : 1);
                         break;
                     }
                     case OcclusionHandlingMethod.CutoutView: {
