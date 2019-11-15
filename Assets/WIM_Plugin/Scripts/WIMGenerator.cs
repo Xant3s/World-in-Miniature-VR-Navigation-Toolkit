@@ -31,7 +31,7 @@ namespace WIM_Plugin {
                 switch (occlusionHandlingConfig.OcclusionHandlingMethod) {
                     case OcclusionHandlingMethod.MeltWalls: {
                         material = Resources.Load<Material>("Materials/CapsuleCutout");
-                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? WIM.Configuration.Transparency : 1);
+                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                         break;
                     }
                     case OcclusionHandlingMethod.CutoutView: {
@@ -65,13 +65,14 @@ namespace WIM_Plugin {
         }
 
 
-        // Set the color.alpha of the given material.
+        // Set the color.alpha of the given material. 0 equals to fully transparent.
         private static void setBaseColorAlpha(Material material, float value) {
             var color = material.GetColor(baseColor);
             color.a = value;
             material.SetColor(baseColor, color);
         }
 
+        // Set the color.alpha of the given material. 0 equals to fully transparent.
         private static void setBaseMapColorAlpha(Material material, float value) {
             var color = material.GetColor(baseMapColor);
             color.a = value;
