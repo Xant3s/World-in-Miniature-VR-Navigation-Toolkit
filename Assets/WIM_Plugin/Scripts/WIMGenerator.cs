@@ -14,6 +14,7 @@ namespace WIM_Plugin {
     public static class WIMGenerator {
         private static readonly int transparency = Shader.PropertyToID("Vector1_964AF7C");
         private static readonly int baseColor = Shader.PropertyToID("_BaseColor");
+        private static readonly int baseMapColor = Shader.PropertyToID("_BaseMapColor");
 
         // Load the material appropriate to current WIM configuration.
         public static Material LoadAppropriateMaterial(in MiniatureModel WIM) {
@@ -29,10 +30,8 @@ namespace WIM_Plugin {
             if(occlusionHandlingConfig) {
                 switch (occlusionHandlingConfig.OcclusionHandlingMethod) {
                     case OcclusionHandlingMethod.MeltWalls: {
-                        material = Resources.Load<Material>("Materials/MeltWalls");
-                        var color = material.GetColor(baseColor);
-                        color.a = 1 - WIM.Configuration.Transparency;
-                        material.SetColor(baseColor, color);
+                        material = Resources.Load<Material>("Materials/CapsuleCutout");
+                        setBaseMapColorAlpha(material, WIM.Configuration.Transparency);
                         break;
                     }
                     case OcclusionHandlingMethod.CutoutView: {
@@ -71,6 +70,12 @@ namespace WIM_Plugin {
             var color = material.GetColor(baseColor);
             color.a = value;
             material.SetColor(baseColor, color);
+        }
+
+        private static void setBaseMapColorAlpha(Material material, float value) {
+            var color = material.GetColor(baseMapColor);
+            color.a = value;
+            material.SetColor(baseMapColor, color);
         }
 
         private static void SetupDissolveScript(in MiniatureModel WIM) {
@@ -350,18 +355,12 @@ namespace WIM_Plugin {
         }
 
         private static void configureMeltWalls(Material material) {
-            var maskController = new GameObject("Mask Controller");
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (maskController, "configureMeltWalls");
-#endif
-            var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
-            controller.materials = new[] {material};
             var cylinderMask = new GameObject("Cylinder Mask");
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (cylinderMask, "configureMeltWalls");
 #endif
-            controller.cylinder1 = cylinderMask;
             cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
+            cylinderMask.AddComponent<CapsuleController>().materials = new[] {material};
         }
 
         public static void CleanupOcclusionHandling() {
