@@ -35,8 +35,8 @@ namespace WIM_Plugin {
                         break;
                     }
                     case OcclusionHandlingMethod.CutoutView: {
-                        material = Resources.Load<Material>("Materials/MeltWalls");
-                        setBaseColorAlpha(material, 1 - WIM.Configuration.Transparency);
+                        material = Resources.Load<Material>("Materials/ConeCutout");
+                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                         break;
                     }
                     default:
@@ -337,22 +337,14 @@ namespace WIM_Plugin {
         }
 
         private static void configureCutoutView(Material material) {
-            var maskController = new GameObject("Mask Controller");
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (maskController, "configureCutoutView");
-#endif
-            var controller = maskController.AddComponent<Controller_Mask_Cone>();
-            controller.materials = new[] {material};
             var spotlightObj = new GameObject("Spotlight Mask");
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (spotlightObj, "Spotlight Mask");
 #endif
-            var spotlight = spotlightObj.AddComponent<Light>();
-            controller.spotLight1 = spotlight;
-            spotlight.type = LightType.Spot;
+            spotlightObj.AddComponent<Light>().type = LightType.Spot;
+            spotlightObj.AddComponent<ConeController>().materials = new[] {material};
             var mainCamera = Camera.main;
-            if(mainCamera)
-                spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
+            if(mainCamera) spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
         }
 
         private static void configureMeltWalls(Material material) {
