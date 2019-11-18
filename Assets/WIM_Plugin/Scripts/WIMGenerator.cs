@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using AdvancedDissolve_Example;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -13,15 +12,15 @@ namespace WIM_Plugin {
     // Generates the actual WIM. Also takes care of configurating the WIM, i.e. set materials and shaders etc.
     public static class WIMGenerator {
         private static readonly int transparency = Shader.PropertyToID("Vector1_964AF7C");
-        private static readonly int baseColor = Shader.PropertyToID("_BaseColor");
+        private static readonly int baseMapColor = Shader.PropertyToID("_BaseMapColor");
 
         // Load the material appropriate to current WIM configuration.
         public static Material LoadAppropriateMaterial(in MiniatureModel WIM) {
             Material material;
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                material = Resources.Load<Material>("Materials/ScrollDissolve");
-                setBaseColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1 - 0);
+                material = Resources.Load<Material>("Materials/BoxCutout");
+                setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                 return material;
             }
 
@@ -29,15 +28,13 @@ namespace WIM_Plugin {
             if(occlusionHandlingConfig) {
                 switch (occlusionHandlingConfig.OcclusionHandlingMethod) {
                     case OcclusionHandlingMethod.MeltWalls: {
-                        material = Resources.Load<Material>("Materials/MeltWalls");
-                        var color = material.GetColor(baseColor);
-                        color.a = 1 - WIM.Configuration.Transparency;
-                        material.SetColor(baseColor, color);
+                        material = Resources.Load<Material>("Materials/CapsuleCutout");
+                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                         break;
                     }
                     case OcclusionHandlingMethod.CutoutView: {
-                        material = Resources.Load<Material>("Materials/MeltWalls");
-                        setBaseColorAlpha(material, 1 - WIM.Configuration.Transparency);
+                        material = Resources.Load<Material>("Materials/ConeCutout");
+                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                         break;
                     }
                     default:
@@ -66,11 +63,11 @@ namespace WIM_Plugin {
         }
 
 
-        // Set the color.alpha of the given material.
-        private static void setBaseColorAlpha(Material material, float value) {
-            var color = material.GetColor(baseColor);
+        // Set the color.alpha of the given material. 0 equals to fully transparent.
+        private static void setBaseMapColorAlpha(Material material, float value) {
+            var color = material.GetColor(baseMapColor);
             color.a = value;
-            material.SetColor(baseColor, color);
+            material.SetColor(baseMapColor, color);
         }
 
         private static void SetupDissolveScript(in MiniatureModel WIM) {
@@ -331,37 +328,23 @@ namespace WIM_Plugin {
         }
 
         private static void configureCutoutView(Material material) {
-            var maskController = new GameObject("Mask Controller");
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (maskController, "configureCutoutView");
-#endif
-            var controller = maskController.AddComponent<Controller_Mask_Cone>();
-            controller.materials = new[] {material};
             var spotlightObj = new GameObject("Spotlight Mask");
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (spotlightObj, "Spotlight Mask");
 #endif
-            var spotlight = spotlightObj.AddComponent<Light>();
-            controller.spotLight1 = spotlight;
-            spotlight.type = LightType.Spot;
+            spotlightObj.AddComponent<Light>().type = LightType.Spot;
+            spotlightObj.AddComponent<ConeController>().materials = new[] {material};
             var mainCamera = Camera.main;
-            if(mainCamera)
-                spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
+            if(mainCamera) spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
         }
 
         private static void configureMeltWalls(Material material) {
-            var maskController = new GameObject("Mask Controller");
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (maskController, "configureMeltWalls");
-#endif
-            var controller = maskController.AddComponent<Controller_Mask_Cylinder>();
-            controller.materials = new[] {material};
             var cylinderMask = new GameObject("Cylinder Mask");
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (cylinderMask, "configureMeltWalls");
 #endif
-            controller.cylinder1 = cylinderMask;
             cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
+            cylinderMask.AddComponent<CapsuleController>().materials = new[] {material};
         }
 
         public static void CleanupOcclusionHandling() {
@@ -385,19 +368,11 @@ namespace WIM_Plugin {
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (maskController, "Created Box Mask");
 #endif
-            var controller = maskController.AddComponent<Controller_Mask_Box>();
-            controller.materials = new[] {material};
-            var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            var mf = tmpGO.GetComponent<MeshFilter>();
-            var cubeMesh = Object.Instantiate(mf.sharedMesh) as Mesh;
-            maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
             maskController.AddComponent<AlignWith>().Target = WIM.transform;
-            controller.box1 = maskController;
-            controller.invert = true;
+            maskController.AddComponent<BoxController>().materials = new[] {material};
             removeAllColliders(WIM.transform);
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
             RemoveDissolveScript(WIM);
-            Object.DestroyImmediate(tmpGO);
             maskController.transform.position = WIM.transform.position;
         }
 
