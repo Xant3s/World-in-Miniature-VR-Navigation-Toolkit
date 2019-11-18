@@ -13,7 +13,6 @@ namespace WIM_Plugin {
     // Generates the actual WIM. Also takes care of configurating the WIM, i.e. set materials and shaders etc.
     public static class WIMGenerator {
         private static readonly int transparency = Shader.PropertyToID("Vector1_964AF7C");
-        private static readonly int baseColor = Shader.PropertyToID("_BaseColor");
         private static readonly int baseMapColor = Shader.PropertyToID("_BaseMapColor");
 
         // Load the material appropriate to current WIM configuration.
@@ -21,8 +20,8 @@ namespace WIM_Plugin {
             Material material;
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                material = Resources.Load<Material>("Materials/ScrollDissolve");
-                setBaseColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
+                material = Resources.Load<Material>("Materials/BoxCutout");
+                setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                 return material;
             }
 
@@ -64,13 +63,6 @@ namespace WIM_Plugin {
             return material;
         }
 
-
-        // Set the color.alpha of the given material. 0 equals to fully transparent.
-        private static void setBaseColorAlpha(Material material, float value) {
-            var color = material.GetColor(baseColor);
-            color.a = value;
-            material.SetColor(baseColor, color);
-        }
 
         // Set the color.alpha of the given material. 0 equals to fully transparent.
         private static void setBaseMapColorAlpha(Material material, float value) {
@@ -377,19 +369,11 @@ namespace WIM_Plugin {
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (maskController, "Created Box Mask");
 #endif
-            var controller = maskController.AddComponent<Controller_Mask_Box>();
-            controller.materials = new[] {material};
-            var tmpGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            var mf = tmpGO.GetComponent<MeshFilter>();
-            var cubeMesh = Object.Instantiate(mf.sharedMesh) as Mesh;
-            maskController.AddComponent<MeshFilter>().sharedMesh = cubeMesh;
             maskController.AddComponent<AlignWith>().Target = WIM.transform;
-            controller.box1 = maskController;
-            controller.invert = true;
+            maskController.AddComponent<BoxController>().materials = new[] {material};
             removeAllColliders(WIM.transform);
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
             RemoveDissolveScript(WIM);
-            Object.DestroyImmediate(tmpGO);
             maskController.transform.position = WIM.transform.position;
         }
 
