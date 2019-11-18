@@ -47,7 +47,7 @@ namespace WIM_Plugin {
         }
 
         public static Vector3 GetGroundPosition(Vector3 point) {
-            return Physics.Raycast(point, Vector3.down, out var hit) ? hit.point : point;
+            return Physics.Raycast(point, Vector3.down, out var hit, Mathf.Infinity, ~LayerMask.GetMask("WIM")) ? hit.point : point;
         }
     }
 }
