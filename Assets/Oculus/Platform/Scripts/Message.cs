@@ -107,7 +107,6 @@ namespace Oculus.Platform
       IAP_GetNextPurchaseArrayPage                        = 0x47570A95,
       IAP_GetProductsBySKU                                = 0x7E9ACAF5,
       IAP_GetViewerPurchases                              = 0x3A0F8419,
-      IAP_GetViewerPurchasesDurableCache                  = 0x63599E2B,
       IAP_LaunchCheckoutFlow                              = 0x3F9B0D0D,
       LanguagePack_GetCurrent                             = 0x1F90F0D5,
       LanguagePack_SetCurrent                             = 0x5B4FBBE0,
@@ -142,8 +141,6 @@ namespace Oculus.Platform
       Notification_MarkAsRead                             = 0x717259E3,
       Party_GetCurrent                                    = 0x47933760,
       RichPresence_Clear                                  = 0x57B752B3,
-      RichPresence_GetDestinations                        = 0x586F2D14,
-      RichPresence_GetNextDestinationArrayPage            = 0x67367F45,
       RichPresence_Set                                    = 0x3C147509,
       Room_CreateAndJoinPrivate                           = 0x75D6E377,
       Room_CreateAndJoinPrivate2                          = 0x5A3A6243,
@@ -302,7 +299,6 @@ namespace Oculus.Platform
     public virtual CloudStorageMetadata GetCloudStorageMetadata() { return null; }
     public virtual CloudStorageMetadataList GetCloudStorageMetadataList() { return null; }
     public virtual CloudStorageUpdateResponse GetCloudStorageUpdateResponse() { return null; }
-    public virtual DestinationList GetDestinationList() { return null; }
     public virtual InstalledApplicationList GetInstalledApplicationList() { return null; }
     public virtual LaunchBlockFlowResult GetLaunchBlockFlowResult() { return null; }
     public virtual LaunchFriendRequestFlowResult GetLaunchFriendRequestFlowResult() { return null; }
@@ -444,11 +440,6 @@ namespace Oculus.Platform
           message = new MessageWithCloudStorageUpdateResponse(messageHandle);
           break;
 
-        case Message.MessageType.RichPresence_GetDestinations:
-        case Message.MessageType.RichPresence_GetNextDestinationArrayPage:
-          message = new MessageWithDestinationList(messageHandle);
-          break;
-
         case Message.MessageType.ApplicationLifecycle_RegisterSessionKey:
         case Message.MessageType.Entitlement_GetIsViewerEntitled:
         case Message.MessageType.IAP_ConsumePurchase:
@@ -539,7 +530,6 @@ namespace Oculus.Platform
 
         case Message.MessageType.IAP_GetNextPurchaseArrayPage:
         case Message.MessageType.IAP_GetViewerPurchases:
-        case Message.MessageType.IAP_GetViewerPurchasesDurableCache:
           message = new MessageWithPurchaseList(messageHandle);
           break;
 
@@ -917,18 +907,6 @@ namespace Oculus.Platform
       var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
       var obj = CAPI.ovr_Message_GetCloudStorageUpdateResponse(msg);
       return new CloudStorageUpdateResponse(obj);
-    }
-
-  }
-  public class MessageWithDestinationList : Message<DestinationList>
-  {
-    public MessageWithDestinationList(IntPtr c_message) : base(c_message) { }
-    public override DestinationList GetDestinationList() { return Data; }
-    protected override DestinationList GetDataFromMessage(IntPtr c_message)
-    {
-      var msg = CAPI.ovr_Message_GetNativeMessage(c_message);
-      var obj = CAPI.ovr_Message_GetDestinationArray(msg);
-      return new DestinationList(obj);
     }
 
   }
