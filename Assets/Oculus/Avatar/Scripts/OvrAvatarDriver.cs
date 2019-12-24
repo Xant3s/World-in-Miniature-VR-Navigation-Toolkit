@@ -99,7 +99,7 @@ public abstract class OvrAvatarDriver : MonoBehaviour {
         }
     }
 
-    public void UpdateTransformsFromPose(IntPtr sdkAvatar)
+    protected void UpdateTransformsFromPose(IntPtr sdkAvatar)
     {
         if (sdkAvatar != IntPtr.Zero)
         {
