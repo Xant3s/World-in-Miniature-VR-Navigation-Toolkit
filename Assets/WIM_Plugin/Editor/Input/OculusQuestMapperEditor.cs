@@ -19,9 +19,7 @@ namespace WIM_Plugin {
                     (OVRInput.RawButton) EditorGUILayout.EnumFlagsField(mapper.actionMappings[i].Name,
                         mapper.actionMappings[i].Mapping);
                 if(EditorGUI.EndChangeCheck()) {
-                    //PlayerPrefs.SetInt(mapper.actionMappings[i].PlayerPrefsKey, (int) mapper.actionMappings[i].Mapping);
-                    //PlayerPrefs.Save();
-                    mapper.InputMappings.Set(mapper.actionMappings[i].PlayerPrefsKey, (int)mapper.actionMappings[i].Mapping);
+                    mapper.InputMappings.Set(mapper.actionMappings[i].MappingKey, (int)mapper.actionMappings[i].Mapping);
                 }
             }
         }

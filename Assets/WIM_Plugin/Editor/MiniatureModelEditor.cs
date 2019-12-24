@@ -53,8 +53,6 @@ namespace WIM_Plugin {
 
 
             Separator("Input");
-            WIM.Configuration.ShowWIMButton =
-                (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Show WIM Button", WIM.Configuration.ShowWIMButton);
             WIM.Configuration.DestinationSelectionMethod =
                 (DestinationSelection) EditorGUILayout.EnumPopup("Destination Selection Method",
                     WIM.Configuration.DestinationSelectionMethod);

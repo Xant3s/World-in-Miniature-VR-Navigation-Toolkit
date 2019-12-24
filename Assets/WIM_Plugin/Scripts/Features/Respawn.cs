@@ -12,22 +12,16 @@ namespace WIM_Plugin {
         private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
 
         private void Start() {
-            //GameObject.Find("VisualDebug").GetComponent<VisualDebug>().SetColor(Color.red);
             InputManager.RegisterAction(actionName, respawn);
-            //if (Application.isPlaying) {
-            //    GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
-            //}
         }
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
-            //MiniatureModel.OnUpdate += checkRespawnWIM;
             InputManager.RegisterAction(actionName, respawn);
         }
 
         private void OnDisable() {
             MiniatureModel.OnLateInit -= respawn;
-            //MiniatureModel.OnUpdate -= checkRespawnWIM;
             InputManager.UnregisterAction(actionName);
         }
 
@@ -38,11 +32,6 @@ namespace WIM_Plugin {
         private void respawn(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
-            respawnWIM(false);
-        }
-
-        private void checkRespawnWIM(WIMConfiguration config, WIMData data) {
-            if (!OVRInput.GetUp(config.ShowWIMButton)) return;
             respawnWIM(false);
         }
 

@@ -9,34 +9,16 @@ namespace WIM_Plugin {
     public class OculusQuestMapper : MonoBehaviour {
         internal class InputActionMapping {
             public string Name { get; }
-            public string PlayerPrefsKey { get; }
+            public string MappingKey { get; }
             public InputManager.InputAction Action { get; }
             public OVRInput.RawButton Mapping { get; set; } = OVRInput.RawButton.None;
 
             public InputActionMapping(string name, InputManager.InputAction action, OculusQuestMapper mapper = null) {
                 this.Name = name;
                 this.Action = action;
-                PlayerPrefsKey = "WIMInput_OculusQuestMapper_" + name;
-                //if (PlayerPrefs.HasKey(PlayerPrefsKey)) {
-                //    this.Mapping = (OVRInput.RawButton)PlayerPrefs.GetInt(PlayerPrefsKey);
-                //    if (Application.isPlaying)
-                //    {
-                //        GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
-                //    }
-                //} 
-                //if (mapper && mapper.InputMappings.HasKey(PlayerPrefsKey)) {
-                //    this.Mapping = (OVRInput.RawButton)PlayerPrefs.GetInt(PlayerPrefsKey);
-                //    if (Application.isPlaying)
-                //    {
-                //        GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
-                //    }
-                //}
-                if (mapper && mapper.InputMappings.HasKey(PlayerPrefsKey)) { 
-                    this.Mapping = (OVRInput.RawButton) mapper.InputMappings.Get(PlayerPrefsKey);
-                    if (Application.isPlaying)
-                    {
-                        GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
-                    }
+                MappingKey = "WIMInput_OculusQuestMapper_" + name;
+                if (mapper && mapper.InputMappings.HasKey(MappingKey)) { 
+                    this.Mapping = (OVRInput.RawButton) mapper.InputMappings.Get(MappingKey);
                 }
             }
         }
@@ -73,25 +55,6 @@ namespace WIM_Plugin {
             foreach(var actionMapping in actionMappings.Where(m => OVRInput.GetUp(m.Mapping))) {
                 actionMapping.Action();
             }
-
-            //if(Input.GetKeyUp(KeyCode.K))
-            //    actionMappings[0].Action();
-
-            //if (OVRInput.GetUp(OVRInput.RawButton.X)) {
-            //        actionMappings[0].Action();
-           
-            //}
-
-            //if (actionMappings[0].Mapping != OVRInput.RawButton.None) {
-            //    if (Application.isPlaying)
-            //    {
-            //        GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
-            //    }
-            //}
-
-            //if (OVRInput.GetUp(actionMappings[0].Mapping)) {
-            //    actionMappings[0].Action();
-            //}
         }
     }
 }
