@@ -11,8 +11,12 @@ namespace WIM_Plugin {
         private WIMData data;
         private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
 
-        private void Awake() {
+        private void Start() {
+            //GameObject.Find("VisualDebug").GetComponent<VisualDebug>().SetColor(Color.red);
             InputManager.RegisterAction(actionName, respawn);
+            //if (Application.isPlaying) {
+            //    GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
+            //}
         }
 
         private void OnEnable() {
