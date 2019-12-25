@@ -13,20 +13,24 @@ namespace WIM_Plugin {
             public string Name { get; }
             public string MappingKey { get; }
             public InputManager.InputButtonAction ButtonAction { get; }
-            public Trigger ButtonTrigger { get; }
+            public List<Trigger> ButtonTriggers { get; } = new List<Trigger>();
             public OVRInput.RawButton Mapping { get; set; } = OVRInput.RawButton.None;
 
 
             public InputButtonActionMapping(string name, InputManager.InputButtonAction buttonAction,
-                Trigger buttonTrigger,
+                ICollection<Trigger> buttonTriggers,
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
                 this.ButtonAction = buttonAction;
-                this.ButtonTrigger = buttonTrigger;
+                this.ButtonTriggers.AddRange(buttonTriggers);
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
                 if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
                     this.Mapping = (OVRInput.RawButton) mapper.InputMappings.Get(MappingKey);
                 }
+            }
+
+            public bool IsTriggered() {
+                return ButtonTriggers.Any(trigger => trigger(Mapping, OVRInput.Controller.Active));
             }
         }
 
@@ -79,7 +83,7 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            foreach (var actionMapping in actionButtonMappings.Where(m => m.ButtonTrigger(m.Mapping, OVRInput.Controller.Active))) {
+            foreach (var actionMapping in actionButtonMappings.Where(m => m.IsTriggered())) {
                 actionMapping.ButtonAction();
             }
 
@@ -89,12 +93,14 @@ namespace WIM_Plugin {
             }
         }
 
-        private InputButtonActionMapping.Trigger getTrigger(InputManager.ButtonTrigger trigger) {
+        private ICollection<InputButtonActionMapping.Trigger> getTrigger(InputManager.ButtonTrigger trigger) {
             switch (trigger) {
                 case InputManager.ButtonTrigger.ButtonDown:
-                    return OVRInput.GetUp;
+                    return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetDown};
+                case InputManager.ButtonTrigger.ButtonUpAndDown:
+                    return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetDown, OVRInput.GetUp};
                 default:
-                    return OVRInput.GetUp;
+                    return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetUp};
             }
         }
     }

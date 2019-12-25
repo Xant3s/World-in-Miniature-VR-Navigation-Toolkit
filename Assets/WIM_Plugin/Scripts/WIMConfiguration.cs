@@ -24,8 +24,6 @@ namespace WIM_Plugin {
         public float SpawnDistance;
         public bool AutoDetectArmLength;
         public bool AdaptWIMSizeToPlayerHeight;
-        public OVRInput.RawButton GrabButtonL = OVRInput.RawButton.LHandTrigger;
-        public OVRInput.RawButton GrabButtonR = OVRInput.RawButton.RHandTrigger;
         public Vector3 ActiveAreaBounds = new Vector3(10, 10, 10);
         public float MaxWIMScaleFactorDelta = 0.005f;   // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
     }

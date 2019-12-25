@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     public static class InputManager {
-        public enum ButtonTrigger { ButtonUp, ButtonDown}
+        public enum ButtonTrigger { ButtonUp, ButtonDown, ButtonUpAndDown}
 
         public delegate void InputMappers();
 
