@@ -14,7 +14,6 @@ namespace WIM_Plugin {
             public string MappingKey { get; }
             public InputManager.InputButtonAction ButtonAction { get; }
             public Trigger ButtonTrigger { get; }
-
             public OVRInput.RawButton Mapping { get; set; } = OVRInput.RawButton.None;
 
 
@@ -80,9 +79,6 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            foreach (var actionMapping in actionButtonMappings.Where(m => OVRInput.GetUp(m.Mapping))) {
-                actionMapping.ButtonAction();
-            }
             foreach (var actionMapping in actionButtonMappings.Where(m => m.ButtonTrigger(m.Mapping, OVRInput.Controller.Active))) {
                 actionMapping.ButtonAction();
             }
