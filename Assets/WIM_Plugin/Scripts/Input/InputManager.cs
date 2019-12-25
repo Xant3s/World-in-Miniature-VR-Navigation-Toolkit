@@ -4,22 +4,31 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     public static class InputManager {
-
         public delegate void InputMappers();
 
-        public delegate void InputAction();
+        public delegate void InputButtonAction();
+
+        public delegate void InputAxis3DAction(Vector3 axis);
 
         public static event InputMappers OnUpdateActions;
 
-        public static Dictionary<string, InputAction> Actions = new Dictionary<string, InputAction>();
+        public static Dictionary<string, InputButtonAction> ButtonActions = new Dictionary<string, InputButtonAction>();
 
-        public static void RegisterAction(string name, InputAction action) {
-            Actions[name] = action;
+        public static Dictionary<string, InputAxis3DAction> AxisActions = new Dictionary<string, InputAxis3DAction>();
+
+        public static void RegisterAction(string name, InputButtonAction buttonAction) {
+            ButtonActions[name] = buttonAction;
+            OnUpdateActions?.Invoke();
+        }
+
+        public static void RegisterAction(string name, InputAxis3DAction action) {
+            AxisActions[name] = action;
             OnUpdateActions?.Invoke();
         }
 
         public static void UnregisterAction(string name) {
-            Actions.Remove(name);
+            ButtonActions.Remove(name);
+            AxisActions.Remove(name);
             OnUpdateActions?.Invoke();
         }
     }

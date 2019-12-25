@@ -11,10 +11,6 @@ namespace WIM_Plugin {
         private WIMData data;
         private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
 
-        private void Start() {
-            InputManager.RegisterAction(actionName, respawn);
-        }
-
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
             InputManager.RegisterAction(actionName, respawn);

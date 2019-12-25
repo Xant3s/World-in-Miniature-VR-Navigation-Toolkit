@@ -5,32 +5,40 @@ using System.Linq;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    [ExecuteAlways]
     public class DestinationSelectionTouch : MonoBehaviour {
+        private static readonly string selectionActionName = "Destination Selection Button";
+        private static readonly string rotationActionName = "Destination Rotation Thumbstick";
+        private static readonly string confirmActionName = "Confirm Travel Button";
         private WIMConfiguration config;
         private WIMData data;
+        private Vector2 rotationInput;
 
         private void OnEnable() {
-            MiniatureModel.OnUpdate += update;
+            MiniatureModel.OnLateInit += init;
+            InputManager.RegisterAction(selectionActionName, destinationSelection);
+            InputManager.RegisterAction(rotationActionName, selectDestinationRotation);
+            InputManager.RegisterAction(confirmActionName, confirmTeleport);
         }
 
         private void OnDisable() {
-            MiniatureModel.OnUpdate -= update;
+            MiniatureModel.OnLateInit -= init;
+            InputManager.UnregisterAction(selectionActionName);
+            InputManager.UnregisterAction(rotationActionName);
+            InputManager.UnregisterAction(confirmActionName);
         }
 
-        private void update(WIMConfiguration config, WIMData data) {
+        private void init(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
+        }
 
-            if(config.DestinationSelectionMethod != DestinationSelection.Selection) return;
+        private void destinationSelection() {
+            if (config.DestinationSelectionMethod != DestinationSelection.Selection) return;
             selectDestination();
-            selectDestinationRotation();
-            checkConfirmTeleport();
         }
 
         private void selectDestination() {
-        // Only if select button is pressed.
-        if (!OVRInput.GetDown(config.DestinationSelectionButton)) return;
-
         var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
 
         // Check if in WIM bounds.
@@ -79,15 +87,19 @@ namespace WIM_Plugin {
             return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
         }
 
-        private void selectDestinationRotation() {
+        private void selectDestinationRotation(Vector3 axis) {
             // Only if there is a destination indicator in the WIM.
-            if(!data.DestinationIndicatorInWIM) return;
+            var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+            if (!data) data = WIM.Data;
+            if (!config) config = WIM.Configuration;
+            if (!data || !config) return;
+            if (!data.DestinationIndicatorInWIM) return;
+            if (config.DestinationSelectionMethod != DestinationSelection.Selection) return;
 
-            // Poll thumbstick input.
-            var inputRotation = OVRInput.Get(config.DestinationRotationThumbstick);
+            // Thumbstick input.
+            Vector2 inputRotation = axis;
 
-            // Only if rotation is changed via thumbstick.
-            if(Math.Abs(inputRotation.magnitude) < 0.01f) return;
+            if (Math.Abs(inputRotation.magnitude) < 0.01f) return;
 
             // Rotate destination indicator in WIM via thumbstick.
             var rotationAngle = Mathf.Atan2(inputRotation.x, inputRotation.y) * 180 / Mathf.PI;
@@ -99,9 +111,9 @@ namespace WIM_Plugin {
                 Quaternion.Inverse(data.WIMLevelTransform.rotation) * data.DestinationIndicatorInWIM.rotation;
         }
 
-        private void checkConfirmTeleport() {
-            if(!OVRInput.GetUp(config.ConfirmTravelButton)) return;
-            if(!data.DestinationIndicatorInLevel) return;
+        private void confirmTeleport() {
+            if (config.DestinationSelectionMethod != DestinationSelection.Selection) return;
+            if (!data.DestinationIndicatorInLevel) return;
             GameObject.Find("WIM").GetComponent<MiniatureModel>().ConfirmTravel();
         }
     }

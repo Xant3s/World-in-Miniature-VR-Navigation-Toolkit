@@ -16,9 +16,6 @@ namespace WIM_Plugin {
         public Vector2 ExpandCollidersZ;
         public bool DestinationAlwaysOnTheGround = true;
         public DestinationSelection DestinationSelectionMethod = DestinationSelection.Pickup;
-        public OVRInput.RawButton DestinationSelectionButton = OVRInput.RawButton.A;
-        public OVRInput.RawAxis2D DestinationRotationThumbstick = OVRInput.RawAxis2D.RThumbstick;
-        public OVRInput.RawButton ConfirmTravelButton = OVRInput.RawButton.B;
         public float DoubleTapInterval = 2;
         public bool SemiTransparent = true;
         public float Transparency = 0.33f;

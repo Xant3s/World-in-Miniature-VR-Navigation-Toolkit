@@ -8,8 +8,6 @@ namespace WIM_Plugin {
     [CreateAssetMenu(menuName = "WIM/Input Mapping")]
     public class InputMapping : ScriptableObject {
 
-        public List<KeyValuePair<string, int>> inputMappings = new List<KeyValuePair<string, int>>();
-
         public List<string> Keys = new List<string>();
         public List<int> Values = new List<int>();
 
