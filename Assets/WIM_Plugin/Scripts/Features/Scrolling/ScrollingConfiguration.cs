@@ -10,6 +10,5 @@ namespace WIM_Plugin {
         public bool AutoScroll;
         public bool AllowVerticalScrolling = true;
         public float ScrollSpeed = 1;
-        public OVRInput.RawAxis2D VerticalScrollingAxis = OVRInput.RawAxis2D.LThumbstick;
     }
 }

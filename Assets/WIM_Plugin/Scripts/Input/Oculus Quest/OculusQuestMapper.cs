@@ -89,7 +89,6 @@ namespace WIM_Plugin {
 
             foreach (var actionMapping in actionAxisMappings) {
                 actionMapping.AxisAction(OVRInput.Get(actionMapping.Mapping));
-                if (actionMapping.Mapping != OVRInput.RawAxis2D.None) return;
             }
         }
 

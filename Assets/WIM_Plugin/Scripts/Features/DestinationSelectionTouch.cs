@@ -12,7 +12,6 @@ namespace WIM_Plugin {
         private static readonly string confirmActionName = "Confirm Travel Button";
         private WIMConfiguration config;
         private WIMData data;
-        private Vector2 rotationInput;
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += init;

@@ -20,7 +20,6 @@ namespace WIM_Plugin {
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);   
-
         }
 
         private void Draw(WIMConfiguration WIMConfig) {
@@ -63,12 +62,6 @@ namespace WIM_Plugin {
                     }
                     else {
                         config.AllowVerticalScrolling = false;
-                    }
-
-                    if(config.AllowVerticalScrolling) {
-                        config.VerticalScrollingAxis =
-                            (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField("Vertical Scrolling Axis",
-                                config.VerticalScrollingAxis);
                     }
                 }
             }
