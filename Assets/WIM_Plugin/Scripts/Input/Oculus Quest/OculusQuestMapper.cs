@@ -8,15 +8,22 @@ namespace WIM_Plugin {
     [ExecuteAlways]
     public class OculusQuestMapper : MonoBehaviour {
         internal class InputButtonActionMapping {
+            public delegate bool Trigger(OVRInput.RawButton btn, OVRInput.Controller controllerMask);
+
             public string Name { get; }
             public string MappingKey { get; }
             public InputManager.InputButtonAction ButtonAction { get; }
+            public Trigger ButtonTrigger { get; }
+
             public OVRInput.RawButton Mapping { get; set; } = OVRInput.RawButton.None;
 
+
             public InputButtonActionMapping(string name, InputManager.InputButtonAction buttonAction,
+                Trigger buttonTrigger,
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
                 this.ButtonAction = buttonAction;
+                this.ButtonTrigger = buttonTrigger;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
                 if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
                     this.Mapping = (OVRInput.RawButton) mapper.InputMappings.Get(MappingKey);
@@ -59,7 +66,8 @@ namespace WIM_Plugin {
             actionButtonMappings.Clear();
             actionAxisMappings.Clear();
             foreach (var m in InputManager.ButtonActions) {
-                actionButtonMappings.Add(new InputButtonActionMapping(m.Key, m.Value, this));
+                var trigger = getTrigger(InputManager.ButtonTriggers[m.Key]);
+                actionButtonMappings.Add(new InputButtonActionMapping(m.Key, m.Value, trigger, this));
             }
 
             foreach (var m in InputManager.AxisActions) {
@@ -75,10 +83,22 @@ namespace WIM_Plugin {
             foreach (var actionMapping in actionButtonMappings.Where(m => OVRInput.GetUp(m.Mapping))) {
                 actionMapping.ButtonAction();
             }
+            foreach (var actionMapping in actionButtonMappings.Where(m => m.ButtonTrigger(m.Mapping, OVRInput.Controller.Active))) {
+                actionMapping.ButtonAction();
+            }
 
             foreach (var actionMapping in actionAxisMappings) {
                 actionMapping.AxisAction(OVRInput.Get(actionMapping.Mapping));
                 if (actionMapping.Mapping != OVRInput.RawAxis2D.None) return;
+            }
+        }
+
+        private InputButtonActionMapping.Trigger getTrigger(InputManager.ButtonTrigger trigger) {
+            switch (trigger) {
+                case InputManager.ButtonTrigger.ButtonDown:
+                    return OVRInput.GetUp;
+                default:
+                    return OVRInput.GetUp;
             }
         }
     }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     public static class InputManager {
+        public enum ButtonTrigger { ButtonUp, ButtonDown}
+
         public delegate void InputMappers();
 
         public delegate void InputButtonAction();
@@ -14,10 +16,13 @@ namespace WIM_Plugin {
 
         public static Dictionary<string, InputButtonAction> ButtonActions = new Dictionary<string, InputButtonAction>();
 
+        public static Dictionary<string, ButtonTrigger> ButtonTriggers = new Dictionary<string, ButtonTrigger>();
+
         public static Dictionary<string, InputAxis3DAction> AxisActions = new Dictionary<string, InputAxis3DAction>();
 
-        public static void RegisterAction(string name, InputButtonAction buttonAction) {
+        public static void RegisterAction(string name, InputButtonAction buttonAction, ButtonTrigger trigger = ButtonTrigger.ButtonUp) {
             ButtonActions[name] = buttonAction;
+            ButtonTriggers.Add(name, trigger);
             OnUpdateActions?.Invoke();
         }
 
@@ -28,6 +33,7 @@ namespace WIM_Plugin {
 
         public static void UnregisterAction(string name) {
             ButtonActions.Remove(name);
+            ButtonTriggers.Remove(name);
             AxisActions.Remove(name);
             OnUpdateActions?.Invoke();
         }
