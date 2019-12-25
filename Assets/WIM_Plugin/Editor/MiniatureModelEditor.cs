@@ -85,17 +85,12 @@ namespace WIM_Plugin {
                     EditorGUILayout.FloatField("WIM Spawn Distance", WIM.Configuration.SpawnDistance);
             }
 
+            EditorGUI.BeginChangeCheck();
             WIM.Configuration.AutoDetectArmLength = EditorGUILayout.Toggle(
                 new GUIContent("Auto Detect Arm Length",
                     "At the start of the application, player has to extend the arm and press the confirm teleport button." +
                     "The detected arm length will be used instead of the spawn distance."),
                 WIM.Configuration.AutoDetectArmLength);
-            if(WIM.Configuration.AutoDetectArmLength) {
-                WIM.Configuration.ConfirmArmLengthButton =
-                    (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Confirm Arm Length Button",
-                        WIM.Configuration.ConfirmArmLengthButton);
-            }
-
             WIM.Configuration.AdaptWIMSizeToPlayerHeight = EditorGUILayout.Toggle("Adapt WIM Size to Player Height",
                 WIM.Configuration.AdaptWIMSizeToPlayerHeight);
             InvokeCallbacks("Usability");

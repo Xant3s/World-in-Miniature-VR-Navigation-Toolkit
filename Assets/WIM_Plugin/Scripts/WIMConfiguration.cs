@@ -23,7 +23,6 @@ namespace WIM_Plugin {
         public float PlayerHeightInCM = 170;
         public float SpawnDistance;
         public bool AutoDetectArmLength;
-        public OVRInput.RawButton ConfirmArmLengthButton = OVRInput.RawButton.A;
         public bool AdaptWIMSizeToPlayerHeight;
         public OVRInput.RawButton GrabButtonL = OVRInput.RawButton.LHandTrigger;
         public OVRInput.RawButton GrabButtonR = OVRInput.RawButton.RHandTrigger;
