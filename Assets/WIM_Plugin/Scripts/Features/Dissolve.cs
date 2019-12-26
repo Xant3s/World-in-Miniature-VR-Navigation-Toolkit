@@ -15,13 +15,6 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            if(Input.GetKeyUp(KeyCode.A)) {
-                Play();
-            }
-            else if(Input.GetKeyUp(KeyCode.D)) {
-                PlayInverse();
-            }
-
             if(!(Time.realtimeSinceStartup < endTime)) return;
             var remainingTime = endTime - Time.realtimeSinceStartup;
             var percent = (durationInSeconds - remainingTime) / durationInSeconds;

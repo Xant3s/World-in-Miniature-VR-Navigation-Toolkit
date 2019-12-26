@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
@@ -59,6 +60,7 @@ namespace WIM_Plugin {
         private void OnEnable() {
             InputManager.OnUpdateActions -= UpdateActions;
             UpdateActions();
+            EditorUtility.SetDirty(InputMappings);
         }
 
         private void OnDisable() {
@@ -98,6 +100,8 @@ namespace WIM_Plugin {
                     return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetDown};
                 case InputManager.ButtonTrigger.ButtonUpAndDown:
                     return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetDown, OVRInput.GetUp};
+                case InputManager.ButtonTrigger.ButtonGet:
+                    return new List<InputButtonActionMapping.Trigger>(){OVRInput.Get};
                 default:
                     return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetUp};
             }
