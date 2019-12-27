@@ -15,11 +15,7 @@ namespace WIM_Plugin {
         public Vector2 ExpandCollidersY;
         public Vector2 ExpandCollidersZ;
         public bool DestinationAlwaysOnTheGround = true;
-        public OVRInput.RawButton ShowWIMButton = OVRInput.RawButton.X;
         public DestinationSelection DestinationSelectionMethod = DestinationSelection.Pickup;
-        public OVRInput.RawButton DestinationSelectionButton = OVRInput.RawButton.A;
-        public OVRInput.RawAxis2D DestinationRotationThumbstick = OVRInput.RawAxis2D.RThumbstick;
-        public OVRInput.RawButton ConfirmTravelButton = OVRInput.RawButton.B;
         public float DoubleTapInterval = 2;
         public bool SemiTransparent = true;
         public float Transparency = 0.33f;
@@ -27,10 +23,7 @@ namespace WIM_Plugin {
         public float PlayerHeightInCM = 170;
         public float SpawnDistance;
         public bool AutoDetectArmLength;
-        public OVRInput.RawButton ConfirmArmLengthButton = OVRInput.RawButton.A;
         public bool AdaptWIMSizeToPlayerHeight;
-        public OVRInput.RawButton GrabButtonL = OVRInput.RawButton.LHandTrigger;
-        public OVRInput.RawButton GrabButtonR = OVRInput.RawButton.RHandTrigger;
         public Vector3 ActiveAreaBounds = new Vector3(10, 10, 10);
         public float MaxWIMScaleFactorDelta = 0.005f;   // The maximum value scale factor can be changed by (positive or negative) when adapting to player height.
     }

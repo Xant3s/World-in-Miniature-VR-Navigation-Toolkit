@@ -1,31 +1,33 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    [ExecuteAlways]
     public class Respawn : MonoBehaviour {
+        private static readonly string actionName = "Respawn Button";
         private WIMConfiguration config;
         private WIMData data;
         private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
-            MiniatureModel.OnUpdate += checkRespawnWIM;
+            InputManager.RegisterAction(actionName, respawn);
         }
 
         private void OnDisable() {
             MiniatureModel.OnLateInit -= respawn;
-            MiniatureModel.OnUpdate -= checkRespawnWIM;
+            InputManager.UnregisterAction(actionName);
+        }
+
+        private void respawn() {
+            respawnWIM(false);
         }
 
         private void respawn(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
-            respawnWIM(false);
-        }
-
-        private void checkRespawnWIM(WIMConfiguration config, WIMData data) {
-            if (!OVRInput.GetUp(config.ShowWIMButton)) return;
             respawnWIM(false);
         }
 

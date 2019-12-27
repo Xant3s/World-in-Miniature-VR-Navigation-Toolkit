@@ -10,17 +10,32 @@ namespace WIM_Plugin {
     public class Scrolling : MonoBehaviour {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
 
+        private static readonly string scrollingActionName = "Scrolling Axis";
+        private static readonly string verticalScrollingActionName = "Vertical Scrolling Axis";
         private WIMConfiguration config;
         private WIMData data;
+        private Vector2 verticalAxisInput;
+
 
         private void OnEnable() {
-            if(!Application.isPlaying) return;
+            InputManager.RegisterAction(scrollingActionName, scrollWIM);
+            InputManager.RegisterAction(verticalScrollingActionName, updateVerticalInput);
+            if (!Application.isPlaying) return;
+            MiniatureModel.OnLateInit += init;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
         private void OnDisable() {
-            if(!Application.isPlaying) return;
+            InputManager.UnregisterAction(scrollingActionName);
+            InputManager.UnregisterAction(verticalScrollingActionName);
+            if (!Application.isPlaying) return;
+            MiniatureModel.OnLateInit -= init;
             MiniatureModel.OnUpdate -= ScrollWIM;
+        }
+
+        private void init(WIMConfiguration config, WIMData data) {
+            this.config = config;
+            this.data = data;
         }
 
         private void OnDestroy() {
@@ -31,21 +46,21 @@ namespace WIM_Plugin {
         }
 
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
             Assert.IsNotNull(ScrollingConfig, "Scrolling configuration is missing.");
-
-
             if (!data.WIMLevelTransform) return;    // TODO: Useless?
             if(!ScrollingConfig.AllowWIMScrolling) return;
             if (ScrollingConfig.AutoScroll) autoScrollWIM();
-            else scrollWIM();
         }
 
-        private void scrollWIM() {
-            var input = OVRInput.Get(OVRInput.RawAxis2D.RThumbstick);
-            var verticalInput = OVRInput.Get(ScrollingConfig.VerticalScrollingAxis).y;
-            var direction = new Vector3(input.x, verticalInput, input.y);
+        private void updateVerticalInput(Vector3 input) {
+            verticalAxisInput = input;
+        }
+
+        private void scrollWIM(Vector3 scrollingInput) {
+            if (!ScrollingConfig.AllowWIMScrolling) return;
+            var input = scrollingInput;
+            if (!Application.isPlaying) return;
+            var direction = new Vector3(input.x, verticalAxisInput.y, input.y);
             if(!ScrollingConfig.AllowVerticalScrolling) direction.y = 0;
             data.WIMLevelTransform.Translate(Time.deltaTime * ScrollingConfig.ScrollSpeed * -direction, Space.World);
         }

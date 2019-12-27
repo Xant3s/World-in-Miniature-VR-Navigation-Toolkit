@@ -6,7 +6,7 @@ using WIM_Plugin;
 
 namespace WIM_Plugin {
     public class DistanceGrabber : MonoBehaviour {
-        [SerializeField] private OVRInput.RawButton grabButton;
+        [SerializeField] private Hand hand;
         [SerializeField] private Transform start;
         [SerializeField] private float snapSpeed = 10f;
         [SerializeField] private float minDistance = .5f;
@@ -15,26 +15,49 @@ namespace WIM_Plugin {
         private AimAssist aimAssist;
         private LineRenderer lineRenderer;
         private bool isDisabled;
+        private bool grabButtonPressed;
 
         private void Awake() {
-            if(!disableWhileInWIM) return;
-            if(!this.enabled) {
+            if (!disableWhileInWIM) return;
+            if (!this.enabled) {
                 isDisabled = true;
                 return;
             }
+
             aimAssist = gameObject.GetComponentInChildren<AimAssist>();
             lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
         }
 
+        private void OnEnable() {
+            if (hand == Hand.HAND_L) {
+                MiniatureModel.OnLeftGrabButtonDown += grabButtonDown;
+                MiniatureModel.OnLeftGrabButtonUp += grabButtonUp;
+            }
+            else if (hand == Hand.HAND_R) {
+                MiniatureModel.OnRightGrabButtonDown += grabButtonDown;
+                MiniatureModel.OnRightGrabButtonUp += grabButtonUp;
+            }
+        }
+
+        private void OnDisable() {
+            if (hand == Hand.HAND_L) {
+                MiniatureModel.OnLeftGrabButtonDown -= grabButtonDown;
+                MiniatureModel.OnLeftGrabButtonUp -= grabButtonUp;
+            }
+            else if (hand == Hand.HAND_R) {
+                MiniatureModel.OnRightGrabButtonDown -= grabButtonDown;
+                MiniatureModel.OnRightGrabButtonUp -= grabButtonUp;
+            }
+        }
 
         private void LateUpdate() {
             var WIMLayerOnly = 1 << 8;
-            if(Physics.Raycast(transform.position, start.forward, out var hit,
+            if (Physics.Raycast(transform.position, start.forward, out var hit,
                 Mathf.Infinity, WIMLayerOnly)) {
                 var grabbable = hit.transform.gameObject.GetComponent<DistanceGrabbable>();
-                if(!grabbable) return;
+                if (!grabbable) return;
                 grabbable.HightlightFX = true;
-                if(OVRInput.GetDown(grabButton) || Input.GetKeyDown(KeyCode.Y)) {
+                if (grabButtonPressed) {
                     grabbable.MinDistance = minDistance;
                     grabbable.SnapSpeed = snapSpeed;
                     grabbable.Target = transform;
@@ -43,13 +66,21 @@ namespace WIM_Plugin {
             }
         }
 
+        private void grabButtonDown(WIMConfiguration config, WIMData data) {
+            grabButtonPressed = true;
+        }
+
+        private void grabButtonUp(WIMConfiguration config, WIMData data) {
+            grabButtonPressed = false;
+        }
+
         private void OnTriggerEnter(Collider other) {
-            if(!disableWhileInWIM || isDisabled || other.name != "WIM") return;
+            if (!disableWhileInWIM || isDisabled || other.name != "WIM") return;
             setEnable(false);
         }
 
         private void OnTriggerExit(Collider other) {
-            if(!disableWhileInWIM || isDisabled || other.name != "WIM") return;
+            if (!disableWhileInWIM || isDisabled || other.name != "WIM") return;
             setEnable(true);
         }
 

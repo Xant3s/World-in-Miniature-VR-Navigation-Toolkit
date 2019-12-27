@@ -50,26 +50,11 @@ namespace WIM_Plugin {
                 new GUIContent("Destination Always on the Ground",
                     "If active, the destination will automatically set to ground level. This protects the player from being teleported to a location in mid-air."),
                 WIM.Configuration.DestinationAlwaysOnTheGround);
-
-
-            Separator("Input");
-            WIM.Configuration.ShowWIMButton =
-                (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Show WIM Button", WIM.Configuration.ShowWIMButton);
             WIM.Configuration.DestinationSelectionMethod =
-                (DestinationSelection) EditorGUILayout.EnumPopup("Destination Selection Method",
+                (DestinationSelection)EditorGUILayout.EnumPopup("Destination Selection Method",
                     WIM.Configuration.DestinationSelectionMethod);
-            if(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Selection) {
-                WIM.Configuration.DestinationSelectionButton =
-                    (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Destination Selection Button",
-                        WIM.Configuration.DestinationSelectionButton);
-                WIM.Configuration.DestinationRotationThumbstick =
-                    (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField("Destination Rotation Thumbstick",
-                        WIM.Configuration.DestinationRotationThumbstick);
-                WIM.Configuration.ConfirmTravelButton =
-                    (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Confirm Travel Button",
-                        WIM.Configuration.ConfirmTravelButton);
-            }
-            else if(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup) {
+            if (WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup)
+            {
                 WIM.Configuration.DoubleTapInterval =
                     EditorGUILayout.FloatField("Double Tap Interval", WIM.Configuration.DoubleTapInterval);
             }
@@ -100,17 +85,12 @@ namespace WIM_Plugin {
                     EditorGUILayout.FloatField("WIM Spawn Distance", WIM.Configuration.SpawnDistance);
             }
 
+            EditorGUI.BeginChangeCheck();
             WIM.Configuration.AutoDetectArmLength = EditorGUILayout.Toggle(
                 new GUIContent("Auto Detect Arm Length",
                     "At the start of the application, player has to extend the arm and press the confirm teleport button." +
                     "The detected arm length will be used instead of the spawn distance."),
                 WIM.Configuration.AutoDetectArmLength);
-            if(WIM.Configuration.AutoDetectArmLength) {
-                WIM.Configuration.ConfirmArmLengthButton =
-                    (OVRInput.RawButton) EditorGUILayout.EnumFlagsField("Confirm Arm Length Button",
-                        WIM.Configuration.ConfirmArmLengthButton);
-            }
-
             WIM.Configuration.AdaptWIMSizeToPlayerHeight = EditorGUILayout.Toggle("Adapt WIM Size to Player Height",
                 WIM.Configuration.AdaptWIMSizeToPlayerHeight);
             InvokeCallbacks("Usability");

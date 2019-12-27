@@ -37,9 +37,9 @@ namespace WIM_Plugin {
         private Rigidbody rb;
 
         private void Awake() {
-            defaultMaterial = GetComponentInChildren<Renderer>().material;
+            defaultMaterial = GetComponentInChildren<Renderer>()?.material;
         }
-
+        
         private void Update() {
             HightlightFX = false;
             if(!IsBeingGrabbed || !Target) return;
