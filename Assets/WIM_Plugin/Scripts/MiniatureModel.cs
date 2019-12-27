@@ -23,8 +23,13 @@ namespace WIM_Plugin {
         public static event WIMAction OnNewDestinationSelected;
         public static event WIMAction OnPreTravel;
         public static event WIMAction OnPostTravel;
-        public static event WIMAction OnPickupIndexButton;
-        public static event WIMAction OnPickupThumbButton;
+        //public static event WIMAction OnPickupIndexButton;
+        //public static event WIMAction OnPickupThumbButton;
+        public static event WIMAction OnPickupIndexButtonDown;
+        public static event WIMAction OnPickupIndexButtonUp;
+        public static event WIMAction OnPickupThumbButtonDown;
+        public static event WIMAction OnPickupThumbButtonUp;
+
 
         private static readonly string pickupIndexActionName = "Pickup Index Button";
         private static readonly string pickupThumbActionName = "Pickup Thumb Button";
@@ -67,8 +72,13 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
-            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
+            //InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
+            //InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
+
+            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(pickupIndexActionName, pickpuIndexButtonUp, InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp);
         }
 
         private void OnDisable() {
@@ -76,12 +86,31 @@ namespace WIM_Plugin {
             InputManager.UnregisterAction(pickupThumbActionName);
         }
 
-        private void pickupIndexButtonEvent() {
-            OnPickupIndexButton?.Invoke(Configuration, Data);
+        //private void pickupIndexButtonEvent() {
+        //    OnPickupIndexButton?.Invoke(Configuration, Data);
+        //}
+
+        //private void pickupThumbButtonEvent() {
+        //    OnPickupThumbButton?.Invoke(Configuration, Data);
+        //}
+
+        private void pickupIndexButtonDown() {
+            OnPickupIndexButtonDown?.Invoke(Configuration, Data);
         }
 
-        private void pickupThumbButtonEvent() {
-            OnPickupThumbButton?.Invoke(Configuration, Data);
+        private void pickpuIndexButtonUp() {
+            OnPickupIndexButtonUp?.Invoke(Configuration, Data);
+
+        }
+
+        private void pickupThumbButtonDown() {
+            OnPickupThumbButtonDown?.Invoke(Configuration, Data);
+
+        }
+
+        private void pickupThumbButtonUp() {
+            OnPickupThumbButtonUp?.Invoke(Configuration, Data);
+
         }
 
         private bool ConfigurationIsThere() {

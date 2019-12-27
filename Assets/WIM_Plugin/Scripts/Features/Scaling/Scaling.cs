@@ -26,10 +26,10 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             MiniatureModel.OnUpdate += ScaleWIM;
-            InputManager.RegisterAction(grabLActionName, leftScalingButtonEvent,
-                InputManager.ButtonTrigger.ButtonUpAndDown);
-            InputManager.RegisterAction(grabRActionName, rightScalingButtonEvent,
-                InputManager.ButtonTrigger.ButtonUpAndDown);
+            InputManager.RegisterAction(grabLActionName, leftScalingButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(grabLActionName, leftScalingButtonUp, InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(grabRActionName, rightScalingButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(grabRActionName, rightScalingButtonUp, InputManager.ButtonTrigger.ButtonUp);
         }
 
         private void OnDisable() {
@@ -47,18 +47,27 @@ namespace WIM_Plugin {
             Assert.IsNotNull(handR);
         }
 
-        private void leftScalingButtonEvent() {
-            updateScalingHand(ref leftScaleButtonPressed, Hand.HAND_L);
+        private void leftScalingButtonDown() {
+            leftScaleButtonPressed = true;
+            updateScalingHand(rightScaleButtonPressed, Hand.HAND_L);
         }
 
-        private void rightScalingButtonEvent() {
-            updateScalingHand(ref rightScaleButtonPressed, Hand.HAND_R);
+        private void leftScalingButtonUp() {
+            leftScaleButtonPressed = false;
+            updateScalingHand(rightScaleButtonPressed, Hand.HAND_L);
         }
 
-        private void updateScalingHand(ref bool buttonPressed, Hand hand) {
-            // Either GetDown or GetUp event.
-            buttonPressed = !buttonPressed;
+        private void rightScalingButtonDown() {
+            rightScaleButtonPressed = true;
+            updateScalingHand(rightScaleButtonPressed, Hand.HAND_R);
+        }
 
+        private void rightScalingButtonUp() {
+            rightScaleButtonPressed = false;
+            updateScalingHand(rightScaleButtonPressed, Hand.HAND_R);
+        }
+
+        private void updateScalingHand(bool buttonPressed, Hand hand) {
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
             if (!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
 

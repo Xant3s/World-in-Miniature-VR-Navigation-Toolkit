@@ -13,8 +13,6 @@ public class PickupPreviewScreen : MonoBehaviour {
     private bool indexIsGrabbing;
     private bool isGrabbing;
     private bool stoppedGrabbing;
-    private bool pickupIndexButtonDown = true;  // True, because this script is instantiated while the button is already pressed.
-    private bool pickupThumbButtonDown = true;  // True, because this script is instantiated while the button is already pressed.
 
 
     private void Awake() {
@@ -25,26 +23,23 @@ public class PickupPreviewScreen : MonoBehaviour {
     }
 
     private void OnEnable() {
-        MiniatureModel.OnPickupIndexButton += pickupIndexButtonEvent;
-        MiniatureModel.OnPickupThumbButton += pickupThumbButtonEvent;
+        MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
+        MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
     }
 
     private void OnDisable() {
-        MiniatureModel.OnPickupIndexButton -= pickupIndexButtonEvent;
-        MiniatureModel.OnPickupThumbButton -= pickupThumbButtonEvent;
+        MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
+        MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
     }
 
-    private void pickupIndexButtonEvent(WIMConfiguration config, WIMData data) {
-        pickupIndexButtonDown = !pickupIndexButtonDown;
-        if (!isGrabbing && !pickupIndexButtonDown)
-            stopGrabbing();
+    private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
+        if (!isGrabbing) stopGrabbing();
     }
 
-    private void pickupThumbButtonEvent(WIMConfiguration config, WIMData data) {
-        pickupThumbButtonDown = !pickupThumbButtonDown;
-        if(!isGrabbing && !pickupThumbButtonDown)
-            stopGrabbing();
+    private void pickupThumbButtonUp(WIMConfiguration config, WIMData data) {
+        if (!isGrabbing) stopGrabbing();
     }
+
 
     private void Update() {
         var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;

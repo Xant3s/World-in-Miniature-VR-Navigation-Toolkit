@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -24,7 +25,23 @@ namespace WIM_Plugin {
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
+        private bool pickupIndexButtonPressed;
+        private bool pickupThumbButtonPressed;
 
+
+        private void OnEnable() {
+            MiniatureModel.OnPickupIndexButtonDown += pickupIndexButtonDown;
+            MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
+            MiniatureModel.OnPickupThumbButtonDown += pickupThumbButtonDown;
+            MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
+        }
+
+        private void OnDisable() {
+            MiniatureModel.OnPickupIndexButtonDown -= pickupIndexButtonDown;
+            MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
+            MiniatureModel.OnPickupThumbButtonDown -= pickupThumbButtonDown;
+            MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
+        }
 
         private void Awake() {
             thumb = GameObject.FindWithTag("ThumbR").transform;
@@ -49,12 +66,11 @@ namespace WIM_Plugin {
             thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
             indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
-            var thumbAndIndexPressed =
-                OVRInput.Get(OVRInput.RawButton.A) && OVRInput.Get(OVRInput.RawButton.RIndexTrigger);
+            var thumbAndIndexPressed = pickupThumbButtonPressed && pickupIndexButtonPressed;
 
-            if(!isGrabbing) {
+            if (!isGrabbing) {
                 // Handle double tap
-                switch(tapState) {
+                switch (tapState) {
                     case TapState.None when indexIsTouching && !thumbIsTouching:
                         // First tap
                         tapState = TapState.FirstTap;
@@ -74,15 +90,31 @@ namespace WIM_Plugin {
                 }
             }
 
-            if(!isGrabbing && thumbAndIndexTouching && thumbAndIndexPressed) {
+            if (!isGrabbing && thumbAndIndexTouching && thumbAndIndexPressed) {
                 isGrabbing = true;
                 resetDoubleTap();
                 startGrabbing();
             }
-            else if(isGrabbing && !thumbAndIndexPressed) {
+            else if (isGrabbing && !thumbAndIndexPressed) {
                 isGrabbing = false;
                 stopGrabbing();
             }
+        }
+
+        private void pickupIndexButtonDown(WIMConfiguration config, WIMData data) {
+            pickupIndexButtonPressed = true;
+        }
+
+        private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
+            pickupIndexButtonPressed = false;
+        }
+
+        private void pickupThumbButtonDown(WIMConfiguration config, WIMData data) {
+            pickupThumbButtonPressed = true;
+        }
+
+        private void pickupThumbButtonUp(WIMConfiguration config, WIMData data) {
+            pickupThumbButtonPressed = false;
         }
 
         private void startGrabbing() {
@@ -100,11 +132,11 @@ namespace WIM_Plugin {
         }
 
         private void RemoveDestinationIndicatorsExceptWIM(MiniatureModel WIM) {
-            if(!WIM.Data.DestinationIndicatorInWIM) return;
+            if (!WIM.Data.DestinationIndicatorInWIM) return;
             WIM.GetComponent<PreviewScreen>()?.RemovePreviewScreen();
             // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
             DestroyImmediate(WIM.GetComponent<TravelPreviewAnimation>().Data.TravelPreviewAnimationObj);
-            if(WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
+            if (WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
         }
 
         private void stopGrabbing() {
@@ -116,7 +148,7 @@ namespace WIM_Plugin {
             WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
 
             // Create destination indicator in level. Includes snap to ground.
-            if(!WIM.Data.DestinationIndicatorInLevel)
+            if (!WIM.Data.DestinationIndicatorInLevel)
                 DestinationIndicators.SpawnDestinationIndicatorInLevel(WIM.Configuration, WIM.Data);
 
             // New destination

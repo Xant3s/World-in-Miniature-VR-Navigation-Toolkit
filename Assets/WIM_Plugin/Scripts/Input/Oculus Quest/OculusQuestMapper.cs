@@ -12,26 +12,21 @@ namespace WIM_Plugin {
             public delegate bool Trigger(OVRInput.RawButton btn, OVRInput.Controller controllerMask);
 
             public string Name { get; }
+
             public string MappingKey { get; }
-            public InputManager.InputButtonAction ButtonAction { get; }
-            public List<Trigger> ButtonTriggers { get; } = new List<Trigger>();
+            public Dictionary<Trigger, InputManager.InputButtonAction> ButtonActions { get; }
             public OVRInput.RawButton Mapping { get; set; } = OVRInput.RawButton.None;
 
 
-            public InputButtonActionMapping(string name, InputManager.InputButtonAction buttonAction,
-                ICollection<Trigger> buttonTriggers,
+            public InputButtonActionMapping(string name,
+                Dictionary<Trigger, InputManager.InputButtonAction> buttonActions,
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
-                this.ButtonAction = buttonAction;
-                this.ButtonTriggers.AddRange(buttonTriggers);
+                this.ButtonActions = buttonActions;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
                 if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
                     this.Mapping = (OVRInput.RawButton) mapper.InputMappings.Get(MappingKey);
                 }
-            }
-
-            public bool IsTriggered() {
-                return ButtonTriggers.Any(trigger => trigger(Mapping, OVRInput.Controller.Active));
             }
         }
 
@@ -70,8 +65,7 @@ namespace WIM_Plugin {
             actionButtonMappings.Clear();
             actionAxisMappings.Clear();
             foreach (var m in InputManager.ButtonActions) {
-                var trigger = getTrigger(InputManager.ButtonTriggers[m.Key]);
-                actionButtonMappings.Add(new InputButtonActionMapping(m.Key, m.Value, trigger, this));
+                actionButtonMappings.Add(new InputButtonActionMapping(m.Key, convertTriggers(m.Value), this));
             }
 
             foreach (var m in InputManager.AxisActions) {
@@ -84,8 +78,11 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            foreach (var actionMapping in actionButtonMappings.Where(m => m.IsTriggered())) {
-                actionMapping.ButtonAction();
+            foreach (var actionMapping in actionButtonMappings) {
+                foreach (var buttonAction in actionMapping.ButtonActions) {
+                    if (buttonAction.Key(actionMapping.Mapping, OVRInput.Controller.Active))
+                        buttonAction.Value();
+                }
             }
 
             foreach (var actionMapping in actionAxisMappings) {
@@ -93,17 +90,20 @@ namespace WIM_Plugin {
             }
         }
 
-        private ICollection<InputButtonActionMapping.Trigger> getTrigger(InputManager.ButtonTrigger trigger) {
+        private InputButtonActionMapping.Trigger getTrigger(InputManager.ButtonTrigger trigger) {
             switch (trigger) {
                 case InputManager.ButtonTrigger.ButtonDown:
-                    return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetDown};
-                case InputManager.ButtonTrigger.ButtonUpAndDown:
-                    return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetDown, OVRInput.GetUp};
+                    return OVRInput.GetDown;
                 case InputManager.ButtonTrigger.ButtonGet:
-                    return new List<InputButtonActionMapping.Trigger>(){OVRInput.Get};
+                    return OVRInput.Get;
                 default:
-                    return new List<InputButtonActionMapping.Trigger>() {OVRInput.GetUp};
+                    return OVRInput.GetUp;
             }
+        }
+
+        private Dictionary<InputButtonActionMapping.Trigger, InputManager.InputButtonAction>
+            convertTriggers(Dictionary<InputManager.ButtonTrigger, InputManager.InputButtonAction> dict) {
+            return dict.ToDictionary(entry => getTrigger(entry.Key), entry => entry.Value);
         }
     }
 }
