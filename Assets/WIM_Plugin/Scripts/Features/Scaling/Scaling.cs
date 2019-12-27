@@ -10,9 +10,6 @@ namespace WIM_Plugin {
     [ExecuteAlways]
     public class Scaling : MonoBehaviour {
         public ScalingConfiguration ScalingConfig;
-
-        private static readonly string grabLActionName = "Left Grab Button";
-        private static readonly string grabRActionName = "Right Grab Button";
         private WIMConfiguration config;
         private WIMData data;
         private OVRGrabbable grabbable;
@@ -26,16 +23,18 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             MiniatureModel.OnUpdate += ScaleWIM;
-            InputManager.RegisterAction(grabLActionName, leftScalingButtonDown, InputManager.ButtonTrigger.ButtonDown);
-            InputManager.RegisterAction(grabLActionName, leftScalingButtonUp, InputManager.ButtonTrigger.ButtonUp);
-            InputManager.RegisterAction(grabRActionName, rightScalingButtonDown, InputManager.ButtonTrigger.ButtonDown);
-            InputManager.RegisterAction(grabRActionName, rightScalingButtonUp, InputManager.ButtonTrigger.ButtonUp);
+            MiniatureModel.OnLeftGrabButtonDown += leftScalingButtonDown;
+            MiniatureModel.OnLeftGrabButtonUp += leftScalingButtonUp;
+            MiniatureModel.OnRightGrabButtonDown += rightScalingButtonDown;
+            MiniatureModel.OnRightGrabButtonUp += rightScalingButtonUp;
         }
 
         private void OnDisable() {
             MiniatureModel.OnUpdate -= ScaleWIM;
-            InputManager.UnregisterAction(grabLActionName);
-            InputManager.UnregisterAction(grabRActionName);
+            MiniatureModel.OnLeftGrabButtonDown -= leftScalingButtonDown;
+            MiniatureModel.OnLeftGrabButtonUp -= leftScalingButtonUp;
+            MiniatureModel.OnRightGrabButtonDown -= rightScalingButtonDown;
+            MiniatureModel.OnRightGrabButtonUp -= rightScalingButtonUp;
         }
 
         private void Awake() {
@@ -47,22 +46,22 @@ namespace WIM_Plugin {
             Assert.IsNotNull(handR);
         }
 
-        private void leftScalingButtonDown() {
+        private void leftScalingButtonDown(WIMConfiguration config, WIMData data) {
             leftScaleButtonPressed = true;
             updateScalingHand(rightScaleButtonPressed, Hand.HAND_L);
         }
 
-        private void leftScalingButtonUp() {
+        private void leftScalingButtonUp(WIMConfiguration config, WIMData data) {
             leftScaleButtonPressed = false;
             updateScalingHand(rightScaleButtonPressed, Hand.HAND_L);
         }
 
-        private void rightScalingButtonDown() {
+        private void rightScalingButtonDown(WIMConfiguration config, WIMData data) {
             rightScaleButtonPressed = true;
             updateScalingHand(rightScaleButtonPressed, Hand.HAND_R);
         }
 
-        private void rightScalingButtonUp() {
+        private void rightScalingButtonUp(WIMConfiguration config, WIMData data) {
             rightScaleButtonPressed = false;
             updateScalingHand(rightScaleButtonPressed, Hand.HAND_R);
         }

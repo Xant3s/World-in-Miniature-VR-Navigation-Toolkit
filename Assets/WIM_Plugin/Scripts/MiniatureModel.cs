@@ -16,23 +16,25 @@ namespace WIM_Plugin {
         public WIMSpaceConverter Converter;
 
         public delegate void WIMAction(WIMConfiguration config, WIMData data);
-
         public static event WIMAction OnInit;
         public static event WIMAction OnLateInit;
         public static event WIMAction OnUpdate;
         public static event WIMAction OnNewDestinationSelected;
         public static event WIMAction OnPreTravel;
         public static event WIMAction OnPostTravel;
-        //public static event WIMAction OnPickupIndexButton;
-        //public static event WIMAction OnPickupThumbButton;
         public static event WIMAction OnPickupIndexButtonDown;
         public static event WIMAction OnPickupIndexButtonUp;
         public static event WIMAction OnPickupThumbButtonDown;
         public static event WIMAction OnPickupThumbButtonUp;
-
+        public static event WIMAction OnLeftGrabButtonDown;
+        public static event WIMAction OnLeftGrabButtonUp;
+        public static event WIMAction OnRightGrabButtonDown;
+        public static event WIMAction OnRightGrabButtonUp;
 
         private static readonly string pickupIndexActionName = "Pickup Index Button";
         private static readonly string pickupThumbActionName = "Pickup Thumb Button";
+        private static readonly string grabLActionName = "Left Grab Button";
+        private static readonly string grabRActionName = "Right Grab Button";
         private TravelStrategy travelStrategy;
 
 
@@ -72,27 +74,26 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            //InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
-            //InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
-
-            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown);
-            InputManager.RegisterAction(pickupIndexActionName, pickpuIndexButtonUp, InputManager.ButtonTrigger.ButtonUp);
-            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown);
-            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonDown,
+                InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(pickupIndexActionName, pickpuIndexButtonUp,
+                InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonDown,
+                InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonUp,
+                InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(grabLActionName, leftGrabButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(grabLActionName, leftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(grabRActionName, rightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(grabRActionName, rightGrabButtonUp, InputManager.ButtonTrigger.ButtonUp);
         }
 
         private void OnDisable() {
             InputManager.UnregisterAction(pickupIndexActionName);
             InputManager.UnregisterAction(pickupThumbActionName);
+            InputManager.UnregisterAction(grabLActionName);
+            InputManager.UnregisterAction(grabRActionName);
         }
-
-        //private void pickupIndexButtonEvent() {
-        //    OnPickupIndexButton?.Invoke(Configuration, Data);
-        //}
-
-        //private void pickupThumbButtonEvent() {
-        //    OnPickupThumbButton?.Invoke(Configuration, Data);
-        //}
 
         private void pickupIndexButtonDown() {
             OnPickupIndexButtonDown?.Invoke(Configuration, Data);
@@ -100,21 +101,34 @@ namespace WIM_Plugin {
 
         private void pickpuIndexButtonUp() {
             OnPickupIndexButtonUp?.Invoke(Configuration, Data);
-
         }
 
         private void pickupThumbButtonDown() {
             OnPickupThumbButtonDown?.Invoke(Configuration, Data);
-
         }
 
         private void pickupThumbButtonUp() {
             OnPickupThumbButtonUp?.Invoke(Configuration, Data);
+        }
 
+        private void leftGrabButtonDown() {
+            OnLeftGrabButtonDown?.Invoke(Configuration, Data);
+        }
+
+        private void leftGrabButtonUp() {
+            OnLeftGrabButtonUp?.Invoke(Configuration, Data);
+        }
+
+        private void rightGrabButtonDown() {
+            OnRightGrabButtonDown?.Invoke(Configuration, Data);
+        }
+
+        private void rightGrabButtonUp() {
+            OnRightGrabButtonUp?.Invoke(Configuration, Data);
         }
 
         private bool ConfigurationIsThere() {
-            if(Configuration) return true;
+            if (Configuration) return true;
             throw new Exception("WIM configuration missing.");
         }
 
