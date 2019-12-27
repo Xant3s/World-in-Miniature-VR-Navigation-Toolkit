@@ -9,6 +9,7 @@ namespace WIM_Plugin {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(OVRGrabbable))]
     [RequireComponent(typeof(DistanceGrabbable))]
+    [ExecuteAlways]
     public class MiniatureModel : MonoBehaviour {
         public WIMConfiguration Configuration;
         public WIMData Data;
@@ -22,12 +23,17 @@ namespace WIM_Plugin {
         public static event WIMAction OnNewDestinationSelected;
         public static event WIMAction OnPreTravel;
         public static event WIMAction OnPostTravel;
+        public static event WIMAction OnPickupIndexButton;
+        public static event WIMAction OnPickupThumbButton;
 
+        private static readonly string pickupIndexActionName = "Pickup Index Button";
+        private static readonly string pickupThumbActionName = "Pickup Thumb Button";
         private TravelStrategy travelStrategy;
 
 
         private void Awake() {
-            if(!ConfigurationIsThere()) return;
+            if (!Application.isPlaying) return;
+            if (!ConfigurationIsThere()) return;
             Data = ScriptableObject.CreateInstance<WIMData>();
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             travelStrategy = new InstantTravel();
@@ -48,14 +54,34 @@ namespace WIM_Plugin {
         }
 
         private void Start() {
-            if(!ConfigurationIsThere()) return;
+            if (!Application.isPlaying) return;
+            if (!ConfigurationIsThere()) return;
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
         }
 
         private void Update() {
-            if(!ConfigurationIsThere()) return;
+            if (!Application.isPlaying) return;
+            if (!ConfigurationIsThere()) return;
             OnUpdate?.Invoke(Configuration, Data);
+        }
+
+        private void OnEnable() {
+            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonEvent, InputManager.ButtonTrigger.ButtonUpAndDown);
+        }
+
+        private void OnDisable() {
+            InputManager.UnregisterAction(pickupIndexActionName);
+            InputManager.UnregisterAction(pickupThumbActionName);
+        }
+
+        private void pickupIndexButtonEvent() {
+            OnPickupIndexButton?.Invoke(Configuration, Data);
+        }
+
+        private void pickupThumbButtonEvent() {
+            OnPickupThumbButton?.Invoke(Configuration, Data);
         }
 
         private bool ConfigurationIsThere() {

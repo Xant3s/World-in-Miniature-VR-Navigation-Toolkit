@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -12,6 +13,8 @@ public class PickupPreviewScreen : MonoBehaviour {
     private bool indexIsGrabbing;
     private bool isGrabbing;
     private bool stoppedGrabbing;
+    private bool pickupIndexButtonDown = true;  // True, because this script is instantiated while the button is already pressed.
+    private bool pickupThumbButtonDown = true;  // True, because this script is instantiated while the button is already pressed.
 
 
     private void Awake() {
@@ -19,6 +22,28 @@ public class PickupPreviewScreen : MonoBehaviour {
         index = GameObject.FindWithTag("IndexR").transform;
         Assert.IsNotNull(thumb);
         Assert.IsNotNull(index);
+    }
+
+    private void OnEnable() {
+        MiniatureModel.OnPickupIndexButton += pickupIndexButtonEvent;
+        MiniatureModel.OnPickupThumbButton += pickupThumbButtonEvent;
+    }
+
+    private void OnDisable() {
+        MiniatureModel.OnPickupIndexButton -= pickupIndexButtonEvent;
+        MiniatureModel.OnPickupThumbButton -= pickupThumbButtonEvent;
+    }
+
+    private void pickupIndexButtonEvent(WIMConfiguration config, WIMData data) {
+        pickupIndexButtonDown = !pickupIndexButtonDown;
+        if (!isGrabbing && !pickupIndexButtonDown)
+            stopGrabbing();
+    }
+
+    private void pickupThumbButtonEvent(WIMConfiguration config, WIMData data) {
+        pickupThumbButtonDown = !pickupThumbButtonDown;
+        if(!isGrabbing && !pickupThumbButtonDown)
+            stopGrabbing();
     }
 
     private void Update() {
@@ -30,12 +55,6 @@ public class PickupPreviewScreen : MonoBehaviour {
         }
         else if(isGrabbing && !rightHandPinch) {
             isGrabbing = false;
-        }
-
-        if(!isGrabbing && (OVRInput.GetUp(OVRInput.RawButton.A) || OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger))) {
-            if(stoppedGrabbing) return;
-            stopGrabbing();
-            stoppedGrabbing = true;
         }
     }
 
@@ -74,6 +93,7 @@ public class PickupPreviewScreen : MonoBehaviour {
     }
 
     private void stopGrabbing() {
+        if (stoppedGrabbing) return;
         var WIMTransform = GameObject.Find("WIM").transform;
         var WIM = WIMTransform.GetComponent<MiniatureModel>();
         var previewScreen = WIM.GetComponent<PreviewScreen>();
@@ -83,5 +103,6 @@ public class PickupPreviewScreen : MonoBehaviour {
         // Let go.
         if(!previewScreenTransform) return;
         previewScreenTransform.parent = WIMTransform.GetChild(0);
+        stoppedGrabbing = true;
     }
 }

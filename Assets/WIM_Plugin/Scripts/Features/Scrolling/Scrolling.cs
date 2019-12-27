@@ -57,6 +57,7 @@ namespace WIM_Plugin {
         }
 
         private void scrollWIM(Vector3 scrollingInput) {
+            if (!ScrollingConfig.AllowWIMScrolling) return;
             var input = scrollingInput;
             if (!Application.isPlaying) return;
             var direction = new Vector3(input.x, verticalAxisInput.y, input.y);

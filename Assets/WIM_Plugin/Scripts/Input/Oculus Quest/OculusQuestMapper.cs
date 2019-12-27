@@ -60,7 +60,6 @@ namespace WIM_Plugin {
         private void OnEnable() {
             InputManager.OnUpdateActions -= UpdateActions;
             UpdateActions();
-            EditorUtility.SetDirty(InputMappings);
         }
 
         private void OnDisable() {

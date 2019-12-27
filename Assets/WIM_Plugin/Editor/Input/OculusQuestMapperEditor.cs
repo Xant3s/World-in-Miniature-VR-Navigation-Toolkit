@@ -33,6 +33,7 @@ namespace WIM_Plugin {
                     mapper.InputMappings.Set(mapper.actionAxisMappings[i].MappingKey, (int)mapper.actionAxisMappings[i].Mapping);
                 }
             }
+            EditorUtility.SetDirty(mapper.InputMappings);
         }
     }
 }
