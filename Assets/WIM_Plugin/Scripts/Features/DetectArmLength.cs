@@ -28,7 +28,7 @@ namespace WIM_Plugin {
         private void detectArmLength() {
             if (!config.AutoDetectArmLength || armLengthDetected) return;
             armLengthDetected = true;
-            var rightHand = GameObject.Find("CustomHandRight");
+            var rightHand = GameObject.FindWithTag("HandR");
             var mainCamera = Camera.main;
             if(!rightHand || !mainCamera) return;
             var controllerPos = rightHand.transform.position;

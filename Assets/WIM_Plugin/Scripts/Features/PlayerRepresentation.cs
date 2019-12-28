@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Debug = System.Diagnostics.Debug;
 
 namespace WIM_Plugin {
     // Show a player representation in the WIM. Used to indicate the player's position and orientation in the virtual environment.
     public class PlayerRepresentation : MonoBehaviour {
-        private Transform playerTransform;
+        private MiniatureModel WIM;
         private WIMSpaceConverter converter;
+        private Transform playerTransform;
+
 
         private void Start() {
             playerTransform = GameObject.Find("OVRCameraRig").transform;
-            converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
+            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+            converter = WIM.Converter;
             Assert.IsNotNull(playerTransform);
             Assert.IsNotNull(converter);
         }
@@ -40,7 +43,6 @@ namespace WIM_Plugin {
             Debug.Assert(Camera.main != null, "Camera.main != null");
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * config.PlayerRepresentation.transform.localScale.y * config.ScaleFactor;
-            var WIM = GameObject.Find("WIM");
             var scrolling = WIM.GetComponent<Scrolling>();
             if(scrolling && scrolling.ScrollingConfig.AllowWIMScrolling) {
                 // Get closest point on active area bounds. Won't have any effect if already inside active area.

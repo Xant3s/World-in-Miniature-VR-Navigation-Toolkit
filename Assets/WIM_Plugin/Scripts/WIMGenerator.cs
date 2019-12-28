@@ -166,8 +166,10 @@ namespace WIM_Plugin {
             var wimLevelTransform = WIM.transform.GetChild(0);
             Assert.IsNotNull(wimLevelTransform);
             var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
-            var levelChildTransforms = GameObject.Find("Level").GetComponentsInChildren<Transform>();
-            Assert.AreNotEqual(wimLevelTransform, GameObject.Find("Level").transform);
+            var level = GameObject.FindWithTag("Level")?.transform;
+            Assert.IsNotNull(level);
+            Assert.AreNotEqual(wimLevelTransform, level);
+            var levelChildTransforms = level.GetComponentsInChildren<Transform>();
             if (WIMChildTransforms.Length != levelChildTransforms.Length) return;
             var i = 0;
             foreach (var childInWIM in WIMChildTransforms) {
@@ -214,7 +216,7 @@ namespace WIM_Plugin {
         public static void GenerateNewWIM(in MiniatureModel WIM) {
             removeAllColliders(WIM.transform);
             adaptScaleFactorToPlayerHeight(WIM);
-            var levelTransform = GameObject.Find("Level").transform;
+            var levelTransform = GameObject.FindWithTag("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
             var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
 #if UNITY_EDITOR
@@ -274,13 +276,13 @@ namespace WIM_Plugin {
         internal static void UpdateScrollingMask(in MiniatureModel WIM) {
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             if (scrollingConfig && !scrollingConfig.AllowWIMScrolling) return;
-            var boxMaskObj = GameObject.Find("Box Mask");
+            var boxMaskObj = GameObject.FindWithTag("Box Mask");
             if (!boxMaskObj) return;
             boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
         }
 
         internal static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
-            var level = GameObject.Find("Level");
+            var level = GameObject.FindWithTag("Level");
             if (!level) {
                 Debug.LogWarning("Level not found.");
                 return;
@@ -300,7 +302,7 @@ namespace WIM_Plugin {
             var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
             if(!occlusionHandling || !occlusionHandling.Config) return;
             if (occlusionHandling.Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
-            var cylinderTransform = GameObject.Find("Cylinder Mask")?.transform;
+            var cylinderTransform = GameObject.FindWithTag("Cylinder Mask")?.transform;
             if (!cylinderTransform) return;
             cylinderTransform.localScale = new Vector3(occlusionHandling.Config.MeltRadius, occlusionHandling.Config.MeltHeight, 1);
         }
@@ -309,7 +311,7 @@ namespace WIM_Plugin {
             var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
             if(!occlusionHandling || !occlusionHandling.Config) return;
             if (occlusionHandling.Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
-            var spotlightObj = GameObject.Find("Spotlight Mask");
+            var spotlightObj = GameObject.FindWithTag("Spotlight Mask");
             if (!spotlightObj) return;
             var spotlight = spotlightObj.GetComponent<Light>();
             spotlight.range = occlusionHandling.Config.CutoutRange;
@@ -329,6 +331,7 @@ namespace WIM_Plugin {
 
         private static void configureCutoutView(Material material) {
             var spotlightObj = new GameObject("Spotlight Mask");
+            spotlightObj.tag = spotlightObj.name;
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (spotlightObj, "Spotlight Mask");
 #endif
@@ -340,31 +343,30 @@ namespace WIM_Plugin {
 
         private static void configureMeltWalls(Material material) {
             var cylinderMask = new GameObject("Cylinder Mask");
+            cylinderMask.tag = cylinderMask.name;
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (cylinderMask, "configureMeltWalls");
 #endif
-            cylinderMask.AddComponent<FollowHand>().hand = Hand.HAND_R;
+            cylinderMask.AddComponent<FollowHand>().hand = Hand.RightHand;
             cylinderMask.AddComponent<CapsuleController>().materials = new[] {material};
         }
 
         public static void CleanupOcclusionHandling() {
-            var cylinderMask = GameObject.Find("Cylinder Mask");
-            var spotlightMask = GameObject.Find("Spotlight Mask");
-            var maskController = GameObject.Find("Mask Controller");
+            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
+            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
 
 #if UNITY_EDITOR
             if(cylinderMask) Undo.DestroyObjectImmediate (cylinderMask);
             if(spotlightMask) Undo.DestroyObjectImmediate (spotlightMask);
-            if(maskController) Undo.DestroyObjectImmediate (maskController);          
 #else
             GameObject.DestroyImmediate(cylinderMask);
             GameObject.DestroyImmediate(spotlightMask);
-            GameObject.DestroyImmediate(maskController);
 #endif
         }
 
         private static void enableScrolling(Material material, in MiniatureModel WIM) {
             var maskController = new GameObject("Box Mask");
+            maskController.tag = maskController.name;
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo (maskController, "Created Box Mask");
 #endif
@@ -377,7 +379,7 @@ namespace WIM_Plugin {
         }
 
         public static void DisableScrolling(in MiniatureModel WIM) {
-            var boxMask = GameObject.Find("Box Mask");
+            var boxMask = GameObject.FindWithTag("Box Mask");
 #if UNITY_EDITOR
             if(boxMask) Undo.DestroyObjectImmediate (boxMask);
 #else

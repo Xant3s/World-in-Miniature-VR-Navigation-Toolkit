@@ -6,9 +6,11 @@ using UnityEngine.Assertions;
 using WIM_Plugin;
 
 public class PickupPreviewScreen : MonoBehaviour {
-    private bool pickupMode = false;
+    private MiniatureModel WIM;
     private Transform thumb;
     private Transform index;
+    private Transform WIMTransform;
+    private bool pickupMode;
     private bool thumbIsGrabbing;
     private bool indexIsGrabbing;
     private bool isGrabbing;
@@ -16,8 +18,12 @@ public class PickupPreviewScreen : MonoBehaviour {
 
 
     private void Awake() {
-        thumb = GameObject.FindWithTag("ThumbR").transform;
-        index = GameObject.FindWithTag("IndexR").transform;
+        thumb = GameObject.FindWithTag("ThumbR")?.transform;
+        index = GameObject.FindWithTag("IndexR")?.transform;
+        WIMTransform = GameObject.FindWithTag("WIM")?.transform;
+        Assert.IsNotNull(WIMTransform);
+        WIM = WIMTransform.GetComponent<MiniatureModel>();
+        Assert.IsNotNull(WIM);
         Assert.IsNotNull(thumb);
         Assert.IsNotNull(index);
     }
@@ -72,10 +78,6 @@ public class PickupPreviewScreen : MonoBehaviour {
     }
 
     private void startGrabbing() {
-        var WIMTransform = GameObject.Find("WIM").transform;
-        var WIM = WIMTransform.GetComponent<MiniatureModel>();
-        Assert.IsNotNull(WIM);
-
         // Spawn new preview screen.
         var previewScreen = WIMTransform.GetComponent<PreviewScreen>();
         previewScreen.ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
@@ -89,8 +91,6 @@ public class PickupPreviewScreen : MonoBehaviour {
 
     private void stopGrabbing() {
         if (stoppedGrabbing) return;
-        var WIMTransform = GameObject.Find("WIM").transform;
-        var WIM = WIMTransform.GetComponent<MiniatureModel>();
         var previewScreen = WIM.GetComponent<PreviewScreen>();
         var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);

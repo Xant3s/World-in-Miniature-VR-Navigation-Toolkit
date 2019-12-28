@@ -2,14 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
     public class Respawn : MonoBehaviour {
         private static readonly string actionName = "Respawn Button";
+        private MiniatureModel WIM;
         private WIMConfiguration config;
         private WIMData data;
         private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
+
+
+        private void Awake() {
+            if (!Application.isPlaying) return;
+            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+        }
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
@@ -32,7 +41,7 @@ namespace WIM_Plugin {
         }
 
         public void respawnWIM(bool maintainTransformRelativeToPlayer) {
-            var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+            if(!Application.isPlaying) return;
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             var WIMLevel = transform.GetChild(0);
@@ -45,9 +54,11 @@ namespace WIM_Plugin {
 
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
+            WIMLevel.tag = "WIM Level Old";
             data.PlayerRepresentationTransform.parent = null;
             data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
+            data.WIMLevelTransform.tag = null;
             var rb = GetComponent<Rigidbody>();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -99,7 +110,7 @@ namespace WIM_Plugin {
         }
 
         private void destroyOldWIMLevel() {
-            Destroy(GameObject.Find("WIM Level Old"));
+            Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
     }
 }
