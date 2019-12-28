@@ -50,11 +50,18 @@ namespace WIM_Plugin {
                 new GUIContent("Destination Always on the Ground",
                     "If active, the destination will automatically set to ground level. This protects the player from being teleported to a location in mid-air."),
                 WIM.Configuration.DestinationAlwaysOnTheGround);
+
+            var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
+            EditorGUI.BeginDisabledGroup(!destinationSelectionTouchAvailable);
             WIM.Configuration.DestinationSelectionMethod =
                 (DestinationSelection)EditorGUILayout.EnumPopup("Destination Selection Method",
                     WIM.Configuration.DestinationSelectionMethod);
-            if (WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup)
-            {
+            EditorGUI.EndDisabledGroup();
+            if (!destinationSelectionTouchAvailable) {
+                WIM.Configuration.DestinationSelectionMethod = DestinationSelection.Pickup;
+                EditorGUILayout.HelpBox("Add 'DestinationSelectionTouch' script to change destination selection method", MessageType.Info);
+            }
+            if (WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup) {
                 WIM.Configuration.DoubleTapInterval =
                     EditorGUILayout.FloatField("Double Tap Interval", WIM.Configuration.DoubleTapInterval);
             }
