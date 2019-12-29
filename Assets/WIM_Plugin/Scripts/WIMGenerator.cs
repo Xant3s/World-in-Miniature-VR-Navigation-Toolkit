@@ -224,6 +224,7 @@ namespace WIM_Plugin {
 #endif
             WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
             WIMLevel.name = "WIM Level";
+            WIMLevel.tag = null;
             WIMLevel.gameObject.isStatic = false;
             foreach (Transform child in WIMLevel) {
                 Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
