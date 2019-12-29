@@ -50,15 +50,11 @@ namespace WIM_Plugin {
 
         public static Material LoadDefaultMaterial(MiniatureModel WIM) {
             Material material;
-            if(WIM.Configuration.SemiTransparent) {
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                material.SetFloat(transparency, 1 - WIM.Configuration.Transparency);
-            }
-            else {
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/Dissolve");
-            }
+            material = Resources.Load<Material>("Materials/Dissolve");
+            material.shader = Shader.Find("Shader Graphs/Dissolve");
+            var fullyOpaque = 1;
+            var semiTransparent = 1 - WIM.Configuration.Transparency;
+            material.SetFloat(transparency, WIM.Configuration.SemiTransparent ? semiTransparent : fullyOpaque);
             return material;
         }
 
