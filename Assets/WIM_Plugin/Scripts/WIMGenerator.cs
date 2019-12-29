@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 namespace WIM_Plugin {
     // Generates the actual WIM. Also takes care of configurating the WIM, i.e. set materials and shaders etc.
     public static class WIMGenerator {
-        private static readonly int transparency = Shader.PropertyToID("Vector1_964AF7C");
+        private static readonly int alpha = Shader.PropertyToID("_Alpha");
         private static readonly int baseMapColor = Shader.PropertyToID("_BaseMapColor");
 
         // Load the material appropriate to current WIM configuration.
@@ -50,15 +50,11 @@ namespace WIM_Plugin {
 
         public static Material LoadDefaultMaterial(MiniatureModel WIM) {
             Material material;
-            if(WIM.Configuration.SemiTransparent) {
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/DissolveTransparent");
-                material.SetFloat(transparency, 1 - WIM.Configuration.Transparency);
-            }
-            else {
-                material = Resources.Load<Material>("Materials/Dissolve");
-                material.shader = Shader.Find("Shader Graphs/Dissolve");
-            }
+            material = Resources.Load<Material>("Materials/Dissolve");
+            material.shader = Shader.Find("Shader Graphs/Dissolve");
+            var fullyOpaque = 1;
+            var semiTransparent = 1 - WIM.Configuration.Transparency;
+            material.SetFloat(alpha, WIM.Configuration.SemiTransparent ? semiTransparent : fullyOpaque);
             return material;
         }
 
