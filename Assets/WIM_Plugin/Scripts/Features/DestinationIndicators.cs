@@ -50,7 +50,7 @@ namespace WIM_Plugin {
                 Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
             data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
             // TODO: Decouple Preview screen config
-            var p = GameObject.Find("WIM").GetComponent<PreviewScreen>();
+            var p = GameObject.FindWithTag("WIM").GetComponent<PreviewScreen>();
             if(p && p.Config.PreviewScreen && !p.Config.AutoPositionPreviewScreen)
                 data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
             return data.DestinationIndicatorInWIM;

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
-using Debug = System.Diagnostics.Debug;
 
 namespace WIM_Plugin {
     public class PickupDestinationUpdate : MonoBehaviour {
@@ -18,6 +16,7 @@ namespace WIM_Plugin {
             SecondTap
         }
 
+        private MiniatureModel WIM;
         private TapState tapState;
         private bool pickupMode = false;
         private Transform thumb;
@@ -44,10 +43,12 @@ namespace WIM_Plugin {
         }
 
         private void Awake() {
-            thumb = GameObject.FindWithTag("ThumbR").transform;
-            index = GameObject.FindWithTag("IndexR").transform;
+            thumb = GameObject.FindWithTag("ThumbR")?.transform;
+            index = GameObject.FindWithTag("IndexR")?.transform;
+            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
+            Assert.IsNotNull(WIM);
         }
 
 
@@ -61,7 +62,7 @@ namespace WIM_Plugin {
         private void Update() {
             var capLowerCenter = transform.position - transform.up * transform.localScale.y;
             var capUpperCenter = transform.position + transform.up * transform.localScale.y;
-            var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().Configuration.ScaleFactor * 1.0f;
+            var radius = WIM.Configuration.ScaleFactor * 1.0f;
             var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
             thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
             indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
@@ -83,8 +84,6 @@ namespace WIM_Plugin {
                     case TapState.WaitingForSecondTap when indexIsTouching && !thumbIsTouching:
                         // 2nd tap
                         tapState = TapState.SecondTap;
-                        var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
-                        Debug.Assert(WIM != null, nameof(WIM) + " != null");
                         WIM.ConfirmTravel();
                         break;
                 }
@@ -118,10 +117,6 @@ namespace WIM_Plugin {
         }
 
         private void startGrabbing() {
-            var WIMTransform = GameObject.Find("WIM").transform;
-            var WIM = WIMTransform.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-
             // Remove existing destination indicator (except "this").
             RemoveDestinationIndicatorsExceptWIM(WIM);
 
@@ -140,12 +135,8 @@ namespace WIM_Plugin {
         }
 
         private void stopGrabbing() {
-            var WIMTransform = GameObject.Find("WIM").transform;
-            var WIM = WIMTransform.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-
             // Let go. 
-            WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
+            WIM.Data.DestinationIndicatorInWIM.parent = WIM.transform.GetChild(0);
 
             // Create destination indicator in level. Includes snap to ground.
             if (!WIM.Data.DestinationIndicatorInLevel)

@@ -23,7 +23,8 @@ namespace WIM_Plugin {
         private void createController(WIMConfiguration config, WIMData data) {
             if(!this.Config.TravelPreviewAnimation) return;
             Assert.IsNotNull(this.Config, "Travel preview configuration is missing.");
-            var travelPreview = GameObject.Find("WIM").GetComponent<TravelPreviewAnimation>();
+            var WIMObj = GameObject.FindWithTag("WIM");
+            var travelPreview = WIMObj.GetComponent<TravelPreviewAnimation>();
             if (travelPreview.Data.TravelPreviewAnimationObj) travelPreview.Data.TravelPreviewAnimationObj.transform.parent = null;
             Destroy(travelPreview.Data.TravelPreviewAnimationObj);
             travelPreview.Data.TravelPreviewAnimationObj = new GameObject("Travel Preview Animation");
@@ -33,7 +34,7 @@ namespace WIM_Plugin {
             travelPreviewController.DestinationIndicator = config.DestinationIndicator;
             travelPreviewController.AnimationSpeed = this.Config.TravelPreviewAnimationSpeed;
             travelPreviewController.WIMLevelTransform = data.WIMLevelTransform;
-            travelPreviewController.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
+            travelPreviewController.Converter = WIMObj.GetComponent<MiniatureModel>().Converter;
         }
     }
 }

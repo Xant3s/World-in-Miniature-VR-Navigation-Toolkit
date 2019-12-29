@@ -13,10 +13,10 @@ namespace WIM_Plugin {
 
         private void Start() {
             switch(hand) {
-                case Hand.HAND_L:
+                case Hand.LeftHand:
                     target = GameObject.FindWithTag("HandL").transform;
                     break;
-                case Hand.HAND_R:
+                case Hand.RightHand:
                     target = GameObject.FindWithTag("HandR").transform;
                     break;
             }

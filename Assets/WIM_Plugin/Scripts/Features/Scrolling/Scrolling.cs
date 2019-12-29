@@ -39,7 +39,7 @@ namespace WIM_Plugin {
         }
 
         private void OnDestroy() {
-            var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
+            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             if(!WIM) return;
             WIMGenerator.DisableScrolling(WIM);
             WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);

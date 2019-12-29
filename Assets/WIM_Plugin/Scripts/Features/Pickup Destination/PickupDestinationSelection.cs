@@ -10,9 +10,10 @@ namespace WIM_Plugin {
     public class PickupDestinationSelection : MonoBehaviour {
         public float DoubleTapInterval { get; set; } = 2;
 
-        private bool pickupMode = false;
+        private MiniatureModel WIM;
         private Transform thumb;
         private Transform index;
+        private bool pickupMode = false;
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
@@ -22,10 +23,12 @@ namespace WIM_Plugin {
 
 
         private void Awake() {
-            thumb = GameObject.FindWithTag("ThumbR").transform;
-            index = GameObject.FindWithTag("IndexR").transform;
+            thumb = GameObject.FindWithTag("ThumbR")?.transform;
+            index = GameObject.FindWithTag("IndexR")?.transform;
+            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
+            Assert.IsNotNull(WIM);
         }
 
         private void OnEnable() {
@@ -45,7 +48,7 @@ namespace WIM_Plugin {
         private void Update() {
             var capLowerCenter = transform.position - transform.up * transform.localScale.y;
             var capUpperCenter = transform.position + transform.up * transform.localScale.y;
-            var radius = GameObject.Find("WIM").GetComponent<MiniatureModel>().Configuration.ScaleFactor * 1.0f;
+            var radius = WIM.Configuration.ScaleFactor * 1.0f;
             var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
             thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
             indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
@@ -79,10 +82,6 @@ namespace WIM_Plugin {
         }
 
         private void startGrabbing() {
-            var WIMTransform = transform.root;
-            var WIM = WIMTransform.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-
             // Remove existing destination indicator.
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
@@ -97,13 +96,9 @@ namespace WIM_Plugin {
         }
 
         private void stopGrabbing() {
-            var WIMTransform = transform.root;
-            var WIM = WIMTransform.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-
             // Let go.
             if (!WIM.Data.DestinationIndicatorInWIM) return;
-            WIM.Data.DestinationIndicatorInWIM.parent = WIMTransform.GetChild(0);
+            WIM.Data.DestinationIndicatorInWIM.parent = WIM.transform.GetChild(0);
 
             // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
             Invoke(nameof(allowUpdates), 1);
@@ -117,9 +112,6 @@ namespace WIM_Plugin {
         }
 
         private void allowUpdates() {
-            var WIMTransform = transform.root;
-            var WIM = WIMTransform.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
             Assert.IsNotNull(WIM.Data.DestinationIndicatorInWIM);
             WIM.Data.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>().DoubleTapInterval =
                 DoubleTapInterval;

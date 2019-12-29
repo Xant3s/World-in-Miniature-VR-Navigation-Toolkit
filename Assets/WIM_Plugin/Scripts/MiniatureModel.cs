@@ -44,8 +44,8 @@ namespace WIM_Plugin {
             Data = ScriptableObject.CreateInstance<WIMData>();
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             travelStrategy = new InstantTravel();
-            Data.WIMLevelTransform = GameObject.Find("WIM Level")?.transform;
-            Data.LevelTransform = GameObject.Find("Level")?.transform;
+            Data.WIMLevelTransform = transform.Find("WIM Level");
+            Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
             Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
             Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
             Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;

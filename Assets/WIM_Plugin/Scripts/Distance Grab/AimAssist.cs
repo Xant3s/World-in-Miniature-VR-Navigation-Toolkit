@@ -16,22 +16,22 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            if (hand == Hand.HAND_L) {
+            if (hand == Hand.LeftHand) {
                 MiniatureModel.OnLeftGrabButtonDown += grabButtonDown;
                 MiniatureModel.OnLeftGrabButtonUp += grabButtonUp;
             }
-            else if (hand == Hand.HAND_R) {
+            else if (hand == Hand.RightHand) {
                 MiniatureModel.OnRightGrabButtonDown += grabButtonDown;
                 MiniatureModel.OnRightGrabButtonUp += grabButtonUp;
             }
         }
 
         private void OnDisable() {
-            if (hand == Hand.HAND_L) {
+            if (hand == Hand.LeftHand) {
                 MiniatureModel.OnLeftGrabButtonDown -= grabButtonDown;
                 MiniatureModel.OnLeftGrabButtonUp -= grabButtonUp;
             }
-            else if (hand == Hand.HAND_R) {
+            else if (hand == Hand.RightHand) {
                 MiniatureModel.OnRightGrabButtonDown -= grabButtonDown;
                 MiniatureModel.OnRightGrabButtonUp -= grabButtonUp;
             }

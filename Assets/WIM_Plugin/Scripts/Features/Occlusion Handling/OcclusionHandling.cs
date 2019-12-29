@@ -9,7 +9,7 @@ namespace WIM_Plugin {
         [HideInInspector] public OcclusionHandlingConfiguration Config;
 
         private void OnDestroy() {
-            var WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
+            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             if(!WIM) return;
             WIMGenerator.CleanupOcclusionHandling();
             WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);

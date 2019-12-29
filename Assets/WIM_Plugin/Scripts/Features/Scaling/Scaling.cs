@@ -15,7 +15,8 @@ namespace WIM_Plugin {
         private OVRGrabbable grabbable;
         private Transform handL;
         private Transform handR;
-        private Hand scalingHand = Hand.NONE;
+        private Transform WIMTransform;
+        private Hand scalingHand = Hand.None;
         private float prevInterHandDistance;
         private bool leftScaleButtonPressed;
         private bool rightScaleButtonPressed;
@@ -38,7 +39,8 @@ namespace WIM_Plugin {
         }
 
         private void Awake() {
-            grabbable = GameObject.Find("WIM").GetComponent<OVRGrabbable>();
+            WIMTransform = GameObject.FindWithTag("WIM").transform;
+            grabbable = WIMTransform.GetComponent<OVRGrabbable>();
             handL = GameObject.FindWithTag("HandL").transform;
             handR = GameObject.FindWithTag("HandR").transform;
             Assert.IsNotNull(grabbable);
@@ -48,22 +50,22 @@ namespace WIM_Plugin {
 
         private void leftScalingButtonDown(WIMConfiguration config, WIMData data) {
             leftScaleButtonPressed = true;
-            updateScalingHand(rightScaleButtonPressed, Hand.HAND_L);
+            updateScalingHand(rightScaleButtonPressed, Hand.LeftHand);
         }
 
         private void leftScalingButtonUp(WIMConfiguration config, WIMData data) {
             leftScaleButtonPressed = false;
-            updateScalingHand(rightScaleButtonPressed, Hand.HAND_L);
+            updateScalingHand(rightScaleButtonPressed, Hand.LeftHand);
         }
 
         private void rightScalingButtonDown(WIMConfiguration config, WIMData data) {
             rightScaleButtonPressed = true;
-            updateScalingHand(rightScaleButtonPressed, Hand.HAND_R);
+            updateScalingHand(rightScaleButtonPressed, Hand.RightHand);
         }
 
         private void rightScalingButtonUp(WIMConfiguration config, WIMData data) {
             rightScaleButtonPressed = false;
-            updateScalingHand(rightScaleButtonPressed, Hand.HAND_R);
+            updateScalingHand(rightScaleButtonPressed, Hand.RightHand);
         }
 
         private void updateScalingHand(bool buttonPressed, Hand hand) {
@@ -82,7 +84,7 @@ namespace WIM_Plugin {
             }
             else if (!buttonPressed) {
                 // Stop scaling.
-                scalingHand = Hand.NONE;
+                scalingHand = Hand.None;
             }
         }
 
@@ -95,7 +97,7 @@ namespace WIM_Plugin {
             if (!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
 
             // Check if currently scaling. Abort if not.
-            if (scalingHand == Hand.NONE) return;
+            if (scalingHand == Hand.None) return;
 
             // Scale using inter hand distance delta.
             var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
@@ -109,24 +111,23 @@ namespace WIM_Plugin {
             }
 
             // Apply scale factor.
-            GameObject.Find("WIM").transform.localScale =
-                new Vector3(config.ScaleFactor, config.ScaleFactor, config.ScaleFactor);
+            WIMTransform.localScale = new Vector3(config.ScaleFactor, config.ScaleFactor, config.ScaleFactor);
 
             prevInterHandDistance = currInterHandDistance;
         }
 
         private Hand getGrabbingHand() {
-            return grabbable.grabbedBy.CompareTag("HandL") ? Hand.HAND_L : Hand.HAND_R;
+            return grabbable.grabbedBy.CompareTag("HandL") ? Hand.LeftHand : Hand.RightHand;
         }
 
         private Hand getOppositeHand(Hand hand) {
-            if (hand == Hand.NONE) return Hand.NONE;
-            return (hand == Hand.HAND_L) ? Hand.HAND_R : Hand.HAND_L;
+            if (hand == Hand.None) return Hand.None;
+            return (hand == Hand.LeftHand) ? Hand.RightHand : Hand.LeftHand;
         }
 
         private bool getHandIsInside(Hand hand) {
-            if (hand == Hand.NONE) return false;
-            var handTag = hand == Hand.HAND_L ? "HandL" : "HandR";
+            if (hand == Hand.None) return false;
+            var handTag = hand == Hand.LeftHand ? "HandL" : "HandR";
             var hitColliders = Physics.OverlapBox(transform.position, config.ActiveAreaBounds,
                 data.WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
             return hitColliders.Any(col => col.transform.root.CompareTag(handTag));

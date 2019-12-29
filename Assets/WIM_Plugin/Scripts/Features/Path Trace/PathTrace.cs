@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -8,6 +9,13 @@ namespace WIM_Plugin {
         public PathTraceConfiguration PathTraceConfig;
 
         private PathTraceController controller;
+        private MiniatureModel WIM;
+
+
+        private void Awake() {
+            WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+        }
 
         private void OnEnable() {
             MiniatureModel.OnPreTravel += createPostTravelPathTrace;
@@ -26,7 +34,7 @@ namespace WIM_Plugin {
             var emptyGO = new GameObject();
             var postTravelPathTraceObj = new GameObject("Post Travel Path Trace");
             controller = postTravelPathTraceObj.AddComponent<PathTraceController>();
-            controller.Converter = GameObject.Find("WIM").GetComponent<MiniatureModel>().Converter;
+            controller.Converter = WIM.Converter;
             controller.TraceDurationInSeconds = PathTraceConfig.TraceDuration;
             controller.OldPositionInWIM = Instantiate(emptyGO, data.WIMLevelTransform).transform;
             controller.OldPositionInWIM.position = data.PlayerRepresentationTransform.position;

@@ -8,7 +8,7 @@ namespace WIM_Plugin {
         private MiniatureModel WIM;
 
         private void Start() {
-            WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
+            WIM = GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>();
         }
 
         private void Update() {

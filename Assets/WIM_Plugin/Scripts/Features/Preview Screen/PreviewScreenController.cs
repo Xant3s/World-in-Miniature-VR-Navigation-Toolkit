@@ -8,19 +8,21 @@ namespace WIM_Plugin {
     public class PreviewScreenController : MonoBehaviour {
         private float DoubleTapInterval { get; } = 2;
 
+        private MiniatureModel WIM;
         private Transform index;
         private bool firstTap;
 
         private void Awake() {
-            index = GameObject.FindWithTag("IndexR").transform;
+            index = GameObject.FindWithTag("IndexR")?.transform;
+            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(index);
+            Assert.IsNotNull(WIM);
         }
 
         private void OnTriggerEnter(Collider other) {
             if(other.transform != index) return;
             if(transform.root.CompareTag("HandR")) return;
             if(firstTap) {
-                var WIM = GameObject.Find("WIM").GetComponent<MiniatureModel>();
                 WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
             }
             else {

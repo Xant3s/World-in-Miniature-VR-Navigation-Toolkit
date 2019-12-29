@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     public enum OcclusionHandlingMethod { None, MeltWalls, CutoutView }
-    public enum Hand { NONE, HAND_L, HAND_R }
-    public enum DestinationSelection { Pickup, Selection }
+    public enum Hand { None, LeftHand, RightHand }
+    public enum DestinationSelection { Pickup, Touch }
 }
 
