@@ -10,9 +10,23 @@ namespace WIM_Plugin {
     public class PickupDestinationSelection : MonoBehaviour {
         public float DoubleTapInterval { get; set; } = 2;
 
+        public bool HightlightFX {
+            get => hightlightFX;
+            set {
+                hightlightFX = value;
+                if (GetComponent<Renderer>()) {
+                    material.color = value ? hightlightColor : defaultColor;
+                }
+            }
+        }
+
         private MiniatureModel WIM;
+        private Material material;
         private Transform thumb;
         private Transform index;
+        private Color defaultColor;
+        private Color hightlightColor = Color.red;
+        private bool hightlightFX;
         private bool pickupMode = false;
         private bool thumbIsTouching;
         private bool indexIsTouching;
@@ -26,9 +40,12 @@ namespace WIM_Plugin {
             thumb = GameObject.FindWithTag("ThumbR")?.transform;
             index = GameObject.FindWithTag("IndexR")?.transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            material = GetComponentInChildren<Renderer>()?.material;
+            defaultColor = material.color;
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
+            Assert.IsNotNull(material);
         }
 
         private void OnEnable() {
@@ -53,6 +70,7 @@ namespace WIM_Plugin {
             thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
             indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
+            HightlightFX = thumbIsTouching || indexIsTouching;
             var thumbAndIndexPressed = pickupThumbButtonPressed && pickupIndexButtonPressed;
 
             if (!isGrabbing && thumbAndIndexTouching && thumbAndIndexPressed) {

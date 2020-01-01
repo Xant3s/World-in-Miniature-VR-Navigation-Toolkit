@@ -6,7 +6,21 @@ using UnityEngine.Assertions;
 using WIM_Plugin;
 
 public class PickupPreviewScreen : MonoBehaviour {
+    public bool HightlightFX {
+        get => hightlightFX;
+        set {
+            hightlightFX = value;
+            if (GetComponent<Renderer>()) {
+                material.SetFloat("_Alpha", value ? defaultAlpha + .1f : defaultAlpha);
+            }
+        }
+    }
+
+    private static readonly int color = Shader.PropertyToID("_Color");
     private MiniatureModel WIM;
+    private Material material;
+    private float defaultAlpha = .33f;
+    private bool hightlightFX;
     private Transform thumb;
     private Transform index;
     private Transform WIMTransform;
@@ -23,6 +37,8 @@ public class PickupPreviewScreen : MonoBehaviour {
         WIMTransform = GameObject.FindWithTag("WIM")?.transform;
         Assert.IsNotNull(WIMTransform);
         WIM = WIMTransform.GetComponent<MiniatureModel>();
+        material = GetComponent<Renderer>()?.material;
+        defaultAlpha = material.GetFloat("_Alpha");
         Assert.IsNotNull(WIM);
         Assert.IsNotNull(thumb);
         Assert.IsNotNull(index);
@@ -62,18 +78,22 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if(other.transform == thumb) {
             thumbIsGrabbing = true;
+            HightlightFX = true;
         }
         else if(other.transform == index) {
             indexIsGrabbing = true;
+            HightlightFX = true;
         }
     }
 
     private void OnTriggerExit(Collider other) {
         if(other.transform == thumb) {
             thumbIsGrabbing = false;
+            HightlightFX = false;
         }
         else if(other.transform == index) {
             indexIsGrabbing = false;
+            HightlightFX = false;
         }
     }
 

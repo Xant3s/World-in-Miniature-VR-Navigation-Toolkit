@@ -9,6 +9,19 @@ namespace WIM_Plugin {
     public class PickupDestinationUpdate : MonoBehaviour {
         public float DoubleTapInterval { get; set; } = 2;
 
+        public bool HightlightFX
+        {
+            get => hightlightFX;
+            set
+            {
+                hightlightFX = value;
+                if (GetComponent<Renderer>())
+                {
+                    material.color = value ? hightlightColor : defaultColor;
+                }
+            }
+        }
+
         private enum TapState {
             None,
             FirstTap,
@@ -18,9 +31,13 @@ namespace WIM_Plugin {
 
         private MiniatureModel WIM;
         private TapState tapState;
-        private bool pickupMode = false;
+        private Material material;
         private Transform thumb;
         private Transform index;
+        private Color defaultColor;
+        private Color hightlightColor = Color.cyan;
+        private bool hightlightFX;
+        private bool pickupMode = false;
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
@@ -43,12 +60,16 @@ namespace WIM_Plugin {
         }
 
         private void Awake() {
+            ColorUtility.TryParseHtmlString("#25DFFF", out hightlightColor);
             thumb = GameObject.FindWithTag("ThumbR")?.transform;
             index = GameObject.FindWithTag("IndexR")?.transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            material = GetComponentInChildren<Renderer>()?.material;
+            defaultColor = material.color;
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
+            Assert.IsNotNull(material);
         }
 
 
@@ -68,6 +89,7 @@ namespace WIM_Plugin {
             indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             var thumbAndIndexPressed = pickupThumbButtonPressed && pickupIndexButtonPressed;
+            HightlightFX = thumbIsTouching || indexIsTouching;
 
             if (!isGrabbing) {
                 // Handle double tap
