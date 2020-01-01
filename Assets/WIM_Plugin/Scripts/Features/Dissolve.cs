@@ -8,7 +8,7 @@ namespace WIM_Plugin {
         private Material mat;
         private bool isInverse;
         private float endTime;
-        private static readonly int progressProperty = Shader.PropertyToID("Vector1_461A9E8C");
+        private static readonly int progressProperty = Shader.PropertyToID("_Progress");
 
         private void Start() {
             mat = GetComponent<Renderer>().material;
