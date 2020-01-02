@@ -33,7 +33,7 @@ namespace WIM_Plugin {
             EditorGUI.BeginChangeCheck();
             config.OcclusionHandlingMethod = (OcclusionHandlingMethod) EditorGUILayout.EnumPopup(
                 new GUIContent("Occlusion Handling Method",
-                    "Select occlusion handling strategy. Disable for scrolling."),
+                    "Select occlusion handling strategy."),
                 config.OcclusionHandlingMethod);
             if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
             if(config.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) {

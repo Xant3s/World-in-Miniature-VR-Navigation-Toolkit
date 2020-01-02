@@ -19,7 +19,7 @@ namespace WIM_Plugin {
             Material material;
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                material = Resources.Load<Material>("Materials/BoxCutout");
+                material = Resources.Load<Material>("Materials/CombinedCutout");
                 setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                 return material;
             }
@@ -28,12 +28,12 @@ namespace WIM_Plugin {
             if(occlusionHandlingConfig) {
                 switch (occlusionHandlingConfig.OcclusionHandlingMethod) {
                     case OcclusionHandlingMethod.MeltWalls: {
-                        material = Resources.Load<Material>("Materials/CapsuleCutout");
-                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
+                            material = Resources.Load<Material>("Materials/CombinedCutout");
+                            setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                         break;
                     }
                     case OcclusionHandlingMethod.CutoutView: {
-                        material = Resources.Load<Material>("Materials/ConeCutout");
+                        material = Resources.Load<Material>("Materials/CombinedCutout");
                         setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
                         break;
                     }
@@ -332,7 +332,9 @@ namespace WIM_Plugin {
             Undo.RegisterCreatedObjectUndo (spotlightObj, "Spotlight Mask");
 #endif
             spotlightObj.AddComponent<Light>().type = LightType.Spot;
-            spotlightObj.AddComponent<ConeController>().materials = new[] {material};
+            var controller = spotlightObj.AddComponent<ConeController>();
+            controller.materials = new[] {material};
+            controller.SetConeEnabled(true);
             var mainCamera = Camera.main;
             if(mainCamera) spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
         }
@@ -344,7 +346,9 @@ namespace WIM_Plugin {
             Undo.RegisterCreatedObjectUndo (cylinderMask, "configureMeltWalls");
 #endif
             cylinderMask.AddComponent<FollowHand>().hand = Hand.RightHand;
-            cylinderMask.AddComponent<CapsuleController>().materials = new[] {material};
+            var controller = cylinderMask.AddComponent<CapsuleController>();
+            controller.materials = new[] {material};
+            controller.SetCapsuleEnabled(true);
         }
 
         public static void CleanupOcclusionHandling() {
@@ -367,7 +371,9 @@ namespace WIM_Plugin {
             Undo.RegisterCreatedObjectUndo (maskController, "Created Box Mask");
 #endif
             maskController.AddComponent<AlignWith>().Target = WIM.transform;
-            maskController.AddComponent<BoxController>().materials = new[] {material};
+            var controller = maskController.AddComponent<BoxController>();
+            controller.materials = new[] {material};
+            controller.SetBoxEnabled(true);
             removeAllColliders(WIM.transform);
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
             RemoveDissolveScript(WIM);
@@ -393,13 +399,12 @@ namespace WIM_Plugin {
             // Setup new configuration.
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
-            if(scrollingConfig && occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod != OcclusionHandlingMethod.None) scrollingConfig.AllowWIMScrolling = false;
             var material = LoadAppropriateMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
-            else if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
-            else if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
+            if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
+            if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
             UpdateScrollingMask(WIM);
         }
     }
