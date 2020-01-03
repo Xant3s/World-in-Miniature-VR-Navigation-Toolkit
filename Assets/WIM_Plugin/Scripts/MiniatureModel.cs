@@ -16,6 +16,7 @@ namespace WIM_Plugin {
         public WIMSpaceConverter Converter;
 
         public delegate void WIMAction(WIMConfiguration config, WIMData data);
+        public delegate void WIMAxisAction(WIMConfiguration config, WIMData data, float axis);
         public static event WIMAction OnInit;
         public static event WIMAction OnLateInit;
         public static event WIMAction OnUpdate;
@@ -24,6 +25,7 @@ namespace WIM_Plugin {
         public static event WIMAction OnPostTravel;
         public static event WIMAction OnPickupIndexButtonDown;
         public static event WIMAction OnPickupIndexButtonUp;
+        public static event WIMAxisAction OnPickpuIndexButton;
         public static event WIMAction OnPickupThumbButtonDown;
         public static event WIMAction OnPickupThumbButtonUp;
         public static event WIMAction OnLeftGrabButtonDown;
@@ -74,14 +76,11 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonDown,
-                InputManager.ButtonTrigger.ButtonDown);
-            InputManager.RegisterAction(pickupIndexActionName, pickpuIndexButtonUp,
-                InputManager.ButtonTrigger.ButtonUp);
-            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonDown,
-                InputManager.ButtonTrigger.ButtonDown);
-            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonUp,
-                InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(pickupIndexActionName, pickpuIndexButtonUp, InputManager.ButtonTrigger.ButtonUp);
+            InputManager.RegisterAction(pickupIndexActionName, pickupIndexButton);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterAction(pickupThumbActionName, pickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp);
             InputManager.RegisterAction(grabLActionName, leftGrabButtonDown, InputManager.ButtonTrigger.ButtonDown);
             InputManager.RegisterAction(grabLActionName, leftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp);
             InputManager.RegisterAction(grabRActionName, rightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown);
@@ -101,6 +100,10 @@ namespace WIM_Plugin {
 
         private void pickpuIndexButtonUp() {
             OnPickupIndexButtonUp?.Invoke(Configuration, Data);
+        }
+
+        private void pickupIndexButton(float axis) {
+            OnPickpuIndexButton?.Invoke(Configuration, Data, axis);
         }
 
         private void pickupThumbButtonDown() {

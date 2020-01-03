@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using UnityEditor;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
@@ -33,17 +32,49 @@ namespace WIM_Plugin {
         internal class InputAxisActionMapping {
             public string Name { get; }
             public string MappingKey { get; }
+            public bool Axis1D { get; }
             public InputManager.InputAxis3DAction AxisAction { get; }
+            public InputManager.InputAxis1DAction Axis1DAction { get; }
             public OVRInput.RawAxis2D Mapping { get; set; } = OVRInput.RawAxis2D.None;
+            public OVRInput.RawAxis1D Mapping1D { get; set; } = OVRInput.RawAxis1D.None;
 
             public InputAxisActionMapping(string name, InputManager.InputAxis3DAction axisAction,
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
+                this.Axis1D = false;
                 this.AxisAction = axisAction;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
                 if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
-                    this.Mapping = (OVRInput.RawAxis2D) mapper.InputMappings.Get(MappingKey);
+                    this.Mapping = (OVRInput.RawAxis2D)mapper.InputMappings.Get(MappingKey);
                 }
+            }
+
+            public InputAxisActionMapping(string name, InputManager.InputAxis1DAction axisAction,
+                OculusQuestMapper mapper = null) {
+                this.Name = name;
+                this.Axis1D = true;
+                this.Axis1DAction = axisAction;
+                MappingKey = "WIMInput_OculusQuestMapper_" + name;
+                if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
+                    this.Mapping1D = (OVRInput.RawAxis1D) mapper.InputMappings.Get(MappingKey);
+                }
+                int newMapping = 0;
+                switch ((int) this.Mapping1D) {
+                    case (int) OVRInput.RawButton.RIndexTrigger:
+                        newMapping = (int) OVRInput.RawAxis1D.RIndexTrigger;
+                        break;
+                    case (int) OVRInput.RawButton.RHandTrigger:
+                        newMapping = (int) OVRInput.RawAxis1D.RHandTrigger;
+                        break;
+                    case (int) OVRInput.RawButton.LIndexTrigger:
+                        newMapping = (int) OVRInput.RawAxis1D.LIndexTrigger;
+                        break;
+                    case (int) OVRInput.RawButton.LHandTrigger:
+                        newMapping = (int) OVRInput.RawAxis1D.LHandTrigger;
+                        break;
+                }
+
+                this.Mapping1D = (OVRInput.RawAxis1D) newMapping;
             }
         }
 
@@ -71,6 +102,10 @@ namespace WIM_Plugin {
             foreach (var m in InputManager.AxisActions) {
                 actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, this));
             }
+
+            foreach (var m in InputManager.Axis1DActions) {
+                actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, this));
+            }
         }
 
         private void Start() {
@@ -86,7 +121,12 @@ namespace WIM_Plugin {
             }
 
             foreach (var actionMapping in actionAxisMappings) {
-                actionMapping.AxisAction(OVRInput.Get(actionMapping.Mapping));
+                if (actionMapping.Axis1D) {
+                    actionMapping.Axis1DAction(OVRInput.Get(actionMapping.Mapping1D));
+                }
+                else {
+                    actionMapping.AxisAction(OVRInput.Get(actionMapping.Mapping));
+                }
             }
         }
 
