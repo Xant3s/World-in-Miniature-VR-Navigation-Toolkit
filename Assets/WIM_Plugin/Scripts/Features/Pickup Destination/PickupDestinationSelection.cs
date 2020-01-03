@@ -1,9 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
 
 
 namespace WIM_Plugin {
@@ -24,6 +24,8 @@ namespace WIM_Plugin {
         private Material material;
         private Transform thumb;
         private Transform index;
+        private Collider thumbCol;
+        private Collider indexCol;
         private Color defaultColor;
         private Color hightlightColor = Color.red;
         private bool hightlightFX;
@@ -46,6 +48,10 @@ namespace WIM_Plugin {
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
             Assert.IsNotNull(material);
+            thumbCol = thumb.GetComponent<Collider>();
+            indexCol = index.GetComponent<Collider>();
+            Assert.IsNotNull(thumbCol);
+            Assert.IsNotNull(indexCol);
         }
 
         private void OnEnable() {
@@ -63,12 +69,13 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            var capLowerCenter = transform.position - transform.up * transform.localScale.y;
-            var capUpperCenter = transform.position + transform.up * transform.localScale.y;
-            var radius = WIM.Configuration.ScaleFactor * 1.0f;
+            var height = transform.localScale.y * WIM.Configuration.ScaleFactor;
+            var capLowerCenter = transform.position - transform.up * height / 2.0f;
+            var capUpperCenter = transform.position + transform.up * height / 2.0f;
+            var radius = WIM.Configuration.ScaleFactor * transform.localScale.x / 2.0f;
             var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
-            thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
-            indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
+            thumbIsTouching = colliders.Contains(thumbCol);
+            indexIsTouching = colliders.Contains(indexCol);
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             HightlightFX = thumbIsTouching || indexIsTouching;
             var thumbAndIndexPressed = pickupThumbButtonPressed && pickupIndexButtonPressed;
