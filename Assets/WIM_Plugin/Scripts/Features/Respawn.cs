@@ -11,7 +11,7 @@ namespace WIM_Plugin {
         private MiniatureModel WIM;
         private WIMConfiguration config;
         private WIMData data;
-        private static readonly int progress = Shader.PropertyToID("Vector1_461A9E8C");
+        private static readonly int progress = Shader.PropertyToID("_Progress");
 
 
         private void Awake() {
@@ -96,17 +96,17 @@ namespace WIM_Plugin {
             if(maintainTransformRelativeToPlayer) transform.parent = null;
         }
 
-        private void resolveWIM(Transform WIM) {
+        private void resolveWIM(Transform WIMLevel) {
             const int resolveDuration = 1;
-            for(var i = 0; i < WIM.childCount; i++) {
-                var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            foreach (Transform child in WIMLevel) {
+                var d = child.GetComponent<Dissolve>();
                 if(d == null) continue;
                 d.durationInSeconds = resolveDuration;
-                WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat(progress, 1);
+                child.GetComponent<Renderer>().material.SetFloat(progress, 1);
                 d.PlayInverse();
             }
 
-            StartCoroutine(WIMVisualizationUtils.FixResolveBug(WIM, resolveDuration));
+            StartCoroutine(WIMVisualizationUtils.FixResolveBug(WIMLevel, resolveDuration));
         }
 
         private void destroyOldWIMLevel() {
