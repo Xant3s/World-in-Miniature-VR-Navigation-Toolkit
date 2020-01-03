@@ -9,14 +9,11 @@ namespace WIM_Plugin {
     public class PickupDestinationUpdate : MonoBehaviour {
         public float DoubleTapInterval { get; set; } = 2;
 
-        public bool HightlightFX
-        {
+        public bool HightlightFX {
             get => hightlightFX;
-            set
-            {
+            set {
                 hightlightFX = value;
-                if (GetComponent<Renderer>())
-                {
+                if (GetComponent<Renderer>()) {
                     material.color = value ? hightlightColor : defaultColor;
                 }
             }
@@ -34,6 +31,8 @@ namespace WIM_Plugin {
         private Material material;
         private Transform thumb;
         private Transform index;
+        private Collider thumbCol;
+        private Collider indexCol;
         private Color defaultColor;
         private Color hightlightColor = Color.cyan;
         private bool hightlightFX;
@@ -70,6 +69,10 @@ namespace WIM_Plugin {
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
             Assert.IsNotNull(material);
+            thumbCol = thumb.GetComponent<Collider>();
+            indexCol = index.GetComponent<Collider>();
+            Assert.IsNotNull(thumbCol);
+            Assert.IsNotNull(indexCol);
         }
 
 
@@ -81,9 +84,10 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            var capLowerCenter = transform.position - transform.up * transform.localScale.y;
-            var capUpperCenter = transform.position + transform.up * transform.localScale.y;
-            var radius = WIM.Configuration.ScaleFactor * 1.0f;
+            var height = transform.localScale.y * WIM.Configuration.ScaleFactor;
+            var capLowerCenter = transform.position - transform.up * height / 2.0f;
+            var capUpperCenter = transform.position + transform.up * height / 2.0f;
+            var radius = WIM.Configuration.ScaleFactor * transform.localScale.x / 2.0f;
             var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
             thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
             indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
