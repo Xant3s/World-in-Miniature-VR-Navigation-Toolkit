@@ -37,6 +37,8 @@ namespace WIM_Plugin {
         private static readonly string pickupThumbActionName = "Pickup Thumb Button";
         private static readonly string grabLActionName = "Left Grab Button";
         private static readonly string grabRActionName = "Right Grab Button";
+
+        private static readonly string touchActionName = "TouchDown";
         private TravelStrategy travelStrategy;
 
 
@@ -73,6 +75,33 @@ namespace WIM_Plugin {
             if (!Application.isPlaying) return;
             if (!ConfigurationIsThere()) return;
             OnUpdate?.Invoke(Configuration, Data);
+
+            //if (OVRInput.GetDown(OVRInput.RawTouch.A)) {
+            //    if (Application.isPlaying) {
+            //        GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
+            //    }
+            //}
+            //else if(OVRInput.GetUp(OVRInput.RawTouch.A)) {
+            //    if (Application.isPlaying)
+            //    {
+            //        GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Reverse();
+            //    }
+            //}
+        }
+
+        private void TouchDown() {
+            if (Application.isPlaying)
+            {
+                GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Test();
+            }
+        }
+
+        private void TouchUp()
+        {
+            if (Application.isPlaying)
+            {
+                GameObject.Find("VisualDebug").GetComponent<VisualDebug>().Reverse();
+            }
         }
 
         private void OnEnable() {
@@ -85,6 +114,9 @@ namespace WIM_Plugin {
             InputManager.RegisterAction(grabLActionName, leftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp);
             InputManager.RegisterAction(grabRActionName, rightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown);
             InputManager.RegisterAction(grabRActionName, rightGrabButtonUp, InputManager.ButtonTrigger.ButtonUp);
+
+            InputManager.RegisterTouchAction(touchActionName, TouchDown, InputManager.ButtonTrigger.ButtonDown);
+            InputManager.RegisterTouchAction(touchActionName, TouchUp, InputManager.ButtonTrigger.ButtonUp);
         }
 
         private void OnDisable() {
@@ -92,6 +124,8 @@ namespace WIM_Plugin {
             InputManager.UnregisterAction(pickupThumbActionName);
             InputManager.UnregisterAction(grabLActionName);
             InputManager.UnregisterAction(grabRActionName);
+
+            InputManager.UnregisterAction(touchActionName);
         }
 
         private void pickupIndexButtonDown() {

@@ -10,6 +10,8 @@ namespace WIM_Plugin {
 
         public delegate void InputButtonAction();
 
+        public delegate void InputButtonTouchAction();
+
         public delegate void InputAxis3DAction(Vector3 axis);
 
         public delegate void InputAxis1DAction(float axis);
@@ -19,6 +21,8 @@ namespace WIM_Plugin {
         public static Dictionary<string, Dictionary<ButtonTrigger, InputButtonAction>> ButtonActions =
             new Dictionary<string, Dictionary<ButtonTrigger, InputButtonAction>>();
 
+        public static Dictionary<string, Dictionary<ButtonTrigger, InputButtonTouchAction>> ButtonTouchActions =
+            new Dictionary<string, Dictionary<ButtonTrigger, InputButtonTouchAction>>();
 
         public static Dictionary<string, InputAxis3DAction> AxisActions = new Dictionary<string, InputAxis3DAction>();
 
@@ -29,6 +33,14 @@ namespace WIM_Plugin {
                 ButtonActions[name] = new Dictionary<ButtonTrigger, InputButtonAction>();
             }
             ButtonActions[name].Add(trigger, buttonAction);
+            OnUpdateActions?.Invoke();
+        }
+
+        public static void RegisterTouchAction(string name, InputButtonTouchAction buttonAction, ButtonTrigger trigger = ButtonTrigger.ButtonUp) {
+            if (!ButtonTouchActions.ContainsKey(name)) {
+                ButtonTouchActions[name] = new Dictionary<ButtonTrigger, InputButtonTouchAction>();
+            }
+            ButtonTouchActions[name].Add(trigger, buttonAction);
             OnUpdateActions?.Invoke();
         }
 
@@ -44,6 +56,7 @@ namespace WIM_Plugin {
 
         public static void UnregisterAction(string name) {
             ButtonActions.Remove(name);
+            ButtonTouchActions.Remove(name);
             AxisActions.Remove(name);
             Axis1DActions.Remove(name);
             OnUpdateActions?.Invoke();
