@@ -6,6 +6,8 @@ namespace WIM_Plugin {
     public static class InputManager {
         public enum ButtonTrigger { ButtonUp, ButtonDown, ButtonGet}
 
+        public delegate void VibrationAction(float frequency, float amplitude, Hand hand);
+
         public delegate void InputMappers();
 
         public delegate void InputButtonAction();
@@ -17,6 +19,8 @@ namespace WIM_Plugin {
         public delegate void InputAxis1DAction(float axis);
 
         public static event InputMappers OnUpdateActions;
+
+        public static event VibrationAction OnSetVibration;
 
         public static Dictionary<string, Dictionary<ButtonTrigger, InputButtonAction>> ButtonActions =
             new Dictionary<string, Dictionary<ButtonTrigger, InputButtonAction>>();
@@ -60,6 +64,10 @@ namespace WIM_Plugin {
             AxisActions.Remove(name);
             Axis1DActions.Remove(name);
             OnUpdateActions?.Invoke();
+        }
+
+        public static void SetVibration(float frequency, float amplitude, Hand hand) {
+            OnSetVibration?.Invoke(frequency, amplitude, hand);
         }
     }
 }
