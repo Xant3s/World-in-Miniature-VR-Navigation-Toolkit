@@ -107,12 +107,14 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
-            InputManager.OnUpdateActions -= UpdateActions;
+            InputManager.OnUpdateActions += UpdateActions;
+            InputManager.OnSetVibration += SetVibration;
             UpdateActions();
         }
 
         private void OnDisable() {
-            InputManager.OnUpdateActions += UpdateActions;
+            InputManager.OnUpdateActions -= UpdateActions;
+            InputManager.OnSetVibration -= SetVibration;
         }
 
         public void UpdateActions() {
@@ -133,6 +135,23 @@ namespace WIM_Plugin {
             foreach (var m in InputManager.Axis1DActions) {
                 actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, this));
             }
+        }
+
+        public void SetVibration(float frequency, float amplitude, Hand hand) {
+            OVRInput.Controller controller;
+            switch (hand) {
+                case Hand.LeftHand:
+                    controller = OVRInput.Controller.LTouch;
+                    break;
+                case Hand.RightHand:
+                    controller = OVRInput.Controller.RTouch;
+                    break;
+                default:
+                    controller = OVRInput.Controller.None;
+                    break;
+            }
+
+            OVRInput.SetControllerVibration(frequency, amplitude, controller);
         }
 
         private void Start() {

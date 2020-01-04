@@ -82,10 +82,12 @@ public class PickupPreviewScreen : MonoBehaviour {
         if(other.transform == thumb) {
             thumbIsGrabbing = true;
             HightlightFX = true;
+            vibrate();
         }
         else if(other.transform == index) {
             indexIsGrabbing = true;
             HightlightFX = true;
+            vibrate();
         }
     }
 
@@ -122,5 +124,14 @@ public class PickupPreviewScreen : MonoBehaviour {
         if(!previewScreenTransform) return;
         previewScreenTransform.parent = WIMTransform.GetChild(0);
         stoppedGrabbing = true;
+    }
+
+    private void vibrate() {
+        InputManager.SetVibration(frequency: .5f, amplitude: .1f, Hand.RightHand);
+        Invoke(nameof(stopVibration), time: .1f);
+    }
+
+    private void stopVibration() {
+        InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
     }
 }

@@ -82,8 +82,12 @@ namespace WIM_Plugin {
             var capUpperCenter = transform.position + transform.up * height / 2.0f;
             var radius = WIM.Configuration.ScaleFactor * transform.localScale.x / 2.0f;
             var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
+            var prevThumbIsTouching = thumbIsTouching;
+            var prevIndexIsTouching = indexIsTouching;
             thumbIsTouching = colliders.Contains(thumbCol);
             indexIsTouching = colliders.Contains(indexCol);
+            if (!prevIndexIsTouching && indexIsTouching ||
+                !prevThumbIsTouching && thumbIsTouching) vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             HightlightFX = thumbIsTouching || indexIsTouching;
 
@@ -162,6 +166,15 @@ namespace WIM_Plugin {
         private void resetDoubleTap() {
             tapState = TapState.None;
             CancelInvoke(nameof(resetDoubleTap));
+        }
+
+        private void vibrate() {
+            InputManager.SetVibration(frequency: .5f, amplitude: .1f, Hand.RightHand);
+            Invoke(nameof(stopVibration), time: .1f);
+        }
+
+        private void stopVibration() {
+            InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
         }
     }
 }
