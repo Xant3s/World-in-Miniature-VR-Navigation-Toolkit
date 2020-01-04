@@ -24,6 +24,17 @@ namespace WIM_Plugin {
                 }
             }
 
+            for (var i = 0; i < InputManager.ButtonTouchActions.Count; i++) {
+                EditorGUI.BeginChangeCheck();
+                mapper.actionButtonTouchMappings[i].Mapping =
+                    (OVRInput.RawTouch) EditorGUILayout.EnumFlagsField(mapper.actionButtonTouchMappings[i].Name,
+                        mapper.actionButtonTouchMappings[i].Mapping);
+                if (EditorGUI.EndChangeCheck()) {
+                    mapper.InputMappings.Set(mapper.actionButtonTouchMappings[i].MappingKey,
+                        (int) mapper.actionButtonTouchMappings[i].Mapping);
+                }
+            }
+
             for (var i = 0; i < InputManager.AxisActions.Count; i++) {
                 EditorGUI.BeginChangeCheck();
                 mapper.actionAxisMappings[i].Mapping =
