@@ -53,12 +53,12 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             MiniatureModel.OnPickpuIndexButton += pickupIndexButton;
-            MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
+            MiniatureModel.OnPickupThumbTouchUp += pickupThumbTouchUp;
         }
 
         private void OnDisable() {
             MiniatureModel.OnPickpuIndexButton -= pickupIndexButton;
-            MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
+            MiniatureModel.OnPickupThumbTouchUp -= pickupThumbTouchUp;
         }
 
         private void Update() {
@@ -85,8 +85,8 @@ namespace WIM_Plugin {
             if (!isGrabbing && axis != 1 && !stoppedGrabbing) stopGrabbing();
         }
 
-        private void pickupThumbButtonUp(WIMConfiguration config, WIMData data) {
-            if (!isGrabbing) stopGrabbing();
+        private void pickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+            if(!isGrabbing) stopGrabbing();
         }
 
         private void startGrabbing() {
@@ -105,6 +105,7 @@ namespace WIM_Plugin {
         }
 
         private void stopGrabbing() {
+            if (stoppedGrabbing) return;
             stoppedGrabbing = true;
 
             // Let go.

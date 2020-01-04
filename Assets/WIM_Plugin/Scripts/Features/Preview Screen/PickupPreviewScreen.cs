@@ -16,7 +16,6 @@ public class PickupPreviewScreen : MonoBehaviour {
         }
     }
 
-    private static readonly int color = Shader.PropertyToID("_Color");
     private MiniatureModel WIM;
     private Material material;
     private float defaultAlpha = .33f;
@@ -24,7 +23,6 @@ public class PickupPreviewScreen : MonoBehaviour {
     private Transform thumb;
     private Transform index;
     private Transform WIMTransform;
-    private bool pickupMode;
     private bool thumbIsGrabbing;
     private bool indexIsGrabbing;
     private bool isGrabbing;
@@ -47,11 +45,13 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void OnEnable() {
         MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
         MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
+        MiniatureModel.OnPickupThumbTouchUp += pickupThumbTouchUp;
     }
 
     private void OnDisable() {
         MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
         MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
+        MiniatureModel.OnPickupThumbTouchUp -= pickupThumbTouchUp;
     }
 
     private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
@@ -62,6 +62,9 @@ public class PickupPreviewScreen : MonoBehaviour {
         if (!isGrabbing) stopGrabbing();
     }
 
+    private void pickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+        if (!isGrabbing) stopGrabbing();
+    }
 
     private void Update() {
         var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
