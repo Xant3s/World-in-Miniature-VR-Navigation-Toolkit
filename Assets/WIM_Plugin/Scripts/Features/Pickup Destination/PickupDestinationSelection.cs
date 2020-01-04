@@ -29,13 +29,10 @@ namespace WIM_Plugin {
         private Color defaultColor;
         private Color hightlightColor = Color.red;
         private bool hightlightFX;
-        private bool pickupMode = false;
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
         private bool stoppedGrabbing;
-        private bool pickupIndexButtonPressed;
-        private bool pickupThumbButtonPressed;
 
 
         private void Awake() {
@@ -55,16 +52,12 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnPickupIndexButtonDown += pickupIndexButtonDown;
-            MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonDown += pickupThumbButtonDown;
+            MiniatureModel.OnPickpuIndexButton += pickupIndexButton;
             MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickupIndexButtonDown -= pickupIndexButtonDown;
-            MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonDown -= pickupThumbButtonDown;
+            MiniatureModel.OnPickpuIndexButton -= pickupIndexButton;
             MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
         }
 
@@ -78,32 +71,22 @@ namespace WIM_Plugin {
             indexIsTouching = colliders.Contains(indexCol);
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             HightlightFX = thumbIsTouching || indexIsTouching;
-            var thumbAndIndexPressed = pickupThumbButtonPressed && pickupIndexButtonPressed;
 
-            if (!isGrabbing && thumbAndIndexTouching && thumbAndIndexPressed) {
+            if (!isGrabbing && thumbAndIndexTouching) {
                 isGrabbing = true;
                 startGrabbing();
             }
-            else if (isGrabbing && !thumbAndIndexPressed) {
+            else if (isGrabbing && !thumbAndIndexTouching) {
                 isGrabbing = false;
-                stopGrabbing();
             }
         }
 
-        private void pickupIndexButtonDown(WIMConfiguration config, WIMData data) {
-            pickupIndexButtonPressed = true;
-        }
-
-        private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
-            pickupIndexButtonPressed = false;
-        }
-
-        private void pickupThumbButtonDown(WIMConfiguration config, WIMData data) {
-            pickupThumbButtonPressed = true;
+        private void pickupIndexButton(WIMConfiguration config, WIMData data, float axis) {
+            if (!isGrabbing && axis != 1 && !stoppedGrabbing) stopGrabbing();
         }
 
         private void pickupThumbButtonUp(WIMConfiguration config, WIMData data) {
-            pickupThumbButtonPressed = false;
+            if (!isGrabbing) stopGrabbing();
         }
 
         private void startGrabbing() {
@@ -118,9 +101,12 @@ namespace WIM_Plugin {
             var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
             WIM.Data.DestinationIndicatorInWIM.position = midPos;
             WIM.Data.DestinationIndicatorInWIM.rotation = WIM.Data.PlayerRepresentationTransform.rotation;
+            stoppedGrabbing = false;
         }
 
         private void stopGrabbing() {
+            stoppedGrabbing = true;
+
             // Let go.
             if (!WIM.Data.DestinationIndicatorInWIM) return;
             WIM.Data.DestinationIndicatorInWIM.parent = WIM.transform.GetChild(0);

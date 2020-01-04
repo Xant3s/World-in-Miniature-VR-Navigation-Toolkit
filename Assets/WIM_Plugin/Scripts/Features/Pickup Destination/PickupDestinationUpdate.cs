@@ -36,25 +36,19 @@ namespace WIM_Plugin {
         private Color defaultColor;
         private Color hightlightColor = Color.cyan;
         private bool hightlightFX;
-        private bool pickupMode = false;
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
-        private bool pickupIndexButtonPressed;
-        private bool pickupThumbButtonPressed;
+        private bool stoppedGrabbing;
 
 
         private void OnEnable() {
-            MiniatureModel.OnPickupIndexButtonDown += pickupIndexButtonDown;
-            MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonDown += pickupThumbButtonDown;
+            MiniatureModel.OnPickpuIndexButton += pickupIndexButton;
             MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickupIndexButtonDown -= pickupIndexButtonDown;
-            MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonDown -= pickupThumbButtonDown;
+            MiniatureModel.OnPickpuIndexButton -= pickupIndexButton;
             MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
         }
 
@@ -75,7 +69,6 @@ namespace WIM_Plugin {
             Assert.IsNotNull(indexCol);
         }
 
-
         private void Start() {
             var collider = gameObject.AddComponent<CapsuleCollider>();
             collider.height = 2.2f;
@@ -89,10 +82,9 @@ namespace WIM_Plugin {
             var capUpperCenter = transform.position + transform.up * height / 2.0f;
             var radius = WIM.Configuration.ScaleFactor * transform.localScale.x / 2.0f;
             var colliders = Physics.OverlapCapsule(capLowerCenter, capUpperCenter, radius, LayerMask.GetMask("Hands"));
-            thumbIsTouching = colliders.Contains(thumb.GetComponent<Collider>());
-            indexIsTouching = colliders.Contains(index.GetComponent<Collider>());
+            thumbIsTouching = colliders.Contains(thumbCol);
+            indexIsTouching = colliders.Contains(indexCol);
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
-            var thumbAndIndexPressed = pickupThumbButtonPressed && pickupIndexButtonPressed;
             HightlightFX = thumbIsTouching || indexIsTouching;
 
             if (!isGrabbing) {
@@ -115,31 +107,22 @@ namespace WIM_Plugin {
                 }
             }
 
-            if (!isGrabbing && thumbAndIndexTouching && thumbAndIndexPressed) {
+            if (!isGrabbing && thumbAndIndexTouching) {
                 isGrabbing = true;
                 resetDoubleTap();
                 startGrabbing();
             }
-            else if (isGrabbing && !thumbAndIndexPressed) {
+            else if (isGrabbing && !thumbAndIndexTouching) {
                 isGrabbing = false;
-                stopGrabbing();
             }
         }
 
-        private void pickupIndexButtonDown(WIMConfiguration config, WIMData data) {
-            pickupIndexButtonPressed = true;
-        }
-
-        private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
-            pickupIndexButtonPressed = false;
-        }
-
-        private void pickupThumbButtonDown(WIMConfiguration config, WIMData data) {
-            pickupThumbButtonPressed = true;
+        private void pickupIndexButton(WIMConfiguration config, WIMData data, float axis) {
+            if (axis != 1 && !stoppedGrabbing) stopGrabbing();
         }
 
         private void pickupThumbButtonUp(WIMConfiguration config, WIMData data) {
-            pickupThumbButtonPressed = false;
+            if (!isGrabbing) stopGrabbing();
         }
 
         private void startGrabbing() {
@@ -150,6 +133,7 @@ namespace WIM_Plugin {
             WIM.Data.DestinationIndicatorInWIM.parent = index;
             var midPos = thumb.position + (index.position - thumb.position) / 2.0f;
             WIM.Data.DestinationIndicatorInWIM.position = midPos;
+            stoppedGrabbing = false;
         }
 
         private void RemoveDestinationIndicatorsExceptWIM(MiniatureModel WIM) {
@@ -161,6 +145,8 @@ namespace WIM_Plugin {
         }
 
         private void stopGrabbing() {
+            stoppedGrabbing = true;
+
             // Let go. 
             WIM.Data.DestinationIndicatorInWIM.parent = WIM.transform.GetChild(0);
 
@@ -173,7 +159,6 @@ namespace WIM_Plugin {
         }
 
         private void resetDoubleTap() {
-            //firstTap = false;
             tapState = TapState.None;
             CancelInvoke(nameof(resetDoubleTap));
         }
