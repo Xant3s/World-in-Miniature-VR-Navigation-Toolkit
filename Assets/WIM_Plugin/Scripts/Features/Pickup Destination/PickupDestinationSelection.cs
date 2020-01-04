@@ -32,7 +32,7 @@ namespace WIM_Plugin {
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
-        private bool stoppedGrabbing;
+        private bool stoppedGrabbing = true;
 
 
         private void Awake() {
