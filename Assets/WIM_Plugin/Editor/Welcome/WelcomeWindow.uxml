@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+
+xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+xsi:schemaLocation="
+                        UnityEngine.UIElements ../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+                        UnityEditor.UIElements ../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+                        UnityEditor.Rendering.Experimental.LookDev ../../../../UIElementsSchema/UnityEditor.Rendering.Experimental.LookDev.xsd
+                        UnityEditor.PackageManager.UI ../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
+"
+>
+    <engine:Label text="WIM Plugin" class="title" />
+    <engine:Label text="Version 0.9.0" name="versionLabel" class="bold" />
+    <engine:Label text="Created by Samuel Truman" class="bold" />
+    <engine:TextElement text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+    Eligendi non quis exercitationem culpa nesciunt nihil aut nostrum explicabo 
+    reprehenderit optio amet ab temporibus asperiores quasi cupiditate. 
+    Voluptatum ducimus voluptates voluptas?" name="WelcomeText" />
+    <engine:Button text="Open Example Scene" name="ExampleSceneBtn" />
+    <engine:Button text="Video" name="VideoBtn" />
+    <engine:Button text="Manual" name="ManualBtn" />
+    <engine:Button text="Support Email" name="SupportEmailBtn" />
+    <engine:Toggle text="Never Show Again" name="showOnStartup" />
+    
+</engine:UXML>
