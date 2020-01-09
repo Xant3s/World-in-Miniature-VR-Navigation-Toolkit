@@ -1,21 +1,76 @@
-.title{
-    color: #FF0000;
+Button {
+    height: 120px;
+    width: 120px;
+    margin: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    justify-content: flex-end;
+    /*padding: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 12px;*/
+}
+
+Label {
+    margin-bottom: 10px;
+}
+
+TextElement {
+    font-size: 12px;
+}
+
+.button-icon {
+    pointer-events: none;
+    width: 90px;
+    height: 90px;
+    padding: 10px;
+    justify-content: center;
+}
+
+.button-label {
+}
+
+.unity-button {
+    background-image: url("/Assets/WIM_Plugin/Sprites/button_up.png");
+}
+
+.unity-button:hover {
+    background-image: url("/Assets/WIM_Plugin/Sprites/button_over.png");
+}
+
+.unity-button:active {
+    background-image: url("/Assets/WIM_Plugin/Sprites/button_down.png");
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.no-padding {
+    padding: 0px;
+}
+
+.title {
+    color: rgb(0, 255, 255); /* light blue */
     -unity-font-style: bold;
-    font-size: 20px;
-    align-item: center;
+    font-size: 30px;
+    display: flex;
+    margin-left: 100px;
 }
 
-.bold{
+.url {
+    color: rgb(0, 255, 255); /* light blue */
+    -unity-font-style: italic;
+}
+
+.bold {
     -unity-font-style: bold;
 }
 
-Button{
-    -unity-font-align: left;
-}
-
-#versionLabel{
-}
-
-#WelcomeText{
-    padding-top: 5;
+#Content {
+    margin: 10px;
 }
