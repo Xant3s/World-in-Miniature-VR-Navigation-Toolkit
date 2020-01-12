@@ -117,11 +117,12 @@ public class PickupPreviewScreen : MonoBehaviour {
     private void stopGrabbing() {
         if (stoppedGrabbing) return;
         var previewScreen = WIM.GetComponent<PreviewScreen>();
-        var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
         Assert.IsNotNull(WIM);
+        var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
+        previewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
 
         // Let go.
-        if(!previewScreenTransform) return;
+        if (!previewScreenTransform) return;
         previewScreenTransform.parent = WIMTransform.GetChild(0);
         stoppedGrabbing = true;
     }

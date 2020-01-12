@@ -50,7 +50,6 @@ namespace WIM_Plugin {
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
             Destroy(Data.PreviewScreenTransform.GetComponent<FloatAbove>());
-            Data.PreviewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
             initPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
         }
