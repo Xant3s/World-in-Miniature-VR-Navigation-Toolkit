@@ -61,6 +61,12 @@ namespace WIM_Plugin {
             Assert.IsNotNull(camObj);
             var cam = camObj.GetComponent<Camera>() ?? camObj.AddComponent<Camera>();
             Assert.IsNotNull(cam);
+            //cam.cullingMask |= (1 << LayerMask.GetMask("WIM"));
+            //cam.cullingMask |= (1 << LayerMask.GetMask("Hands"));
+
+            //cam.cullingMask &= ~(1 << LayerMask.GetMask("WIM"));
+            cam.cullingMask &= ~(1 << LayerMask.GetMask("Hands"));
+
             cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
