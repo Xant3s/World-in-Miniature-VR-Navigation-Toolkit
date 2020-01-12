@@ -16,6 +16,7 @@ namespace WIM_Plugin {
         public static void ShowWindow() {
             var window = GetWindow<WelcomeWindow>();
             window.titleContent = new GUIContent("WIM Plugin Welcome");
+            window.minSize = new Vector2(566, 384);
         }
 
         public void OnEnable() {
