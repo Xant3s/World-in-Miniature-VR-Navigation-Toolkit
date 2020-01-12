@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -31,7 +30,7 @@ namespace WIM_Plugin {
             if (other.transform != index) return;
             if (transform.root.CompareTag("HandR")) return;
             if (firstTap) {
-                WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
+                //WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
             }
             else {
                 vibrate();

@@ -120,6 +120,7 @@ public class PickupPreviewScreen : MonoBehaviour {
         Assert.IsNotNull(WIM);
         var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
         previewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
+        previewScreenTransform.GetChild(0).gameObject.AddComponent<ClosePreviewScreen>();
 
         // Let go.
         if (!previewScreenTransform) return;
