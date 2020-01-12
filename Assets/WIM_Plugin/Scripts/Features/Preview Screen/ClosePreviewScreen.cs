@@ -23,9 +23,12 @@ namespace WIM_Plugin {
             GetComponent<Renderer>().enabled = true;
         }
 
+        private bool once;
         private void OnTriggerEnter(Collider other) {
             if (other.transform != index) return;
             if (transform.root.CompareTag("HandR")) return;
+            if (once) return;
+            once = true;
             startClosing();
         }
 

@@ -7,18 +7,29 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     public class PreviewScreenController : MonoBehaviour {
-        private float DoubleTapInterval { get; } = 2;
-
-        private MiniatureModel WIM;
         private Transform index;
-        private bool firstTap;
-        private bool ready; // Index finger is very likely to be inside object on creation of this script. Ready once finger is no longer within collider.
+        private Transform WIMTransform;
 
         private void Awake() {
+            WIMTransform = GameObject.FindWithTag("WIM")?.transform;
+            Assert.IsNotNull(WIMTransform);
             index = GameObject.FindWithTag("IndexR")?.transform;
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(index);
-            Assert.IsNotNull(WIM);
+        }
+
+        private void Start() {
+            var pickup = gameObject.AddComponent<Pickup>();
+            pickup.OnStartGrabbing += Pickup_OnStartGrabbing;
+            pickup.OnStopGrabbing += Pickup_OnStopGrabbing;
+        }
+
+        private void Pickup_OnStopGrabbing() {
+            transform.parent = WIMTransform.GetChild(0);
+        }
+
+        private void Pickup_OnStartGrabbing() {
+            transform.parent = index;
+            transform.localPosition = Vector3.zero;
         }
 
         private void OnDestroy() {
@@ -26,28 +37,9 @@ namespace WIM_Plugin {
         }
 
         private void OnTriggerEnter(Collider other) {
-            if (!ready) return;
             if (other.transform != index) return;
             if (transform.root.CompareTag("HandR")) return;
-            if (firstTap) {
-                //WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
-            }
-            else {
-                vibrate();
-                firstTap = true;
-                Invoke(nameof(resetDoubleTap), DoubleTapInterval);
-            }
-        }
-
-        private void OnTriggerExit(Collider other) {
-            if (ready) return;
-            if (other.transform != index) return;
-            if (transform.root.CompareTag("HandR")) return;
-            ready = true;
-        }
-
-        private void resetDoubleTap() {
-            firstTap = false;
+            vibrate();
         }
 
         private bool isVibrating;
