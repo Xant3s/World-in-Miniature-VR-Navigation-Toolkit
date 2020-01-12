@@ -1,0 +1,66 @@
+<UXML xmlns="UnityEngine.UIElements">
+  <VisualElement name="Content">
+
+    <VisualElement class="row">
+      <Label class="title" text="WIM Plugin"  />
+      <Label class="bold" name="VersionLabel" text="Version "   />
+      <Label class="bold" name="VersionNumber" text="0.9.0"/>
+    </VisualElement>
+
+    <VisualElement class="row">
+      <Label class="bold" text="Created by Samuel Truman"  />
+    </VisualElement>
+
+    <VisualElement class="row no-padding">
+      <TextElement text="Thank you for using WIM Plugin!"  />
+    </VisualElement>   
+    <VisualElement class="row no-padding">
+      <TextElement text="Here are some references to get you started as quickly as possible:"/>
+    </VisualElement>
+
+    <VisualElement class="row">
+      <!--<Button name="ExampleSceneBtn" text="Open Example Scene" tooltip="Switches to a simple example scene to demonstrate how to use the plugin." />
+      <Button name="VideoBtn" text="Video" tooltip="Plays a video to demonstrate how to use the plugin." />
+      <Button name="ManualBtn" text="Manual" tooltip="Opens the manual. The manual includes a quick start guide." />-->
+      <!--<Button name="SupportEmailBtn" text="Support Email" tooltip="Opens your email program to write an email to the plugin developer (me)." />-->
+     
+      <Button name="ExampleSceneBtn" tooltip="Switches to a simple example scene to demonstrate how to use the plugin">
+        <VisualElement class="row">
+          <Image name="SceneIcon" class="button-icon row" />
+        </VisualElement>
+        <Label class="button-label" text="Example Scene" />
+      </Button>
+
+      <Button name="VideoBtn" tooltip="Plays a video to demonstrate how to use the plugin.">
+        <VisualElement class="row">
+          <Image name="YoutubeIcon" class="button-icon row" />
+        </VisualElement>
+        <Label class="button-label" text="Tutorial" />
+      </Button>
+
+      <Button name="ManualBtn" tooltip="Opens the manual. The manual includes a quick start guide.">
+        <VisualElement class="row">
+          <Image name="ManualIcon" class="button-icon row" />
+        </VisualElement>
+        <Label class="button-label" text="Manual" />
+      </Button>
+
+      <Button name="SupportEmailBtn" tooltip="Opens your email program to write an email to the plugin developer (me).">
+        <VisualElement class="row">
+          <Image name="EmailIcon" class="button-icon row" />
+        </VisualElement>
+        <Label class="button-label" text="Support Email" />
+      </Button>
+    </VisualElement>
+
+    <VisualElement name="FullFeatureLabel" class="row">
+      <TextElement text="You are using the lite version. Consider upgrading to the "/>
+      <Label name="FullFeatureURL" class="url" text="full-feature version"/>
+      <TextElement text="."/>
+    </VisualElement>
+
+    <VisualElement class="row">
+      <Toggle name="showOnStartup" text="Show on startup" tooltip="If enabled, this window will be displayed on editor startup. Uncheck to disable. To show this window again, choose 'Window/WIM Plugin/Welcome Window' from the toolbar." />
+    </VisualElement>
+  </VisualElement>
+</UXML> 
