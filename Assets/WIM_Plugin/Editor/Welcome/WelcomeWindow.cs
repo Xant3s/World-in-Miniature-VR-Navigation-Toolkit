@@ -12,7 +12,7 @@ namespace WIM_Plugin {
         private static readonly string imagePath = "Assets/WIM_Plugin/Sprites/";
 
 
-        [MenuItem("Window/WIM Plugin/ Welcome Window")]
+        [MenuItem("Window/WIM Plugin/Welcome Window")]
         public static void ShowWindow() {
             var window = GetWindow<WelcomeWindow>();
             window.titleContent = new GUIContent("WIM Plugin Welcome");
