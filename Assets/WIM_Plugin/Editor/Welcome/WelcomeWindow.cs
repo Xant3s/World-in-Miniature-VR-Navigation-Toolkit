@@ -1,12 +1,13 @@
 using System;
+using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
     public class WelcomeWindow : EditorWindow {
-        private static readonly bool isProVersion = false;
         private static readonly string pluginVersion = "0.9.0";
         private static readonly string imagePath = "Assets/WIM_Plugin/Sprites/";
 
@@ -33,29 +34,34 @@ namespace WIM_Plugin {
             root.Q<Label>(name: "VersionNumber").text = pluginVersion;
 
             root.Q<Button>("ExampleSceneBtn").RegisterCallback<MouseUpEvent>((e) => {
-                Debug.Log("Example Scene Button");
+                EditorSceneManager.OpenScene("Assets/WIM_Plugin/Examples/Scenes/SimpleExample.unity");
             });
 
+            root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
             root.Q<Button>("VideoBtn").RegisterCallback<MouseUpEvent>((e) => {
-                Debug.Log("Video Button");
+                // TODO 
+                Application.OpenURL("");
             });
 
+            root.Q<Button>("ManualBtn").SetEnabled(false); // TODO remove as soon as manual is available
             root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>((e) => {
-                Debug.Log("Manual Button");
+                Application.OpenURL(Application.dataPath + "/WIM_Plugin/Manual.pdf");
             });
 
             root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>((e) => {
-                Debug.Log("Support Email Button");
+                Application.OpenURL("mailto:trumansamuel@yahoo.com");
             });
 
-            root.Q<VisualElement>(name: "FullFeatureLabel").visible = !isProVersion;
+            var isLiteVersion = !File.Exists(Application.dataPath + "/WIM_Plugin/Scripts/Features/Scrolling/Scrolling.cs");
+            root.Q<VisualElement>(name: "FullFeatureLabel").visible = isLiteVersion;
             root.Q<Label>(name: "FullFeatureURL").RegisterCallback<MouseUpEvent>((e) => {
-                Debug.Log("URL to full feature version");
+                Application.OpenURL("https://assetstore.unity.com/");   // TODO: Link specific product page of the full-feature version
             });
 
+            root.Q<Toggle>("showOnStartup").value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
             var showOnStartupToggle = root.Q<Toggle>("showOnStartup");
             showOnStartupToggle.RegisterCallback<ChangeEvent<bool>>((e) => {
-                Debug.Log("Toggle changed: " + showOnStartupToggle.value);
+                EditorPrefs.SetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", e.newValue);
             });
         }
     }

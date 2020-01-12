@@ -54,13 +54,13 @@
     </VisualElement>
 
     <VisualElement name="FullFeatureLabel" class="row">
-      <TextElement text="You are using the light version. Consider upgrading to the "/>
+      <TextElement text="You are using the lite version. Consider upgrading to the "/>
       <Label name="FullFeatureURL" class="url" text="full-feature version"/>
       <TextElement text="."/>
     </VisualElement>
 
     <VisualElement class="row">
-      <Toggle name="showOnStartup" text="Never Show Again" tooltip="Usually, this window will be displayed on editor startup. This is the option to disable that behavior. To show this window again, choose 'Window/WIM Plugin/ Welcome Window' from the toolbar." />
+      <Toggle name="showOnStartup" text="Show on startup" tooltip="If enabled, this window will be displayed on editor startup. Uncheck to disable. To show this window again, choose 'Window/WIM Plugin/Welcome Window' from the toolbar." />
     </VisualElement>
   </VisualElement>
 </UXML> 
