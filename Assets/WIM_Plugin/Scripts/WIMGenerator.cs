@@ -66,18 +66,19 @@ namespace WIM_Plugin {
         }
 
         private static void SetupDissolveScript(in MiniatureModel WIM) {
-            var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
-            var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
-            if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                RemoveDissolveScript(WIM);
-            } else if(occlusionHandlingConfig &&
-                      (occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
-                      occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView)) {
-                RemoveDissolveScript(WIM);
-            }
-            else {
-                AddDissolveScript(WIM);
-            }
+            //var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
+            //var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
+            //if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
+            //    RemoveDissolveScript(WIM);
+            //} else if(occlusionHandlingConfig &&
+            //          (occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
+            //          occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView)) {
+            //    RemoveDissolveScript(WIM);
+            //}
+            //else {
+            //    AddDissolveScript(WIM);
+            //}
+            AddDissolveScript(WIM);
         }
 
         private static void RemoveDissolveScript(in MiniatureModel WIM) {
@@ -376,7 +377,7 @@ namespace WIM_Plugin {
             controller.SetBoxEnabled(true);
             removeAllColliders(WIM.transform);
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
-            RemoveDissolveScript(WIM);
+            //RemoveDissolveScript(WIM);
             maskController.transform.position = WIM.transform.position;
         }
 
@@ -400,6 +401,7 @@ namespace WIM_Plugin {
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
             var material = LoadAppropriateMaterial(WIM);
+            //var material = LoadDefaultMaterial(WIM);
             SetWIMMaterial(material, WIM);
             SetupDissolveScript(WIM);
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
