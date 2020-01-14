@@ -59,6 +59,11 @@ namespace WIM_Plugin {
             data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
             data.WIMLevelTransform.tag = "Untagged";
+            var WIMLayer = LayerMask.NameToLayer("WIM");
+            data.WIMLevelTransform.gameObject.layer = WIMLayer;
+            foreach (Transform child in data.WIMLevelTransform) {
+                child.gameObject.layer = WIMLayer;
+            }
             var rb = GetComponent<Rigidbody>();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;

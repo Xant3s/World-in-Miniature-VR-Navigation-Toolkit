@@ -221,7 +221,10 @@ namespace WIM_Plugin {
             WIMLevel.name = "WIM Level";
             WIMLevel.tag = "Untagged";
             WIMLevel.gameObject.isStatic = false;
+            var WIMLayer = LayerMask.NameToLayer("WIM");
+            WIMLevel.gameObject.layer = WIMLayer;
             foreach (Transform child in WIMLevel) {
+                child.gameObject.layer = WIMLayer;
                 Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
                 Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
                 Object.DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
