@@ -18,17 +18,26 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
+            if(!ScrollingConfig) return;
+            setup();
+        }
+
+        internal void setup() {
             InputManager.RegisterAction(scrollingActionName, scrollWIM);
             InputManager.RegisterAction(verticalScrollingActionName, updateVerticalInput);
-            if (!Application.isPlaying) return;
+            if(!Application.isPlaying) return;
             MiniatureModel.OnLateInit += init;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
         private void OnDisable() {
+            remove();
+        }
+
+        internal void remove() {
             InputManager.UnregisterAction(scrollingActionName);
             InputManager.UnregisterAction(verticalScrollingActionName);
-            if (!Application.isPlaying) return;
+            if(!Application.isPlaying) return;
             MiniatureModel.OnLateInit -= init;
             MiniatureModel.OnUpdate -= ScrollWIM;
         }
@@ -57,9 +66,9 @@ namespace WIM_Plugin {
         }
 
         private void scrollWIM(Vector3 scrollingInput) {
+            if (!Application.isPlaying) return;
             if (!ScrollingConfig.AllowWIMScrolling) return;
             var input = scrollingInput;
-            if (!Application.isPlaying) return;
             var direction = new Vector3(input.x, verticalAxisInput.y, input.y);
             if(!ScrollingConfig.AllowVerticalScrolling) direction.y = 0;
             data.WIMLevelTransform.Translate(Time.deltaTime * ScrollingConfig.ScrollSpeed * -direction, Space.World);

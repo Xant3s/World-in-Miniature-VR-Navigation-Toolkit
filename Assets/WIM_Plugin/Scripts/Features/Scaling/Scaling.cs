@@ -23,6 +23,7 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
+            if(!ScalingConfig) return;
             MiniatureModel.OnUpdate += ScaleWIM;
             MiniatureModel.OnLeftGrabButtonDown += leftScalingButtonDown;
             MiniatureModel.OnLeftGrabButtonUp += leftScalingButtonUp;
@@ -31,6 +32,7 @@ namespace WIM_Plugin {
         }
 
         private void OnDisable() {
+            if(!ScalingConfig) return;
             MiniatureModel.OnUpdate -= ScaleWIM;
             MiniatureModel.OnLeftGrabButtonDown -= leftScalingButtonDown;
             MiniatureModel.OnLeftGrabButtonUp -= leftScalingButtonUp;
@@ -39,6 +41,7 @@ namespace WIM_Plugin {
         }
 
         private void Awake() {
+            if(!ScalingConfig) return;
             WIMTransform = GameObject.FindWithTag("WIM").transform;
             grabbable = WIMTransform.GetComponent<OVRGrabbable>();
             handL = GameObject.FindWithTag("HandL").transform;
