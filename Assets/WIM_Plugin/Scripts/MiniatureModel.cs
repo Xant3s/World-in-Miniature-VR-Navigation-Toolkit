@@ -8,6 +8,8 @@ namespace WIM_Plugin {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(OVRGrabbable))]
     [RequireComponent(typeof(DistanceGrabbable))]
+    [RequireComponent(typeof(PlayerRepresentation))]
+    [RequireComponent(typeof(Respawn))]
     [ExecuteAlways]
     public class MiniatureModel : MonoBehaviour {
         public WIMConfiguration Configuration;
