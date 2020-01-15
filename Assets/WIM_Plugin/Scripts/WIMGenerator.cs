@@ -242,7 +242,8 @@ namespace WIM_Plugin {
 
         private static void adaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
             var config = WIM.Configuration;
-            var scalingConfig = WIM.GetComponent<Scaling>().ScalingConfig;
+            // TODO: decouple scaling.
+            var scalingConfig = WIM.GetComponent<Scaling>()?.ScalingConfig;
             if (!config.AdaptWIMSizeToPlayerHeight) return;
             var playerHeight = config.PlayerHeightInCM;
             const float defaultHeight = 170;
@@ -258,7 +259,7 @@ namespace WIM_Plugin {
                 var factor = actualDelta / maxDelta;
                 var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
                 config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
-                config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, scalingConfig.MinScaleFactor, scalingConfig.MaxScaleFactor);
+                if(scalingConfig) config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, scalingConfig.MinScaleFactor, scalingConfig.MaxScaleFactor);
                 WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
 
             } else if (heightDelta < 0) {

@@ -45,10 +45,13 @@ namespace WIM_Plugin {
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             var WIMLevel = transform.GetChild(0);
+            var dissolveFX = true;
             // TODO: decouple occlusion handling
-            var dissolveFX = WIM.GetComponent<OcclusionHandling>().Config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
+            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+            if(occlusionHandling) dissolveFX = occlusionHandling.Config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
             // TODO: decouple scrolling
-            if(WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling) dissolveFX = false;
+            var scrolling = WIM.GetComponent<Scrolling>();
+            if(scrolling && scrolling.ScrollingConfig.AllowWIMScrolling) dissolveFX = false;
             if(dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);
             if(maintainTransformRelativeToPlayer) WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 
