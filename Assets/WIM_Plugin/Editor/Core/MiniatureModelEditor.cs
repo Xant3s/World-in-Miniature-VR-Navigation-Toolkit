@@ -26,6 +26,11 @@ namespace WIM_Plugin {
             GUILayout.Label("World-in-Miniature (WIM)");
             WIM.Configuration = (WIMConfiguration)
                 EditorGUILayout.ObjectField("Configuration", WIM.Configuration, typeof(WIMConfiguration), false);
+            if(!WIM.Configuration) {
+                EditorGUILayout.HelpBox("WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script.", MessageType.Error);
+                return;
+            }
+            
             if(GUILayout.Button("Generate WIM")) WIMGenerator.GenerateNewWIM(WIM);
             EditorGUI.BeginChangeCheck();
             WIM.Configuration.AutoGenerateWIM =

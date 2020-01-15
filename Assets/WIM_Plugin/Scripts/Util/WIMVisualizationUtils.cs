@@ -33,7 +33,7 @@ namespace WIM_Plugin {
                 var d = WIM.GetChild(i).GetComponent<Dissolve>();
                 if (d == null) continue;
                 d.durationInSeconds = 1;
-                WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("Vector1_461A9E8C", -.1f);
+                WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("_Progress", -.1f);
             }
         }
     }
