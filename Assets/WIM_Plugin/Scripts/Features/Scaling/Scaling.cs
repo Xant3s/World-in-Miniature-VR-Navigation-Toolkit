@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -18,8 +17,6 @@ namespace WIM_Plugin {
         private Transform WIMTransform;
         private Hand scalingHand = Hand.None;
         private float prevInterHandDistance;
-        private bool leftScaleButtonPressed;
-        private bool rightScaleButtonPressed;
 
 
         private void OnEnable() {
@@ -52,26 +49,22 @@ namespace WIM_Plugin {
         }
 
         private void leftScalingButtonDown(WIMConfiguration config, WIMData data) {
-            leftScaleButtonPressed = true;
-            updateScalingHand(rightScaleButtonPressed, Hand.LeftHand);
+            setScalingHand(Hand.LeftHand);
         }
 
         private void leftScalingButtonUp(WIMConfiguration config, WIMData data) {
-            leftScaleButtonPressed = false;
-            updateScalingHand(rightScaleButtonPressed, Hand.LeftHand);
+            scalingHand = Hand.None;
         }
 
         private void rightScalingButtonDown(WIMConfiguration config, WIMData data) {
-            rightScaleButtonPressed = true;
-            updateScalingHand(rightScaleButtonPressed, Hand.RightHand);
+            setScalingHand(Hand.RightHand);
         }
 
         private void rightScalingButtonUp(WIMConfiguration config, WIMData data) {
-            rightScaleButtonPressed = false;
-            updateScalingHand(rightScaleButtonPressed, Hand.RightHand);
+            scalingHand = Hand.None;
         }
 
-        private void updateScalingHand(bool buttonPressed, Hand hand) {
+        private void setScalingHand(Hand hand) {
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
             if (!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
 
@@ -80,14 +73,8 @@ namespace WIM_Plugin {
             if (oppositeHand != hand) return;
 
             // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
-            // Stop scaling if either hand lets go.
-            if (getHandIsInside(oppositeHand) && buttonPressed) {
-                // Start scaling.
+            if (getHandIsInside(oppositeHand)) {
                 scalingHand = oppositeHand;
-            }
-            else if (!buttonPressed) {
-                // Stop scaling.
-                scalingHand = Hand.None;
             }
         }
 
