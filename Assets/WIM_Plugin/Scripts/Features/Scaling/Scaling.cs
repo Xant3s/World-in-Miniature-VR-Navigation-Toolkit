@@ -112,6 +112,7 @@ namespace WIM_Plugin {
             else if (distanceDelta < 0 && deltaBeyondThreshold) {
                 config.ScaleFactor -= ScalingConfig.ScaleStep;
             }
+            config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, ScalingConfig.MinScaleFactor, ScalingConfig.MaxScaleFactor);
 
             // Apply scale factor.
             WIMTransform.localScale = new Vector3(config.ScaleFactor, config.ScaleFactor, config.ScaleFactor);
