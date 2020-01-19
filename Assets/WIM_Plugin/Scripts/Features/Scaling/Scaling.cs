@@ -15,6 +15,8 @@ namespace WIM_Plugin {
         private Transform handL;
         private Transform handR;
         private Transform WIMTransform;
+        private CapsuleCollider leftGrabVolume;
+        private CapsuleCollider rightGrabVolume;
         private Hand scalingHand = Hand.None;
         private float prevInterHandDistance;
 
@@ -43,6 +45,10 @@ namespace WIM_Plugin {
             grabbable = WIMTransform.GetComponent<OVRGrabbable>();
             handL = GameObject.FindWithTag("HandL").transform;
             handR = GameObject.FindWithTag("HandR").transform;
+            leftGrabVolume = handL.GetComponentInChildren<CapsuleCollider>();
+            rightGrabVolume = handR.GetComponentInChildren<CapsuleCollider>();
+            Assert.IsNotNull(leftGrabVolume);
+            Assert.IsNotNull(rightGrabVolume);
             Assert.IsNotNull(grabbable);
             Assert.IsNotNull(handL);
             Assert.IsNotNull(handR);
@@ -118,10 +124,44 @@ namespace WIM_Plugin {
 
         private bool getHandIsInside(Hand hand) {
             if (hand == Hand.None) return false;
-            var handTag = hand == Hand.LeftHand ? "HandL" : "HandR";
-            var hitColliders = Physics.OverlapBox(transform.position, config.ActiveAreaBounds,
-                data.WIMLevelTransform.rotation, LayerMask.GetMask("Hands"));
-            return hitColliders.Any(col => col.transform.root.CompareTag(handTag));
+            var grabVolume = hand == Hand.LeftHand ? leftGrabVolume : rightGrabVolume;
+            GetWorldSpaceCapsule(grabVolume, out var p1, out var p2, out var radius);
+            var hitColliders = Physics.OverlapCapsule(p1, p2, radius, LayerMask.GetMask("WIM"));
+            return hitColliders.Length != 0;
+        }
+
+        private static void GetWorldSpaceCapsule(CapsuleCollider capsule, out Vector3 point0, out Vector3 point1, out float radius) {
+            var center = capsule.transform.TransformPoint(capsule.center);
+            radius = 0f;
+            var height = 0f;
+            var lossyScale = capsule.transform.lossyScale;
+            lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
+            var dir = Vector3.zero;
+
+            switch(capsule.direction) {
+                case 0: // x
+                    radius = Mathf.Max(lossyScale.y, lossyScale.z) * capsule.radius;
+                    height = lossyScale.x * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.right);
+                    break;
+                case 1: // y
+                    radius = Mathf.Max(lossyScale.x, lossyScale.z) * capsule.radius;
+                    height = lossyScale.y * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.up);
+                    break;
+                case 2: // z
+                    radius = Mathf.Max(lossyScale.x, lossyScale.y) * capsule.radius;
+                    height = lossyScale.z * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.forward);
+                    break;
+            }
+
+            if(height < radius * 2f) {
+                dir = Vector3.zero;
+            }
+
+            point0 = center + dir * (height * 0.5f - radius);
+            point1 = center - dir * (height * 0.5f - radius);
         }
     }
 }
