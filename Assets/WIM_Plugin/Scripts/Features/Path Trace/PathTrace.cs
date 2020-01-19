@@ -13,16 +13,19 @@ namespace WIM_Plugin {
 
 
         private void Awake() {
+            if(!PathTraceConfig) return;
             WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
         }
 
         private void OnEnable() {
+            if(!PathTraceConfig) return;
             MiniatureModel.OnPreTravel += createPostTravelPathTrace;
             MiniatureModel.OnPostTravel += initPostTravelPathTrace;
         }
 
         private void OnDisable() {
+            if(!PathTraceConfig) return;
             MiniatureModel.OnPreTravel -= createPostTravelPathTrace;
             MiniatureModel.OnPostTravel -= initPostTravelPathTrace;
         }

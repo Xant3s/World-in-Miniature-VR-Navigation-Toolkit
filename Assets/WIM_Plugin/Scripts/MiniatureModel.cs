@@ -8,6 +8,8 @@ namespace WIM_Plugin {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(OVRGrabbable))]
     [RequireComponent(typeof(DistanceGrabbable))]
+    [RequireComponent(typeof(PlayerRepresentation))]
+    [RequireComponent(typeof(Respawn))]
     [ExecuteAlways]
     public class MiniatureModel : MonoBehaviour {
         public WIMConfiguration Configuration;
@@ -42,7 +44,7 @@ namespace WIM_Plugin {
 
         private void Awake() {
             if (!Application.isPlaying) return;
-            if (!ConfigurationIsThere()) return;
+            if(!Configuration) return;
             Data = ScriptableObject.CreateInstance<WIMData>();
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             travelStrategy = new InstantTravel();
@@ -64,18 +66,19 @@ namespace WIM_Plugin {
 
         private void Start() {
             if (!Application.isPlaying) return;
-            if (!ConfigurationIsThere()) return;
+            if(!Configuration) return;
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
         }
 
         private void Update() {
             if (!Application.isPlaying) return;
-            if (!ConfigurationIsThere()) return;
+            if(!Configuration) return;
             OnUpdate?.Invoke(Configuration, Data);
         }
 
         private void pickupThumbTouchUp() {
+            if(!Configuration) return;
             OnPickupThumbTouchUp?.Invoke(Configuration, Data);
         }
 
@@ -100,51 +103,57 @@ namespace WIM_Plugin {
         }
 
         private void pickupIndexButtonDown() {
+            if(!Configuration) return;
             OnPickupIndexButtonDown?.Invoke(Configuration, Data);
         }
 
         private void pickpuIndexButtonUp() {
+            if(!Configuration) return;
             OnPickupIndexButtonUp?.Invoke(Configuration, Data);
         }
 
         private void pickupIndexButton(float axis) {
+            if(!Configuration) return;
             OnPickpuIndexButton?.Invoke(Configuration, Data, axis);
         }
 
         private void pickupThumbButtonDown() {
+            if(!Configuration) return;
             OnPickupThumbButtonDown?.Invoke(Configuration, Data);
         }
 
         private void pickupThumbButtonUp() {
+            if(!Configuration) return;
             OnPickupThumbButtonUp?.Invoke(Configuration, Data);
         }
 
         private void leftGrabButtonDown() {
+            if(!Configuration) return;
             OnLeftGrabButtonDown?.Invoke(Configuration, Data);
         }
 
         private void leftGrabButtonUp() {
+            if(!Configuration) return;
             OnLeftGrabButtonUp?.Invoke(Configuration, Data);
         }
 
         private void rightGrabButtonDown() {
+            if(!Configuration) return;
             OnRightGrabButtonDown?.Invoke(Configuration, Data);
         }
 
         private void rightGrabButtonUp() {
+            if(!Configuration) return;
             OnRightGrabButtonUp?.Invoke(Configuration, Data);
         }
 
-        private bool ConfigurationIsThere() {
-            if (Configuration) return true;
-            throw new Exception("WIM configuration missing.");
-        }
-
         public void NewDestination() {
+            if(!Configuration) return;
             OnNewDestinationSelected?.Invoke(Configuration, Data);
         }
 
         public void ConfirmTravel() {
+            if(!Configuration) return;
             DestinationIndicators.RemoveDestinationIndicators(this);
             OnPreTravel?.Invoke(Configuration, Data);
             travelStrategy.Travel(this);

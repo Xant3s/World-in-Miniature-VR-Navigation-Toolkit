@@ -31,5 +31,12 @@ namespace WIM_Plugin {
             }
             EditorUtility.SetDirty(config);
         }
+
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((TravelPreviewAnimation)target).Config;
+            if(config) return;
+            EditorGUILayout.HelpBox("Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script.", MessageType.Error);
+        }
     }
 }

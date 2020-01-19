@@ -16,15 +16,18 @@ namespace WIM_Plugin {
 
 
         private void Awake() {
+            if(!Config) return;
             Data = ScriptableObject.CreateInstance<PreviewScreenData>();
         }
 
         private void OnEnable() {
+            if(!Config) return;
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
             MiniatureModel.OnUpdate += updatePreviewScreen;
         }
 
         private void OnDisable() {
+            if(!Config) return;
             MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
             MiniatureModel.OnUpdate -= updatePreviewScreen;
         }
@@ -97,6 +100,7 @@ namespace WIM_Plugin {
         }
 
         public void RemovePreviewScreen() {
+            if(!Data) return;
             Data.PreviewScreenEnabled = false;
             var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
             if(!previewScreen) return;

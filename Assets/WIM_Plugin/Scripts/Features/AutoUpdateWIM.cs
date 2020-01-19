@@ -5,8 +5,17 @@ using UnityEngine;
 namespace WIM_Plugin {
     [ExecuteInEditMode]
     public class AutoUpdateWIM : MonoBehaviour {
-        public MiniatureModel WIM { get; set; }
+        public MiniatureModel WIM {
+            get => wim;
+            set {
+                wim = value;
+                if(wim && !wim.Configuration) {
+                    enabled = false;
+                }
+            }
+        }
 
+        private MiniatureModel wim;
         private static bool alreadyUpdatedThisFrame;
         private Vector3 position;
         private Quaternion rotation;

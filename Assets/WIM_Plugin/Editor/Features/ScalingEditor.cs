@@ -39,5 +39,12 @@ namespace WIM_Plugin {
             }
             EditorUtility.SetDirty(config);
         }
+
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((Scaling) target).ScalingConfig;
+            if(config) return;
+            EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
+        }
     }
 }

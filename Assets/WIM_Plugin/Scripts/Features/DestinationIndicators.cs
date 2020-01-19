@@ -50,8 +50,8 @@ namespace WIM_Plugin {
                 Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
             data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
             // TODO: Decouple Preview screen config
-            var p = GameObject.FindWithTag("WIM").GetComponent<PreviewScreen>();
-            if(p && p.Config.PreviewScreen && !p.Config.AutoPositionPreviewScreen)
+            var p = GameObject.FindWithTag("WIM")?.GetComponent<PreviewScreen>();
+            if(p && p.Config && !p.Config.AutoPositionPreviewScreen)
                 data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
             return data.DestinationIndicatorInWIM;
         }
@@ -62,7 +62,7 @@ namespace WIM_Plugin {
             WIM.transform.GetComponent<PreviewScreen>().RemovePreviewScreen();
             // Destroy uses another thread, so make sure they are not copied by removing from parent.
             var travelPreview = WIM.GetComponent<TravelPreviewAnimation>();
-            if(travelPreview.Data.TravelPreviewAnimationObj) {
+            if(travelPreview.Data && travelPreview.Data.TravelPreviewAnimationObj) {
                 travelPreview.Data.TravelPreviewAnimationObj.transform.parent = null;
                 Object.Destroy(travelPreview.Data.TravelPreviewAnimationObj);
             }

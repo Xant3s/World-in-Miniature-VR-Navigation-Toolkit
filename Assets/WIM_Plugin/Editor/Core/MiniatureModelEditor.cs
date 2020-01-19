@@ -26,6 +26,11 @@ namespace WIM_Plugin {
             GUILayout.Label("World-in-Miniature (WIM)");
             WIM.Configuration = (WIMConfiguration)
                 EditorGUILayout.ObjectField("Configuration", WIM.Configuration, typeof(WIMConfiguration), false);
+            if(!WIM.Configuration) {
+                EditorGUILayout.HelpBox("WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script.", MessageType.Error);
+                return;
+            }
+            
             if(GUILayout.Button("Generate WIM")) WIMGenerator.GenerateNewWIM(WIM);
             EditorGUI.BeginChangeCheck();
             WIM.Configuration.AutoGenerateWIM =
@@ -92,12 +97,21 @@ namespace WIM_Plugin {
                     EditorGUILayout.FloatField("WIM Spawn Distance", WIM.Configuration.SpawnDistance);
             }
 
-            EditorGUI.BeginChangeCheck();
+            var autoDetectArmLengthAvailable = WIM.GetComponent<DetectArmLength>() != null;
+            EditorGUI.BeginDisabledGroup(!autoDetectArmLengthAvailable);
             WIM.Configuration.AutoDetectArmLength = EditorGUILayout.Toggle(
                 new GUIContent("Auto Detect Arm Length",
                     "At the start of the application, player has to extend the arm and press the confirm teleport button." +
                     "The detected arm length will be used instead of the spawn distance."),
                 WIM.Configuration.AutoDetectArmLength);
+            if(!autoDetectArmLengthAvailable) {
+                WIM.Configuration.AutoDetectArmLength = false;
+                EditorGUILayout.HelpBox("Add 'DetectArmLength' script to enable this feature.'", MessageType.Info);
+            }
+            EditorGUI.EndDisabledGroup();
+
+
+
             WIM.Configuration.AdaptWIMSizeToPlayerHeight = EditorGUILayout.Toggle("Adapt WIM Size to Player Height",
                 WIM.Configuration.AdaptWIMSizeToPlayerHeight);
             InvokeCallbacks("Usability");

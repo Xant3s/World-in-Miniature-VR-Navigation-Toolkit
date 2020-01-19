@@ -64,7 +64,16 @@ namespace WIM_Plugin {
             var scrolling = (Scrolling) target;
             EditorGUI.BeginChangeCheck();
             scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
-            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
+            if(EditorGUI.EndChangeCheck()) {
+                WIMGenerator.ConfigureWIM(WIM);
+                scrolling.remove();
+                if(scrolling.ScrollingConfig) {
+                    scrolling.setup();
+                }
+            }
+            if(!scrolling.ScrollingConfig)
+                EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
+
         }
     }
 }

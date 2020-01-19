@@ -9,14 +9,17 @@ namespace WIM_Plugin {
 
 
         private void Awake() {
+            if(!Config) return;
             Data = ScriptableObject.CreateInstance<TravelPreviewData>();
         }
 
         private void OnEnable() {
+            if(!Config) return;
             MiniatureModel.OnNewDestinationSelected += createController;
         }
 
         private void OnDisable() {
+            if(!Config) return;
             MiniatureModel.OnNewDestinationSelected -= createController;
         }
 

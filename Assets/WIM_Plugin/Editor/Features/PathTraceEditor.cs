@@ -31,5 +31,12 @@ namespace WIM_Plugin {
             }
             EditorUtility.SetDirty(config);
         }
+
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((PathTrace) target).PathTraceConfig;
+            if(config) return;
+            EditorGUILayout.HelpBox("Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script.", MessageType.Error);
+        }
     }
 }
