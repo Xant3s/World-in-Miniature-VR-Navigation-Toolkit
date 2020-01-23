@@ -16,15 +16,18 @@ namespace WIM_Plugin {
 
 
         private void Awake() {
+            if(!Config) return;
             Data = ScriptableObject.CreateInstance<PreviewScreenData>();
         }
 
         private void OnEnable() {
+            if(!Config) return;
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
             MiniatureModel.OnUpdate += updatePreviewScreen;
         }
 
         private void OnDisable() {
+            if(!Config) return;
             MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
             MiniatureModel.OnUpdate -= updatePreviewScreen;
         }
@@ -61,6 +64,14 @@ namespace WIM_Plugin {
             Assert.IsNotNull(camObj);
             var cam = camObj.GetComponent<Camera>() ?? camObj.AddComponent<Camera>();
             Assert.IsNotNull(cam);
+            var WIMLayer = LayerMask.NameToLayer("WIM");
+
+            //cam.cullingMask |= (1 << LayerMask.GetMask("WIM"));
+            //cam.cullingMask |= (1 << LayerMask.GetMask("Hands"));
+
+            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
+            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
+
             cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
@@ -89,6 +100,7 @@ namespace WIM_Plugin {
         }
 
         public void RemovePreviewScreen() {
+            if(!Data) return;
             Data.PreviewScreenEnabled = false;
             var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
             if(!previewScreen) return;

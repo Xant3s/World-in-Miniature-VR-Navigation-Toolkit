@@ -14,6 +14,7 @@ namespace WIM_Plugin {
         private void Start() {
             playerTransform = GameObject.Find("OVRCameraRig").transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            if(!WIM.Configuration) return;
             Assert.IsNotNull(WIM);
             converter = WIM.Converter;
             Assert.IsNotNull(playerTransform);
@@ -44,7 +45,7 @@ namespace WIM_Plugin {
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * config.PlayerRepresentation.transform.localScale.y * config.ScaleFactor;
             var scrolling = WIM.GetComponent<Scrolling>();
-            if(scrolling && scrolling.ScrollingConfig.AllowWIMScrolling) {
+            if(scrolling && scrolling.ScrollingConfig && scrolling.ScrollingConfig.AllowWIMScrolling) {
                 // Get closest point on active area bounds. Won't have any effect if already inside active area.
                 data.PlayerRepresentationTransform.position =
                     WIM.GetComponent<Collider>().ClosestPoint(data.PlayerRepresentationTransform.position);

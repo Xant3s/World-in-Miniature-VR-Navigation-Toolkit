@@ -45,13 +45,19 @@ namespace WIM_Plugin {
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             var WIMLevel = transform.GetChild(0);
-            // TODO: decouple occlusion handling
-            //var dissolveFX = WIM.GetComponent<OcclusionHandling>().Config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
             var dissolveFX = true;
+            // TODO: decouple occlusion handling
+            //var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
+            //if(occlusionHandling && occlusionHandling.Config) 
+            //    dissolveFX = occlusionHandling.Config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
             // TODO: decouple scrolling
-            //if (WIM.GetComponent<Scrolling>().ScrollingConfig.AllowWIMScrolling) dissolveFX = false;
-            if (dissolveFX && !maintainTransformRelativeToPlayer) WIMVisualizationUtils.DissolveWIM(WIMLevel);
-            if(maintainTransformRelativeToPlayer) WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
+            //var scrolling = WIM.GetComponent<Scrolling>();
+            //if(scrolling && scrolling.ScrollingConfig && scrolling.ScrollingConfig.AllowWIMScrolling) 
+            //    dissolveFX = false;
+            if(dissolveFX && !maintainTransformRelativeToPlayer) 
+                WIMVisualizationUtils.DissolveWIM(WIMLevel);
+            if(maintainTransformRelativeToPlayer) 
+                WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
@@ -60,6 +66,11 @@ namespace WIM_Plugin {
             data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
             data.WIMLevelTransform.tag = "Untagged";
+            var WIMLayer = LayerMask.NameToLayer("WIM");
+            data.WIMLevelTransform.gameObject.layer = WIMLayer;
+            foreach (Transform child in data.WIMLevelTransform) {
+                child.gameObject.layer = WIMLayer;
+            }
             var rb = GetComponent<Rigidbody>();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;

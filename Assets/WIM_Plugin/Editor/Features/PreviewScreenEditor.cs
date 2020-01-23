@@ -31,5 +31,12 @@ namespace WIM_Plugin {
             }
             EditorUtility.SetDirty(config);
         }
+
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((PreviewScreen) target).Config;
+            if(config) return;
+            EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
+        }
     }
 }
