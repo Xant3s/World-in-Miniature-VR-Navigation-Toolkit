@@ -29,7 +29,7 @@ namespace WIM_Plugin {
 
             root.Q<Image>(name: "SceneIcon").image = EditorGUIUtility.IconContent("SceneAsset Icon").image;
             root.Q<Image>(name: "YoutubeIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "youtube.png");
-            root.Q<Image>(name: "ManualIcon").image = EditorGUIUtility.IconContent("_Help").image;
+            root.Q<Image>(name: "ManualIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "help.png");
             root.Q<Image>(name: "EmailIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "email.png");
 
             root.Q<Label>(name: "VersionNumber").text = pluginVersion;
