@@ -47,13 +47,11 @@ namespace WIM_Plugin {
             if(!Configuration) return;
             Data = ScriptableObject.CreateInstance<WIMData>();
             travelStrategy = new InstantTravel();
-            Data.WIMLevelTransform = transform.Find("WIM Level");
             Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
             Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
             Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
             Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
             Data.OVRPlayerController = GameObject.Find("OVRPlayerController")?.transform;
-            Assert.IsNotNull(Data.WIMLevelTransform);
             Assert.IsNotNull(Data.HMDTransform);
             Assert.IsNotNull(Data.FingertipIndexR);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
@@ -65,6 +63,8 @@ namespace WIM_Plugin {
 
         private void Start() {
             if (!Application.isPlaying) return;
+            Data.WIMLevelTransform = transform.Find("WIM Level");
+            Assert.IsNotNull(Data.WIMLevelTransform);
             if(!Configuration) return;
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
