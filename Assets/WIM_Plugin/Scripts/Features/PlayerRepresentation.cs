@@ -33,6 +33,7 @@ namespace WIM_Plugin {
 
         private void setup(WIMConfiguration config, WIMData data) {
             data.PlayerRepresentationTransform = Instantiate(config.PlayerRepresentation, data.WIMLevelTransform).transform;
+            data.PlayerRepresentationTransform.transform.localScale = new Vector3(0.6155667f, 0.6155667f, 0.6155667f);
             if(config.DestinationSelectionMethod == DestinationSelection.Pickup)
                 data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = config.DoubleTapInterval;
         }
