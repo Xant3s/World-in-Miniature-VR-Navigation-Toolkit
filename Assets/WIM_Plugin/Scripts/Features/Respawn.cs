@@ -8,17 +8,10 @@ namespace WIM_Plugin {
     [ExecuteAlways]
     public class Respawn : MonoBehaviour {
         private static readonly string actionName = "Respawn Button";
-        private MiniatureModel WIM;
         private WIMConfiguration config;
         private WIMData data;
         private static readonly int progress = Shader.PropertyToID("_Progress");
 
-
-        private void Awake() {
-            if (!Application.isPlaying) return;
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-        }
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
@@ -42,6 +35,8 @@ namespace WIM_Plugin {
 
         public void respawnWIM(bool maintainTransformRelativeToPlayer) {
             if(!Application.isPlaying) return;
+            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             var WIMLevel = transform.GetChild(0);
