@@ -46,7 +46,6 @@ namespace WIM_Plugin {
             if (!Application.isPlaying) return;
             if(!Configuration) return;
             Data = ScriptableObject.CreateInstance<WIMData>();
-            Converter = new WIMSpaceConverterImpl(Configuration, Data);
             travelStrategy = new InstantTravel();
             Data.WIMLevelTransform = transform.Find("WIM Level");
             Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
@@ -67,6 +66,7 @@ namespace WIM_Plugin {
         private void Start() {
             if (!Application.isPlaying) return;
             if(!Configuration) return;
+            Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
         }

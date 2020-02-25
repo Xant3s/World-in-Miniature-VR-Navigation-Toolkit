@@ -14,8 +14,8 @@ namespace WIM_Plugin {
         private void Start() {
             playerTransform = GameObject.Find("OVRCameraRig").transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            if(!WIM.Configuration) return;
             Assert.IsNotNull(WIM);
+            if(!WIM.Configuration) return;
             converter = WIM.Converter;
             Assert.IsNotNull(playerTransform);
             Assert.IsNotNull(converter);

@@ -57,6 +57,7 @@ namespace WIM_Plugin {
         }
 
         public static void RemoveDestinationIndicators(MiniatureModel WIM) {
+            Assert.IsNotNull(WIM);
             var data = WIM.Data;
             if(!data.DestinationIndicatorInWIM) return;
             WIM.transform.GetComponent<PreviewScreen>().RemovePreviewScreen();
