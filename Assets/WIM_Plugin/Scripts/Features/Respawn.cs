@@ -10,7 +10,6 @@ namespace WIM_Plugin {
         private static readonly string actionName = "Respawn Button";
         private WIMConfiguration config;
         private WIMData data;
-        private static readonly int progress = Shader.PropertyToID("_Progress");
 
 
         private void OnEnable() {
@@ -40,6 +39,7 @@ namespace WIM_Plugin {
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             var WIMLevel = transform.GetChild(0);
+            // TODO: decouple dissolve
             var dissolveFX = true;
             // TODO: decouple occlusion handling
             //var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
@@ -49,11 +49,9 @@ namespace WIM_Plugin {
             //var scrolling = WIM.GetComponent<Scrolling>();
             //if(scrolling && scrolling.ScrollingConfig && scrolling.ScrollingConfig.AllowWIMScrolling) 
             //    dissolveFX = false;
-            if(dissolveFX && !maintainTransformRelativeToPlayer) 
-                WIMVisualizationUtils.DissolveWIM(WIMLevel);
-            if(maintainTransformRelativeToPlayer) 
-                WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 
+
+            // Copy WIM
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
             WIMLevel.tag = "WIM Level Old";
@@ -61,6 +59,25 @@ namespace WIM_Plugin {
             data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
             data.WIMLevelTransform.tag = "Untagged";
+
+            // Copy material
+            var mat = new Material(WIMLevel.GetComponentInChildren<Renderer>().material);
+
+            // Apply material to old WIM
+            foreach(Transform t in WIMLevel) {
+                var r = t.GetComponent<Renderer>();
+                if(!r) continue;
+                r.material = mat;
+            }
+
+            // Dissolve old WIM
+            WIMLevel.gameObject.AddComponent<Dissolve>().materials = new[]{mat};
+            if(dissolveFX && !maintainTransformRelativeToPlayer) 
+                WIMVisualizationUtils.DissolveWIM(WIMLevel);
+            if(maintainTransformRelativeToPlayer) 
+                WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
+
+
             var WIMLayer = LayerMask.NameToLayer("WIM");
             data.WIMLevelTransform.gameObject.layer = WIMLayer;
             foreach (Transform child in data.WIMLevelTransform) {
@@ -105,13 +122,14 @@ namespace WIM_Plugin {
 
         private void resolveWIM(Transform WIMLevel) {
             const int resolveDuration = 1;
-            foreach (Transform child in WIMLevel) {
-                var d = child.GetComponent<Dissolve>();
-                if(d == null) continue;
-                d.durationInSeconds = resolveDuration;
-                child.GetComponent<Renderer>().material.SetFloat(progress, 1);
-                d.PlayInverse();
-            }
+            //foreach (Transform child in WIMLevel) {
+            //var d = child.GetComponent<Dissolve>();
+            var d = WIMLevel.parent.GetComponent<Dissolve>();
+            if (!d) return;
+            d.durationInSeconds = resolveDuration;
+            d.SetProgress(1);
+            d.PlayInverse();
+            //}
 
             StartCoroutine(WIMVisualizationUtils.FixResolveBug(WIMLevel, resolveDuration));
         }

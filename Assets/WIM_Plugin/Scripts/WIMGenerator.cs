@@ -69,18 +69,18 @@ namespace WIM_Plugin {
             //AddDissolveScript(WIM);
 
 
-            var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
-            var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
-            if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                RemoveDissolveScript(WIM);
-            } else if(occlusionHandlingConfig &&
-                      (occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
-                      occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView)) {
-                RemoveDissolveScript(WIM);
-            }
-            else {
-                AddDissolveScript(WIM);
-            }
+            //var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
+            //var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
+            //if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
+            //    RemoveDissolveScript(WIM);
+            //} else if(occlusionHandlingConfig &&
+            //          (occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
+            //          occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView)) {
+            //    RemoveDissolveScript(WIM);
+            //}
+            //else {
+            //    AddDissolveScript(WIM);
+            //}
         }
 
         private static void RemoveDissolveScript(in MiniatureModel WIM) {

@@ -5,20 +5,23 @@ using UnityEngine;
 namespace WIM_Plugin {
     public static class WIMVisualizationUtils {
         internal static void DissolveWIM(Transform WIM) {
-            foreach (Transform child in WIM) {
-                var d = child.GetComponent<Dissolve>();
-                if (!d) return;
-                d.durationInSeconds = 1f;
-                d.Play();
-            }
+            //foreach (Transform child in WIM) {
+            //var d = child.GetComponent<Dissolve>();
+            var d = WIM.GetComponent<Dissolve>();
+            if (!d) return;
+            d.durationInSeconds = 1f;
+            d.Play();
+            //}
+
         }
 
         internal static void InstantDissolveWIM(Transform WIM) {
-            foreach (Transform child in WIM) {
-                var d = child.GetComponent<Dissolve>();
-                if (!d) return;
-                d.SetProgress(1);
-            }
+            //foreach (Transform child in WIM) {
+            //var d = child.GetComponent<Dissolve>();
+            var d = WIM.GetComponent<Dissolve>();
+            if (!d) return;
+            d.SetProgress(1);
+            //}
         }
 
         /// <summary>
@@ -29,12 +32,13 @@ namespace WIM_Plugin {
         /// <param name="delay"></param>
         internal static IEnumerator FixResolveBug(Transform WIM, float delay) {
             yield return new WaitForSeconds(delay);
-            for (var i = 0; i < WIM.childCount; i++) {
-                var d = WIM.GetChild(i).GetComponent<Dissolve>();
-                if (d == null) continue;
-                d.durationInSeconds = 1;
-                WIM.GetChild(i).GetComponent<Renderer>().material.SetFloat("_Progress", -.1f);
-            }
+            //for (var i = 0; i < WIM.childCount; i++) {
+            //var d = WIM.GetChild(i).GetComponent<Dissolve>();
+            var d = WIM.GetComponent<Dissolve>();
+            if (!d) yield break;
+            d.durationInSeconds = 1;
+            d.SetProgress(-0.1f);
+            //}
         }
     }
 }
