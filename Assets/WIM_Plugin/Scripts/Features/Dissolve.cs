@@ -18,7 +18,6 @@ namespace WIM_Plugin {
             var percent = (durationInSeconds - remainingTime) / durationInSeconds;
             var progress = !isInverse ? percent : 1 - percent;
             SetProgress(progress);
-            //Debug.Log(progress);
         }
 
         public void Play() {

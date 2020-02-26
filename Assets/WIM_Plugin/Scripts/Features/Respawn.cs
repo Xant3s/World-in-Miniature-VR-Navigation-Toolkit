@@ -41,14 +41,6 @@ namespace WIM_Plugin {
             var WIMLevel = transform.GetChild(0);
             // TODO: decouple dissolve
             var dissolveFX = true;
-            // TODO: decouple occlusion handling
-            //var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-            //if(occlusionHandling && occlusionHandling.Config) 
-            //    dissolveFX = occlusionHandling.Config.OcclusionHandlingMethod == OcclusionHandlingMethod.None;
-            // TODO: decouple scrolling
-            //var scrolling = WIM.GetComponent<Scrolling>();
-            //if(scrolling && scrolling.ScrollingConfig && scrolling.ScrollingConfig.AllowWIMScrolling) 
-            //    dissolveFX = false;
 
 
             // Copy WIM
@@ -122,14 +114,11 @@ namespace WIM_Plugin {
 
         private void resolveWIM(Transform WIMLevel) {
             const int resolveDuration = 1;
-            //foreach (Transform child in WIMLevel) {
-            //var d = child.GetComponent<Dissolve>();
             var d = WIMLevel.parent.GetComponent<Dissolve>();
             if (!d) return;
             d.durationInSeconds = resolveDuration;
             d.SetProgress(1);
             d.PlayInverse();
-            //}
 
             StartCoroutine(WIMVisualizationUtils.FixResolveBug(WIMLevel, resolveDuration));
         }
