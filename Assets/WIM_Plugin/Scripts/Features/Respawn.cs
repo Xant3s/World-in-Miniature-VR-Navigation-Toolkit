@@ -53,20 +53,32 @@ namespace WIM_Plugin {
             data.WIMLevelTransform.tag = "Untagged";
 
             // Copy material
-            var mat = new Material(WIMLevel.GetComponentInChildren<Renderer>().material);
+            //var mat = new Material(WIMLevel.GetComponentInChildren<Renderer>().material);
+            var mat = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)"));
+            mat.CopyPropertiesFromMaterial(WIMLevel.GetComponentInChildren<Renderer>().material);
+
 
             // Apply material to old WIM
-            foreach(Transform t in WIMLevel) {
+            foreach (Transform t in WIMLevel) {
                 var r = t.GetComponent<Renderer>();
                 if(!r) continue;
                 r.material = mat;
             }
 
+            // Copy box mask for old WIM    
+            var oldBoxMask = Instantiate(GameObject.FindWithTag("Box Mask"), WIMLevel);
+            oldBoxMask.GetComponent<AlignWith>().Target = WIMLevel;
+            oldBoxMask.GetComponent<BoxController>().materials = new[] {mat};
+
+            // Test
+            //var go = Instantiate(new GameObject());
+            //go.AddComponent<MeshRenderer>().material = mat;
+
             // Dissolve old WIM
-            WIMLevel.gameObject.AddComponent<Dissolve>().materials = new[]{mat};
-            if(dissolveFX && !maintainTransformRelativeToPlayer) 
+            WIMLevel.gameObject.AddComponent<Dissolve>().materials = new[] { mat };
+            if (dissolveFX && !maintainTransformRelativeToPlayer)
                 WIMVisualizationUtils.DissolveWIM(WIMLevel);
-            if(maintainTransformRelativeToPlayer) 
+            if (maintainTransformRelativeToPlayer)
                 WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
 
 
@@ -101,7 +113,7 @@ namespace WIM_Plugin {
                     data.OVRPlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
             }
 
-            if(dissolveFX) {
+            if (dissolveFX) {
                 resolveWIM(data.WIMLevelTransform);
                 Invoke(nameof(destroyOldWIMLevel), 1.1f);
             }
