@@ -53,8 +53,7 @@ namespace WIM_Plugin {
             data.WIMLevelTransform.tag = "Untagged";
 
             // Copy material
-            //var mat = new Material(WIMLevel.GetComponentInChildren<Renderer>().material);
-            var mat = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)"));
+            var mat = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)2"));
             mat.CopyPropertiesFromMaterial(WIMLevel.GetComponentInChildren<Renderer>().material);
 
 
@@ -72,24 +71,6 @@ namespace WIM_Plugin {
                 oldBoxMask.GetComponent<AlignWith>().Target = WIMLevel;
                 oldBoxMask.GetComponent<BoxController>().materials = new[] {mat};
             }
-
-
-            // Test
-            //var go = Instantiate(new GameObject());
-            //go.AddComponent<MeshRenderer>().material = mat;
-            //var mat2 = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)"));
-            //mat2.CopyPropertiesFromMaterial(data.WIMLevelTransform.GetComponentInChildren<Renderer>().material);
-
-            //foreach(Transform t in data.WIMLevelTransform) {
-            //    var r = t.GetComponent<Renderer>();
-            //    if(!r) continue;
-            //    r.material = mat2;
-            //}
-
-            //GetComponent<Dissolve>().materials = new[] {mat2};
-            //boxMask.GetComponent<BoxController>().materials = new[] {mat2};
-
-
 
             // Dissolve old WIM
             WIMLevel.gameObject.AddComponent<Dissolve>().materials = new[] { mat };
