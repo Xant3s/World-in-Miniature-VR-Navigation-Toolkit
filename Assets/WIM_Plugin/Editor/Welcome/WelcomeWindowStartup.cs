@@ -23,6 +23,7 @@ namespace WIM_Plugin {
             if(EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true)) {
                 var window = EditorWindow.GetWindow<WelcomeWindow>();
                 window.titleContent = new GUIContent("WIM Plugin Welcome");
+                window.minSize = new Vector2(566, 384);
             }
         }
 
