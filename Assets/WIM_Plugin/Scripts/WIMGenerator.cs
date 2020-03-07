@@ -219,87 +219,13 @@ namespace WIM_Plugin {
             }
         }
 
-        internal static void UpdateCylinderMask(in MiniatureModel WIM) {
-            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-            if(!occlusionHandling || !occlusionHandling.Config) return;
-            if (occlusionHandling.Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
-            var cylinderTransform = GameObject.FindWithTag("Cylinder Mask")?.transform;
-            if (!cylinderTransform) return;
-            cylinderTransform.localScale = new Vector3(occlusionHandling.Config.MeltRadius, occlusionHandling.Config.MeltHeight, 1);
-        }
-
-        internal static void UpdateCutoutViewMask(in MiniatureModel WIM) {
-            var occlusionHandling = WIM.GetComponent<OcclusionHandling>();
-            if(!occlusionHandling || !occlusionHandling.Config) return;
-            if (occlusionHandling.Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
-            var spotlightObj = GameObject.FindWithTag("Spotlight Mask");
-            if (!spotlightObj) return;
-            var spotlight = spotlightObj.GetComponent<Light>();
-            spotlight.range = occlusionHandling.Config.CutoutRange;
-            spotlight.spotAngle = occlusionHandling.Config.CutoutAngle;
-
-            Color color;
-            if (occlusionHandling.Config.ShowCutoutLight) {
-                color = occlusionHandling.Config.CutoutLightColor;
-                color.a = 1;
-            }
-            else {
-                color = new Color(0, 0, 0, 0);
-            }
-
-            spotlight.color = color;
-        }
-
-        private static void configureCutoutView(Material material) {
-            var spotlightObj = new GameObject("Spotlight Mask");
-            spotlightObj.tag = spotlightObj.name;
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (spotlightObj, "Spotlight Mask");
-#endif
-            spotlightObj.AddComponent<Light>().type = LightType.Spot;
-            var controller = spotlightObj.AddComponent<ConeController>();
-            controller.materials = new[] {material};
-            controller.SetConeEnabled(true);
-            var mainCamera = Camera.main;
-            if(mainCamera) spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
-        }
-
-        private static void configureMeltWalls(Material material) {
-            var cylinderMask = new GameObject("Cylinder Mask");
-            cylinderMask.tag = cylinderMask.name;
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (cylinderMask, "configureMeltWalls");
-#endif
-            cylinderMask.AddComponent<FollowHand>().hand = Hand.RightHand;
-            var controller = cylinderMask.AddComponent<CapsuleController>();
-            controller.materials = new[] {material};
-            controller.SetCapsuleEnabled(true);
-        }
-
-        public static void CleanupOcclusionHandling() {
-            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
-            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
-
-#if UNITY_EDITOR
-            if(cylinderMask) Undo.DestroyObjectImmediate (cylinderMask);
-            if(spotlightMask) Undo.DestroyObjectImmediate (spotlightMask);
-#else
-            GameObject.DestroyImmediate(cylinderMask);
-            GameObject.DestroyImmediate(spotlightMask);
-#endif
-        }
-
         public static void ConfigureWIM(in MiniatureModel WIM) {
             // Cleanup old configuration.
-            CleanupOcclusionHandling();
             OnPreConfigure?.Invoke(WIM);
 
             // Setup new configuration.
-            var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
             var material = LoadDefaultMaterial(WIM);
             SetWIMMaterial(material, WIM);
-            if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
-            if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
             OnConfigure?.Invoke(WIM);
         }
     }
