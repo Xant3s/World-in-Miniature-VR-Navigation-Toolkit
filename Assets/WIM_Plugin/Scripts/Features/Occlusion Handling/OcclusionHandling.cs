@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+
 
 namespace WIM_Plugin {
     [ExecuteAlways]
@@ -31,23 +31,14 @@ namespace WIM_Plugin {
         public void CleanupOcclusionHandling(in MiniatureModel WIM) {
             var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
             var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
-
-#if UNITY_EDITOR
-            if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
-            if(spotlightMask) Undo.DestroyObjectImmediate(spotlightMask);
-#else
-            GameObject.DestroyImmediate(cylinderMask);
-            GameObject.DestroyImmediate(spotlightMask);
-#endif
+            DestroyImmediate(cylinderMask);
+            DestroyImmediate(spotlightMask);
         }
 
         private void configureCutoutView(in MiniatureModel WIM) {
             if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
             var spotlightObj = new GameObject("Spotlight Mask");
             spotlightObj.tag = spotlightObj.name;
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo(spotlightObj, "Spotlight Mask");
-#endif
             spotlightObj.AddComponent<Light>().type = LightType.Spot;
             var controller = spotlightObj.AddComponent<ConeController>();
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
@@ -61,9 +52,6 @@ namespace WIM_Plugin {
             if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
             var cylinderMask = new GameObject("Cylinder Mask");
             cylinderMask.tag = cylinderMask.name;
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo(cylinderMask, "configureMeltWalls");
-#endif
             cylinderMask.AddComponent<FollowHand>().hand = Hand.RightHand;
             var controller = cylinderMask.AddComponent<CapsuleController>();
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
