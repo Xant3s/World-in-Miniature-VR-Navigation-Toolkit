@@ -7,6 +7,13 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     [ExecuteAlways]
     public class Respawn : MonoBehaviour {
+        public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, 
+            bool maintainTransformRelativeToPlayer);
+        public static event RespawnAction OnEarlyRespawn;
+        public static event RespawnAction OnLateRespawn;
+        public static bool RemoveOldWIMLevel = true;
+        public static Material materialForOldWIM;
+
         private static readonly string actionName = "Respawn Button";
         private WIMConfiguration config;
         private WIMData data;
@@ -15,6 +22,7 @@ namespace WIM_Plugin {
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
             InputManager.RegisterAction(actionName, respawn);
+            materialForOldWIM = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)2"));
         }
 
         private void OnDisable() {
@@ -38,12 +46,8 @@ namespace WIM_Plugin {
             Assert.IsNotNull(WIM);
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
-            var WIMLevel = transform.GetChild(0);
-            // TODO: decouple dissolve
-            var dissolveFX = true;
-
-
             // Copy WIM
+            var WIMLevel = transform.GetChild(0);
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
             WIMLevel.tag = "WIM Level Old";
@@ -53,33 +57,16 @@ namespace WIM_Plugin {
             data.WIMLevelTransform.tag = "Untagged";
 
             // Copy material
-            var mat = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)2"));
-            mat.CopyPropertiesFromMaterial(WIMLevel.GetComponentInChildren<Renderer>().material);
-
+            materialForOldWIM.CopyPropertiesFromMaterial(WIMLevel.GetComponentInChildren<Renderer>().material);
 
             // Apply material to old WIM
             foreach (Transform t in WIMLevel) {
                 var r = t.GetComponent<Renderer>();
                 if(!r) continue;
-                r.material = mat;
+                r.material = materialForOldWIM;
             }
 
-            // Copy box mask for old WIM    
-            var boxMask = GameObject.FindWithTag("Box Mask");
-            if (boxMask) {
-                var oldBoxMask = Instantiate(boxMask);
-                oldBoxMask.GetComponent<AlignWith>().Target = WIMLevel;
-                var oldBoxController = oldBoxMask.GetComponent<BoxController>();        // TODO: decouple
-                oldBoxController.materials = new[] {mat};
-                oldBoxController.SetBoxEnabled(true);
-            }
-
-            // Dissolve old WIM
-            WIMLevel.gameObject.AddComponent<Dissolve>().materials = new[] { mat };
-            if (dissolveFX && !maintainTransformRelativeToPlayer)
-                WIMVisualizationUtils.DissolveWIM(WIMLevel);
-            if (maintainTransformRelativeToPlayer)
-                WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
+            OnEarlyRespawn?.Invoke(WIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
 
             var WIMLayer = LayerMask.NameToLayer("WIM");
             data.WIMLevelTransform.gameObject.layer = WIMLayer;
@@ -112,29 +99,12 @@ namespace WIM_Plugin {
                     data.OVRPlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
             }
 
-            if (dissolveFX) {
-                resolveWIM(data.WIMLevelTransform);
-                Invoke(nameof(destroyOldWIMLevel), 1.1f);
-            }
-            else {
-                destroyOldWIMLevel();
-            }
-
-            if(maintainTransformRelativeToPlayer) transform.parent = null;
+            OnLateRespawn?.Invoke(WIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
+            if (maintainTransformRelativeToPlayer) transform.parent = null;
+            if (RemoveOldWIMLevel) destroyOldWIMLevel();
         }
 
-        private void resolveWIM(Transform WIMLevel) {
-            const int resolveDuration = 1;
-            var d = WIMLevel.parent.GetComponent<Dissolve>();
-            if (!d) return;
-            d.durationInSeconds = resolveDuration;
-            d.SetProgress(1);
-            d.PlayInverse();
-
-            StartCoroutine(WIMVisualizationUtils.FixResolveBug(WIMLevel, resolveDuration));
-        }
-
-        private void destroyOldWIMLevel() {
+        private static void destroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
     }

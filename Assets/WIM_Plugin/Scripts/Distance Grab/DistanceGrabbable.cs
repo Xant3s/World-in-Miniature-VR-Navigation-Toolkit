@@ -37,7 +37,7 @@ namespace WIM_Plugin {
         private Rigidbody rb;
 
         private void Awake() {
-            defaultMaterial = GetComponent<Renderer>()?.sharedMaterial;
+            defaultMaterial = GetComponentInChildren<Renderer>()?.sharedMaterial;
         }
 
         private void Update() {
