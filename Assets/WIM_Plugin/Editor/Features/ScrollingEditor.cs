@@ -25,7 +25,8 @@ namespace WIM_Plugin {
         private void Draw(WIMConfiguration WIMConfig) {
             MiniatureModelEditor.Separator("Scrolling");
             if(!target) return;
-            ref var config = ref ((Scrolling) target).ScrollingConfig;
+            var scrolling = (Scrolling) target;
+            ref var config = ref scrolling.ScrollingConfig;
             if(!config) {
                 EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
                 EditorGUI.BeginChangeCheck();
@@ -42,7 +43,7 @@ namespace WIM_Plugin {
                 EditorGUI.BeginChangeCheck();
                 WIMConfig.ActiveAreaBounds =
                     EditorGUILayout.Vector3Field("Active Area Bounds", WIMConfig.ActiveAreaBounds);
-                if (EditorGUI.EndChangeCheck()) WIMGenerator.UpdateScrollingMask(WIM);
+                if (EditorGUI.EndChangeCheck()) scrolling.UpdateScrollingMask(WIM);
                 config.AutoScroll = EditorGUILayout.Toggle("Auto Scroll", config.AutoScroll);
                 if (config.AutoScroll) {
                     config.ScrollSpeed = EditorGUILayout.FloatField("Scroll Speed", config.ScrollSpeed);

@@ -53,10 +53,10 @@ namespace WIM_Plugin {
 
         public override void OnInspectorGUI() {
             if(Application.isPlaying) return;
-            WIMGenerator.UpdateCylinderMask(WIM);
-            WIMGenerator.UpdateCutoutViewMask(WIM);
+            var occlusionHandling = (OcclusionHandling)target;
+            occlusionHandling.UpdateCutoutViewMask(WIM);
+            occlusionHandling.UpdateCylinderMask(WIM);
             DrawDefaultInspector();
-            var occlusionHandling = (OcclusionHandling) target;
             EditorGUI.BeginChangeCheck();
             occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config", occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
             if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
