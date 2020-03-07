@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -24,7 +25,10 @@ namespace WIM_Plugin {
         internal void setup() {
             InputManager.RegisterAction(scrollingActionName, scrollWIM);
             InputManager.RegisterAction(verticalScrollingActionName, updateVerticalInput);
-            if(!Application.isPlaying) return;
+            WIMGenerator.OnPreConfigure += DisableScrolling;
+            WIMGenerator.OnConfigure += EnableScrolling;
+            WIMGenerator.OnConfigure += UpdateScrollingMask;
+            if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
@@ -35,14 +39,17 @@ namespace WIM_Plugin {
         internal void remove() {
             InputManager.UnregisterAction(scrollingActionName);
             InputManager.UnregisterAction(verticalScrollingActionName);
-            if(!Application.isPlaying) return;
+            WIMGenerator.OnPreConfigure -= DisableScrolling;
+            WIMGenerator.OnConfigure -= EnableScrolling;
+            WIMGenerator.OnConfigure -= UpdateScrollingMask;
+            if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate -= ScrollWIM;
         }
 
         private void OnDestroy() {
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             if(!WIM) return;
-            WIMGenerator.DisableScrolling(WIM);
+            DisableScrolling(WIM);
             WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);
         }
 
@@ -74,6 +81,42 @@ namespace WIM_Plugin {
                 ? -data.DestinationIndicatorInWIM.localPosition
                 : -data.PlayerRepresentationTransform.localPosition;
             data.WIMLevelTransform.localPosition = scrollOffset;
+        }
+
+        internal void UpdateScrollingMask(in MiniatureModel WIM) {
+            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
+            var boxMaskObj = GameObject.FindWithTag("Box Mask");
+            if (!boxMaskObj) return;
+            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
+        }
+
+        public static void DisableScrolling(in MiniatureModel WIM) {
+            var boxMask = GameObject.FindWithTag("Box Mask");
+#if UNITY_EDITOR
+            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
+#else
+            GameObject.DestroyImmediate(boxMask);
+#endif
+            WIMGenerator.RemoveAllColliders(WIM.transform);
+            WIMGenerator.GenerateColliders(WIM);
+        }
+
+        private void EnableScrolling(in MiniatureModel WIM) {
+            if (!ScrollingConfig.AllowWIMScrolling) return;
+            var maskController = new GameObject("Box Mask");
+            maskController.tag = maskController.name;
+#if UNITY_EDITOR
+            Undo.RegisterCreatedObjectUndo(maskController, "Created Box Mask");
+#endif
+            maskController.AddComponent<AlignWith>().Target = WIM.transform;
+            var controller = maskController.AddComponent<BoxController>();
+            var material = WIMGenerator.LoadDefaultMaterial(WIM);
+            controller.materials = new[] {material};
+            controller.SetBoxEnabled(true);
+            WIMGenerator.RemoveAllColliders(WIM.transform);
+            WIM.gameObject.AddComponent<BoxCollider>().size =
+                WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
+            maskController.transform.position = WIM.transform.position;
         }
     }
 }

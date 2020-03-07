@@ -9,15 +9,17 @@ using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 namespace WIM_Plugin {
-    // Generates the actual WIM. Also takes care of configurating the WIM, i.e. set materials and shaders etc.
+    // Generates the actual WIM.
     public static class WIMGenerator {
+        public delegate void GeneratorAction(in MiniatureModel WIM);
+        public static event GeneratorAction OnConfigure;
+        public static event GeneratorAction OnPreConfigure;
+
         private static readonly int alpha = Shader.PropertyToID("_Alpha");
-        private static readonly int baseMapColor = Shader.PropertyToID("_BaseMapColor");
 
 
         public static Material LoadDefaultMaterial(MiniatureModel WIM) {
-            Material material;
-            material = Resources.Load<Material>("Materials/WIM Material");
+            var material = Resources.Load<Material>("Materials/WIM Material");
             var fullyOpaque = 1;
             var semiTransparent = 1 - WIM.Configuration.Transparency;
             material.SetFloat(alpha, WIM.Configuration.SemiTransparent ? semiTransparent : fullyOpaque);
@@ -26,14 +28,11 @@ namespace WIM_Plugin {
 
         public static void SetWIMMaterial(Material material, in MiniatureModel WIM) {
             var WIMLevelTransform = WIM.transform.GetChild(0);
-            foreach (Transform child in WIMLevelTransform) {
-                var renderer = child.GetComponent<Renderer>();
-                if (!renderer) continue;
+            foreach (var renderer in WIMLevelTransform.GetComponentsInChildren<Renderer>()) {
                 var newMaterials = renderer.sharedMaterials;
                 for (var i = 0; i < newMaterials.Length; i++) {
                     newMaterials[i] = material;
                 }
-
                 renderer.sharedMaterials = newMaterials;
             }
         }
@@ -82,7 +81,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private static void GenerateColliders(in MiniatureModel WIM) {
+        public static void GenerateColliders(in MiniatureModel WIM) {
             // Generate colliders:
             // 1. Copy colliders from actual level (to determine which objects should have a collider)
             // [alternatively don't delete them while generating the WIM]
@@ -111,7 +110,7 @@ namespace WIM_Plugin {
                 var collider = childEquivalentInLevel.GetComponent<Collider>();
                 i++;
                 if (!collider) continue;
-                removeAllColliders(childInWIM);
+                RemoveAllColliders(childInWIM);
                 var childBoxCollider = childInWIM.gameObject.AddComponent<BoxCollider>();
                 // 3. move collider to WIM root (consider scale and position)
                 var rootCollider = WIM.gameObject.AddComponent<BoxCollider>();
@@ -120,7 +119,7 @@ namespace WIM_Plugin {
                 var bounds = rootCollider.bounds;
                 bounds.Encapsulate(childBoxCollider.bounds);
                 rootCollider.size = bounds.size / WIM.Configuration.ScaleFactor;
-                removeAllColliders(childInWIM);
+                RemoveAllColliders(childInWIM);
             }
 
             // 4. remove every collider that is fully inside another one.
@@ -129,7 +128,7 @@ namespace WIM_Plugin {
             expandColliders(WIM);
         }
 
-        private static void removeAllColliders(Transform t) {
+        public static void RemoveAllColliders(Transform t) {
             Collider collider;
             // ReSharper disable once AssignmentInConditionalExpression
             while (collider = t.GetComponent<Collider>()) { // Assignment
@@ -138,7 +137,7 @@ namespace WIM_Plugin {
         }
 
         public static void GenerateNewWIM(in MiniatureModel WIM) {
-            removeAllColliders(WIM.transform);
+            RemoveAllColliders(WIM.transform);
             adaptScaleFactorToPlayerHeight(WIM);
             var levelTransform = GameObject.FindWithTag("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
@@ -201,14 +200,6 @@ namespace WIM_Plugin {
                 config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, scalingConfig.MinScaleFactor, scalingConfig.MaxScaleFactor);
                 WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
             }
-        }
-
-        internal static void UpdateScrollingMask(in MiniatureModel WIM) {
-            var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
-            if (scrollingConfig && !scrollingConfig.AllowWIMScrolling) return;
-            var boxMaskObj = GameObject.FindWithTag("Box Mask");
-            if (!boxMaskObj) return;
-            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
         }
 
         internal static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
@@ -298,46 +289,18 @@ namespace WIM_Plugin {
 #endif
         }
 
-        private static void enableScrolling(Material material, in MiniatureModel WIM) {
-            var maskController = new GameObject("Box Mask");
-            maskController.tag = maskController.name;
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo (maskController, "Created Box Mask");
-#endif
-            maskController.AddComponent<AlignWith>().Target = WIM.transform;
-            var controller = maskController.AddComponent<BoxController>();
-            controller.materials = new[] {material};
-            controller.SetBoxEnabled(true);
-            removeAllColliders(WIM.transform);
-            WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
-            maskController.transform.position = WIM.transform.position;
-        }
-
-        public static void DisableScrolling(in MiniatureModel WIM) {
-            var boxMask = GameObject.FindWithTag("Box Mask");
-#if UNITY_EDITOR
-            if(boxMask) Undo.DestroyObjectImmediate (boxMask);
-#else
-            GameObject.DestroyImmediate(boxMask);
-#endif
-            removeAllColliders(WIM.transform);
-            GenerateColliders(WIM);
-        }
-
         public static void ConfigureWIM(in MiniatureModel WIM) {
             // Cleanup old configuration.
-            DisableScrolling(WIM);
             CleanupOcclusionHandling();
+            OnPreConfigure?.Invoke(WIM);
 
             // Setup new configuration.
-            var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
             var material = LoadDefaultMaterial(WIM);
             SetWIMMaterial(material, WIM);
-            if (scrollingConfig && scrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
             if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
             if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);
-            UpdateScrollingMask(WIM);
+            OnConfigure?.Invoke(WIM);
         }
     }
 }
