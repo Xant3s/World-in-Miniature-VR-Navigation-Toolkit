@@ -92,11 +92,7 @@ namespace WIM_Plugin {
 
         public static void DisableScrolling(in MiniatureModel WIM) {
             var boxMask = GameObject.FindWithTag("Box Mask");
-#if UNITY_EDITOR
-            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
-#else
-            GameObject.DestroyImmediate(boxMask);
-#endif
+            DestroyImmediate(boxMask);
             WIMGenerator.RemoveAllColliders(WIM.transform);
             WIMGenerator.GenerateColliders(WIM);
         }
@@ -105,9 +101,6 @@ namespace WIM_Plugin {
             if (!ScrollingConfig.AllowWIMScrolling) return;
             var maskController = new GameObject("Box Mask");
             maskController.tag = maskController.name;
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo(maskController, "Created Box Mask");
-#endif
             maskController.AddComponent<AlignWith>().Target = WIM.transform;
             var controller = maskController.AddComponent<BoxController>();
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
