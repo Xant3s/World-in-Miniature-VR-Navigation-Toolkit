@@ -12,7 +12,7 @@ namespace WIM_Plugin {
             get => hightlightFX;
             set {
                 hightlightFX = value;
-                if(GetComponent<Renderer>()) {
+                if (GetComponent<Renderer>()) {
                     GetComponent<Renderer>().material =
                         hightlightFX ? Resources.Load<Material>("Materials/Blue") : defaultMaterial;
                 }
@@ -37,14 +37,14 @@ namespace WIM_Plugin {
         private Rigidbody rb;
 
         private void Awake() {
-            defaultMaterial = GetComponentInChildren<Renderer>()?.material;
+            defaultMaterial = GetComponent<Renderer>()?.sharedMaterial;
         }
-        
+
         private void Update() {
             HightlightFX = false;
-            if(!IsBeingGrabbed || !Target) return;
+            if (!IsBeingGrabbed || !Target) return;
 
-            if(Vector3.Distance(Target.position, transform.position) < MinDistance) {
+            if (Vector3.Distance(Target.position, transform.position) < MinDistance) {
                 IsBeingGrabbed = false;
                 Target = null;
                 rb = GetComponent<Rigidbody>();
