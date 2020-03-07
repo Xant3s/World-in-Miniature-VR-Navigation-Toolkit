@@ -66,10 +66,12 @@ namespace WIM_Plugin {
 
             // Copy box mask for old WIM    
             var boxMask = GameObject.FindWithTag("Box Mask");
-            if(boxMask) {
-                var oldBoxMask = Instantiate(boxMask, WIMLevel);
+            if (boxMask) {
+                var oldBoxMask = Instantiate(boxMask);
                 oldBoxMask.GetComponent<AlignWith>().Target = WIMLevel;
-                oldBoxMask.GetComponent<BoxController>().materials = new[] {mat};
+                var oldBoxController = oldBoxMask.GetComponent<BoxController>();        // TODO: decouple
+                oldBoxController.materials = new[] {mat};
+                oldBoxController.SetBoxEnabled(true);
             }
 
             // Dissolve old WIM
@@ -78,7 +80,6 @@ namespace WIM_Plugin {
                 WIMVisualizationUtils.DissolveWIM(WIMLevel);
             if (maintainTransformRelativeToPlayer)
                 WIMVisualizationUtils.InstantDissolveWIM(WIMLevel);
-
 
             var WIMLayer = LayerMask.NameToLayer("WIM");
             data.WIMLevelTransform.gameObject.layer = WIMLayer;
