@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    [ExecuteAlways]
     public class AlignWith : MonoBehaviour {
         public Transform Target;
 

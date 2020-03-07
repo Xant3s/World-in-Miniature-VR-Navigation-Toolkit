@@ -12,7 +12,6 @@ namespace WIM_Plugin {
 
         private static readonly string scrollingActionName = "Scrolling Axis";
         private static readonly string verticalScrollingActionName = "Vertical Scrolling Axis";
-        private WIMConfiguration config;
         private WIMData data;
         private Vector2 verticalAxisInput;
 
@@ -26,7 +25,6 @@ namespace WIM_Plugin {
             InputManager.RegisterAction(scrollingActionName, scrollWIM);
             InputManager.RegisterAction(verticalScrollingActionName, updateVerticalInput);
             if(!Application.isPlaying) return;
-            MiniatureModel.OnLateInit += init;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
@@ -38,13 +36,7 @@ namespace WIM_Plugin {
             InputManager.UnregisterAction(scrollingActionName);
             InputManager.UnregisterAction(verticalScrollingActionName);
             if(!Application.isPlaying) return;
-            MiniatureModel.OnLateInit -= init;
             MiniatureModel.OnUpdate -= ScrollWIM;
-        }
-
-        private void init(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
         }
 
         private void OnDestroy() {
@@ -59,6 +51,7 @@ namespace WIM_Plugin {
             if (!data.WIMLevelTransform) return;    // TODO: Useless?
             if(!ScrollingConfig.AllowWIMScrolling) return;
             if (ScrollingConfig.AutoScroll) autoScrollWIM();
+            this.data = data;
         }
 
         private void updateVerticalInput(Vector3 input) {
@@ -71,6 +64,7 @@ namespace WIM_Plugin {
             var input = scrollingInput;
             var direction = new Vector3(input.x, verticalAxisInput.y, input.y);
             if(!ScrollingConfig.AllowVerticalScrolling) direction.y = 0;
+            Assert.IsNotNull(data.WIMLevelTransform);
             data.WIMLevelTransform.Translate(Time.deltaTime * ScrollingConfig.ScrollSpeed * -direction, Space.World);
         }
         

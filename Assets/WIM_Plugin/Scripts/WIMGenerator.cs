@@ -14,39 +14,6 @@ namespace WIM_Plugin {
         private static readonly int alpha = Shader.PropertyToID("_Alpha");
         private static readonly int baseMapColor = Shader.PropertyToID("_BaseMapColor");
 
-        // Load the material appropriate to current WIM configuration.
-        public static Material LoadAppropriateMaterial(in MiniatureModel WIM) {
-            Material material;
-            var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
-            if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                material = Resources.Load<Material>("Materials/CombinedCutout");
-                setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
-                return material;
-            }
-
-            var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
-            if(occlusionHandlingConfig) {
-                switch (occlusionHandlingConfig.OcclusionHandlingMethod) {
-                    case OcclusionHandlingMethod.MeltWalls: {
-                            material = Resources.Load<Material>("Materials/CombinedCutout");
-                            setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
-                        break;
-                    }
-                    case OcclusionHandlingMethod.CutoutView: {
-                        material = Resources.Load<Material>("Materials/CombinedCutout");
-                        setBaseMapColorAlpha(material, WIM.Configuration.SemiTransparent ? 1 - WIM.Configuration.Transparency : 1);
-                        break;
-                    }
-                    default:
-                        material = LoadDefaultMaterial(WIM);
-                        break;
-                }
-            }
-            else {
-                material = LoadDefaultMaterial(WIM);
-            }
-            return material;
-        }
 
         public static Material LoadDefaultMaterial(MiniatureModel WIM) {
             Material material;
@@ -55,44 +22,6 @@ namespace WIM_Plugin {
             var semiTransparent = 1 - WIM.Configuration.Transparency;
             material.SetFloat(alpha, WIM.Configuration.SemiTransparent ? semiTransparent : fullyOpaque);
             return material;
-        }
-
-
-        // Set the color.alpha of the given material. 0 equals to fully transparent.
-        private static void setBaseMapColorAlpha(Material material, float value) {
-            var color = material.GetColor(baseMapColor);
-            color.a = value;
-            material.SetColor(baseMapColor, color);
-        }
-
-        private static void SetupDissolveScript(in MiniatureModel WIM) {
-            var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
-            var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
-            if (scrollingConfig && scrollingConfig.AllowWIMScrolling) {
-                RemoveDissolveScript(WIM);
-            } else if(occlusionHandlingConfig &&
-                      (occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls ||
-                      occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView)) {
-                RemoveDissolveScript(WIM);
-            }
-            else {
-                AddDissolveScript(WIM);
-            }
-        }
-
-        private static void RemoveDissolveScript(in MiniatureModel WIM) {
-            var WIMLevelTransform = WIM.transform.GetChild(0);
-            foreach (Transform child in WIMLevelTransform) {
-                Object.DestroyImmediate(child.GetComponent<Dissolve>());
-            }
-        }
-
-        private static void AddDissolveScript(in MiniatureModel WIM) {
-            var WIMLevelTransform = WIM.transform.GetChild(0);
-            foreach (Transform child in WIMLevelTransform) {
-                if (!child.GetComponent<Dissolve>())
-                    child.gameObject.AddComponent<Dissolve>();
-            }
         }
 
         public static void SetWIMMaterial(Material material, in MiniatureModel WIM) {
@@ -381,7 +310,6 @@ namespace WIM_Plugin {
             controller.SetBoxEnabled(true);
             removeAllColliders(WIM.transform);
             WIM.gameObject.AddComponent<BoxCollider>().size = WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
-            RemoveDissolveScript(WIM);
             maskController.transform.position = WIM.transform.position;
         }
 
@@ -404,9 +332,8 @@ namespace WIM_Plugin {
             // Setup new configuration.
             var scrollingConfig = WIM.GetComponent<Scrolling>()?.ScrollingConfig;
             var occlusionHandlingConfig = WIM.GetComponent<OcclusionHandling>()?.Config;
-            var material = LoadAppropriateMaterial(WIM);
+            var material = LoadDefaultMaterial(WIM);
             SetWIMMaterial(material, WIM);
-            SetupDissolveScript(WIM);
             if (scrollingConfig && scrollingConfig.AllowWIMScrolling) enableScrolling(material, WIM);
             if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView) configureCutoutView(material);
             if (occlusionHandlingConfig && occlusionHandlingConfig.OcclusionHandlingMethod == OcclusionHandlingMethod.MeltWalls) configureMeltWalls(material);

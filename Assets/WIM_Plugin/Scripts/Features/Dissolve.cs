@@ -2,24 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace WIM_Plugin {
     public class Dissolve : MonoBehaviour {
         [Range(0.1f, 10.0f)] public float durationInSeconds = 1.0f;
-        private Material mat;
+        public Material[] materials;
         private bool isInverse;
         private float endTime;
         private static readonly int progressProperty = Shader.PropertyToID("_Progress");
 
-        private void Start() {
-            mat = GetComponent<Renderer>().material;
-        }
 
         private void Update() {
-            if(!(Time.realtimeSinceStartup < endTime)) return;
+            if (!(Time.realtimeSinceStartup < endTime)) return;
             var remainingTime = endTime - Time.realtimeSinceStartup;
             var percent = (durationInSeconds - remainingTime) / durationInSeconds;
             var progress = !isInverse ? percent : 1 - percent;
-            mat.SetFloat(progressProperty, progress);
+            SetProgress(progress);
         }
 
         public void Play() {
@@ -33,12 +31,9 @@ namespace WIM_Plugin {
         }
 
         public void SetProgress(float progress) {
-            if(!mat) {
-                mat = GetComponent<Renderer>().material;
+            foreach(var mat in materials) {
+                mat.SetFloat(progressProperty, progress);
             }
-
-            if(!mat) return;
-            mat.SetFloat(progressProperty, progress);
         }
     }
 }
