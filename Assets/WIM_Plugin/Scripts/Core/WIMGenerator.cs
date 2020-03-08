@@ -143,6 +143,9 @@ namespace WIM_Plugin {
             var levelTransform = GameObject.FindWithTag("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
             var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
+#if UNITY_EDITOR
+            Undo.RegisterCreatedObjectUndo (WIMLevel.gameObject, "GenerateNewWIM");
+#endif
             WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
             WIMLevel.name = "WIM Level";
             WIMLevel.tag = "Untagged";
