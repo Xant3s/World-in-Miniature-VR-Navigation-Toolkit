@@ -24,12 +24,18 @@ namespace WIM_Plugin {
             if(!Config) return;
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
             MiniatureModel.OnUpdate += updatePreviewScreen;
+            DestinationIndicators.OnSpawnDestinationIndicatorInWIM += configurePickupPreviewScreen;
+            DestinationIndicators.OnRemoveDestinationIndicators += RemovePreviewScreen;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += RemovePreviewScreen;
         }
 
         private void OnDisable() {
             if(!Config) return;
             MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
             MiniatureModel.OnUpdate -= updatePreviewScreen;
+            DestinationIndicators.OnSpawnDestinationIndicatorInWIM -= configurePickupPreviewScreen;
+            DestinationIndicators.OnRemoveDestinationIndicators -= RemovePreviewScreen;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= RemovePreviewScreen;
         }
 
         public void ShowPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
@@ -64,14 +70,8 @@ namespace WIM_Plugin {
             Assert.IsNotNull(camObj);
             var cam = camObj.GetComponent<Camera>() ?? camObj.AddComponent<Camera>();
             Assert.IsNotNull(cam);
-            var WIMLayer = LayerMask.NameToLayer("WIM");
-
-            //cam.cullingMask |= (1 << LayerMask.GetMask("WIM"));
-            //cam.cullingMask |= (1 << LayerMask.GetMask("Hands"));
-
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
-
             cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
@@ -106,6 +106,20 @@ namespace WIM_Plugin {
             if(!previewScreen) return;
             previewScreen.transform.parent = null;
             Destroy(previewScreen);
+        }
+
+        private void RemovePreviewScreen(WIMConfiguration config, WIMData data) {
+            RemovePreviewScreen();
+        }
+
+        private void RemovePreviewScreen(in MiniatureModel WIM) {
+            RemovePreviewScreen();
+        }
+
+        private void configurePickupPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
+            if(!Config || Config.AutoPositionPreviewScreen) return;
+            WIMData.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject
+                .AddComponent<PickupPreviewScreen>();
         }
     }
 }

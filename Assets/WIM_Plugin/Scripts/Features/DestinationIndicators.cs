@@ -6,6 +6,10 @@ using WIM_Plugin;
 
 namespace WIM_Plugin {
     public static class DestinationIndicators {
+        public static event MiniatureModel.WIMAction OnSpawnDestinationIndicatorInWIM;
+        public static event MiniatureModel.WIMAction OnRemoveDestinationIndicators;
+
+
         public static Transform SpawnDestinationIndicatorInLevel(WIMConfiguration config, WIMData data) {
             var converter = new WIMSpaceConverterImpl(config, data);
             var levelPosition = converter.ConvertToLevelSpace(data.DestinationIndicatorInWIM.position);
@@ -49,10 +53,7 @@ namespace WIM_Plugin {
             data.DestinationIndicatorInWIM =
                 Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
             data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
-            // TODO: Decouple Preview screen config
-            var p = GameObject.FindWithTag("WIM")?.GetComponent<PreviewScreen>();
-            if(p && p.Config && !p.Config.AutoPositionPreviewScreen)
-                data.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject.AddComponent<PickupPreviewScreen>();
+            OnSpawnDestinationIndicatorInWIM?.Invoke(config, data);
             return data.DestinationIndicatorInWIM;
         }
 
@@ -60,7 +61,8 @@ namespace WIM_Plugin {
             Assert.IsNotNull(WIM);
             var data = WIM.Data;
             if(!data.DestinationIndicatorInWIM) return;
-            WIM.transform.GetComponent<PreviewScreen>().RemovePreviewScreen();
+
+            OnRemoveDestinationIndicators?.Invoke(WIM.Configuration, WIM.Data);
             // Destroy uses another thread, so make sure they are not copied by removing from parent.
             var travelPreview = WIM.GetComponent<TravelPreviewAnimation>();
             if(travelPreview.Data && travelPreview.Data.TravelPreviewAnimationObj) {

@@ -7,6 +7,10 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     public class PickupDestinationUpdate : MonoBehaviour {
+        public delegate void WIMAction(in MiniatureModel WIM);
+
+        public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
+
         public float DoubleTapInterval { get; set; } = 2;
 
         public bool HightlightFX {
@@ -142,9 +146,9 @@ namespace WIM_Plugin {
 
         private void RemoveDestinationIndicatorsExceptWIM(MiniatureModel WIM) {
             if (!WIM.Data.DestinationIndicatorInWIM) return;
-            WIM.GetComponent<PreviewScreen>()?.RemovePreviewScreen();
             // Using DestroyImmediate because the WIM is about to being copied and we don't want to copy these objects too.
             DestroyImmediate(WIM.GetComponent<TravelPreviewAnimation>().Data.TravelPreviewAnimationObj);
+            OnRemoveDestinationIndicatorExceptWIM?.Invoke(WIM);
             if (WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
         }
 

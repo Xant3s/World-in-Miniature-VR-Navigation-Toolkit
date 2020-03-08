@@ -28,6 +28,7 @@ namespace WIM_Plugin {
             MiniatureModel.OnLeftGrabButtonUp += leftScalingButtonUp;
             MiniatureModel.OnRightGrabButtonDown += rightScalingButtonDown;
             MiniatureModel.OnRightGrabButtonUp += rightScalingButtonUp;
+            WIMGenerator.OnAdaptScaleToPlayerHeight += clampScaleFactor;
         }
 
         private void OnDisable() {
@@ -37,6 +38,7 @@ namespace WIM_Plugin {
             MiniatureModel.OnLeftGrabButtonUp -= leftScalingButtonUp;
             MiniatureModel.OnRightGrabButtonDown -= rightScalingButtonDown;
             MiniatureModel.OnRightGrabButtonUp -= rightScalingButtonUp;
+            WIMGenerator.OnAdaptScaleToPlayerHeight -= clampScaleFactor;
         }
 
         private void Awake() {
@@ -162,6 +164,11 @@ namespace WIM_Plugin {
 
             point0 = center + dir * (height * 0.5f - radius);
             point1 = center - dir * (height * 0.5f - radius);
+        }
+
+        private void clampScaleFactor(in MiniatureModel WIM) {
+            if (ScalingConfig) config.ScaleFactor = 
+                Mathf.Clamp(config.ScaleFactor, ScalingConfig.MinScaleFactor, ScalingConfig.MaxScaleFactor);
         }
     }
 }
