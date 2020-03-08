@@ -14,6 +14,7 @@ namespace WIM_Plugin {
         public delegate void GeneratorAction(in MiniatureModel WIM);
         public static event GeneratorAction OnConfigure;
         public static event GeneratorAction OnPreConfigure;
+        public static event GeneratorAction OnAdaptScaleToPlayerHeight;
 
         private static readonly int alpha = Shader.PropertyToID("_Alpha");
 
@@ -166,8 +167,6 @@ namespace WIM_Plugin {
 
         private static void adaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
             var config = WIM.Configuration;
-            // TODO: decouple scaling.
-            var scalingConfig = WIM.GetComponent<Scaling>()?.ScalingConfig;
             if (!config.AdaptWIMSizeToPlayerHeight) return;
             var playerHeight = config.PlayerHeightInCM;
             const float defaultHeight = 170;
@@ -183,8 +182,6 @@ namespace WIM_Plugin {
                 var factor = actualDelta / maxDelta;
                 var resultingScaleFactorDelta = maxScaleFactorDelta * factor;
                 config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
-                if(scalingConfig) config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, scalingConfig.MinScaleFactor, scalingConfig.MaxScaleFactor);
-                WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
 
             } else if (heightDelta < 0) {
                 const float maxDelta = defaultHeight - minHeight;
@@ -192,9 +189,10 @@ namespace WIM_Plugin {
                 var factor = actualDelta / maxDelta;
                 var resultingScaleFactorDelta = maxScaleFactorDelta * -factor;
                 config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
-                config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, scalingConfig.MinScaleFactor, scalingConfig.MaxScaleFactor);
-                WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
             }
+            if(Math.Abs(heightDelta) < 0.0001) return;
+            OnAdaptScaleToPlayerHeight?.Invoke(WIM);
+            WIM.transform.localScale = new Vector3(config.ScaleFactor, config.ScaleFactor, config.ScaleFactor);
         }
 
         public static void ConfigureWIM(in MiniatureModel WIM) {

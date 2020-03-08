@@ -29,6 +29,7 @@ namespace WIM_Plugin {
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;
             Respawn.OnEarlyRespawn += EnableScrollingForOldWIM;
+            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM += adjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
@@ -44,6 +45,7 @@ namespace WIM_Plugin {
             WIMGenerator.OnConfigure -= EnableScrolling;
             WIMGenerator.OnConfigure -= UpdateScrollingMask;
             Respawn.OnEarlyRespawn -= EnableScrollingForOldWIM;
+            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= adjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate -= ScrollWIM;
         }
@@ -123,6 +125,14 @@ namespace WIM_Plugin {
             var oldBoxController = oldBoxMask.GetComponent<BoxController>();
             oldBoxController.materials = new[] { Respawn.materialForOldWIM };
             oldBoxController.SetBoxEnabled(true);
+        }
+
+        private void adjustPlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
+            if(ScrollingConfig && ScrollingConfig.AllowWIMScrolling) {
+                // Get closest point on active area bounds. Won't have any effect if already inside active area.
+                data.PlayerRepresentationTransform.position = 
+                    data.WIMLevelTransform.GetComponentInParent<Collider>().ClosestPoint(data.PlayerRepresentationTransform.position);
+            }
         }
     }
 }
