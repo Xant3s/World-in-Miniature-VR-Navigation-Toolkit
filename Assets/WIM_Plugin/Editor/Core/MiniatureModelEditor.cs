@@ -30,12 +30,7 @@ namespace WIM_Plugin {
                 EditorGUILayout.HelpBox("WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script.", MessageType.Error);
                 return;
             }
-            
             if(GUILayout.Button("Generate WIM")) WIMGenerator.GenerateNewWIM(WIM);
-            EditorGUI.BeginChangeCheck();
-            WIM.Configuration.AutoGenerateWIM =
-                EditorGUILayout.Toggle("Auto Generate WIM", WIM.Configuration.AutoGenerateWIM);
-            if(EditorGUI.EndChangeCheck()) WIMGenerator.UpdateAutoGenerateWIM(WIM);
 
             Separator("Basic Settings");
             WIM.Configuration.PlayerRepresentation = (GameObject) EditorGUILayout.ObjectField("Player Representation",
@@ -55,6 +50,7 @@ namespace WIM_Plugin {
                 new GUIContent("Destination Always on the Ground",
                     "If active, the destination will automatically set to ground level. This protects the player from being teleported to a location in mid-air."),
                 WIM.Configuration.DestinationAlwaysOnTheGround);
+            InvokeCallbacks("Basic");
 
             var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
             EditorGUI.BeginDisabledGroup(!destinationSelectionTouchAvailable);

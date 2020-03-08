@@ -142,7 +142,6 @@ namespace WIM_Plugin {
             var levelTransform = GameObject.FindWithTag("Level").transform;
             if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
             var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
-            Object.DestroyImmediate(WIMLevel.GetComponent<AutoUpdateWIM>());
             WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
             WIMLevel.name = "WIM Level";
             WIMLevel.tag = "Untagged";
@@ -153,7 +152,6 @@ namespace WIM_Plugin {
                 child.gameObject.layer = WIMLayer;
                 Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
                 Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
-                Object.DestroyImmediate(child.GetComponent(typeof(AutoUpdateWIM)));
                 var renderer = child.GetComponent<Renderer>();
                 if (renderer) {
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
@@ -196,23 +194,6 @@ namespace WIM_Plugin {
                 config.ScaleFactor = defaultScaleFactor + resultingScaleFactorDelta;
                 config.ScaleFactor = Mathf.Clamp(config.ScaleFactor, scalingConfig.MinScaleFactor, scalingConfig.MaxScaleFactor);
                 WIM.transform.localScale = new Vector3(config.ScaleFactor,config.ScaleFactor,config.ScaleFactor);
-            }
-        }
-
-        internal static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
-            var level = GameObject.FindWithTag("Level");
-            if (!level) {
-                Debug.LogWarning("Level not found.");
-                return;
-            }
-
-            if (WIM.Configuration.AutoGenerateWIM) {
-                // Add script recursive
-                level.AddComponent<AutoUpdateWIM>().WIM = WIM;
-            }
-            else {
-                // Destroy script recursive
-                Object.DestroyImmediate(level.GetComponent<AutoUpdateWIM>());
             }
         }
 
