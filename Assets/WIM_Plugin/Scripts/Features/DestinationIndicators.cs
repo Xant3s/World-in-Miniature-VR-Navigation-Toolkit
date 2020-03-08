@@ -63,13 +63,6 @@ namespace WIM_Plugin {
             if(!data.DestinationIndicatorInWIM) return;
 
             OnRemoveDestinationIndicators?.Invoke(WIM.Configuration, WIM.Data);
-            // Destroy uses another thread, so make sure they are not copied by removing from parent.
-            var travelPreview = WIM.GetComponent<TravelPreviewAnimation>();
-            if(travelPreview.Data && travelPreview.Data.TravelPreviewAnimationObj) {
-                travelPreview.Data.TravelPreviewAnimationObj.transform.parent = null;
-                Object.Destroy(travelPreview.Data.TravelPreviewAnimationObj);
-            }
-
             data.DestinationIndicatorInWIM.parent = null;
             Object.Destroy(data.DestinationIndicatorInWIM.gameObject);
             if(!data.DestinationIndicatorInLevel) return;
