@@ -5,16 +5,23 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
-    [ExecuteAlways]
     public class DissolveFX : MonoBehaviour {
         private void OnEnable() {
             Respawn.OnEarlyRespawn += dissolveOldWIM;
             Respawn.OnLateRespawn += resolveNewWIM;
+            Respawn.RemoveOldWIMLevel = false;
         }
 
         private void OnDisable() {
             Respawn.OnEarlyRespawn -= dissolveOldWIM;
             Respawn.OnLateRespawn -= resolveNewWIM;
+            Respawn.RemoveOldWIMLevel = true;
+        }
+
+        private void Awake() {
+            var WIM = GameObject.FindGameObjectWithTag("WIM");
+            if(!WIM) return;
+            WIM.AddComponent<Dissolve>().materials = new[] {WIM.GetComponentInChildren<Renderer>().sharedMaterial};
         }
 
         private void dissolveOldWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
@@ -25,7 +32,6 @@ namespace WIM_Plugin {
             } else {
                 InstantDissolveWIM(oldWIMTransform);
             }
-            Respawn.RemoveOldWIMLevel = false;
         }
 
         private void resolveNewWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
@@ -40,11 +46,8 @@ namespace WIM_Plugin {
 
         private void resolveWIM(Transform WIMLevel) {
             const int resolveDuration = 1;
-            var d = WIMLevel.GetComponent<Dissolve>();
-            if(!d) {
-                d = WIMLevel.gameObject.AddComponent<Dissolve>();
-                d.materials = new[] {WIMLevel.GetComponentInChildren<Renderer>().sharedMaterial};
-            }
+            var d = WIMLevel.GetComponentInParent<Dissolve>();
+            if(!d) return;
             d.durationInSeconds = resolveDuration;
             d.SetProgress(1);
             d.PlayInverse();
