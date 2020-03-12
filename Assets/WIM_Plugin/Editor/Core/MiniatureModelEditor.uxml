@@ -9,6 +9,7 @@
   <WIM:HelpBox name="config-missing" messageType="Error" text="WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script." />
   <VisualElement name="master-container">
     <Button name="GenerateWIMButton" text="Generate WIM" />
+
     <Label class="Separator" text="Basic Settings" />
     <editor:ObjectField name="player-representation" label="Player Representation" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="PlayerRepresentation" />
     <editor:ObjectField name="destination-indicator" label="Destination Indicator" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="DestinationIndicator" />
@@ -21,5 +22,23 @@
     <VisualElement name="basic-container" />
     <editor:EnumField name="destination-selection-method" label="Destination Selection Method" binding-path="DestinationSelectionMethod" />
     <WIM:HelpBox name="destination-selection-method-info" messageType="Info" text="Add 'DestinationSelectionTouch' script to change destination selection method." />
+    <editor:FloatField name="double-tap-interval" label="Double Tap Interval" binding-path="DoubleTapInterval" />
+    <VisualElement name="input-container" />
+
+    <Label class="Separator" text="Occlusion Handling" />
+    <Toggle name="semi-transparent" label="Semi-Transparent" binding-path="SemiTransparent" />
+    <Slider name="transparency" label="Transparency" binding-path="Transparency" low-value="0" high-value="1">
+      <editor:FloatField name="transparency-input-field" />
+    </Slider>
+    <VisualElement name="occlusion-handling-container" />
+
+    <Label class="Separator" text="Usability" />
+    <editor:FloatField label="WIM Spawn at Height" binding-path="WIMSpawnHeight" />
+    <editor:FloatField label="Player Height (in cm)" binding-path="PlayerHeightInCM" />
+    <editor:FloatField name="spawn-distance" label="WIM Spawn Distance" binding-path="SpawnDistance" />
+    <Toggle name="detect-arm-length" label="Auto Detect Arm Length" binding-path="AutoDetectArmLength" tooltip="At the start of the application, player has to extend the arm and press the confirm teleport button. The detected arm length will be used instead of the spawn distance." />
+    <WIM:HelpBox name="detect-arm-length-info" messageType="Info" text="Add 'DetectArmLength' script to enable this feature." />
+    <Toggle label="Adapt WIM Size to Player Height" binding-path="AdaptWIMSizeToPlayerHeight" />
+    <VisualElement name="usability-container" />
   </VisualElement>
 </UXML>
