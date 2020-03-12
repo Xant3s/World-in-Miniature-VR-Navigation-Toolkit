@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:editor="UnityEditor.UIElements" xmlns:engine="UnityEngine.UIElements" xmlns:WIM="WIM_Plugin" xmlns="UnityEditor.Rendering.LookDev" elementFormDefault="qualified" targetNamespace="WIM_Plugin" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
-  <xs:complexType name="HelpBoxTestType">
+  <xs:complexType name="HelpBoxType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
         <xs:attribute default="" name="name" type="xs:string" use="optional" />
@@ -19,5 +19,5 @@
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="HelpBoxTest" substitutionGroup="engine:VisualElement" type="WIM:HelpBoxTestType" />
+  <xs:element name="HelpBox" substitutionGroup="engine:VisualElement" type="WIM:HelpBoxType" />
 </xs:schema>
