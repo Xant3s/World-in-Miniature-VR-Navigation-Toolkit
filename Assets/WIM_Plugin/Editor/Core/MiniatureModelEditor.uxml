@@ -1,0 +1,11 @@
+﻿<UXML xmlns="UnityEngine.UIElements"   
+      xmlns:WIM="WIM_Plugin"
+>
+
+  <Label text="World-in-Miniature (WIM)"/>
+  <VisualElement name="ConfigurationContainer" />
+  <WIM:HelpBoxTest name="config-missing" text="WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script." />
+  <VisualElement name="master-container">
+    <Button name="GenerateWIMButton" text="Generate WIM" />
+  </VisualElement>
+</UXML>
