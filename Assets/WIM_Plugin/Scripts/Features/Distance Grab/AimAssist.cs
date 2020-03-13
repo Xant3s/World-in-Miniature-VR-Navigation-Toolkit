@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     [RequireComponent(typeof(LineRenderer))]
+    [DisallowMultipleComponent]
     public class AimAssist : MonoBehaviour {
         [SerializeField] private Hand hand;
         [SerializeField] private float length = 10.0f;

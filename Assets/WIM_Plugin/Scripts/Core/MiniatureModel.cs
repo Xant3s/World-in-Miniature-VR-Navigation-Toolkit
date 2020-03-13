@@ -11,6 +11,7 @@ namespace WIM_Plugin {
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {
         public WIMConfiguration Configuration;
         public WIMData Data;

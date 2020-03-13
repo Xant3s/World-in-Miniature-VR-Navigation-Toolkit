@@ -4,6 +4,7 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class Destroyer : MonoBehaviour {
         private MiniatureModel WIM;
 

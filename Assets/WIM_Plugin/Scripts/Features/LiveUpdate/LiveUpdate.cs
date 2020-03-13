@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class LiveUpdate : MonoBehaviour {
         private void OnEnable() {
             WIMGenerator.OnPreConfigure += RemoveAutoUpdate;

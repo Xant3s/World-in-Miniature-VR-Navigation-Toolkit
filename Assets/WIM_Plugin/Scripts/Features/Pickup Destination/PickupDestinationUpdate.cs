@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class PickupDestinationUpdate : MonoBehaviour {
         public delegate void WIMAction(in MiniatureModel WIM);
 

@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     [RequireComponent(typeof(LineRenderer))]
+    [DisallowMultipleComponent]
     public class TravelPreviewAnimationController : MonoBehaviour {
         public WIMSpaceConverter Converter { get; set; }
         public Transform DestinationInWIM { get; set; }
