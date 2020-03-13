@@ -106,7 +106,7 @@ namespace WIM_Plugin {
         }
 
         private void EnableScrolling(in MiniatureModel WIM) {
-            if (!ScrollingConfig.AllowWIMScrolling) return;
+            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
             var maskController = new GameObject("Box Mask");
             maskController.tag = maskController.name;
 #if UNITY_EDITOR
