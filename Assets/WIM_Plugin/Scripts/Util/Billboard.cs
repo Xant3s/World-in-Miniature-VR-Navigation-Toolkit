@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class Billboard : MonoBehaviour {
         private void Update() {
             var mainCamera = Camera.main;

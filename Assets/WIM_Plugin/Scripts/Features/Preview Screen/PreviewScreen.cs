@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class PreviewScreen : MonoBehaviour {
         public PreviewScreenConfiguration Config;
         [HideInInspector] public PreviewScreenData Data;

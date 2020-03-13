@@ -8,6 +8,7 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     // Allow scrolling the WIM at runtime.
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
 

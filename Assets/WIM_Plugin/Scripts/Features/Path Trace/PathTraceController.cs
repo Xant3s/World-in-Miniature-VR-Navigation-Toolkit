@@ -7,6 +7,7 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     [RequireComponent(typeof(LineRenderer))]
+    [DisallowMultipleComponent]
     public class PathTraceController : MonoBehaviour {
         public WIMSpaceConverter Converter { get; set; }
         public Transform NewPositionInWIM { get; set; }

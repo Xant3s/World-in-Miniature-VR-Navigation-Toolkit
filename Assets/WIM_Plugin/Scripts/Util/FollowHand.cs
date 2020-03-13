@@ -6,6 +6,7 @@ using WIM_Plugin;
 
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class FollowHand : MonoBehaviour {
         public Hand hand;
 

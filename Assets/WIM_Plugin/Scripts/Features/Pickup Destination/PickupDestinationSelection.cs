@@ -7,6 +7,7 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class PickupDestinationSelection : MonoBehaviour {
         public float DoubleTapInterval { get; set; } = 2;
 

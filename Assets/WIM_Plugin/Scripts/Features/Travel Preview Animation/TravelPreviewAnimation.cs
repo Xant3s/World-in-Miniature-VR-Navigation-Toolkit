@@ -3,6 +3,7 @@ using UnityEngine.Assertions;
 using WIM_Plugin;
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class TravelPreviewAnimation : MonoBehaviour {
         public TravelPreviewConfiguration Config;
         [HideInInspector] public TravelPreviewData Data;

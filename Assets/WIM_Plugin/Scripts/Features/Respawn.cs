@@ -6,6 +6,7 @@ using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class Respawn : MonoBehaviour {
         public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, 
             bool maintainTransformRelativeToPlayer);
