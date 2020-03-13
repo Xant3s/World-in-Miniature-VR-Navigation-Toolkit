@@ -35,16 +35,14 @@ namespace WIM_Plugin {
         public override VisualElement CreateInspectorGUI() {
             if(!visualTree) return new VisualElement();
             root.Q<ObjectField>("configuration").objectType = typeof(WIMConfiguration);     // Hotfix until 2020.1
-            //var configField = root.Q<ObjectField>("configuration");
-            //configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>((e) => {
-            //    Debug.Log("update");
-            //    //    //root.Q<HelpBox>(name: "config-missing").style.display = !WIM.Configuration ? DisplayStyle.Flex : DisplayStyle.None;
-            //    //    //root.Q<VisualElement>("master-container").style.display = WIM.Configuration ? DisplayStyle.Flex : DisplayStyle.None;
-            //});
-
+            var configField = root.Q<ObjectField>("configuration");
+            configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(e => {
+                root.Q<HelpBox>(name: "config-missing").SetDisplay(!e.newValue);
+                root.Q<VisualElement>("master-container").SetDisplay(e.newValue);
+            });
             root.Q<HelpBox>(name: "config-missing").SetDisplay(!WIM.Configuration);
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
-            if(!WIM.Configuration) return root;
+            if (!WIM.Configuration) return root;
 
             root.Q<Button>("GenerateWIMButton").RegisterCallback<MouseUpEvent>(e => {
                 WIMGenerator.GenerateNewWIM(WIM);
@@ -69,7 +67,10 @@ namespace WIM_Plugin {
             }));
 
             var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
-            root.Q<EnumField>("destination-selection-method").SetEnabled(destinationSelectionTouchAvailable);
+            var destinationSelectionMethodEnumField = root.Q<EnumField>("destination-selection-method");
+            destinationSelectionMethodEnumField.SetEnabled(destinationSelectionTouchAvailable);
+            destinationSelectionMethodEnumField.RegisterValueChangedCallback(e
+                => root.Q<FloatField>("double-tap-interval").SetDisplay((DestinationSelection) e.newValue == DestinationSelection.Pickup));
             root.Q<HelpBox>("destination-selection-method-info").SetDisplay(!destinationSelectionTouchAvailable);
             root.Q<FloatField>("double-tap-interval").SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
 
@@ -89,11 +90,13 @@ namespace WIM_Plugin {
                 InvokeCallbacks("Occlusion Handling");
             }));
 
-            root.Q<FloatField>("spawn-distance").SetDisplay(!WIM.Configuration.AutoDetectArmLength);
+            var spawnDistance = root.Q<FloatField>("spawn-distance");
+            spawnDistance.SetDisplay(!WIM.Configuration.AutoDetectArmLength);
 
             var autoDetectArmLengthAvailable = WIM.GetComponent<DetectArmLength>() != null;
             var detectArmLengthToggle = root.Q<Toggle>("detect-arm-length");
             detectArmLengthToggle.SetEnabled(autoDetectArmLengthAvailable);
+            detectArmLengthToggle.RegisterValueChangedCallback(e => spawnDistance.SetDisplay(!e.newValue));
             root.Q<HelpBox>("detect-arm-length-info").SetDisplay(!autoDetectArmLengthAvailable);
             if(!autoDetectArmLengthAvailable)WIM.Configuration.AutoDetectArmLength = false;
 
