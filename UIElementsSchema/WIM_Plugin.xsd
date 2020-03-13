@@ -23,7 +23,7 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="FloatSlider" substitutionGroup="engine:VisualElement" type="WIM:FloatSliderType" />
-  <xs:simpleType name="HelpBox_messageType_Type">
+  <xs:simpleType name="HelpBox_message-type_Type">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Info" />
       <xs:enumeration value="Warning" />
@@ -44,7 +44,7 @@
         <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
         <xs:attribute default="" name="text" type="xs:string" use="optional" />
-        <xs:attribute default="Info" name="messageType" type="WIM:HelpBox_messageType_Type" use="optional" />
+        <xs:attribute default="Info" name="message-type" type="WIM:HelpBox_message-type_Type" use="optional" />
         <xs:anyAttribute processContents="lax" />
       </xs:restriction>
     </xs:complexContent>

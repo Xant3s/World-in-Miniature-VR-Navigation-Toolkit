@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace WIM_Plugin {
     public class DrawCallbackManager {
-        public delegate void InspectorAction(WIMConfiguration config);
+        public delegate void InspectorAction(WIMConfiguration config, VisualElement container);
 
         private static IDictionary<string, IDictionary<int, InspectorAction>> OnDraw = new Dictionary<string, IDictionary<int, InspectorAction>>();
         
@@ -30,11 +31,11 @@ namespace WIM_Plugin {
             return OnDraw[key].Count;
         }
 
-        public void InvokeCallbacks(MiniatureModel WIM, string key = "") {
+        public void InvokeCallbacks(MiniatureModel WIM, VisualElement container, string key = "") {
             if(!OnDraw.ContainsKey(key)) return;
             var pairs = OnDraw[key].ToList();
             pairs.Sort((x,y) =>x.Key.CompareTo(y.Key));
-            pairs.ForEach(callback => callback.Value(WIM.Configuration));
+            pairs.ForEach(callback => callback.Value(WIM.Configuration, container));
         }
     }
 

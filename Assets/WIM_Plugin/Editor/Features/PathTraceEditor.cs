@@ -3,17 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
     [CustomEditor(typeof(PathTrace))]
     public class PathTraceEditor : Editor {
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(Draw, 2);
+            //MiniatureModelEditor.OnDraw.AddCallback(Draw, 2);
+            //MiniatureModelEditor.OnDraw.AddCallback(draw, 2);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
+            //MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
+            //MiniatureModelEditor.OnDraw.RemoveCallback(draw);
         }
 
         private void Draw(WIMConfiguration WIMConfig) {
@@ -30,6 +33,20 @@ namespace WIM_Plugin {
                 config.TraceDuration = EditorGUILayout.FloatField("Trace Duration", config.TraceDuration);
             }
             EditorUtility.SetDirty(config);
+        }
+
+        private void draw(WIMConfiguration WIMConfig, VisualElement container) {
+            var root = new VisualElement();
+
+            root.Add(new IMGUIContainer(() => {
+                Draw(WIMConfig);
+            }));
+
+
+
+
+
+            container.Add(root);
         }
 
         public override void OnInspectorGUI() {

@@ -3,7 +3,7 @@
       xmlns:editor="UnityEditor.UIElements"
 >
 
-  <Label text="World-in-Miniature (WIM)"/>
+  <Label text="World-in-Miniature (WIM)" class="title" />
   <VisualElement name="ConfigurationContainer" />
   <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.WIMConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="Configuration" />
   <WIM:HelpBox name="config-missing" message-type="Error" text="WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script." />

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using Oculus.Platform;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
@@ -13,9 +14,8 @@ namespace WIM_Plugin {
     public class MiniatureModelEditor : Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();
 
-        public delegate void Test(WIMConfiguration config, VisualElement container);
-        public static event Test OnBasicDraw;
-        public static event Test OnOcclusionHandlingDraw;
+        //public delegate void Test(WIMConfiguration config, VisualElement container);
+        //public static event Test OnOcclusionHandlingDraw;
 
         private MiniatureModel WIM;
         private static GUIStyle headerStyle;
@@ -64,13 +64,7 @@ namespace WIM_Plugin {
                     WIMEditorUtility.NamedVectorField("Expand Colliders Z", WIM.Configuration.ExpandCollidersZ, "Front", "Back");
             }));
 
-            //root.Q<VisualElement>("basic-container").Add(new IMGUIContainer(() => {
-            //    if(!WIM.Configuration) return;
-            //    InvokeCallbacks("Basic");
-
-            //}));
-            //root.Q<VisualElement>("basic-container").Add(OnBasicDraw?.Invoke(WIM.Configuration));
-            OnBasicDraw?.Invoke(WIM.Configuration, root.Q<VisualElement>("basic-container"));
+            InvokeCallbacks(root.Q<VisualElement>("basic-container"), "Basic");
 
             var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
             var destinationSelectionMethodEnumField = root.Q<EnumField>("destination-selection-method");
@@ -80,9 +74,7 @@ namespace WIM_Plugin {
             root.Q<HelpBox>("destination-selection-method-info").SetDisplay(!destinationSelectionTouchAvailable);
             root.Q<FloatField>("double-tap-interval").SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
 
-            //root.Q<VisualElement>("input-container").Add(new IMGUIContainer(() => {
-            //    InvokeCallbacks("Input");
-            //}));
+            //InvokeCallbacks(root.Q<VisualElement>("input-container"), "Input");
 
             root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e 
                 => root.schedule.Execute(()=>WIMGenerator.ConfigureWIM(WIM)));  // Delay so that newValue is set on execution.
@@ -93,10 +85,7 @@ namespace WIM_Plugin {
             transparencySlider.RegisterCallback<FocusOutEvent>(e => WIMGenerator.ConfigureWIM(WIM));
             transparencySliderRoot.SetDisplay(WIM.Configuration.SemiTransparent);
 
-            //root.Q<VisualElement>("occlusion-handling-container").Add(new IMGUIContainer(() => {
-            //    InvokeCallbacks("Occlusion Handling");
-            //}));
-            OnOcclusionHandlingDraw?.Invoke(WIM.Configuration, root.Q<VisualElement>("occlusion-handling-container"));
+            InvokeCallbacks(root.Q<VisualElement>("occlusion-handling-container"), "Occlusion Handling");
 
             var spawnDistance = root.Q<FloatField>("spawn-distance");
             spawnDistance.SetDisplay(!WIM.Configuration.AutoDetectArmLength);
@@ -108,9 +97,7 @@ namespace WIM_Plugin {
             root.Q<HelpBox>("detect-arm-length-info").SetDisplay(!autoDetectArmLengthAvailable);
             if(!autoDetectArmLengthAvailable)WIM.Configuration.AutoDetectArmLength = false;
 
-            root.Q<VisualElement>("usability-container").Add(new IMGUIContainer(() => {
-                InvokeCallbacks("Usability");
-            }));
+            //InvokeCallbacks(root.Q<VisualElement>("usability-container"), "Usability");
 
 
             Action action = () => {
@@ -125,10 +112,11 @@ namespace WIM_Plugin {
 
                 separators.Clear();
                 EditorUtility.SetDirty(WIM.Configuration);
-                InvokeCallbacks();
+                //InvokeCallbacks(container:root);
             };
 
             root.Add(new IMGUIContainer(action));
+            InvokeCallbacks(root);
             bindings();
             return root;
         }
@@ -139,8 +127,8 @@ namespace WIM_Plugin {
                 root.Bind(new SerializedObject(WIM.Configuration));
         }
 
-        private void InvokeCallbacks(string key = "") {
-            OnDraw.InvokeCallbacks(WIM, key);
+        private void InvokeCallbacks(VisualElement container, string key = "") {
+            OnDraw.InvokeCallbacks(WIM, container, key);
         }
 
         public static void Separator(string text = "", ushort space = 20) {

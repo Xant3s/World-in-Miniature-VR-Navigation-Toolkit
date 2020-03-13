@@ -3,17 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
     [CustomEditor(typeof(PreviewScreen))]
     public class PreviewScreenEditor : Editor {
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(Draw, 1);
+            //MiniatureModelEditor.OnDraw.AddCallback(Draw, 1);
+            //MiniatureModelEditor.OnDraw.AddCallback(draw, 1);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
+            //MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
+            //MiniatureModelEditor.OnDraw.RemoveCallback(draw);
         }
 
         private void Draw(WIMConfiguration WIMConfig) {
@@ -30,6 +33,20 @@ namespace WIM_Plugin {
                     config.AutoPositionPreviewScreen);
             }
             EditorUtility.SetDirty(config);
+        }
+
+        private void draw(WIMConfiguration WIMConfig, VisualElement container) {
+            var root = new VisualElement();
+
+            root.Add(new IMGUIContainer(() => {
+                Draw(WIMConfig);
+            }));
+
+
+
+
+
+            container.Add(root);
         }
 
         public override void OnInspectorGUI() {

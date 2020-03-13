@@ -1,4 +1,12 @@
-﻿.Separator{
+﻿FloatField {
+    min-width: 45px;
+}
+
+IMGUIContainer {
+    margin: 0px 3px;
+}
+
+.Separator {
     -unity-font-style: bold;
     margin-top: 20px;
 }
@@ -8,10 +16,7 @@
     justify-content: center;
 }
 
-FloatField{
-    min-width: 45px;
-}
-
-IMGUIContainer{
-    margin: 0px 3px;
+.title {
+    -unity-font-style: bold;
+    font-size: 14px;
 }
