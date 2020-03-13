@@ -34,7 +34,7 @@ namespace WIM_Plugin {
             root.Q<Toggle>("enabled").RegisterValueChangedCallback(e => traceDuration.SetDisplay(e.newValue));
             
             container.Add(root);
-            if(config)root.Bind(new SerializedObject(config));
+            if(config) root.Bind(new SerializedObject(config));
             root.Bind(new SerializedObject(pathTrace));
         }
 
