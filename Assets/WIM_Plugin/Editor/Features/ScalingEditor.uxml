@@ -1,0 +1,17 @@
+﻿<UXML xmlns="UnityEngine.UIElements"
+      xmlns:WIM="WIM_Plugin"
+      xmlns:editor="UnityEditor.UIElements">
+<Label text="Scaling" class="Separator"/>
+<editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.ScalingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScalingConfig" />
+<WIM:HelpBox name="config-info" message-type="Error" text="Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script." />
+
+<VisualElement name="settings">
+  <Toggle name="allow-scaling" label="Allow WIM Scaling" binding-path="AllowWIMScaling" />
+  <VisualElement name="scaling-settings2">
+    <editor:FloatField label="Min Scale Factor" binding-path="MinScaleFactor" />
+    <editor:FloatField label="Max Scale Factor" binding-path="MaxScaleFactor" />
+    <editor:FloatField label="Scale Step" binding-path="ScaleStep" />
+    <editor:FloatField label="Inter Hand Distance Delta Threshold" binding-path="InterHandDistanceDeltaThreshold" tooltip="Ignore inter hand distance deltas below this threshold for scaling." />
+  </VisualElement>
+</VisualElement>
+</UXML>

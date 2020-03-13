@@ -1,0 +1,17 @@
+﻿<UXML xmlns="UnityEngine.UIElements"
+      xmlns:WIM="WIM_Plugin"
+      xmlns:editor="UnityEditor.UIElements">
+  <Label text="Scrolling" class="Separator"/>
+  <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.ScrollingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScrollingConfig" />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script." />
+
+  <VisualElement name="settings">
+    <Toggle name="allow-scrolling" label="Allow WIM Scrolling" binding-path="AllowWIMScrolling" />
+    <VisualElement name="scrolling-settings2">
+      <editor:Vector3Field name="active-area-bounds" label="Active Area Bounds" binding-path="ActiveAreaBounds" />
+      <Toggle name="auto-scroll" label="Auto Scroll" binding-path="AutoScroll" />
+      <editor:FloatField name="scroll-speed" label="Scroll Speed" binding-path="ScrollSpeed" />
+      <Toggle name="allow-vertical-scroll" label="Allow Vertical Scrolling" binding-path="AllowVerticalScrolling" />
+    </VisualElement>
+  </VisualElement>
+</UXML>

@@ -1,0 +1,20 @@
+﻿<UXML xmlns="UnityEngine.UIElements"
+      xmlns:WIM="WIM_Plugin"
+      xmlns:editor="UnityEditor.UIElements">
+  <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.OcclusionHandlingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="Config" />
+  <WIM:HelpBox name="config-error" message-type="Error" text="Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script." />
+
+  <editor:EnumField name="occlusion-handling-method" label="Occlusion Handling Method" binding-path="OcclusionHandlingMethod" tooltip="Select occlusion handling strategy." />
+
+  <VisualElement name="melt-settings">
+    <editor:FloatField label="Melt Radius" binding-path="MeltRadius" />
+    <editor:FloatField label="Melt Height" binding-path="MeltHeight" />
+  </VisualElement>
+
+  <VisualElement name="cutout-view-settings">
+    <editor:FloatField label="Cutout Range" binding-path="CutoutRange" />
+    <editor:FloatField label="Cutout Angle" binding-path="CutoutAngle" />
+    <Toggle name="show-cutout-light" label="Show Cutout Light" binding-path="ShowCutoutLight" />
+    <editor:ColorField name="cutout-light-color" label="Cutout Light Color" binding-path="CutoutLightColor" />
+  </VisualElement>
+</UXML>
