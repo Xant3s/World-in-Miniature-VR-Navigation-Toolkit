@@ -14,16 +14,10 @@ namespace WIM_Plugin {
     public class MiniatureModelEditor : Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();
 
-        //public delegate void Test(WIMConfiguration config, VisualElement container);
-        //public static event Test OnOcclusionHandlingDraw;
-
         private MiniatureModel WIM;
         private static GUIStyle headerStyle;
-
-        //internal static IList<string> separators = new List<string>();
-        internal static IDictionary<string, int> separators = new Dictionary<string, int>();
+        private static IDictionary<string, int> separators = new Dictionary<string, int>();
         private static IDictionary<string, Label> separatorLabels = new Dictionary<string, Label>();
-
         private static VisualElement root;
         private VisualTreeAsset visualTree;
 
@@ -76,8 +70,6 @@ namespace WIM_Plugin {
             root.Q<HelpBox>("destination-selection-method-info").SetDisplay(!destinationSelectionTouchAvailable);
             root.Q<FloatField>("double-tap-interval").SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
 
-            //InvokeCallbacks(root.Q<VisualElement>("input-container"), "Input");
-
             root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e 
                 => root.schedule.Execute(()=>WIMGenerator.ConfigureWIM(WIM)));  // Delay so that newValue is set on execution.
 
@@ -99,25 +91,8 @@ namespace WIM_Plugin {
             root.Q<HelpBox>("detect-arm-length-info").SetDisplay(!autoDetectArmLengthAvailable);
             if(!autoDetectArmLengthAvailable)WIM.Configuration.AutoDetectArmLength = false;
 
-            //InvokeCallbacks(root.Q<VisualElement>("usability-container"), "Usability");
+            InvokeCallbacks(root.Q<VisualElement>("usability-container"), "Usability");
 
-
-            Action action = () => {
-                WIM = (MiniatureModel) target;
-                headerStyle = new GUIStyle(GUI.skin.label) {
-                    fontStyle = FontStyle.Bold
-                };
-
-                if(!WIM.Configuration) {
-                    return;
-                }
-
-                separators.Clear();
-                EditorUtility.SetDirty(WIM.Configuration);
-                //InvokeCallbacks(container:root);
-            };
-
-            //root.Add(new IMGUIContainer(action));
             InvokeCallbacks(root);
             bindings();
             return root;
@@ -133,18 +108,11 @@ namespace WIM_Plugin {
             OnDraw.InvokeCallbacks(WIM, container, key);
         }
 
-        public static void Separator(string text = "", ushort space = 20) {
-            GUILayout.Space(space);
-            GUILayout.Label(text, headerStyle);
-        }
-
         public static void UniqueSeparator(string text = "", ushort space = 20) {
             if(separators.ContainsKey(text)) {
                 separators[text]++;
                 return;
             }
-            //if(separators.Contains(text)) return;
-            //Separator(text, space);
             separators.Add(text, 1);
             var newSeparator = new Label(text);
             root.Add(newSeparator);
