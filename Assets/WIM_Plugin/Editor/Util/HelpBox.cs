@@ -18,7 +18,7 @@ namespace WIM_Plugin {
         public new class UxmlFactory : UxmlFactory<HelpBox, UxmlTraits> { }
 
         public new class UxmlTraits : VisualElement.UxmlTraits {
-            UxmlStringAttributeDescription m_mytext = new UxmlStringAttributeDescription {
+            UxmlStringAttributeDescription m_text = new UxmlStringAttributeDescription {
                 name = "text", defaultValue = ""
             };
 
@@ -32,32 +32,59 @@ namespace WIM_Plugin {
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc) {
                 base.Init(ve, bag, cc);
-                var ate = ve as HelpBox;
-                ate.Clear();
-                var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Util/HelpBox.uxml");
-                var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Util/HelpBox.uss");
-                ate.styleSheets.Add(styleSheet);
-                ate.text = m_mytext.GetValueFromBag(bag, cc);
-                visualTree.CloneTree(ate);
-                ate.Q<TextElement>().text = ate.text;
-                var img = ate.Q<Image>();
-                ate.messageType = m_messageType.GetValueFromBag(bag, cc);
-                switch(ate.messageType) {
-                    case MessageType.Error:
-                        img.image = EditorGUIUtility.FindTexture("d_console.erroricon");
-                        break;
-                    case MessageType.Warning:
-                        img.image = EditorGUIUtility.FindTexture("d_console.warnicon");
-                        break;
-                    default:
-                        img.image = EditorGUIUtility.FindTexture("d_console.infoicon");
-                        break;
-                }
-                img.scaleMode = ScaleMode.ScaleToFit;
+                var text = m_text.GetValueFromBag(bag, cc);
+                var messageType = m_messageType.GetValueFromBag(bag, cc);
+                ((HelpBox) ve).Init(text, messageType);
             }
         }
 
-        public string text { get; set; }
-        public MessageType messageType { get; set; }
+        public HelpBox() {
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Util/HelpBox.uxml");
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Util/HelpBox.uss");
+            var helpBox = new VisualElement();
+            helpBox.styleSheets.Add(styleSheet);
+            visualTree.CloneTree(helpBox);
+            hierarchy.Add(helpBox);
+            textElement = helpBox.Q<TextElement>();
+            image = helpBox.Q<Image>();
+            this.Type = MessageType.Info;
+        }
+
+        public HelpBox(string text, MessageType messageType = MessageType.Info): this() {
+            Init(text, messageType);
+        }
+
+        public void Init(string text, MessageType messageType = MessageType.Info) {
+            this.Text = text;
+            this.Type = messageType;
+            image.scaleMode = ScaleMode.ScaleToFit;
+        }
+
+        public string Text {
+            get => textElement.text;
+            set => textElement.text = value;
+        }
+
+        public MessageType Type {
+            get => type;
+            set {
+                type = value;
+                switch (type) {
+                    case MessageType.Error:
+                        image.image = EditorGUIUtility.FindTexture("d_console.erroricon");
+                        break;
+                    case MessageType.Warning:
+                        image.image = EditorGUIUtility.FindTexture("d_console.warnicon");
+                        break;
+                    default:
+                        image.image = EditorGUIUtility.FindTexture("d_console.infoicon");
+                        break;
+                }
+            }
+        }
+
+        private readonly TextElement textElement;
+        private readonly Image image;
+        private MessageType type;
     }
 }

@@ -13,6 +13,9 @@ namespace WIM_Plugin {
     public class MiniatureModelEditor : Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();
 
+        public delegate VisualElement Test(WIMConfiguration config);
+        public static event Test OnBasicDraw;
+
         private MiniatureModel WIM;
         private static GUIStyle headerStyle;
 
@@ -61,10 +64,12 @@ namespace WIM_Plugin {
                     WIMEditorUtility.NamedVectorField("Expand Colliders Z", WIM.Configuration.ExpandCollidersZ, "Front", "Back");
             }));
 
-            root.Q<VisualElement>("basic-container").Add(new IMGUIContainer(() => {
-                if(!WIM.Configuration) return;
-                InvokeCallbacks("Basic");
-            }));
+            //root.Q<VisualElement>("basic-container").Add(new IMGUIContainer(() => {
+            //    if(!WIM.Configuration) return;
+            //    InvokeCallbacks("Basic");
+
+            //}));
+            root.Q<VisualElement>("basic-container").Add(OnBasicDraw?.Invoke(WIM.Configuration));
 
             var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
             var destinationSelectionMethodEnumField = root.Q<EnumField>("destination-selection-method");
@@ -74,9 +79,9 @@ namespace WIM_Plugin {
             root.Q<HelpBox>("destination-selection-method-info").SetDisplay(!destinationSelectionTouchAvailable);
             root.Q<FloatField>("double-tap-interval").SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
 
-            root.Q<VisualElement>("input-container").Add(new IMGUIContainer(() => {
-                InvokeCallbacks("Input");
-            }));
+            //root.Q<VisualElement>("input-container").Add(new IMGUIContainer(() => {
+            //    InvokeCallbacks("Input");
+            //}));
 
             root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
 
