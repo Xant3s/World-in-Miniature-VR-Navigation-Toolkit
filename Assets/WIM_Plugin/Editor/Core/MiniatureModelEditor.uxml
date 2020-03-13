@@ -13,9 +13,7 @@
     <Label class="Separator" text="Basic Settings" />
     <editor:ObjectField name="player-representation" label="Player Representation" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="PlayerRepresentation" />
     <editor:ObjectField name="destination-indicator" label="Destination Indicator" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="DestinationIndicator" />
-    <Slider name="scale-factor" low-value="0" high-value="1" value="0.015" label="Scale Factor" binding-path="ScaleFactor">
-      <editor:FloatField name="scale-factor-input-field" />
-    </Slider>
+    <WIM:FloatSlider low-value="0" high-value="1" label="Scale Factor" binding-path="ScaleFactor" />
     <editor:Vector3Field label="WIM Level Offset" binding-path="WIMLevelOffset" />
     <VisualElement name="expand-colliders-container" />
     <Toggle label="Destination Always on the Ground" binding-path="DestinationAlwaysOnTheGround" tooltip="If active, the destination will automatically set to ground level. This protects the player from being teleported to a location in mid-air."/>
@@ -27,11 +25,8 @@
 
     <Label class="Separator" text="Occlusion Handling" />
     <Toggle name="semi-transparent" label="Semi-Transparent" binding-path="SemiTransparent" />
-    <Slider name="transparency" label="Transparency" binding-path="Transparency" low-value="0" high-value="1">
-      <editor:FloatField name="transparency-input-field" />
-    </Slider>
+    <WIM:FloatSlider name="transparency" low-value="0" high-value="1" label="Transparency" binding-path="Transparency"/>
     <VisualElement name="occlusion-handling-container" />
-
     <Label class="Separator" text="Usability" />
     <editor:FloatField label="WIM Spawn at Height" binding-path="WIMSpawnHeight" />
     <editor:FloatField label="Player Height (in cm)" binding-path="PlayerHeightInCM" />

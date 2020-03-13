@@ -35,14 +35,16 @@ namespace WIM_Plugin {
         public override VisualElement CreateInspectorGUI() {
             if(!visualTree) return new VisualElement();
             root.Q<ObjectField>("configuration").objectType = typeof(WIMConfiguration);     // Hotfix until 2020.1
+            //var configField = root.Q<ObjectField>("configuration");
             //configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>((e) => {
             //    Debug.Log("update");
-            //    //root.Q<HelpBox>(name: "config-missing").style.display = !WIM.Configuration ? DisplayStyle.Flex : DisplayStyle.None;
-            //    //root.Q<VisualElement>("master-container").style.display = WIM.Configuration ? DisplayStyle.Flex : DisplayStyle.None;
+            //    //    //root.Q<HelpBox>(name: "config-missing").style.display = !WIM.Configuration ? DisplayStyle.Flex : DisplayStyle.None;
+            //    //    //root.Q<VisualElement>("master-container").style.display = WIM.Configuration ? DisplayStyle.Flex : DisplayStyle.None;
             //});
 
             root.Q<HelpBox>(name: "config-missing").SetDisplay(!WIM.Configuration);
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
+            if(!WIM.Configuration) return root;
 
             root.Q<Button>("GenerateWIMButton").RegisterCallback<MouseUpEvent>(e => {
                 WIMGenerator.GenerateNewWIM(WIM);
@@ -51,19 +53,8 @@ namespace WIM_Plugin {
             root.Q<ObjectField>("player-representation").objectType = typeof(GameObject);   // Hotfix until 2020.1
             root.Q<ObjectField>("destination-indicator").objectType = typeof(GameObject);   // Hotfix until 2020.1
 
-            var scaleFactorInputField = root.Q<FloatField>("scale-factor-input-field");
-            var scaleFactorSlider = root.Q<Slider>("scale-factor");
-            scaleFactorInputField.value = WIM.Configuration.ScaleFactor;
-            scaleFactorSlider.RegisterValueChangedCallback(e => {
-                scaleFactorInputField.SetValueWithoutNotify(e.newValue);
-            });
-            scaleFactorInputField.RegisterValueChangedCallback(e => {
-                var newValue = Mathf.Clamp(scaleFactorInputField.value, 0f, 1f);
-                scaleFactorSlider.value = newValue;
-                scaleFactorInputField.SetValueWithoutNotify(newValue);
-            });
-
             root.Q<VisualElement>("expand-colliders-container").Add(new IMGUIContainer(() => {
+                if(!WIM.Configuration) return;
                 WIM.Configuration.ExpandCollidersX =
                     WIMEditorUtility.NamedVectorField("Expand Colliders X", WIM.Configuration.ExpandCollidersX, "Left", "Right");
                 WIM.Configuration.ExpandCollidersY =
@@ -73,6 +64,7 @@ namespace WIM_Plugin {
             }));
 
             root.Q<VisualElement>("basic-container").Add(new IMGUIContainer(() => {
+                if(!WIM.Configuration) return;
                 InvokeCallbacks("Basic");
             }));
 
@@ -87,19 +79,11 @@ namespace WIM_Plugin {
 
             root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
 
-            var transparencySlider = root.Q<Slider>("transparency");
-            transparencySlider.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
-            transparencySlider.SetDisplay(WIM.Configuration.SemiTransparent);
-            var transparencyInputField = root.Q<FloatField>("transparency-input-field");
-            transparencyInputField.value = WIM.Configuration.Transparency;
-            transparencySlider.RegisterValueChangedCallback(e => {
-                transparencyInputField.SetValueWithoutNotify(e.newValue);
-            });
-            transparencyInputField.RegisterValueChangedCallback(e => {
-                var newValue = Mathf.Clamp(transparencyInputField.value, 0f, 1f);
-                transparencySlider.value = newValue;
-                transparencyInputField.SetValueWithoutNotify(newValue);
-            });
+            var transparencySliderRoot = root.Q<FloatSlider>("transparency");
+            var transparencySlider = transparencySliderRoot.Q<Slider>();
+            //transparencySlider.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
+            transparencySlider.RegisterCallback<FocusOutEvent>(e => WIMGenerator.ConfigureWIM(WIM));
+            transparencySliderRoot.SetDisplay(WIM.Configuration.SemiTransparent);
 
             root.Q<VisualElement>("occlusion-handling-container").Add(new IMGUIContainer(() => {
                 InvokeCallbacks("Occlusion Handling");
