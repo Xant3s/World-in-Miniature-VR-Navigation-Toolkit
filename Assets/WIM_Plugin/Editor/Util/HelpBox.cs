@@ -23,7 +23,7 @@ namespace WIM_Plugin {
             };
 
             private UxmlEnumAttributeDescription<MessageType> m_messageType = new UxmlEnumAttributeDescription<MessageType> {
-                name = "messageType", defaultValue = MessageType.Info
+                name = "message-type", defaultValue = MessageType.Info
             };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription {

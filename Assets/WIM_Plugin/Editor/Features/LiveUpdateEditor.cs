@@ -28,9 +28,9 @@ namespace WIM_Plugin {
         //    if (EditorGUI.EndChangeCheck()) LiveUpdate.UpdateAutoGenerateWIM(WIM);
         //}
 
-        private VisualElement Draw(WIMConfiguration config) {
+        private void Draw(WIMConfiguration config, VisualElement container) {
             var liveUpdate = (LiveUpdate) target;
-            if(!liveUpdate) return new VisualElement();
+            if(!liveUpdate) return;
             var WIM = liveUpdate.GetComponent<MiniatureModel>();
             var autoGenerateWIM = new Toggle {
                 label="Live Update WIM",
@@ -38,7 +38,7 @@ namespace WIM_Plugin {
             };
             autoGenerateWIM.RegisterValueChangedCallback(e =>
                 autoGenerateWIM.schedule.Execute(() => LiveUpdate.UpdateAutoGenerateWIM(WIM))); // Delay so that newValue is set on execution.
-            return autoGenerateWIM;
+            container.Add(autoGenerateWIM);
         }
     }
 }

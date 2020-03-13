@@ -14,7 +14,8 @@
         <xs:attribute default="" name="class" type="xs:string" use="optional" />
         <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
-        <xs:attribute default="" name="text" type="xs:string" use="optional" />
+        <xs:attribute default="" name="label" type="xs:string" use="optional" />
+        <xs:attribute default="" name="binding-path" type="xs:string" use="optional" />
         <xs:attribute default="0" name="low-value" type="xs:float" use="optional" />
         <xs:attribute default="1" name="high-value" type="xs:float" use="optional" />
         <xs:anyAttribute processContents="lax" />

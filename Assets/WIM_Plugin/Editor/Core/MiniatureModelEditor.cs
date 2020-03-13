@@ -13,8 +13,9 @@ namespace WIM_Plugin {
     public class MiniatureModelEditor : Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();
 
-        public delegate VisualElement Test(WIMConfiguration config);
+        public delegate void Test(WIMConfiguration config, VisualElement container);
         public static event Test OnBasicDraw;
+        public static event Test OnOcclusionHandlingDraw;
 
         private MiniatureModel WIM;
         private static GUIStyle headerStyle;
@@ -31,7 +32,6 @@ namespace WIM_Plugin {
             visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Core/MiniatureModelEditor.uxml");
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Core/MiniatureModelEditor.uss");
             root.styleSheets.Add(styleSheet);
-
             if(visualTree) visualTree.CloneTree(root);
         }
 
@@ -69,7 +69,8 @@ namespace WIM_Plugin {
             //    InvokeCallbacks("Basic");
 
             //}));
-            root.Q<VisualElement>("basic-container").Add(OnBasicDraw?.Invoke(WIM.Configuration));
+            //root.Q<VisualElement>("basic-container").Add(OnBasicDraw?.Invoke(WIM.Configuration));
+            OnBasicDraw?.Invoke(WIM.Configuration, root.Q<VisualElement>("basic-container"));
 
             var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
             var destinationSelectionMethodEnumField = root.Q<EnumField>("destination-selection-method");
@@ -92,9 +93,10 @@ namespace WIM_Plugin {
             transparencySlider.RegisterCallback<FocusOutEvent>(e => WIMGenerator.ConfigureWIM(WIM));
             transparencySliderRoot.SetDisplay(WIM.Configuration.SemiTransparent);
 
-            root.Q<VisualElement>("occlusion-handling-container").Add(new IMGUIContainer(() => {
-                InvokeCallbacks("Occlusion Handling");
-            }));
+            //root.Q<VisualElement>("occlusion-handling-container").Add(new IMGUIContainer(() => {
+            //    InvokeCallbacks("Occlusion Handling");
+            //}));
+            OnOcclusionHandlingDraw?.Invoke(WIM.Configuration, root.Q<VisualElement>("occlusion-handling-container"));
 
             var spawnDistance = root.Q<FloatField>("spawn-distance");
             spawnDistance.SetDisplay(!WIM.Configuration.AutoDetectArmLength);
