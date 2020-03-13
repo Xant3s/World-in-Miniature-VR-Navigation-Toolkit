@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class FloatAbove : MonoBehaviour {
         public Transform Target;
         [SerializeField] private Vector3 offset;

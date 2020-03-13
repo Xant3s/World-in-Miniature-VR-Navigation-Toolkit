@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class DistanceGrabbable : MonoBehaviour {
         public Transform Target { get; set; }
 

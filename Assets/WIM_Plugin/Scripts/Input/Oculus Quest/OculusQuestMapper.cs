@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class OculusQuestMapper : MonoBehaviour {
         internal class InputButtonActionMapping {
             public delegate bool Trigger(OVRInput.RawButton btn, OVRInput.Controller controllerMask);

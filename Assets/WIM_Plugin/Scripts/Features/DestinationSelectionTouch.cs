@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class DestinationSelectionTouch : MonoBehaviour {
         private static readonly string selectionActionName = "Destination Selection Button";
         private static readonly string rotationActionName = "Destination Rotation Thumbstick";

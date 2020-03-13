@@ -1,0 +1,11 @@
+﻿<UXML xmlns="UnityEngine.UIElements"
+      xmlns:WIM="WIM_Plugin"
+      xmlns:editor="UnityEditor.UIElements">
+  <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.PathTraceConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="PathTraceConfig" />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script." />
+ 
+  <VisualElement name="settings">
+    <Toggle name="enabled" label="Post Travel Path Trace" binding-path="PostTravelPathTrace" />
+    <editor:FloatField name="trace-duration" label="Trace Duration" binding-path="TraceDuration" />
+  </VisualElement>
+</UXML>

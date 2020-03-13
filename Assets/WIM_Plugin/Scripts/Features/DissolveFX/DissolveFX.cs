@@ -5,6 +5,7 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class DissolveFX : MonoBehaviour {
         private void OnEnable() {
             Respawn.OnEarlyRespawn += dissolveOldWIM;

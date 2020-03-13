@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     internal sealed class OcclusionHandling : MonoBehaviour {
         [HideInInspector] public OcclusionHandlingConfiguration Config;
 

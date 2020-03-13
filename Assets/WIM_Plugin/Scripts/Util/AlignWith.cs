@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class AlignWith : MonoBehaviour {
         public Transform Target;
 

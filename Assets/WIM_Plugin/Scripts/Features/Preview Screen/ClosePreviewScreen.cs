@@ -7,6 +7,7 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    [DisallowMultipleComponent]
     public class ClosePreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
         private Transform index;

@@ -8,6 +8,7 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     // Allow scrolling the WIM at runtime.
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
 
@@ -106,7 +107,7 @@ namespace WIM_Plugin {
         }
 
         private void EnableScrolling(in MiniatureModel WIM) {
-            if (!ScrollingConfig.AllowWIMScrolling) return;
+            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
             var maskController = new GameObject("Box Mask");
             maskController.tag = maskController.name;
 #if UNITY_EDITOR

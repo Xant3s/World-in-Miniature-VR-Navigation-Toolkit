@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     [ExecuteAlways]
+    [DisallowMultipleComponent]
     public class DetectArmLength : MonoBehaviour {
         private static readonly string actionName = "Confirm Arm Length Button";
         private WIMConfiguration config;
