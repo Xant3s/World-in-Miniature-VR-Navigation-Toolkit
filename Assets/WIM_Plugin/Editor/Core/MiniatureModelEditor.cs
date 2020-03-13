@@ -83,7 +83,8 @@ namespace WIM_Plugin {
             //    InvokeCallbacks("Input");
             //}));
 
-            root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
+            root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e 
+                => root.schedule.Execute(()=>WIMGenerator.ConfigureWIM(WIM)));  // Delay so that newValue is set on execution.
 
             var transparencySliderRoot = root.Q<FloatSlider>("transparency");
             var transparencySlider = transparencySliderRoot.Q<Slider>();
