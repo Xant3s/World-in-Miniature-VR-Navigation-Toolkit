@@ -20,9 +20,11 @@ namespace WIM_Plugin {
         private MiniatureModel WIM;
         private static GUIStyle headerStyle;
 
-        private static IList<string> separators = new List<string>();
+        //internal static IList<string> separators = new List<string>();
+        internal static IDictionary<string, int> separators = new Dictionary<string, int>();
+        private static IDictionary<string, Label> separatorLabels = new Dictionary<string, Label>();
 
-        private VisualElement root;
+        private static VisualElement root;
         private VisualTreeAsset visualTree;
 
 
@@ -115,7 +117,7 @@ namespace WIM_Plugin {
                 //InvokeCallbacks(container:root);
             };
 
-            root.Add(new IMGUIContainer(action));
+            //root.Add(new IMGUIContainer(action));
             InvokeCallbacks(root);
             bindings();
             return root;
@@ -137,9 +139,26 @@ namespace WIM_Plugin {
         }
 
         public static void UniqueSeparator(string text = "", ushort space = 20) {
-            if(separators.Contains(text)) return;
-            Separator(text, space);
-            separators.Add(text);
+            if(separators.ContainsKey(text)) {
+                separators[text]++;
+                return;
+            }
+            //if(separators.Contains(text)) return;
+            //Separator(text, space);
+            separators.Add(text, 1);
+            var newSeparator = new Label(text);
+            root.Add(newSeparator);
+            separatorLabels.Add(text, newSeparator);
+            newSeparator.AddToClassList("Separator");
+        }
+
+        public static void UnregisterUniqueSeparator(string text = "") {
+            if(!separators.ContainsKey(text)) return;
+            separators[text]--;
+            if(separators[text] > 0) return;
+            root.Remove(separatorLabels[text]);
+            separatorLabels.Remove(text);
+            separators.Remove(text);
         }
     }
 

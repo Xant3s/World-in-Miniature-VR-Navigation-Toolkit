@@ -22,25 +22,12 @@ namespace WIM_Plugin {
         private void draw(WIMConfiguration WIMconfig, VisualElement container) {
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/ScalingEditor.uxml");
             if(!visualTree) return;
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Core/MiniatureModelEditor.uss");
             var root = new VisualElement();
-            root.styleSheets.Add(styleSheet);
             if(visualTree) visualTree.CloneTree(root);
             var scaling = (Scaling) target;
             ref var config = ref scaling.ScalingConfig;
 
-            root.Q<HelpBox>("config-info").SetDisplay(!config);
-            var scalingConfig = root.Q<ObjectField>("configuration");
-            var scalingSettings = root.Q<VisualElement>("scaling-settings");
-            scalingSettings.SetDisplay(config);
-            scalingConfig.SetDisplay(!config);
-            scalingConfig.objectType = typeof(ScalingConfiguration);
-            scalingConfig.RegisterValueChangedCallback(e => {
-                root.Q<HelpBox>("config-info").SetDisplay(!e.newValue);
-                scalingConfig.SetDisplay(!e.newValue);
-                scalingSettings.SetDisplay(e.newValue);
-                if(e.newValue) root.Bind(new SerializedObject(e.newValue));
-            });
+            WIMEditorUtility.DisplaySettingsIfConfigNotNull(root, config, typeof(ScalingConfiguration));
 
             var scalingSettings2 = root.Q<VisualElement>("scaling-settings2");
             scalingSettings2.SetDisplay(config && config.AllowWIMScaling);

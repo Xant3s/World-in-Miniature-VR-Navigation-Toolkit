@@ -17,10 +17,11 @@ namespace WIM_Plugin {
         private void OnDisable() {
             //MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
             //MiniatureModelEditor.OnDraw.RemoveCallback(draw);
+            //MiniatureModelEditor.UnregisterUniqueSeparator("Orientation Aids");
         }
 
         private void Draw(WIMConfiguration WIMConfig) {
-            MiniatureModelEditor.UniqueSeparator("Orientation Aids");
+            //MiniatureModelEditor.UniqueSeparator("Orientation Aids");
             ref var config = ref ((PreviewScreen) target).Config;
             if(!config) {
                 EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
@@ -37,6 +38,8 @@ namespace WIM_Plugin {
 
         private void draw(WIMConfiguration WIMConfig, VisualElement container) {
             var root = new VisualElement();
+
+            MiniatureModelEditor.UniqueSeparator("Orientation Aids");
 
             root.Add(new IMGUIContainer(() => {
                 Draw(WIMConfig);

@@ -17,6 +17,7 @@ namespace WIM_Plugin {
         private void OnDisable() {
             //MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
             //MiniatureModelEditor.OnDraw.RemoveCallback(draw);
+            //MiniatureModelEditor.UnregisterUniqueSeparator("Orientation Aids");
         }
 
         private void Draw(WIMConfiguration WIMConfig) {
@@ -37,6 +38,9 @@ namespace WIM_Plugin {
 
         private void draw(WIMConfiguration WIMConfig, VisualElement container) {
             var root = new VisualElement();
+
+            MiniatureModelEditor.UniqueSeparator("Orientation Aids");
+
 
             root.Add(new IMGUIContainer(() => {
                 Draw(WIMConfig);

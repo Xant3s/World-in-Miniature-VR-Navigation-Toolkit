@@ -5,7 +5,7 @@
 <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.ScalingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScalingConfig" />
 <WIM:HelpBox name="config-info" message-type="Error" text="Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script." />
 
-<VisualElement name="scaling-settings">
+<VisualElement name="settings">
   <Toggle name="allow-scaling" label="Allow WIM Scaling" binding-path="AllowWIMScaling" />
   <VisualElement name="scaling-settings2">
     <editor:FloatField label="Min Scale Factor" binding-path="MinScaleFactor" />
