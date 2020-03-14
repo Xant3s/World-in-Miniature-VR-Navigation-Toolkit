@@ -50,7 +50,7 @@ namespace WIM_Plugin {
             });
 
             root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>((e) => {
-                Application.OpenURL("mailto:trumansamuel@yahoo.com");
+                Application.OpenURL("mailto:contact@samueltruman.com");
             });
 
             var isLiteVersion = !File.Exists(Application.dataPath + "/WIM_Plugin/Scripts/Features/Scrolling/Scrolling.cs");
