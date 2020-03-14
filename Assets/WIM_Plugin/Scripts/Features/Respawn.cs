@@ -23,7 +23,10 @@ namespace WIM_Plugin {
         private void OnEnable() {
             MiniatureModel.OnLateInit += respawn;
             InputManager.RegisterAction(actionName, respawn);
-            materialForOldWIM = new Material(Shader.Find("Shader Graphs/WIM Shader Unlit (Pro)2"));
+            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
+            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
         }
 
         private void OnDisable() {
