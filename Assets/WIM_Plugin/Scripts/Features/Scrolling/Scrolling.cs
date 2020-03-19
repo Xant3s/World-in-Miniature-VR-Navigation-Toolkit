@@ -29,7 +29,6 @@ namespace WIM_Plugin {
             WIMGenerator.OnPreConfigure += DisableScrolling;
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;
-            Respawn.OnEarlyRespawn += EnableScrollingForOldWIM;
             PlayerRepresentation.OnUpdatePlayerRepresentationInWIM += adjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate += ScrollWIM;
@@ -45,7 +44,6 @@ namespace WIM_Plugin {
             WIMGenerator.OnPreConfigure -= DisableScrolling;
             WIMGenerator.OnConfigure -= EnableScrolling;
             WIMGenerator.OnConfigure -= UpdateScrollingMask;
-            Respawn.OnEarlyRespawn -= EnableScrollingForOldWIM;
             PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= adjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate -= ScrollWIM;
@@ -122,17 +120,6 @@ namespace WIM_Plugin {
             WIM.gameObject.AddComponent<BoxCollider>().size =
                 WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
             maskController.transform.position = WIM.transform.position;
-        }
-
-        private void EnableScrollingForOldWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
-            bool maintainTransformRelativeToPlayer) {
-            var boxMask = GameObject.FindWithTag("Box Mask");
-            if(!boxMask) return;
-            var oldBoxMask = Instantiate(boxMask, oldWIMTransform);
-            oldBoxMask.GetComponent<AlignWith>().Target = oldWIMTransform;
-            var oldBoxController = oldBoxMask.GetComponent<BoxController>();
-            oldBoxController.materials = new[] { Respawn.materialForOldWIM };
-            oldBoxController.SetBoxEnabled(true);
         }
 
         private void adjustPlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {

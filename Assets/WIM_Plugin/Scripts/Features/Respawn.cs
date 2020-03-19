@@ -52,6 +52,8 @@ namespace WIM_Plugin {
 
             // Copy WIM
             var WIMLevel = transform.GetChild(0);
+            var levelPos = WIMLevel.position;
+
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
             WIMLevel.tag = "WIM Level Old";
@@ -80,9 +82,8 @@ namespace WIM_Plugin {
             var rb = GetComponent<Rigidbody>();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            data.WIMLevelTransform.localPosition = maintainTransformRelativeToPlayer
-                ? data.WIMLevelLocalPosOnTravel
-                : config.WIMLevelOffset;
+            data.WIMLevelTransform.position = levelPos;
+
             data.WIMLevelTransform.rotation = Quaternion.identity;
             data.WIMLevelTransform.localRotation = Quaternion.identity;
             data.WIMLevelTransform.localScale = new Vector3(1, 1, 1);
