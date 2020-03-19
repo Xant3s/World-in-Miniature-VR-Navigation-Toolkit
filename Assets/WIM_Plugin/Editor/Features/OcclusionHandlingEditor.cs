@@ -32,8 +32,8 @@ namespace WIM_Plugin {
             if(visualTree) visualTree.CloneTree(root);
 
             var configField = root.Q<ObjectField>("configuration");
-            configField.objectType = typeof(OcclusionHandlingConfiguration);    // TODO
-            configField.RegisterValueChangedCallback((e) => WIMGenerator.ConfigureWIM(WIM));
+            configField.objectType = typeof(OcclusionHandlingConfiguration);    // TODO: Set in UXML
+            configField.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
 
             root.Q<HelpBox>("config-error").SetDisplay(!config);
             configField.SetDisplay(!config);

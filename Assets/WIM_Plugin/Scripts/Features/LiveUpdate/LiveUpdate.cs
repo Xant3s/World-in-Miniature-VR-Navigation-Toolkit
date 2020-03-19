@@ -28,17 +28,14 @@ namespace WIM_Plugin {
                 return;
             }
 
-            if(WIM.Configuration.AutoGenerateWIM) {
 #if UNITY_EDITOR
-                var c = Undo.AddComponent(level, typeof(AutoUpdateWIM));    // Add script recursively
-                ((AutoUpdateWIM) c).WIM = WIM;
-#endif
+            if(WIM.Configuration.AutoGenerateWIM) {
+                level.AddComponent<AutoUpdateWIM>().WIM = WIM;  // Add script recursively
             }
             else {
-#if UNITY_EDITOR
-                Undo.DestroyObjectImmediate(level.GetComponent<AutoUpdateWIM>());   // Destroy script recursively
-#endif
+                DestroyImmediate(level.GetComponent<AutoUpdateWIM>());  // Destroy script recursively
             }
+#endif
         }
     }
 }

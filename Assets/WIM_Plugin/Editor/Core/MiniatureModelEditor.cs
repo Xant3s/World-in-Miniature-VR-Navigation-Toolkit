@@ -43,15 +43,14 @@ namespace WIM_Plugin {
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
             if (!WIM.Configuration) return root;
 
-            root.Q<Button>("GenerateWIMButton").RegisterCallback<MouseUpEvent>(e => {
-                WIMGenerator.GenerateNewWIM(WIM);
-            });
+            root.Q<Button>("GenerateWIMButton").RegisterCallback<MouseUpEvent>(e => WIMGenerator.GenerateNewWIM(WIM));
 
             root.Q<ObjectField>("player-representation").objectType = typeof(GameObject);   // Hotfix until 2020.1
             root.Q<ObjectField>("destination-indicator").objectType = typeof(GameObject);   // Hotfix until 2020.1
 
             root.Q<VisualElement>("expand-colliders-container").Add(new IMGUIContainer(() => {
                 if(!WIM.Configuration) return;
+                Undo.RecordObject(WIM.Configuration, "Set expand colliders");
                 WIM.Configuration.ExpandCollidersX =
                     WIMEditorUtility.NamedVectorField("Expand Colliders X", WIM.Configuration.ExpandCollidersX, "Left", "Right");
                 WIM.Configuration.ExpandCollidersY =
@@ -75,8 +74,10 @@ namespace WIM_Plugin {
 
             var transparencySliderRoot = root.Q<FloatSlider>("transparency");
             var transparencySlider = transparencySliderRoot.Q<Slider>();
-            //transparencySlider.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
-            transparencySlider.RegisterCallback<FocusOutEvent>(e => WIMGenerator.ConfigureWIM(WIM));
+            transparencySlider.RegisterCallback<FocusOutEvent>(e => {
+                    Undo.RecordObject(WIM.GetComponentInChildren<Renderer>().sharedMaterial, "Set transparency");
+                    WIMGenerator.ConfigureWIM(WIM);
+                });
             transparencySliderRoot.SetDisplay(WIM.Configuration.SemiTransparent);
 
             InvokeCallbacks(root.Q<VisualElement>("occlusion-handling-container"), "Occlusion Handling");
