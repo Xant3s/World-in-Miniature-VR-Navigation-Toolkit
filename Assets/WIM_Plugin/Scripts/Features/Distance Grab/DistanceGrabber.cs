@@ -47,7 +47,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private void LateUpdate() {
+        private void Update() {
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
                 var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
