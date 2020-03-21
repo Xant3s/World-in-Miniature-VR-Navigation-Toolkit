@@ -12,6 +12,7 @@ namespace WIM_Plugin {
         private LineRenderer lineRenderer;
         private bool isDisabled;
         private bool grabButtonPressed;
+        private bool grabStartedThisFrame;
 
         private void Awake() {
             if (!disableWhileInWIM) return;
@@ -49,10 +50,15 @@ namespace WIM_Plugin {
         private void LateUpdate() {
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
-                var grabbable = hit.transform.gameObject.GetComponent<DistanceGrabbable>();
-                if(!grabbable) return;
-                if(hit.transform.GetComponent<OVRGrabbable>().isGrabbed) return;
+                var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
+                if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
+                    grabStartedThisFrame = false;
+                    return;
+                }
+                if(!grabStartedThisFrame && grabButtonPressed) return;
                 grabbable.HighlightFX = true;
+                if(!grabStartedThisFrame) return;
+                grabStartedThisFrame = false;
                 if(grabButtonPressed) {
                     grabbable.MinDistance = minDistance;
                     grabbable.SnapSpeed = snapSpeed;
@@ -64,6 +70,7 @@ namespace WIM_Plugin {
 
         private void grabButtonDown(WIMConfiguration config, WIMData data) {
             grabButtonPressed = true;
+            grabStartedThisFrame = true;
         }
 
         private void grabButtonUp(WIMConfiguration config, WIMData data) {
