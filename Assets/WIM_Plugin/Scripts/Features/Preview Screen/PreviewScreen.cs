@@ -24,7 +24,6 @@ namespace WIM_Plugin {
         private void OnEnable() {
             if(!Config) return;
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
-            MiniatureModel.OnUpdate += updatePreviewScreen;
             DestinationIndicators.OnSpawnDestinationIndicatorInWIM += configurePickupPreviewScreen;
             DestinationIndicators.OnRemoveDestinationIndicators += RemovePreviewScreen;
             PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += RemovePreviewScreen;
@@ -33,7 +32,6 @@ namespace WIM_Plugin {
         private void OnDisable() {
             if(!Config) return;
             MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
-            MiniatureModel.OnUpdate -= updatePreviewScreen;
             DestinationIndicators.OnSpawnDestinationIndicatorInWIM -= configurePickupPreviewScreen;
             DestinationIndicators.OnRemoveDestinationIndicators -= RemovePreviewScreen;
             PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= RemovePreviewScreen;
@@ -73,30 +71,11 @@ namespace WIM_Plugin {
             Assert.IsNotNull(cam);
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
-            cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
+            cam.targetTexture = new RenderTexture(1600, 900, 16, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
             previewScreenMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
             previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
-            previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
-        }
-
-        private void updatePreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
-            this.WIMConfig = WIMConfig;
-            this.WIMData = WIMData;
-            Assert.IsNotNull(this.Config, "Preview screen configuration is missing.");
-
-            if (!Data.PreviewScreenEnabled) return;
-            if(!this.Config.PreviewScreen || !WIMData.DestinationIndicatorInLevel) return;
-            var cam = WIMData.DestinationIndicatorInLevel.GetChild(1).GetComponent<Camera>();
-            Destroy(cam.targetTexture);
-            cam.targetTexture = new RenderTexture(1600, 900, 0, RenderTextureFormat.Default);
-            if(!previewScreenMaterial) {
-                Debug.LogError("Preview screen material is null");
-                previewScreenMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-                GameObject.FindWithTag("PreviewScreen").GetComponent<Renderer>().material = previewScreenMaterial;
-            }
-
             previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
         }
 
