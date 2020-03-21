@@ -56,7 +56,7 @@ namespace WIM_Plugin {
                 var grabbable = hit.transform.gameObject.GetComponent<DistanceGrabbable>();
                 if(!grabbable) return;
                 if(hit.transform.GetComponent<OVRGrabbable>().isGrabbed) return;
-                grabbable.HightlightFX = true;
+                grabbable.HighlightFX = true;
                 if(grabButtonPressed) {
                     grabbable.MinDistance = minDistance;
                     grabbable.SnapSpeed = snapSpeed;
