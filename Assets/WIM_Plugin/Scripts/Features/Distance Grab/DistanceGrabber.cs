@@ -61,8 +61,8 @@ namespace WIM_Plugin {
                     grabbable.MinDistance = minDistance;
                     grabbable.SnapSpeed = snapSpeed;
                     grabbable.Target = transform;
-                    grabbable.IsBeingGrabbed = true;
                 }
+                grabbable.IsBeingGrabbed = grabButtonPressed;
             }
         }
 
