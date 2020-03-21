@@ -52,12 +52,12 @@ namespace WIM_Plugin {
 
         private void LateUpdate() {
             var WIMLayerOnly = 1 << 8;
-            if (Physics.Raycast(transform.position, start.forward, out var hit,
-                Mathf.Infinity, WIMLayerOnly)) {
+            if(Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, WIMLayerOnly)) {
                 var grabbable = hit.transform.gameObject.GetComponent<DistanceGrabbable>();
-                if (!grabbable) return;
+                if(!grabbable) return;
+                if(hit.transform.GetComponent<OVRGrabbable>().isGrabbed) return;
                 grabbable.HightlightFX = true;
-                if (grabButtonPressed) {
+                if(grabButtonPressed) {
                     grabbable.MinDistance = minDistance;
                     grabbable.SnapSpeed = snapSpeed;
                     grabbable.Target = transform;
