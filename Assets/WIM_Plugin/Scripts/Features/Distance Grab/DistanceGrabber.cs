@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using WIM_Plugin;
+﻿using UnityEngine;
 
 namespace WIM_Plugin {
     public class DistanceGrabber : MonoBehaviour {
@@ -51,8 +47,8 @@ namespace WIM_Plugin {
         }
 
         private void LateUpdate() {
-            var WIMLayerOnly = 1 << 8;
-            if(Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, WIMLayerOnly)) {
+            var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
+            if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
                 var grabbable = hit.transform.gameObject.GetComponent<DistanceGrabbable>();
                 if(!grabbable) return;
                 if(hit.transform.GetComponent<OVRGrabbable>().isGrabbed) return;
