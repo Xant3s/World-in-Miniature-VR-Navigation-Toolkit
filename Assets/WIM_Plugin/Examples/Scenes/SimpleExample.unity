@@ -3737,6 +3737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hand: 1
   start: {fileID: 1150436415}
+  requieredDistanceToWIM: 0.5
   snapSpeed: 10
   minDistance: 0.1
   disableWhileInWIM: 1
@@ -4201,7 +4202,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 9646d5fdc1d0a3c4f93e540c0ab0cef9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5183,7 +5184,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 9646d5fdc1d0a3c4f93e540c0ab0cef9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6791,6 +6792,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hand: 2
   start: {fileID: 813920083}
+  requieredDistanceToWIM: 0.5
   snapSpeed: 10
   minDistance: 0.1
   disableWhileInWIM: 1

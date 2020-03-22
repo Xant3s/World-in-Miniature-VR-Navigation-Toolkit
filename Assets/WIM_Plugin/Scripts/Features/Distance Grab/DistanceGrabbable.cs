@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WIM_Plugin {
     [DisallowMultipleComponent]
@@ -9,40 +7,45 @@ namespace WIM_Plugin {
 
         public bool IsBeingGrabbed { get; set; }
 
-        public bool HightlightFX {
-            get => hightlightFX;
+        public bool HighlightFX {
+            get => highlightFX;
             set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    GetComponent<Renderer>().material =
-                        hightlightFX ? Resources.Load<Material>("Materials/Blue") : defaultMaterial;
+                highlightFX = value;
+                if(isWIM) {
+                    var color = highlightFX ? highlightColor : defaultColor;
+                    material.SetColor(colorProperty, color);
                 }
                 else {
-                    // WIM
-                    //for(var i = 0; i<transform.GetChild(0).childCount; i++) {
-                    //    var child  = transform.GetChild(0).GetChild(i);
-                    //    var renderer = child.GetComponent<Renderer>();
-                    //    if (!renderer) continue;
-                    //    renderer.material = hightlightFX ? Resources.Load<Material>("Materials/Blue") : defaultMaterial;
-                    //}
+                    GetComponent<Renderer>().material = highlightFX ? blueMaterial : material;
                 }
             }
         }
 
-        private bool hightlightFX;
+        private bool highlightFX;
 
         public float SnapSpeed { get; set; } = 1f;
         public float MinDistance { get; set; } = .1f;
 
-        private Material defaultMaterial;
+        private static readonly int tintID = Shader.PropertyToID("_Tint");
+        private static readonly int colorID = Shader.PropertyToID("_BaseColor");
+        private int colorProperty;
+        private Material material;
+        private Material blueMaterial;
+        private Color defaultColor = new Color(80f/255f, 80f/255f, 80f/255f);   // Gray
+        private readonly Color highlightColor = new Color(37f/255f, 188/255f, 1);  // Cyan
         private Rigidbody rb;
+        private bool isWIM;
 
         private void Awake() {
-            defaultMaterial = GetComponentInChildren<Renderer>()?.sharedMaterial;
+            blueMaterial = Resources.Load<Material>("Materials/Blue");
+            material = GetComponentInChildren<Renderer>().sharedMaterial;
+            colorProperty = material.HasProperty(tintID) ? tintID : colorID;    
+            defaultColor = material.GetColor(colorProperty);
+            isWIM = gameObject.CompareTag("WIM");
         }
 
         private void Update() {
-            HightlightFX = false;
+            HighlightFX = false;
             if (!IsBeingGrabbed || !Target) return;
 
             if (Vector3.Distance(Target.position, transform.position) < MinDistance) {
