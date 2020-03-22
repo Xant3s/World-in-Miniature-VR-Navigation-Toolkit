@@ -57,6 +57,7 @@ namespace WIM_Plugin {
                 }
                 if(!grabStartedThisFrame && grabButtonPressed) return;
                 grabbable.HighlightFX = true;
+                grabbable.IsBeingGrabbed = grabButtonPressed;
                 if(!grabStartedThisFrame) return;
                 grabStartedThisFrame = false;
                 if(grabButtonPressed) {
@@ -64,7 +65,6 @@ namespace WIM_Plugin {
                     grabbable.SnapSpeed = snapSpeed;
                     grabbable.Target = transform;
                 }
-                grabbable.IsBeingGrabbed = grabButtonPressed;
             }
         }
 
