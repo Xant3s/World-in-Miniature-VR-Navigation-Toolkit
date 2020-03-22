@@ -4,25 +4,25 @@ namespace WIM_Plugin {
     public class DistanceGrabber : MonoBehaviour {
         [SerializeField] private Hand hand;
         [SerializeField] private Transform start;
+        [SerializeField] private float requieredDistanceToWIM = .5f;
         [SerializeField] private float snapSpeed = 10f;
         [SerializeField] private float minDistance = .5f;
         [SerializeField] private bool disableWhileInWIM = true;
 
         private AimAssist aimAssist;
         private LineRenderer lineRenderer;
-        private bool isDisabled;
+        private Transform WIM;
         private bool grabButtonPressed;
         private bool grabStartedThisFrame;
+        private bool isDisabled;
+        private bool isInsideWIM;
+
 
         private void Awake() {
-            if (!disableWhileInWIM) return;
-            if (!this.enabled) {
-                isDisabled = true;
-                return;
-            }
-
+            if (!disableWhileInWIM || !this.enabled) return;
             aimAssist = gameObject.GetComponentInChildren<AimAssist>();
             lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
+            WIM = GameObject.FindWithTag("WIM").transform;
         }
 
         private void OnEnable() {
@@ -48,6 +48,11 @@ namespace WIM_Plugin {
         }
 
         private void LateUpdate() {
+            var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
+            SetEnable(!(distanceToWIM < requieredDistanceToWIM) && !isInsideWIM);
+            if(isDisabled) return;
+
+
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
                 var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
@@ -78,19 +83,19 @@ namespace WIM_Plugin {
         }
 
         private void OnTriggerEnter(Collider other) {
-            if (!disableWhileInWIM || isDisabled || !other.CompareTag("WIM")) return;
-            setEnable(false);
+            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+            isInsideWIM = true;
         }
 
         private void OnTriggerExit(Collider other) {
-            if (!disableWhileInWIM || isDisabled || !other.CompareTag("WIM")) return;
-            setEnable(true);
+            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+            isInsideWIM = false;
         }
 
-        private void setEnable(bool value) {
+        private void SetEnable(bool value) {
             aimAssist.enabled = value;
             lineRenderer.enabled = value;
-            this.enabled = value;
+            isDisabled = !value;
         }
     }
 }
