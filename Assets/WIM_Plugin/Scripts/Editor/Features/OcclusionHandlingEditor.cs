@@ -24,7 +24,7 @@ namespace WIM_Plugin {
             if(!target) return;
             var occlusionHandling = (OcclusionHandling) target;
             ref var config = ref occlusionHandling.Config;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/OcclusionHandlingEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Features/OcclusionHandlingEditor.uxml");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
 

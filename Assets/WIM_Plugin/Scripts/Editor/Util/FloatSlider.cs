@@ -45,7 +45,7 @@ namespace WIM_Plugin {
 
         public FloatSlider() {
             var visualTree =
-                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Util/FloatSlider.uxml");
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Util/FloatSlider.uxml");
             var floatSlider = new VisualElement();
             visualTree.CloneTree(floatSlider);
             hierarchy.Add(floatSlider);

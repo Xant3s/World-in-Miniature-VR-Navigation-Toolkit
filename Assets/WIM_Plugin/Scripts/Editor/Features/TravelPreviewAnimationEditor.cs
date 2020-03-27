@@ -17,7 +17,7 @@ namespace WIM_Plugin {
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/TravelPreviewAnimationEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Features/TravelPreviewAnimationEditor.uxml");
             var root = new VisualElement();
             visualTree.CloneTree(root);
             var travelPreviewAnimation = (TravelPreviewAnimation) target;

@@ -21,8 +21,8 @@ namespace WIM_Plugin {
         public void OnEnable() {
             WIM = (MiniatureModel) target;
             root = new VisualElement();
-            visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Core/MiniatureModelEditor.uxml");
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Core/MiniatureModelEditor.uss");
+            visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Core/MiniatureModelEditor.uxml");
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Scripts/Editor/Core/MiniatureModelEditor.uss");
             root.styleSheets.Add(styleSheet);
             if(visualTree) visualTree.CloneTree(root);
         }

@@ -37,8 +37,8 @@ namespace WIM_Plugin {
         }
 
         public HelpBox() {
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Util/HelpBox.uxml");
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Util/HelpBox.uss");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Util/HelpBox.uxml");
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Scripts/Editor/Util/HelpBox.uss");
             var helpBox = new VisualElement();
             helpBox.styleSheets.Add(styleSheet);
             visualTree.CloneTree(helpBox);
