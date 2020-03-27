@@ -41,6 +41,7 @@ namespace WIM_Plugin {
 
         private void ConfigureCutoutView(in MiniatureModel WIM) {
             if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
+            if (GameObject.FindWithTag("Spotlight Mask")) return;
             var spotlightObj = new GameObject("Spotlight Mask");
             spotlightObj.tag = spotlightObj.name;
 #if UNITY_EDITOR
@@ -57,6 +58,7 @@ namespace WIM_Plugin {
 
         private void ConfigureMeltWalls(in MiniatureModel WIM) {
             if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
+            if (GameObject.FindWithTag("Cylinder Mask")) return;
             var cylinderMask = new GameObject("Cylinder Mask");
             cylinderMask.tag = cylinderMask.name;
 #if UNITY_EDITOR
