@@ -19,7 +19,7 @@ namespace WIM_Plugin {
 
 
         public static Material LoadDefaultMaterial(MiniatureModel WIM) {
-            var material = Resources.Load<Material>("Materials/WIM Material");
+            var material = Resources.Load<Material>("WIM Material");
             var fullyOpaque = 1;
             var semiTransparent = 1 - WIM.Configuration.Transparency;
             material.SetFloat(alpha, WIM.Configuration.SemiTransparent ? semiTransparent : fullyOpaque);
