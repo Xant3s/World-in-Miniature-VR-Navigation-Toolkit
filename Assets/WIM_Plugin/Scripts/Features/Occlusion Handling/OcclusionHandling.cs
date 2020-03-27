@@ -16,14 +16,14 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             WIMGenerator.OnPreConfigure += CleanupOcclusionHandling;
-            WIMGenerator.OnConfigure += configureCutoutView;
-            WIMGenerator.OnConfigure += configureMeltWalls;
+            WIMGenerator.OnConfigure += ConfigureCutoutView;
+            WIMGenerator.OnConfigure += ConfigureMeltWalls;
         }
 
         private void OnDisable() {
             WIMGenerator.OnPreConfigure -= CleanupOcclusionHandling;
-            WIMGenerator.OnConfigure += configureCutoutView;
-            WIMGenerator.OnConfigure += configureMeltWalls;
+            WIMGenerator.OnConfigure += ConfigureCutoutView;
+            WIMGenerator.OnConfigure += ConfigureMeltWalls;
         }
 
         public void CleanupOcclusionHandling(in MiniatureModel WIM) {
@@ -39,7 +39,7 @@ namespace WIM_Plugin {
 #endif
         }
 
-        private void configureCutoutView(in MiniatureModel WIM) {
+        private void ConfigureCutoutView(in MiniatureModel WIM) {
             if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
             var spotlightObj = new GameObject("Spotlight Mask");
             spotlightObj.tag = spotlightObj.name;
@@ -55,7 +55,7 @@ namespace WIM_Plugin {
             if(mainCamera) spotlightObj.AddComponent<AlignWith>().Target = mainCamera.transform;
         }
 
-        private void configureMeltWalls(in MiniatureModel WIM) {
+        private void ConfigureMeltWalls(in MiniatureModel WIM) {
             if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
             var cylinderMask = new GameObject("Cylinder Mask");
             cylinderMask.tag = cylinderMask.name;

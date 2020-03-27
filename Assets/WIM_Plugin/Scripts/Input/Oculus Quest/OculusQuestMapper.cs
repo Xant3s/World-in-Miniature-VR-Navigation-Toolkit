@@ -182,7 +182,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private InputButtonActionMapping.Trigger getTrigger(InputManager.ButtonTrigger trigger) {
+        private InputButtonActionMapping.Trigger GetTrigger(InputManager.ButtonTrigger trigger) {
             switch (trigger) {
                 case InputManager.ButtonTrigger.ButtonDown:
                     return OVRInput.GetDown;
@@ -193,7 +193,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private InputButtonTouchActionMapping.Trigger getTouchTrigger(InputManager.ButtonTrigger trigger) {
+        private InputButtonTouchActionMapping.Trigger GetTouchTrigger(InputManager.ButtonTrigger trigger) {
             switch (trigger) {
                 case InputManager.ButtonTrigger.ButtonDown:
                     return OVRInput.GetDown;
@@ -206,12 +206,12 @@ namespace WIM_Plugin {
 
         private Dictionary<InputButtonActionMapping.Trigger, InputManager.InputButtonAction>
             convertTriggers(Dictionary<InputManager.ButtonTrigger, InputManager.InputButtonAction> dict) {
-            return dict.ToDictionary(entry => getTrigger(entry.Key), entry => entry.Value);
+            return dict.ToDictionary(entry => GetTrigger(entry.Key), entry => entry.Value);
         }
 
         private Dictionary<InputButtonTouchActionMapping.Trigger, InputManager.InputButtonTouchAction>
             convertTriggers(Dictionary<InputManager.ButtonTrigger, InputManager.InputButtonTouchAction> dict) {
-            return dict.ToDictionary(entry => getTouchTrigger(entry.Key), entry => entry.Value);
+            return dict.ToDictionary(entry => GetTouchTrigger(entry.Key), entry => entry.Value);
         }
     }
 }

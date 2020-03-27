@@ -51,7 +51,7 @@ namespace WIM_Plugin {
                 return;
             }
 
-            var timeLeft = (endTime - Time.time);
+            var timeLeft = endTime - Time.time;
             var timePast = TraceDurationInSeconds - timeLeft;
             var progress = timePast / TraceDurationInSeconds;
             progress = Mathf.Clamp(progress, 0, 1);

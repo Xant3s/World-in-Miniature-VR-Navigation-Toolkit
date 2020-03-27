@@ -12,7 +12,7 @@ namespace WIM_Plugin {
             EditorApplication.quitting += OnQuitting;
         }
 
-        static void OnInit() {
+        private static void OnInit() {
             EditorApplication.update -= OnInit;
             instance = FindObjectOfType<WelcomeWindowStartup>();
             if(instance) return;
@@ -27,7 +27,7 @@ namespace WIM_Plugin {
             }
         }
 
-        static void OnQuitting() {
+        private static void OnQuitting() {
             EditorPrefs.SetBool("WIM_Plugin_NewEditorSession", true);    
         }
     }

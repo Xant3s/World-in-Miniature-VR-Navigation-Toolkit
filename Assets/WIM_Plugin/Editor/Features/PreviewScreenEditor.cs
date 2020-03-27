@@ -7,15 +7,15 @@ namespace WIM_Plugin {
     [CustomEditor(typeof(PreviewScreen))]
     public class PreviewScreenEditor : Editor {
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(draw, 1);
+            MiniatureModelEditor.OnDraw.AddCallback(Draw, 1);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(draw);
+            MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
             MiniatureModelEditor.UnregisterUniqueSeparator("Orientation Aids");
         }
 
-        private void draw(WIMConfiguration WIMConfig, VisualElement container) {
+        private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/PreviewScreenEditor.uxml");
             var root = new VisualElement();

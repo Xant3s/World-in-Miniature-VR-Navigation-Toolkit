@@ -50,13 +50,13 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnPickpuIndexButton += pickupIndexButton;
-            MiniatureModel.OnPickupThumbTouchUp += pickupThumbTouchUp;
+            MiniatureModel.OnPickpuIndexButton += PickupIndexButton;
+            MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickpuIndexButton -= pickupIndexButton;
-            MiniatureModel.OnPickupThumbTouchUp -= pickupThumbTouchUp;
+            MiniatureModel.OnPickpuIndexButton -= PickupIndexButton;
+            MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
         }
 
         private void Update() {
@@ -70,37 +70,37 @@ namespace WIM_Plugin {
             thumbIsTouching = colliders.Contains(thumbCol);
             indexIsTouching = colliders.Contains(indexCol);
             if(!prevIndexIsTouching && indexIsTouching || 
-               !prevThumbIsTouching && thumbIsTouching) vibrate();
+               !prevThumbIsTouching && thumbIsTouching) Vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             HightlightFX = thumbIsTouching || indexIsTouching;
 
             if (!isGrabbing && thumbAndIndexTouching) {
                 isGrabbing = true;
-                startGrabbing();
+                StartGrabbing();
             }
             else if (isGrabbing && !thumbAndIndexTouching) {
                 isGrabbing = false;
             }
         }
 
-        private void pickupIndexButton(WIMConfiguration config, WIMData data, float axis) {
-            if (!isGrabbing && axis != 1 && !stoppedGrabbing) stopGrabbing();
+        private void PickupIndexButton(WIMConfiguration config, WIMData data, float axis) {
+            if (!isGrabbing && axis != 1 && !stoppedGrabbing) StopGrabbing();
         }
 
-        private void pickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) stopGrabbing();
+        private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+            if(!isGrabbing) StopGrabbing();
         }
 
-        private void vibrate() {
+        private void Vibrate() {
             InputManager.SetVibration(frequency:.5f, amplitude:.1f, Hand.RightHand);
-            Invoke(nameof(stopVibration), time:.1f);
+            Invoke(nameof(StopVibration), time:.1f);
         }
 
-        private void stopVibration() {
+        private void StopVibration() {
             InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
         }
 
-        private void startGrabbing() {
+        private void StartGrabbing() {
             // Remove existing destination indicator.
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
@@ -115,7 +115,7 @@ namespace WIM_Plugin {
             stoppedGrabbing = false;
         }
 
-        private void stopGrabbing() {
+        private void StopGrabbing() {
             if (stoppedGrabbing) return;
             stoppedGrabbing = true;
 
@@ -124,7 +124,7 @@ namespace WIM_Plugin {
             WIM.Data.DestinationIndicatorInWIM.parent = WIM.transform.GetChild(0);
 
             // Make destination indicator in WIM grabbable, so it can be changed without creating a new one.
-            Invoke(nameof(allowUpdates), 1);
+            Invoke(nameof(AllowUpdates), 1);
 
             // Create destination indicator in level. Includes snap to ground.
             if (!WIM.Data.DestinationIndicatorInLevel)
@@ -134,7 +134,7 @@ namespace WIM_Plugin {
             WIM.NewDestination();
         }
 
-        private void allowUpdates() {
+        private void AllowUpdates() {
             Assert.IsNotNull(WIM.Data.DestinationIndicatorInWIM);
             WIM.Data.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>().DoubleTapInterval =
                 DoubleTapInterval;

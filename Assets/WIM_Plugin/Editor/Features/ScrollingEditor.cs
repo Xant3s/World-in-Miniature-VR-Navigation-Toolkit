@@ -11,16 +11,16 @@ namespace WIM_Plugin {
         private MiniatureModel WIM;
 
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(draw, 4);
+            MiniatureModelEditor.OnDraw.AddCallback(Draw, 4);
             WIM = ((Scrolling) target).GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(draw);
+            MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
         }
 
-        private void draw(WIMConfiguration WIMConfig, VisualElement container) {
+        private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/ScrollingEditor.uxml");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
@@ -64,9 +64,9 @@ namespace WIM_Plugin {
             scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
             if(EditorGUI.EndChangeCheck()) {
                 WIMGenerator.ConfigureWIM(WIM);
-                scrolling.remove();
+                scrolling.Remove();
                 if(scrolling.ScrollingConfig) {
-                    scrolling.setup();
+                    scrolling.Setup();
                 }
             }
             if(!scrolling.ScrollingConfig)

@@ -24,17 +24,17 @@ namespace WIM_Plugin {
         }
 
         private void Start() {
-            initLineRenderer();
-            initAnimatedPlayerRepresentation();
-            resetAnimation();
+            InitLineRenderer();
+            InitAnimatedPlayerRepresentation();
+            ResetAnimation();
         }
 
-        private void initLineRenderer() {
+        private void InitLineRenderer() {
             lr.widthMultiplier = .001f;
             lr.material = Resources.Load<Material>("Materials/SemiTransparent");
         }
 
-        private void initAnimatedPlayerRepresentation() {
+        private void InitAnimatedPlayerRepresentation() {
             Assert.IsNotNull(DestinationIndicator);
             Assert.IsNotNull(WIMLevelTransform);
             animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIMLevelTransform).transform;
@@ -52,33 +52,33 @@ namespace WIM_Plugin {
         }
 
         private void Update() {
-            updateLineRenderer();
-            updateAnimatedPlayerRepresentation();
+            UpdateLineRenderer();
+            UpdateAnimatedPlayerRepresentation();
         }
 
-        private void updateLineRenderer() {
+        private void UpdateLineRenderer() {
             lr.SetPosition(0, PlayerRepresentationInWIM.position);
             lr.SetPosition(1, DestinationInWIM.position);
         }
 
-        private void updateAnimatedPlayerRepresentation() {
+        private void UpdateAnimatedPlayerRepresentation() {
             if(animationProgress == 0) {
                 // Start animation: Turn towards destination.
-                doStartAnimation();
+                DoStartAnimation();
             }
             else if(animationProgress >= 1) {
                 // Reached destination. End animation: align with destination indicator.
-                doEndAnimation();
+                DoEndAnimation();
             }
             else {
                 // In between: walk towards destination indicator.
-                advanceWalkAnimation();
-                updateRotation();
-                updatePosition();
+                AdvanceWalkAnimation();
+                UpdateRotation();
+                UpdatePosition();
             }
         }
 
-        private void doStartAnimation() {
+        private void DoStartAnimation() {
             var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
             var playerPosInLevelSpace = Converter.ConvertToLevelSpace(animatedPlayerRepresentation.position);
             var rotationInLevelSpace =
@@ -93,17 +93,17 @@ namespace WIM_Plugin {
             startAnimationProgress += step;
             animatedPlayerRepresentation.rotation =
                 Quaternion.Lerp(PlayerRepresentationInWIM.rotation, desiredRotation, startAnimationProgress);
-            updatePosition();
+            UpdatePosition();
         }
 
-        private void doEndAnimation() {
+        private void DoEndAnimation() {
             var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
             var playerPosInLevelSpace = Converter.ConvertToLevelSpace(PlayerRepresentationInWIM.position);
             var rotationInLevelSpace =
                 Quaternion.LookRotation(destinationInLevelSpace - playerPosInLevelSpace, Vector3.up);
             var desiredRotation = WIMLevelTransform.rotation * rotationInLevelSpace;
             if(endAnimationProgress >= 1) {
-                resetAnimation();
+                ResetAnimation();
                 return;
             }
 
@@ -111,20 +111,20 @@ namespace WIM_Plugin {
             endAnimationProgress += step;
             animatedPlayerRepresentation.rotation =
                 Quaternion.Lerp(desiredRotation, DestinationInWIM.rotation, endAnimationProgress);
-            updatePosition();
+            UpdatePosition();
         }
 
-        private void updatePosition() {
+        private void UpdatePosition() {
             var dir = DestinationInWIM.position - PlayerRepresentationInWIM.position;
             animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position + dir * animationProgress;
         }
 
-        private void advanceWalkAnimation() {
+        private void AdvanceWalkAnimation() {
             var step = AnimationSpeed * Time.deltaTime;
             animationProgress += step;
         }
 
-        private void updateRotation() {
+        private void UpdateRotation() {
             var destinationInLevelSpace = Converter.ConvertToLevelSpace(DestinationInWIM.position);
             var playerPosInLevelSpace = Converter.ConvertToLevelSpace(animatedPlayerRepresentation.position);
             var rotationInLevelSpace =
@@ -132,7 +132,7 @@ namespace WIM_Plugin {
             animatedPlayerRepresentation.rotation = WIMLevelTransform.rotation * rotationInLevelSpace;
         }
 
-        private void resetAnimation() {
+        private void ResetAnimation() {
             animatedPlayerRepresentation.position = PlayerRepresentationInWIM.position;
             animatedPlayerRepresentation.rotation = PlayerRepresentationInWIM.rotation;
             animationProgress = 0;

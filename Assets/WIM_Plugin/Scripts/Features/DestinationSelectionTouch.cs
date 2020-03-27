@@ -20,34 +20,34 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnLateInit += init;
-            InputManager.RegisterAction(selectionActionName, destinationSelection);
-            InputManager.RegisterAction(rotationActionName, selectDestinationRotation);
-            InputManager.RegisterAction(confirmActionName, confirmTeleport);
+            MiniatureModel.OnLateInit += Init;
+            InputManager.RegisterAction(selectionActionName, DestinationSelection);
+            InputManager.RegisterAction(rotationActionName, SelectDestinationRotation);
+            InputManager.RegisterAction(confirmActionName, ConfirmTeleport);
         }
 
         private void OnDisable() {
-            MiniatureModel.OnLateInit -= init;
+            MiniatureModel.OnLateInit -= Init;
             InputManager.UnregisterAction(selectionActionName);
             InputManager.UnregisterAction(rotationActionName);
             InputManager.UnregisterAction(confirmActionName);
         }
 
-        private void init(WIMConfiguration config, WIMData data) {
+        private void Init(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
         }
 
-        private void destinationSelection() {
-            if (config.DestinationSelectionMethod != DestinationSelection.Touch) return;
-            selectDestination();
+        private void DestinationSelection() {
+            if (config.DestinationSelectionMethod != WIM_Plugin.DestinationSelection.Touch) return;
+            SelectDestination();
         }
 
-        private void selectDestination() {
+        private void SelectDestination() {
             if (!Application.isPlaying) return;
 
             // Check if in WIM bounds.
-            if (!isInsideWIM(data.FingertipIndexR.position, WIM.gameObject)) return;
+            if (!IsInsideWIM(data.FingertipIndexR.position, WIM.gameObject)) return;
 
             // Remove previous destination point.
             DestinationIndicators.RemoveDestinationIndicators(WIM);
@@ -78,7 +78,7 @@ namespace WIM_Plugin {
             data.DestinationIndicatorInWIM.Rotate(Vector3.up, angle);
 
             // Rotate destination indicator in level.
-            updateDestinationRotationInLevel();
+            UpdateDestinationRotationInLevel();
 
             // New destination.
             WIM.NewDestination();
@@ -88,23 +88,23 @@ namespace WIM_Plugin {
         /// Update the destination indicator rotation in level.
         /// Rotation should match destination indicator rotation in WIM.
         /// </summary>
-        private void updateDestinationRotationInLevel() {
+        private void UpdateDestinationRotationInLevel() {
             data.DestinationIndicatorInLevel.rotation = Quaternion.Inverse(data.WIMLevelTransform.rotation) *
                                                         data.DestinationIndicatorInWIM.rotation;
         }
 
-        private bool isInsideWIM(Vector3 point, GameObject obj) {
+        private bool IsInsideWIM(Vector3 point, GameObject obj) {
             return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
         }
 
-        private void selectDestinationRotation(Vector3 axis) {
+        private void SelectDestinationRotation(Vector3 axis) {
             if (!Application.isPlaying) return;
             // Only if there is a destination indicator in the WIM.
             if (!data) data = WIM.Data;
             if (!config) config = WIM.Configuration;
             if (!data || !config) return;
             if (!data.DestinationIndicatorInWIM) return;
-            if (config.DestinationSelectionMethod != DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != WIM_Plugin.DestinationSelection.Touch) return;
 
             // Thumbstick input.
             Vector2 inputRotation = axis;
@@ -121,9 +121,9 @@ namespace WIM_Plugin {
                 Quaternion.Inverse(data.WIMLevelTransform.rotation) * data.DestinationIndicatorInWIM.rotation;
         }
 
-        private void confirmTeleport() {
+        private void ConfirmTeleport() {
             if (!Application.isPlaying) return;
-            if (config.DestinationSelectionMethod != DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != WIM_Plugin.DestinationSelection.Touch) return;
             if (!data.DestinationIndicatorInLevel) return;
             WIM.ConfirmTravel();
         }

@@ -27,23 +27,23 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             if (hand == Hand.LeftHand) {
-                MiniatureModel.OnLeftGrabButtonDown += grabButtonDown;
-                MiniatureModel.OnLeftGrabButtonUp += grabButtonUp;
+                MiniatureModel.OnLeftGrabButtonDown += GrabButtonDown;
+                MiniatureModel.OnLeftGrabButtonUp += GrabButtonUp;
             }
             else if (hand == Hand.RightHand) {
-                MiniatureModel.OnRightGrabButtonDown += grabButtonDown;
-                MiniatureModel.OnRightGrabButtonUp += grabButtonUp;
+                MiniatureModel.OnRightGrabButtonDown += GrabButtonDown;
+                MiniatureModel.OnRightGrabButtonUp += GrabButtonUp;
             }
         }
 
         private void OnDisable() {
             if (hand == Hand.LeftHand) {
-                MiniatureModel.OnLeftGrabButtonDown -= grabButtonDown;
-                MiniatureModel.OnLeftGrabButtonUp -= grabButtonUp;
+                MiniatureModel.OnLeftGrabButtonDown -= GrabButtonDown;
+                MiniatureModel.OnLeftGrabButtonUp -= GrabButtonUp;
             }
             else if (hand == Hand.RightHand) {
-                MiniatureModel.OnRightGrabButtonDown -= grabButtonDown;
-                MiniatureModel.OnRightGrabButtonUp -= grabButtonUp;
+                MiniatureModel.OnRightGrabButtonDown -= GrabButtonDown;
+                MiniatureModel.OnRightGrabButtonUp -= GrabButtonUp;
             }
         }
 
@@ -73,12 +73,12 @@ namespace WIM_Plugin {
             }
         }
 
-        private void grabButtonDown(WIMConfiguration config, WIMData data) {
+        private void GrabButtonDown(WIMConfiguration config, WIMData data) {
             grabButtonPressed = true;
             grabStartedThisFrame = true;
         }
 
-        private void grabButtonUp(WIMConfiguration config, WIMData data) {
+        private void GrabButtonUp(WIMConfiguration config, WIMData data) {
             grabButtonPressed = false;
         }
 

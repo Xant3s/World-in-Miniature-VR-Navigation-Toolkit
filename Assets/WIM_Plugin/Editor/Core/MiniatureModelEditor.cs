@@ -91,11 +91,11 @@ namespace WIM_Plugin {
             InvokeCallbacks(root.Q<VisualElement>("usability-container"), "Usability");
 
             InvokeCallbacks(root);
-            bindings();
+            Bindings();
             return root;
         }
 
-        private void bindings() {
+        private void Bindings() {
             root.Bind(new SerializedObject(WIM));
             if(WIM.Configuration)
                 root.Bind(new SerializedObject(WIM.Configuration));

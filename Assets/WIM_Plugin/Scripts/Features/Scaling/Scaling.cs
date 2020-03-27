@@ -22,21 +22,21 @@ namespace WIM_Plugin {
         private void OnEnable() {
             if(!ScalingConfig) return;
             MiniatureModel.OnUpdate += ScaleWIM;
-            MiniatureModel.OnLeftGrabButtonDown += leftScalingButtonDown;
-            MiniatureModel.OnLeftGrabButtonUp += leftScalingButtonUp;
-            MiniatureModel.OnRightGrabButtonDown += rightScalingButtonDown;
-            MiniatureModel.OnRightGrabButtonUp += rightScalingButtonUp;
-            WIMGenerator.OnAdaptScaleToPlayerHeight += clampScaleFactor;
+            MiniatureModel.OnLeftGrabButtonDown += LeftScalingButtonDown;
+            MiniatureModel.OnLeftGrabButtonUp += LeftScalingButtonUp;
+            MiniatureModel.OnRightGrabButtonDown += RightScalingButtonDown;
+            MiniatureModel.OnRightGrabButtonUp += RightScalingButtonUp;
+            WIMGenerator.OnAdaptScaleToPlayerHeight += ClampScaleFactor;
         }
 
         private void OnDisable() {
             if(!ScalingConfig) return;
             MiniatureModel.OnUpdate -= ScaleWIM;
-            MiniatureModel.OnLeftGrabButtonDown -= leftScalingButtonDown;
-            MiniatureModel.OnLeftGrabButtonUp -= leftScalingButtonUp;
-            MiniatureModel.OnRightGrabButtonDown -= rightScalingButtonDown;
-            MiniatureModel.OnRightGrabButtonUp -= rightScalingButtonUp;
-            WIMGenerator.OnAdaptScaleToPlayerHeight -= clampScaleFactor;
+            MiniatureModel.OnLeftGrabButtonDown -= LeftScalingButtonDown;
+            MiniatureModel.OnLeftGrabButtonUp -= LeftScalingButtonUp;
+            MiniatureModel.OnRightGrabButtonDown -= RightScalingButtonDown;
+            MiniatureModel.OnRightGrabButtonUp -= RightScalingButtonUp;
+            WIMGenerator.OnAdaptScaleToPlayerHeight -= ClampScaleFactor;
         }
 
         private void Awake() {
@@ -54,32 +54,32 @@ namespace WIM_Plugin {
             Assert.IsNotNull(handR);
         }
 
-        private void leftScalingButtonDown(WIMConfiguration config, WIMData data) {
-            setScalingHand(Hand.LeftHand);
+        private void LeftScalingButtonDown(WIMConfiguration config, WIMData data) {
+            SetScalingHand(Hand.LeftHand);
         }
 
-        private void leftScalingButtonUp(WIMConfiguration config, WIMData data) {
+        private void LeftScalingButtonUp(WIMConfiguration config, WIMData data) {
             scalingHand = Hand.None;
         }
 
-        private void rightScalingButtonDown(WIMConfiguration config, WIMData data) {
-            setScalingHand(Hand.RightHand);
+        private void RightScalingButtonDown(WIMConfiguration config, WIMData data) {
+            SetScalingHand(Hand.RightHand);
         }
 
-        private void rightScalingButtonUp(WIMConfiguration config, WIMData data) {
+        private void RightScalingButtonUp(WIMConfiguration config, WIMData data) {
             scalingHand = Hand.None;
         }
 
-        private void setScalingHand(Hand hand) {
+        private void SetScalingHand(Hand hand) {
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
             if (!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
 
-            var grabbingHand = getGrabbingHand();
-            var oppositeHand = getOppositeHand(grabbingHand); // This is the potential scaling hand.
+            var grabbingHand = GetGrabbingHand();
+            var oppositeHand = GetOppositeHand(grabbingHand); // This is the potential scaling hand.
             if (oppositeHand != hand) return;
 
             // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
-            if (getHandIsInside(oppositeHand)) {
+            if (GetHandIsInside(oppositeHand)) {
                 scalingHand = oppositeHand;
             }
         }
@@ -113,16 +113,16 @@ namespace WIM_Plugin {
             prevInterHandDistance = currInterHandDistance;
         }
 
-        private Hand getGrabbingHand() {
+        private Hand GetGrabbingHand() {
             return grabbable.grabbedBy.CompareTag("HandL") ? Hand.LeftHand : Hand.RightHand;
         }
 
-        private Hand getOppositeHand(Hand hand) {
+        private Hand GetOppositeHand(Hand hand) {
             if (hand == Hand.None) return Hand.None;
             return (hand == Hand.LeftHand) ? Hand.RightHand : Hand.LeftHand;
         }
 
-        private bool getHandIsInside(Hand hand) {
+        private bool GetHandIsInside(Hand hand) {
             if (hand == Hand.None) return false;
             var grabVolume = hand == Hand.LeftHand ? leftGrabVolume : rightGrabVolume;
             GetWorldSpaceCapsule(grabVolume, out var p1, out var p2, out var radius);
@@ -164,7 +164,7 @@ namespace WIM_Plugin {
             point1 = center - dir * (height * 0.5f - radius);
         }
 
-        private void clampScaleFactor(in MiniatureModel WIM) {
+        private void ClampScaleFactor(in MiniatureModel WIM) {
             if (ScalingConfig) config.ScaleFactor = 
                 Mathf.Clamp(config.ScaleFactor, ScalingConfig.MinScaleFactor, ScalingConfig.MaxScaleFactor);
         }

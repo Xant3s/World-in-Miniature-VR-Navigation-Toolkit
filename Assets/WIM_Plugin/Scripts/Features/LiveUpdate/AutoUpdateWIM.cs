@@ -28,18 +28,18 @@ namespace WIM_Plugin {
             }
 
 #if UNITY_EDITOR
-            updateValues();
+            UpdateValues();
 #endif
         }
 
 
 #if UNITY_EDITOR
         private void Update() {
-            var somethingChanged = getIsChanged();
+            var somethingChanged = GetIsChanged();
             if(!WIM) WIM = GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>();
             if (!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
-            updateValues();
-            triggerWIMUpdate();
+            UpdateValues();
+            TriggerWIMUpdate();
         }
 
         private void LateUpdate() {
@@ -54,7 +54,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private bool getIsChanged() {
+        private bool GetIsChanged() {
             var somethingChanged = position != transform.position ||
                                    rotation != transform.rotation ||
                                    localScale != transform.localScale ||
@@ -62,14 +62,14 @@ namespace WIM_Plugin {
             return somethingChanged;
         }
 
-        private void updateValues() {
+        private void UpdateValues() {
             position = transform.position;
             rotation = transform.rotation;
             localScale = transform.localScale;
             childCount = transform.childCount;
         }
 
-        private void triggerWIMUpdate() {
+        private void TriggerWIMUpdate() {
             alreadyUpdatedThisFrame = true;
             WIMGenerator.GenerateNewWIM(WIM);
         }

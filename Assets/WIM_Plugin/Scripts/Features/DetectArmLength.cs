@@ -10,21 +10,21 @@ namespace WIM_Plugin {
         private bool armLengthDetected;
 
         private void OnEnable() {
-            MiniatureModel.OnLateInit += init;
-            InputManager.RegisterAction(actionName, detectArmLength);
+            MiniatureModel.OnLateInit += Init;
+            InputManager.RegisterAction(actionName, Detect);
         }
 
         private void OnDisable() {
-            MiniatureModel.OnLateInit -= init;
+            MiniatureModel.OnLateInit -= Init;
             InputManager.UnregisterAction(actionName);
         }
 
-        private void init(WIMConfiguration config, WIMData data) {
+        private void Init(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
         }
 
-        private void detectArmLength() {
+        private void Detect() {
             if (!config.AutoDetectArmLength || armLengthDetected) return;
             armLengthDetected = true;
             var rightHand = GameObject.FindWithTag("HandR");

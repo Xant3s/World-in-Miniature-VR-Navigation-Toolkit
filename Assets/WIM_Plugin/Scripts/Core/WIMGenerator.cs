@@ -37,7 +37,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private static void expandColliders(in MiniatureModel WIM) {
+        private static void ExpandColliders(in MiniatureModel WIM) {
             foreach (var boxCollider in WIM.gameObject.GetComponents<BoxCollider>()) {
                 boxCollider.size += new Vector3(WIM.Configuration.ExpandCollidersX.x + WIM.Configuration.ExpandCollidersX.y, 0, 0);
                 boxCollider.center += Vector3.left * WIM.Configuration.ExpandCollidersX.x / 2.0f;
@@ -53,7 +53,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private static void pruneColliders(in MiniatureModel WIM) {
+        private static void PruneColliders(in MiniatureModel WIM) {
             var destroyList = new List<Collider>();
             var colliders = WIM.gameObject.GetComponents<Collider>();
             for (var i = 0; i < colliders.Length; i++) {
@@ -123,9 +123,9 @@ namespace WIM_Plugin {
             }
 
             // 4. remove every collider that is fully inside another one.
-            pruneColliders(WIM);
+            PruneColliders(WIM);
             // 5. extend collider (esp. upwards)
-            expandColliders(WIM);
+            ExpandColliders(WIM);
         }
 
         public static void RemoveAllColliders(Transform t) {
@@ -138,7 +138,7 @@ namespace WIM_Plugin {
 
         public static void GenerateNewWIM(in MiniatureModel WIM) {
             RemoveAllColliders(WIM.transform);
-            adaptScaleFactorToPlayerHeight(WIM);
+            AdaptScaleFactorToPlayerHeight(WIM);
             var levelTransform = GameObject.FindWithTag("Level").transform;
 #if UNITY_EDITOR
             if (WIM.transform.childCount > 0) Undo.DestroyObjectImmediate(WIM.transform.GetChild(0).gameObject);
@@ -171,7 +171,7 @@ namespace WIM_Plugin {
             ConfigureWIM(WIM);
         }
 
-        private static void adaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
+        private static void AdaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
             var config = WIM.Configuration;
             if (!config.AdaptWIMSizeToPlayerHeight) return;
             var playerHeight = config.PlayerHeightInCM;

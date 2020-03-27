@@ -7,14 +7,14 @@ namespace WIM_Plugin {
     [CustomEditor(typeof(Scaling))]
     public class ScalingEditor : Editor {
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(draw);
+            MiniatureModelEditor.OnDraw.AddCallback(Draw);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(draw);
+            MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
         }
 
-        private void draw(WIMConfiguration WIMconfig, VisualElement container) {
+        private void Draw(WIMConfiguration WIMconfig, VisualElement container) {
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/ScalingEditor.uxml");
             if(!visualTree) return;
             var root = new VisualElement();

@@ -15,19 +15,19 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             if(!Config) return;
-            MiniatureModel.OnNewDestinationSelected += createController;
-            DestinationIndicators.OnRemoveDestinationIndicators += destroyTravelPreviewAnimation;
-            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += destroyTravelPreviewAnimation;
+            MiniatureModel.OnNewDestinationSelected += CreateController;
+            DestinationIndicators.OnRemoveDestinationIndicators += DestroyTravelPreviewAnimation;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += DestroyTravelPreviewAnimation;
         }
 
         private void OnDisable() {
             if(!Config) return;
-            MiniatureModel.OnNewDestinationSelected -= createController;
-            DestinationIndicators.OnRemoveDestinationIndicators -= destroyTravelPreviewAnimation;
-            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= destroyTravelPreviewAnimation;
+            MiniatureModel.OnNewDestinationSelected -= CreateController;
+            DestinationIndicators.OnRemoveDestinationIndicators -= DestroyTravelPreviewAnimation;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= DestroyTravelPreviewAnimation;
         }
 
-        private void createController(WIMConfiguration WIMConfig, WIMData WIMData) {
+        private void CreateController(WIMConfiguration WIMConfig, WIMData WIMData) {
             if(!this.Config.TravelPreviewAnimation) return;
             Assert.IsNotNull(this.Config, "Travel preview configuration is missing.");
             if (Data.TravelPreviewAnimationObj) Data.TravelPreviewAnimationObj.transform.parent = null;
@@ -43,15 +43,15 @@ namespace WIM_Plugin {
                 GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>().Converter;
         }
 
-        private void destroyTravelPreviewAnimation(WIMConfiguration WIMConfig, WIMData WIMData) {
+        private void DestroyTravelPreviewAnimation(WIMConfiguration WIMConfig, WIMData WIMData) {
             // Destroy uses another thread, so make sure they are not copied on WIM respawn by removing from parent.
             if(!Data || !Data.TravelPreviewAnimationObj) return;
             Data.TravelPreviewAnimationObj.transform.parent = null;
             Destroy(Data.TravelPreviewAnimationObj);
         }
 
-        private void destroyTravelPreviewAnimation(in MiniatureModel WIM) {
-            destroyTravelPreviewAnimation(WIM.Configuration, WIM.Data);
+        private void DestroyTravelPreviewAnimation(in MiniatureModel WIM) {
+            DestroyTravelPreviewAnimation(WIM.Configuration, WIM.Data);
         }
     }
 }

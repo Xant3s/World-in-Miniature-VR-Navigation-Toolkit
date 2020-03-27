@@ -6,14 +6,14 @@ namespace WIM_Plugin {
     [DisallowMultipleComponent]
     public class DissolveFX : MonoBehaviour {
         private void OnEnable() {
-            Respawn.OnEarlyRespawn += dissolveOldWIM;
-            Respawn.OnLateRespawn += resolveNewWIM;
+            Respawn.OnEarlyRespawn += DissolveOldWIM;
+            Respawn.OnLateRespawn += ResolveNewWIM;
             Respawn.RemoveOldWIMLevel = false;
         }
 
         private void OnDisable() {
-            Respawn.OnEarlyRespawn -= dissolveOldWIM;
-            Respawn.OnLateRespawn -= resolveNewWIM;
+            Respawn.OnEarlyRespawn -= DissolveOldWIM;
+            Respawn.OnLateRespawn -= ResolveNewWIM;
             Respawn.RemoveOldWIMLevel = true;
         }
 
@@ -23,7 +23,7 @@ namespace WIM_Plugin {
             WIM.AddComponent<Dissolve>().materials = new[] {WIM.GetComponentInChildren<Renderer>().sharedMaterial};
         }
 
-        private void dissolveOldWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
+        private void DissolveOldWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
             bool maintainTransformRelativeToPlayer) {
             oldWIMTransform.gameObject.AddComponent<Dissolve>().materials = new[] {Respawn.materialForOldWIM};
             if(!maintainTransformRelativeToPlayer) {
@@ -33,17 +33,17 @@ namespace WIM_Plugin {
             }
         }
 
-        private void resolveNewWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
+        private void ResolveNewWIM(in Transform oldWIMTransform, in Transform newWIMTransform,
             bool maintainTransformRelativeToPlayer) {
-            resolveWIM(newWIMTransform);
-            Invoke(nameof(destroyOldWIMLevel), 1.1f);
+            ResolveWIM(newWIMTransform);
+            Invoke(nameof(DestroyOldWIMLevel), 1.1f);
         }
 
-        private void destroyOldWIMLevel() {
+        private void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
 
-        private void resolveWIM(Transform WIMLevel) {
+        private void ResolveWIM(Transform WIMLevel) {
             const int resolveDuration = 1;
             var d = WIMLevel.GetComponentInParent<Dissolve>();
             if(!d) return;

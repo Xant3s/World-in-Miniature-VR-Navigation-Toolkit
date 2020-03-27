@@ -18,17 +18,17 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             if(!PathTraceConfig) return;
-            MiniatureModel.OnPreTravel += createPostTravelPathTrace;
-            MiniatureModel.OnPostTravel += initPostTravelPathTrace;
+            MiniatureModel.OnPreTravel += CreatePostTravelPathTrace;
+            MiniatureModel.OnPostTravel += InitPostTravelPathTrace;
         }
 
         private void OnDisable() {
             if(!PathTraceConfig) return;
-            MiniatureModel.OnPreTravel -= createPostTravelPathTrace;
-            MiniatureModel.OnPostTravel -= initPostTravelPathTrace;
+            MiniatureModel.OnPreTravel -= CreatePostTravelPathTrace;
+            MiniatureModel.OnPostTravel -= InitPostTravelPathTrace;
         }
 
-        private void createPostTravelPathTrace(WIMConfiguration config, WIMData data) {
+        private void CreatePostTravelPathTrace(WIMConfiguration config, WIMData data) {
             Assert.IsNotNull(PathTraceConfig, "Path trace configuration is missing.");
 
             if(!PathTraceConfig.PostTravelPathTrace) return;
@@ -46,7 +46,7 @@ namespace WIM_Plugin {
             Destroy(emptyGO);
         }
 
-        private void initPostTravelPathTrace(WIMConfiguration config, WIMData data) {
+        private void InitPostTravelPathTrace(WIMConfiguration config, WIMData data) {
             if(!PathTraceConfig.PostTravelPathTrace) return;
             controller.WIMLevelTransform = transform.GetChild(0);
             controller.Init();
