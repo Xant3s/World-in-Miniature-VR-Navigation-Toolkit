@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
@@ -24,7 +21,7 @@ namespace WIM_Plugin {
         private void OnEnable() {
             if(!Config) return;
             MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
-            DestinationIndicators.OnSpawnDestinationIndicatorInWIM += configurePickupPreviewScreen;
+            DestinationIndicators.OnSpawnDestinationIndicatorInWIM += ConfigurePickupPreviewScreen;
             DestinationIndicators.OnRemoveDestinationIndicators += RemovePreviewScreen;
             PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += RemovePreviewScreen;
         }
@@ -32,7 +29,7 @@ namespace WIM_Plugin {
         private void OnDisable() {
             if(!Config) return;
             MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
-            DestinationIndicators.OnSpawnDestinationIndicatorInWIM -= configurePickupPreviewScreen;
+            DestinationIndicators.OnSpawnDestinationIndicatorInWIM -= ConfigurePickupPreviewScreen;
             DestinationIndicators.OnRemoveDestinationIndicators -= RemovePreviewScreen;
             PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= RemovePreviewScreen;
         }
@@ -46,7 +43,7 @@ namespace WIM_Plugin {
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
             Data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
-            initPreviewScreen(Data.PreviewScreenTransform.gameObject);
+            InitPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
         }
 
@@ -58,11 +55,11 @@ namespace WIM_Plugin {
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
             Destroy(Data.PreviewScreenTransform.GetComponent<FloatAbove>());
-            initPreviewScreen(Data.PreviewScreenTransform.gameObject);
+            InitPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
         }
 
-        private void initPreviewScreen(GameObject previewScreen) {
+        private void InitPreviewScreen(GameObject previewScreen) {
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel);
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(1));
             var camObj = WIMData.DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
@@ -96,7 +93,7 @@ namespace WIM_Plugin {
             RemovePreviewScreen();
         }
 
-        private void configurePickupPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
+        private void ConfigurePickupPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
             if(!Config || Config.AutoPositionPreviewScreen) return;
             WIMData.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject
                 .AddComponent<PickupPreviewScreen>();

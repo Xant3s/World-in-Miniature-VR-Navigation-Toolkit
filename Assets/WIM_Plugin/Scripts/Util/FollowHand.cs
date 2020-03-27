@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using WIM_Plugin;
+﻿using UnityEngine;
 
 
 namespace WIM_Plugin {

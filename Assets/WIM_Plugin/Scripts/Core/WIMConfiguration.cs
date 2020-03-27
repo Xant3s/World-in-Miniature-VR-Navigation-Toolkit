@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WIM_Plugin {
     // The WIM configuration. Data only. Modified via GUI.

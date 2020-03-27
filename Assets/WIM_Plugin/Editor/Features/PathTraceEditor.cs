@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 
@@ -11,15 +7,15 @@ namespace WIM_Plugin {
     [CustomEditor(typeof(PathTrace))]
     public class PathTraceEditor : Editor {
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(draw, 2);
+            MiniatureModelEditor.OnDraw.AddCallback(Draw, 2);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(draw);
+            MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
             MiniatureModelEditor.UnregisterUniqueSeparator("Orientation Aids");
         }
 
-        private void draw(WIMConfiguration WIMConfig, VisualElement container) {
+        private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Features/PathTraceEditor.uxml");
             var root = new VisualElement();

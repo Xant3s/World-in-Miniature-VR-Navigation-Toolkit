@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using System.Linq;
-using Oculus.Platform;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
@@ -95,11 +91,11 @@ namespace WIM_Plugin {
             InvokeCallbacks(root.Q<VisualElement>("usability-container"), "Usability");
 
             InvokeCallbacks(root);
-            bindings();
+            Bindings();
             return root;
         }
 
-        private void bindings() {
+        private void Bindings() {
             root.Bind(new SerializedObject(WIM));
             if(WIM.Configuration)
                 root.Bind(new SerializedObject(WIM.Configuration));

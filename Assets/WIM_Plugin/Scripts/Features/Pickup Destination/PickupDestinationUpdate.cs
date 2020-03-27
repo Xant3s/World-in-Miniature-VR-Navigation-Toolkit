@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -48,13 +45,13 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
-            MiniatureModel.OnPickpuIndexButton += pickupIndexButton;
-            MiniatureModel.OnPickupThumbTouchUp += pickupThumbTouchUp;
+            MiniatureModel.OnPickpuIndexButton += PickupIndexButton;
+            MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickpuIndexButton -= pickupIndexButton;
-            MiniatureModel.OnPickupThumbTouchUp -= pickupThumbTouchUp;
+            MiniatureModel.OnPickpuIndexButton -= PickupIndexButton;
+            MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
         }
 
         private void Awake() {
@@ -92,7 +89,7 @@ namespace WIM_Plugin {
             thumbIsTouching = colliders.Contains(thumbCol);
             indexIsTouching = colliders.Contains(indexCol);
             if (!prevIndexIsTouching && indexIsTouching ||
-                !prevThumbIsTouching && thumbIsTouching) vibrate();
+                !prevThumbIsTouching && thumbIsTouching) Vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             HightlightFX = thumbIsTouching || indexIsTouching;
 
@@ -102,7 +99,7 @@ namespace WIM_Plugin {
                     case TapState.None when indexIsTouching && !thumbIsTouching:
                         // First tap
                         tapState = TapState.FirstTap;
-                        Invoke(nameof(resetDoubleTap), DoubleTapInterval);
+                        Invoke(nameof(ResetDoubleTap), DoubleTapInterval);
                         break;
                     case TapState.FirstTap when !indexIsTouching:
                         // Tapped once, now outside 
@@ -118,23 +115,23 @@ namespace WIM_Plugin {
 
             if (!isGrabbing && thumbAndIndexTouching) {
                 isGrabbing = true;
-                resetDoubleTap();
-                startGrabbing();
+                ResetDoubleTap();
+                StartGrabbing();
             }
             else if (isGrabbing && !thumbAndIndexTouching) {
                 isGrabbing = false;
             }
         }
 
-        private void pickupIndexButton(WIMConfiguration config, WIMData data, float axis) {
-            if (axis != 1 && !stoppedGrabbing) stopGrabbing();
+        private void PickupIndexButton(WIMConfiguration config, WIMData data, float axis) {
+            if (axis != 1 && !stoppedGrabbing) StopGrabbing();
         }
 
-        private void pickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-            stopGrabbing();
+        private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+            StopGrabbing();
         }
 
-        private void startGrabbing() {
+        private void StartGrabbing() {
             // Remove existing destination indicator (except "this").
             RemoveDestinationIndicatorsExceptWIM(WIM);
 
@@ -151,7 +148,7 @@ namespace WIM_Plugin {
             if (WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
         }
 
-        private void stopGrabbing() {
+        private void StopGrabbing() {
             if (stoppedGrabbing) return;
             stoppedGrabbing = true;
 
@@ -166,17 +163,17 @@ namespace WIM_Plugin {
             WIM.NewDestination();
         }
 
-        private void resetDoubleTap() {
+        private void ResetDoubleTap() {
             tapState = TapState.None;
-            CancelInvoke(nameof(resetDoubleTap));
+            CancelInvoke(nameof(ResetDoubleTap));
         }
 
-        private void vibrate() {
+        private void Vibrate() {
             InputManager.SetVibration(frequency: .5f, amplitude: .1f, Hand.RightHand);
-            Invoke(nameof(stopVibration), time: .1f);
+            Invoke(nameof(StopVibration), time: .1f);
         }
 
-        private void stopVibration() {
+        private void StopVibration() {
             InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
         }
     }

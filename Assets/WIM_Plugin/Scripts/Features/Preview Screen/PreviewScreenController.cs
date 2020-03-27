@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 
 
@@ -40,18 +37,18 @@ namespace WIM_Plugin {
         private void OnTriggerEnter(Collider other) {
             if (other.transform != index) return;
             if (transform.root.CompareTag("HandR")) return;
-            vibrate();
+            Vibrate();
         }
 
         private bool isVibrating;
-        private void vibrate() {
+        private void Vibrate() {
             if (isVibrating) return;
             isVibrating = true;
             InputManager.SetVibration(frequency: .5f, amplitude: .1f, Hand.RightHand);
-            Invoke(nameof(stopVibration), time: .1f);
+            Invoke(nameof(StopVibration), time: .1f);
         }
 
-        private void stopVibration() {
+        private void StopVibration() {
             isVibrating = false;
             InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
         }

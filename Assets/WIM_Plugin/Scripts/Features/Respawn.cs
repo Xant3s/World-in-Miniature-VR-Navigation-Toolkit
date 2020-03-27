@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
@@ -21,8 +18,8 @@ namespace WIM_Plugin {
 
 
         private void OnEnable() {
-            MiniatureModel.OnLateInit += respawn;
-            InputManager.RegisterAction(actionName, respawn);
+            MiniatureModel.OnLateInit += StartRespawn;
+            InputManager.RegisterAction(actionName, StartRespawn);
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
             var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
@@ -30,21 +27,21 @@ namespace WIM_Plugin {
         }
 
         private void OnDisable() {
-            MiniatureModel.OnLateInit -= respawn;
+            MiniatureModel.OnLateInit -= StartRespawn;
             InputManager.UnregisterAction(actionName);
         }
 
-        private void respawn() {
-            respawnWIM(false);
+        private void StartRespawn() {
+            RespawnWIM(false);
         }
 
-        private void respawn(WIMConfiguration config, WIMData data) {
+        private void StartRespawn(WIMConfiguration config, WIMData data) {
             this.config = config;
             this.data = data;
-            respawnWIM(false);
+            RespawnWIM(false);
         }
 
-        public void respawnWIM(bool maintainTransformRelativeToPlayer) {
+        public void RespawnWIM(bool maintainTransformRelativeToPlayer) {
             if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -106,10 +103,10 @@ namespace WIM_Plugin {
 
             OnLateRespawn?.Invoke(WIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
             if (maintainTransformRelativeToPlayer) transform.parent = null;
-            if (RemoveOldWIMLevel) destroyOldWIMLevel();
+            if (RemoveOldWIMLevel) DestroyOldWIMLevel();
         }
 
-        private static void destroyOldWIMLevel() {
+        private static void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
     }

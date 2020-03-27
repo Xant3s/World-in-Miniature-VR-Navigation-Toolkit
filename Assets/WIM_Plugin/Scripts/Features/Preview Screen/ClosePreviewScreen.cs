@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -26,10 +24,10 @@ namespace WIM_Plugin {
             if (once) return;
             once = true;
             var hand = other.CompareTag("IndexR") ? Hand.RightHand : Hand.LeftHand;
-            startClosing(hand);
+            StartClosing(hand);
         }
 
-        private void startClosing(Hand hand) {
+        private void StartClosing(Hand hand) {
             InputManager.SetVibration(frequency: .5f, amplitude: .1f, hand);
             StartCoroutine(Close(hand, .1f));
         }

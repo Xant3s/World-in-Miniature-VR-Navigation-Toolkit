@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -20,7 +19,7 @@ namespace WIM_Plugin {
         }
 
         public void OnEnable() {
-            VisualElement root = rootVisualElement;
+            var root = rootVisualElement;
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Editor/Welcome/WelcomeWindow.uss");
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Editor/Welcome/WelcomeWindow.uxml");
             VisualElement uxmlContents = visualTree.CloneTree();

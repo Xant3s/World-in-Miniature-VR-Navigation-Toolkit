@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 
 
@@ -34,28 +32,28 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnPickupIndexButtonDown += pickupIndexButtonDown;
-            MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbTouchUp += pickupThumbTouchUp;
+            MiniatureModel.OnPickupIndexButtonDown += PickupIndexButtonDown;
+            MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
+            MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickupIndexButtonDown -= pickupIndexButtonDown;
-            MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbTouchUp -= pickupThumbTouchUp;
+            MiniatureModel.OnPickupIndexButtonDown -= PickupIndexButtonDown;
+            MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
+            MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
         }
 
-        private void pickupIndexButtonDown(WIMConfiguration config, WIMData data) {
+        private void PickupIndexButtonDown(WIMConfiguration config, WIMData data) {
             indexIsPressed = true;
         }
 
-        private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
+        private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
             indexIsPressed = false;
-            stopGrabbing();
+            StopGrabbing();
         }
 
-        private void pickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-            stopGrabbing();
+        private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+            StopGrabbing();
         }
 
         private void Update() {
@@ -63,7 +61,7 @@ namespace WIM_Plugin {
             if (rightHandPinch && !isGrabbing) {
                 isGrabbing = true;
                 stoppedGrabbing = false;
-                startGrabbing();
+                StartGrabbing();
             }
             else if (isGrabbing && !rightHandPinch) {
                 isGrabbing = false;
@@ -92,11 +90,11 @@ namespace WIM_Plugin {
             }
         }
 
-        private void startGrabbing() {
+        private void StartGrabbing() {
             OnStartGrabbing?.Invoke();
         }
 
-        private void stopGrabbing() {
+        private void StopGrabbing() {
             if (stoppedGrabbing) return;
             OnStopGrabbing?.Invoke();
             stoppedGrabbing = true;

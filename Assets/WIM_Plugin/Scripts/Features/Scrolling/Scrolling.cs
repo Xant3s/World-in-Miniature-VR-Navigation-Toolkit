@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -20,31 +17,31 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             if(!ScrollingConfig) return;
-            setup();
+            Setup();
         }
 
-        internal void setup() {
-            InputManager.RegisterAction(scrollingActionName, scrollWIM);
-            InputManager.RegisterAction(verticalScrollingActionName, updateVerticalInput);
+        internal void Setup() {
+            InputManager.RegisterAction(scrollingActionName, ScrollWIM);
+            InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput);
             WIMGenerator.OnPreConfigure += DisableScrolling;
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;
-            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM += adjustPlayerRepresentationInWIM;
+            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM += AdjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
         private void OnDisable() {
-            remove();
+            Remove();
         }
 
-        internal void remove() {
+        internal void Remove() {
             InputManager.UnregisterAction(scrollingActionName);
             InputManager.UnregisterAction(verticalScrollingActionName);
             WIMGenerator.OnPreConfigure -= DisableScrolling;
             WIMGenerator.OnConfigure -= EnableScrolling;
             WIMGenerator.OnConfigure -= UpdateScrollingMask;
-            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= adjustPlayerRepresentationInWIM;
+            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= AdjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate -= ScrollWIM;
         }
@@ -60,15 +57,15 @@ namespace WIM_Plugin {
             Assert.IsNotNull(ScrollingConfig, "Scrolling configuration is missing.");
             if (!data.WIMLevelTransform) return;    // TODO: Useless?
             if(!ScrollingConfig.AllowWIMScrolling) return;
-            if (ScrollingConfig.AutoScroll) autoScrollWIM();
+            if (ScrollingConfig.AutoScroll) AutoScrollWIM();
             this.data = data;
         }
 
-        private void updateVerticalInput(Vector3 input) {
+        private void UpdateVerticalInput(Vector3 input) {
             verticalAxisInput = input;
         }
 
-        private void scrollWIM(Vector3 scrollingInput) {
+        private void ScrollWIM(Vector3 scrollingInput) {
             if (!Application.isPlaying) return;
             if (!ScrollingConfig.AllowWIMScrolling) return;
             var input = scrollingInput;
@@ -78,7 +75,7 @@ namespace WIM_Plugin {
             data.WIMLevelTransform.Translate(Time.deltaTime * ScrollingConfig.ScrollSpeed * -direction, Space.World);
         }
         
-        private void autoScrollWIM() {
+        private void AutoScrollWIM() {
             if(!ScrollingConfig.AllowWIMScrolling || !ScrollingConfig.AutoScroll) return;
             var scrollOffset = data.DestinationIndicatorInWIM
                 ? -data.DestinationIndicatorInWIM.localPosition
@@ -122,7 +119,7 @@ namespace WIM_Plugin {
             maskController.transform.position = WIM.transform.position;
         }
 
-        private void adjustPlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
+        private void AdjustPlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
             if(ScrollingConfig && ScrollingConfig.AllowWIMScrolling) {
                 // Get closest point on active area bounds. Won't have any effect if already inside active area.
                 data.PlayerRepresentationTransform.position = 

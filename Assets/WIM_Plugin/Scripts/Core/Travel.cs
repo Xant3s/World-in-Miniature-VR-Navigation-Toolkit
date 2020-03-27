@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using WIM_Plugin;
+﻿using UnityEngine;
 
 namespace WIM_Plugin {
     public interface TravelStrategy {
@@ -18,7 +15,7 @@ namespace WIM_Plugin {
                 : WIM.Data.DestinationIndicatorInLevel.position;
             WIM.Data.OVRPlayerController.rotation = WIM.Data.DestinationIndicatorInLevel.rotation;
             WIM.transform.parent = null;
-            WIM.GetComponent<Respawn>().respawnWIM(true); // Assist player to orientate at new location.
+            WIM.GetComponent<Respawn>().RespawnWIM(true); // Assist player to orientate at new location.
         }
     }
 }

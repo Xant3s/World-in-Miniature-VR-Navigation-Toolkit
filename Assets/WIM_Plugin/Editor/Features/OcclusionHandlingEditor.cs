@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -14,16 +11,16 @@ namespace WIM_Plugin {
         private MiniatureModel WIM;
 
         private void OnEnable() {
-            MiniatureModelEditor.OnDraw.AddCallback(draw, 0, "Occlusion Handling");
+            MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Occlusion Handling");
             WIM = ((OcclusionHandling) target).GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
         }
 
         private void OnDisable() {
-            MiniatureModelEditor.OnDraw.RemoveCallback(draw, "Occlusion Handling");
+            MiniatureModelEditor.OnDraw.RemoveCallback(Draw, "Occlusion Handling");
         }
 
-        private void draw(WIMConfiguration WIMConfig, VisualElement container) {
+        private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             if(!target) return;
             var occlusionHandling = (OcclusionHandling) target;
             ref var config = ref occlusionHandling.Config;

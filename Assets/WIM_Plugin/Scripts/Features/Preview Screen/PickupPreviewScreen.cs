@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
 
 
 namespace WIM_Plugin {
@@ -46,27 +42,27 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnPickupIndexButtonUp += pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonUp += pickupThumbButtonUp;
-            MiniatureModel.OnPickupThumbTouchUp += pickupThumbTouchUp;
+            MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
+            MiniatureModel.OnPickupThumbButtonUp += PickupThumbButtonUp;
+            MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickupIndexButtonUp -= pickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonUp -= pickupThumbButtonUp;
-            MiniatureModel.OnPickupThumbTouchUp -= pickupThumbTouchUp;
+            MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
+            MiniatureModel.OnPickupThumbButtonUp -= PickupThumbButtonUp;
+            MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
         }
 
-        private void pickupIndexButtonUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) stopGrabbing();
+        private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
+            if(!isGrabbing) StopGrabbing();
         }
 
-        private void pickupThumbButtonUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) stopGrabbing();
+        private void PickupThumbButtonUp(WIMConfiguration config, WIMData data) {
+            if(!isGrabbing) StopGrabbing();
         }
 
-        private void pickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) stopGrabbing();
+        private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+            if(!isGrabbing) StopGrabbing();
         }
 
         private void Update() {
@@ -74,7 +70,7 @@ namespace WIM_Plugin {
             if(rightHandPinch && !isGrabbing) {
                 isGrabbing = true;
                 stoppedGrabbing = false;
-                startGrabbing();
+                StartGrabbing();
             }
             else if(isGrabbing && !rightHandPinch) {
                 isGrabbing = false;
@@ -85,12 +81,12 @@ namespace WIM_Plugin {
             if(other.transform == thumb) {
                 thumbIsGrabbing = true;
                 HightlightFX = true;
-                vibrate();
+                Vibrate();
             }
             else if(other.transform == index) {
                 indexIsGrabbing = true;
                 HightlightFX = true;
-                vibrate();
+                Vibrate();
             }
         }
 
@@ -105,7 +101,7 @@ namespace WIM_Plugin {
             }
         }
 
-        private void startGrabbing() {
+        private void StartGrabbing() {
             // Spawn new preview screen.
             var previewScreen = WIMTransform.GetComponent<PreviewScreen>();
             previewScreen.ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
@@ -117,7 +113,7 @@ namespace WIM_Plugin {
             previewScreenTransform.localPosition = Vector3.zero;
         }
 
-        private void stopGrabbing() {
+        private void StopGrabbing() {
             if(stoppedGrabbing) return;
             var previewScreen = WIM.GetComponent<PreviewScreen>();
             Assert.IsNotNull(WIM);
@@ -131,12 +127,12 @@ namespace WIM_Plugin {
             stoppedGrabbing = true;
         }
 
-        private void vibrate() {
+        private void Vibrate() {
             InputManager.SetVibration(frequency: .5f, amplitude: .1f, Hand.RightHand);
-            Invoke(nameof(stopVibration), time: .1f);
+            Invoke(nameof(StopVibration), time: .1f);
         }
 
-        private void stopVibration() {
+        private void StopVibration() {
             InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
         }
     }
