@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
 
 namespace WIM_Plugin {
     public static class DestinationIndicators {

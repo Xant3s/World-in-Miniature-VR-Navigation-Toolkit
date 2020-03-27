@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WIM_Plugin {
     // Data describing the current WIM state. Data only. Modified at runtime.

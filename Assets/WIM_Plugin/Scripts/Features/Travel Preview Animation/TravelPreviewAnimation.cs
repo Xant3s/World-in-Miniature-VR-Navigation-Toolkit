@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
-using WIM_Plugin;
 
 namespace WIM_Plugin {
     [DisallowMultipleComponent]
