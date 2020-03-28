@@ -18,8 +18,9 @@ namespace WIM_Plugin {
             if(!liveUpdate) return;
             var WIM = liveUpdate.GetComponent<MiniatureModel>();
             var autoGenerateWIM = new Toggle {
-                label="Live Update WIM",
-                bindingPath = "AutoGenerateWIM"
+                label="Live Update WIM (experimental)",
+                bindingPath = "AutoGenerateWIM",
+                tooltip = "Automatically update the miniature model when changes are made to the level. Works also in editor. Not all changes are detected (see manual to learn more). Experimental feature."
             };
             autoGenerateWIM.RegisterValueChangedCallback(e =>
                 autoGenerateWIM.schedule.Execute(() => LiveUpdate.UpdateAutoGenerateWIM(WIM))); // Delay so that newValue is set on execution.
