@@ -35,8 +35,14 @@ namespace WIM_Plugin {
 
         private static readonly string pickupIndexActionName = "Pickup Index Button";
         private static readonly string pickupThumbActionName = "Pickup Thumb Button";
+        private static readonly string pickupThumbActionName2 = "Pickup Thumb Button (touch)";
         private static readonly string grabLActionName = "Left Grab Button";
         private static readonly string grabRActionName = "Right Grab Button";
+        private static readonly string pickupIndexButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
+        private static readonly string pickupThumbButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
+        private static readonly string pickupThumbButtonTooltip2 = "This should have the same key assigned as 'pickup thumb button'. Allows the player to pick something up by just touching the thumb button instead of pressing it.";
+        private static readonly string grabLTooltip = "The grab button on the left hand. Used to grab the miniature model.";
+        private static readonly string grabRTooltip = "The grab button on the right hand. Used to grab the miniature model.";
         private TravelStrategy travelStrategy;
 
 
@@ -81,16 +87,12 @@ namespace WIM_Plugin {
         }
 
         private void OnEnable() {
-            var pickupIndexButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
-            var pickupThumbButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
-            var grabLTooltip = "The grab button on the left hand. Used to grab the miniature model.";
-            var grabRTooltip = "The grab button on the right hand. Used to grab the miniature model.";
             InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupIndexButtonTooltip);
             InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupIndexButtonTooltip);
             InputManager.RegisterAction(pickupIndexActionName, PickupIndexButton);
             InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupThumbButtonTooltip);
             InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip);
-            InputManager.RegisterTouchAction(pickupThumbActionName, PickupThumbTouchUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip);
+            InputManager.RegisterTouchAction(pickupThumbActionName2, PickupThumbTouchUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip2);
             InputManager.RegisterAction(grabLActionName, LeftGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabLTooltip);
             InputManager.RegisterAction(grabLActionName, LeftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabLTooltip);
             InputManager.RegisterAction(grabRActionName, RightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabRTooltip);
@@ -100,6 +102,7 @@ namespace WIM_Plugin {
         private void OnDisable() {
             InputManager.UnregisterAction(pickupIndexActionName);
             InputManager.UnregisterAction(pickupThumbActionName);
+            InputManager.UnregisterAction(pickupThumbActionName2);
             InputManager.UnregisterAction(grabLActionName);
             InputManager.UnregisterAction(grabRActionName);
         }
