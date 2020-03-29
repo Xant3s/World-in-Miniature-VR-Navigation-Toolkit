@@ -5,23 +5,19 @@ using UnityEngine;
 
 namespace WIM_Plugin {
     public static class InputManager {
-        public enum ButtonTrigger { ButtonUp, ButtonDown, ButtonGet}
+        public delegate void InputAxis1DAction(float axis);
 
-        public delegate void VibrationAction(float frequency, float amplitude, Hand hand);
-
-        public delegate void InputMappers();
+        public delegate void InputAxis3DAction(Vector3 axis);
 
         public delegate void InputButtonAction();
 
         public delegate void InputButtonTouchAction();
 
-        public delegate void InputAxis3DAction(Vector3 axis);
+        public delegate void InputMappers();
 
-        public delegate void InputAxis1DAction(float axis);
+        public delegate void VibrationAction(float frequency, float amplitude, Hand hand);
 
-        public static event InputMappers OnUpdateActions;
-
-        public static event VibrationAction OnSetVibration;
+        public enum ButtonTrigger { ButtonUp, ButtonDown, ButtonGet}
 
         public static Dictionary<string, Dictionary<ButtonTrigger, InputButtonAction>> ButtonActions =
             new Dictionary<string, Dictionary<ButtonTrigger, InputButtonAction>>();
@@ -34,6 +30,10 @@ namespace WIM_Plugin {
         public static Dictionary<string, InputAxis1DAction> Axis1DActions = new Dictionary<string, InputAxis1DAction>();
 
         public static Dictionary<string ,string> Tooltips = new Dictionary<string, string>();
+
+        public static event InputMappers OnUpdateActions;
+
+        public static event VibrationAction OnSetVibration;
 
         public static void RegisterAction(string name, InputButtonAction buttonAction,
             ButtonTrigger trigger = ButtonTrigger.ButtonUp,

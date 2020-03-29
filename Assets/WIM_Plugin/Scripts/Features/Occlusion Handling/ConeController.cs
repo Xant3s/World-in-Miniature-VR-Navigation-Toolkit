@@ -7,13 +7,24 @@ using UnityEngine;
 [ExecuteAlways]
 [RequireComponent(typeof(Light))]
 public class ConeController : MonoBehaviour {
-    public Material[] materials;
     private static readonly int coneTip = Shader.PropertyToID("_ConeTip");
     private static readonly int coneDir = Shader.PropertyToID("_ConeDir");
     private static readonly int coneHeight = Shader.PropertyToID("_ConeHeight");
     private static readonly int coneBaseRadius = Shader.PropertyToID("_ConeBaseRadius");
     private static readonly int coneEnabled = Shader.PropertyToID("_ConeEnabled");
+    public Material[] materials;
     private Light spotLight;
+
+    public void SetConeEnabled(bool value) {
+        try {
+            foreach (var material in materials) {
+                material.SetFloat(coneEnabled, value ? 1 : 0);
+            }
+        }
+        catch (Exception) {
+            // ignored
+        }
+    }
 
 
     private void Awake() {
@@ -29,17 +40,6 @@ public class ConeController : MonoBehaviour {
 
     private void OnDisable() {
         SetConeEnabled(false);
-    }
-
-    public void SetConeEnabled(bool value) {
-        try {
-            foreach (var material in materials) {
-                material.SetFloat(coneEnabled, value ? 1 : 0);
-            }
-        }
-        catch (Exception) {
-            // ignored
-        }
     }
 
     private void Update() {

@@ -9,6 +9,49 @@ namespace WIM_Plugin {
     internal sealed class OcclusionHandling : MonoBehaviour {
         [HideInInspector] public OcclusionHandlingConfiguration Config;
 
+        public void CleanupOcclusionHandling(in MiniatureModel WIM) {
+            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
+            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
+
+#if UNITY_EDITOR
+            if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
+            if(spotlightMask) Undo.DestroyObjectImmediate(spotlightMask);
+#else
+            GameObject.DestroyImmediate(cylinderMask);
+            GameObject.DestroyImmediate(spotlightMask);
+#endif
+        }
+
+        internal void UpdateCylinderMask(in MiniatureModel WIM) {
+            if(!Config) return;
+            if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
+            var cylinderTransform = GameObject.FindWithTag("Cylinder Mask")?.transform;
+            if(!cylinderTransform) return;
+            cylinderTransform.localScale =
+                new Vector3(Config.MeltRadius, Config.MeltHeight, 1);
+        }
+
+        internal void UpdateCutoutViewMask(in MiniatureModel WIM) {
+            if(!Config) return;
+            if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
+            var spotlightObj = GameObject.FindWithTag("Spotlight Mask");
+            if(!spotlightObj) return;
+            var spotlight = spotlightObj.GetComponent<Light>();
+            spotlight.range = Config.CutoutRange;
+            spotlight.spotAngle = Config.CutoutAngle;
+
+            Color color;
+            if(Config.ShowCutoutLight) {
+                color = Config.CutoutLightColor;
+                color.a = 1;
+            }
+            else {
+                color = new Color(0, 0, 0, 0);
+            }
+
+            spotlight.color = color;
+        }
+
         private void OnDestroy() {
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             if(!WIM) return;
@@ -26,19 +69,6 @@ namespace WIM_Plugin {
             WIMGenerator.OnPreConfigure -= CleanupOcclusionHandling;
             WIMGenerator.OnConfigure += ConfigureCutoutView;
             WIMGenerator.OnConfigure += ConfigureMeltWalls;
-        }
-
-        public void CleanupOcclusionHandling(in MiniatureModel WIM) {
-            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
-            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
-
-#if UNITY_EDITOR
-            if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
-            if(spotlightMask) Undo.DestroyObjectImmediate(spotlightMask);
-#else
-            GameObject.DestroyImmediate(cylinderMask);
-            GameObject.DestroyImmediate(spotlightMask);
-#endif
         }
 
         private void ConfigureCutoutView(in MiniatureModel WIM) {
@@ -71,36 +101,6 @@ namespace WIM_Plugin {
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
             controller.materials = new[] {material};
             controller.SetCapsuleEnabled(true);
-        }
-
-        internal void UpdateCylinderMask(in MiniatureModel WIM) {
-            if(!Config) return;
-            if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
-            var cylinderTransform = GameObject.FindWithTag("Cylinder Mask")?.transform;
-            if(!cylinderTransform) return;
-            cylinderTransform.localScale =
-                new Vector3(Config.MeltRadius, Config.MeltHeight, 1);
-        }
-
-        internal void UpdateCutoutViewMask(in MiniatureModel WIM) {
-            if(!Config) return;
-            if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
-            var spotlightObj = GameObject.FindWithTag("Spotlight Mask");
-            if(!spotlightObj) return;
-            var spotlight = spotlightObj.GetComponent<Light>();
-            spotlight.range = Config.CutoutRange;
-            spotlight.spotAngle = Config.CutoutAngle;
-
-            Color color;
-            if(Config.ShowCutoutLight) {
-                color = Config.CutoutLightColor;
-                color.a = 1;
-            }
-            else {
-                color = new Color(0, 0, 0, 0);
-            }
-
-            spotlight.color = color;
         }
     }
 }

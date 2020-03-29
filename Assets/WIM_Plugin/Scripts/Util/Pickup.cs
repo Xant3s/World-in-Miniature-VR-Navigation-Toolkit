@@ -9,11 +9,6 @@ namespace WIM_Plugin {
     public class Pickup : MonoBehaviour {
         public delegate void Action();
 
-        public event Action OnStartGrabbing;
-        public event Action OnStopGrabbing;
-        public event Action OnStartTouch;
-        public event Action OnStopTouch;
-
         private Transform thumb;
         private Transform index;
         private Transform WIMTransform;
@@ -22,6 +17,11 @@ namespace WIM_Plugin {
         private bool isGrabbing;
         private bool stoppedGrabbing;
         private bool indexIsPressed;
+
+        public event Action OnStartGrabbing;
+        public event Action OnStopGrabbing;
+        public event Action OnStartTouch;
+        public event Action OnStopTouch;
 
 
         private void Awake() {

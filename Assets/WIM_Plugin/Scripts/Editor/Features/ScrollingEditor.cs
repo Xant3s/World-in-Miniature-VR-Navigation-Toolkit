@@ -9,8 +9,23 @@ using UnityEngine.UIElements;
 namespace WIM_Plugin {
     [CustomEditor(typeof(Scrolling))]
     public class ScrollingEditor : Editor {
-
         private MiniatureModel WIM;
+
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            var scrolling = (Scrolling) target;
+            EditorGUI.BeginChangeCheck();
+            scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
+            if(EditorGUI.EndChangeCheck()) {
+                WIMGenerator.ConfigureWIM(WIM);
+                scrolling.Remove();
+                if(scrolling.ScrollingConfig) {
+                    scrolling.Setup();
+                }
+            }
+            if(!scrolling.ScrollingConfig)
+                EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
+        }
 
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 4);
@@ -57,22 +72,6 @@ namespace WIM_Plugin {
             container.Add(root);
             if(config) root.Bind(new SerializedObject(config));
             root.Bind(new SerializedObject(scrolling));
-        }
-
-        public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
-            var scrolling = (Scrolling) target;
-            EditorGUI.BeginChangeCheck();
-            scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
-            if(EditorGUI.EndChangeCheck()) {
-                WIMGenerator.ConfigureWIM(WIM);
-                scrolling.Remove();
-                if(scrolling.ScrollingConfig) {
-                    scrolling.Setup();
-                }
-            }
-            if(!scrolling.ScrollingConfig)
-                EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
         }
     }
 }

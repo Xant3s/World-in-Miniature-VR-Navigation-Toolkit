@@ -6,7 +6,6 @@ using UnityEngine;
 
 [ExecuteAlways]
 public class BoxController : MonoBehaviour {
-    public Material[] materials;
     private static readonly int boxPosition = Shader.PropertyToID("_BoxPosition");
     private static readonly int boxScale = Shader.PropertyToID("_BoxScale");
     private static readonly int boxRotationMatrix_v1 = Shader.PropertyToID("_BoxRotationMatrix_v1");
@@ -14,15 +13,7 @@ public class BoxController : MonoBehaviour {
     private static readonly int boxRotationMatrix_v3 = Shader.PropertyToID("_BoxRotationMatrix_v3");
     private static readonly int boxRotationMatrix_v4 = Shader.PropertyToID("_BoxRotationMatrix_v4");
     private static readonly int boxEnabled = Shader.PropertyToID("_BoxEnabled");
-
-
-    private void OnEnable() {
-        SetBoxEnabled(true);
-    }
-
-    private void OnDisable() {
-        SetBoxEnabled(false);
-    }
+    public Material[] materials;
 
     public void SetBoxEnabled(bool value) {
         try {
@@ -33,6 +24,15 @@ public class BoxController : MonoBehaviour {
         catch (Exception) {
             // ignored
         }
+    }
+
+
+    private void OnEnable() {
+        SetBoxEnabled(true);
+    }
+
+    private void OnDisable() {
+        SetBoxEnabled(false);
     }
 
     private void Update() {

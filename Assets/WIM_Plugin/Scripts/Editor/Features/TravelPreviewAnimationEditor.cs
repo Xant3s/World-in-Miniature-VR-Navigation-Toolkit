@@ -8,6 +8,13 @@ using UnityEngine.UIElements;
 namespace WIM_Plugin {
     [CustomEditor(typeof(TravelPreviewAnimation))]
     public class TravelPreviewAnimationEditor : Editor {
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((TravelPreviewAnimation)target).Config;
+            if(config) return;
+            EditorGUILayout.HelpBox("Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script.", MessageType.Error);
+        }
+
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0);
         }
@@ -34,13 +41,6 @@ namespace WIM_Plugin {
             container.Add(root);
             if(config) root.Bind(new SerializedObject(config));
             root.Bind(new SerializedObject(travelPreviewAnimation));
-        }
-
-        public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
-            ref var config = ref ((TravelPreviewAnimation)target).Config;
-            if(config) return;
-            EditorGUILayout.HelpBox("Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script.", MessageType.Error);
         }
     }
 }

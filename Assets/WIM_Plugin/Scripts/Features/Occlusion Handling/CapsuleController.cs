@@ -6,20 +6,11 @@ using UnityEngine;
 
 [ExecuteAlways]
 public class CapsuleController : MonoBehaviour {
-    public Material[] materials;
     private static readonly int p1 = Shader.PropertyToID("_P1");
     private static readonly int p2 = Shader.PropertyToID("_P2");
     private static readonly int r = Shader.PropertyToID("_Radius");
     private static readonly int capsuleEnabled = Shader.PropertyToID("_CapsuleEnabled");
-
-
-    private void OnEnable() {
-        SetCapsuleEnabled(true);
-    }
-
-    private void OnDisable() {
-        SetCapsuleEnabled(false);
-    }
+    public Material[] materials;
 
     public void SetCapsuleEnabled(bool value) {
         try {
@@ -30,6 +21,15 @@ public class CapsuleController : MonoBehaviour {
         catch (Exception) {
             // ignored
         }
+    }
+
+
+    private void OnEnable() {
+        SetCapsuleEnabled(true);
+    }
+
+    private void OnDisable() {
+        SetCapsuleEnabled(false);
     }
 
     private void Update() {

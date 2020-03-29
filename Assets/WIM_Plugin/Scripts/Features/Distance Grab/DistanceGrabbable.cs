@@ -5,6 +5,17 @@ using UnityEngine;
 namespace WIM_Plugin {
     [DisallowMultipleComponent]
     public class DistanceGrabbable : MonoBehaviour {
+        private static readonly int tintID = Shader.PropertyToID("_Tint");
+        private static readonly int colorID = Shader.PropertyToID("_BaseColor");
+        private readonly Color highlightColor = new Color(37f/255f, 188/255f, 1);  // Cyan
+
+        private bool highlightFX;
+        private int colorProperty;
+        private Material material;
+        private Material blueMaterial;
+        private Color defaultColor = new Color(80f/255f, 80f/255f, 80f/255f);   // Gray
+        private Rigidbody rb;
+        private bool isWIM;
         public Transform Target { get; set; }
 
         public bool IsBeingGrabbed { get; set; }
@@ -23,20 +34,8 @@ namespace WIM_Plugin {
             }
         }
 
-        private bool highlightFX;
-
         public float SnapSpeed { get; set; } = 1f;
         public float MinDistance { get; set; } = .1f;
-
-        private static readonly int tintID = Shader.PropertyToID("_Tint");
-        private static readonly int colorID = Shader.PropertyToID("_BaseColor");
-        private int colorProperty;
-        private Material material;
-        private Material blueMaterial;
-        private Color defaultColor = new Color(80f/255f, 80f/255f, 80f/255f);   // Gray
-        private readonly Color highlightColor = new Color(37f/255f, 188/255f, 1);  // Cyan
-        private Rigidbody rb;
-        private bool isWIM;
 
         private void Awake() {
             blueMaterial = Resources.Load<Material>("Materials/Blue");

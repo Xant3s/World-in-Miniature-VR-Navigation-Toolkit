@@ -7,14 +7,19 @@ namespace WIM_Plugin {
         [Header("Distance Grabber (Experimental)")]
         [Tooltip("Hand this script is attached to.")]
         [SerializeField] private Hand hand;
+
         [Tooltip("Start point of the laser pointer.")]
         [SerializeField] private Transform start;
+
         [Tooltip("Distance grabbing will be disabled if within specified distance to miniature model")]
         [SerializeField] private float requieredDistanceToWIM = .5f;
+
         [Tooltip("Specifies how fast objects are pulled towards hand.")]
         [SerializeField] private float snapSpeed = 10f;
+
         [Tooltip("Stop pulling objects that are within specified distance to hand.")]
         [SerializeField] private float minDistance = .5f;
+
         [Tooltip("Automatically disable while this hand is touching the miniature model.")]
         [SerializeField] private bool disableWhileInWIM = true;
 

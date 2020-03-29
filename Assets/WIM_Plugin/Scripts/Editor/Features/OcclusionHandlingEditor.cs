@@ -12,6 +12,19 @@ namespace WIM_Plugin {
     public class OcclusionHandlingEditor : Editor {
         private MiniatureModel WIM;
 
+        public override void OnInspectorGUI() {
+            if(Application.isPlaying) return;
+            var occlusionHandling = (OcclusionHandling)target;
+            occlusionHandling.UpdateCutoutViewMask(WIM);
+            occlusionHandling.UpdateCylinderMask(WIM);
+            DrawDefaultInspector();
+            EditorGUI.BeginChangeCheck();
+            occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config", occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
+            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
+            ref var config = ref ((OcclusionHandling) target).Config;
+            if(!config) EditorGUILayout.HelpBox("Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.", MessageType.Error);
+        }
+
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Occlusion Handling");
             WIM = ((OcclusionHandling) target).GetComponent<MiniatureModel>();
@@ -52,19 +65,6 @@ namespace WIM_Plugin {
            
             container.Add(root);
             root.Bind(new SerializedObject(occlusionHandling));
-        }
-
-        public override void OnInspectorGUI() {
-            if(Application.isPlaying) return;
-            var occlusionHandling = (OcclusionHandling)target;
-            occlusionHandling.UpdateCutoutViewMask(WIM);
-            occlusionHandling.UpdateCylinderMask(WIM);
-            DrawDefaultInspector();
-            EditorGUI.BeginChangeCheck();
-            occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config", occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
-            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
-            ref var config = ref ((OcclusionHandling) target).Config;
-            if(!config) EditorGUILayout.HelpBox("Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.", MessageType.Error);
         }
     }
 }

@@ -9,20 +9,14 @@ namespace WIM_Plugin {
     [RequireComponent(typeof(LineRenderer))]
     [DisallowMultipleComponent]
     public class PathTraceController : MonoBehaviour {
+        private LineRenderer lr;
+        private float animationProgress;
+        private float endTime;
         public WIMSpaceConverter Converter { get; set; }
         public Transform NewPositionInWIM { get; set; }
         public Transform OldPositionInWIM { get; set; }
         public Transform WIMLevelTransform { get; set; }
         public float TraceDurationInSeconds { get; set; }
-
-        private LineRenderer lr;
-        private float animationProgress;
-        private float endTime;
-
-
-        private void Awake() {
-            lr = GetComponent<LineRenderer>();
-        }
 
         public void Init() {
             Assert.IsNotNull(WIMLevelTransform);
@@ -44,6 +38,11 @@ namespace WIM_Plugin {
             lr.colorGradient = gradient;
             lr.material = Resources.Load<Material>("Materials/SemiTransparent");
             endTime = Time.time + TraceDurationInSeconds;
+        }
+
+
+        private void Awake() {
+            lr = GetComponent<LineRenderer>();
         }
 
         private void Update() {

@@ -7,18 +7,6 @@ namespace WIM_Plugin {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class LiveUpdate : MonoBehaviour {
-        private void OnEnable() {
-            WIMGenerator.OnPreConfigure += RemoveAutoUpdate;
-        }
-
-        private void OnDisable() {
-            WIMGenerator.OnPreConfigure -= RemoveAutoUpdate;
-        }
-
-        private void RemoveAutoUpdate(in MiniatureModel WIM) {
-            DestroyImmediate(WIM.GetComponentInChildren<AutoUpdateWIM>());
-        }
-
         internal static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
             var level = GameObject.FindWithTag("Level");
             if(!level) {
@@ -34,6 +22,18 @@ namespace WIM_Plugin {
                 DestroyImmediate(level.GetComponent<AutoUpdateWIM>());  // Destroy script recursively
             }
 #endif
+        }
+
+        private void OnEnable() {
+            WIMGenerator.OnPreConfigure += RemoveAutoUpdate;
+        }
+
+        private void OnDisable() {
+            WIMGenerator.OnPreConfigure -= RemoveAutoUpdate;
+        }
+
+        private void RemoveAutoUpdate(in MiniatureModel WIM) {
+            DestroyImmediate(WIM.GetComponentInChildren<AutoUpdateWIM>());
         }
     }
 }

@@ -7,16 +7,6 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     [DisallowMultipleComponent]
     public class PickupPreviewScreen : MonoBehaviour {
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if(GetComponent<Renderer>()) {
-                    material.SetFloat("_Alpha", value ? defaultAlpha + .1f : defaultAlpha);
-                }
-            }
-        }
-
         private MiniatureModel WIM;
         private Material material;
         private float defaultAlpha = .33f;
@@ -28,6 +18,16 @@ namespace WIM_Plugin {
         private bool indexIsGrabbing;
         private bool isGrabbing;
         private bool stoppedGrabbing;
+
+        public bool HightlightFX {
+            get => hightlightFX;
+            set {
+                hightlightFX = value;
+                if(GetComponent<Renderer>()) {
+                    material.SetFloat("_Alpha", value ? defaultAlpha + .1f : defaultAlpha);
+                }
+            }
+        }
 
 
         private void Awake() {

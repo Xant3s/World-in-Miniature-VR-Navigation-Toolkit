@@ -10,6 +10,8 @@ namespace WIM_Plugin {
         private Transform index;
         private Transform WIMTransform;
 
+        private bool isVibrating;
+
         private void Awake() {
             WIMTransform = GameObject.FindWithTag("WIM")?.transform;
             Assert.IsNotNull(WIMTransform);
@@ -42,7 +44,6 @@ namespace WIM_Plugin {
             Vibrate();
         }
 
-        private bool isVibrating;
         private void Vibrate() {
             if (isVibrating) return;
             isVibrating = true;

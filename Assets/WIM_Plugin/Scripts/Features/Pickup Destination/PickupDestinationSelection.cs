@@ -8,18 +8,6 @@ using UnityEngine.Assertions;
 namespace WIM_Plugin {
     [DisallowMultipleComponent]
     public class PickupDestinationSelection : MonoBehaviour {
-        public float DoubleTapInterval { get; set; } = 2;
-
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    material.color = value ? hightlightColor : defaultColor;
-                }
-            }
-        }
-
         private MiniatureModel WIM;
         private Material material;
         private Transform thumb;
@@ -33,6 +21,17 @@ namespace WIM_Plugin {
         private bool indexIsTouching;
         private bool isGrabbing;
         private bool stoppedGrabbing = true;
+        public float DoubleTapInterval { get; set; } = 2;
+
+        public bool HightlightFX {
+            get => hightlightFX;
+            set {
+                hightlightFX = value;
+                if (GetComponent<Renderer>()) {
+                    material.color = value ? hightlightColor : defaultColor;
+                }
+            }
+        }
 
 
         private void Awake() {

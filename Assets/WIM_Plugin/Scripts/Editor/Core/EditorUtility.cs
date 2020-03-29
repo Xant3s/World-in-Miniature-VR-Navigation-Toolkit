@@ -13,7 +13,7 @@ namespace WIM_Plugin {
         public delegate void InspectorAction(WIMConfiguration config, VisualElement container);
 
         private static IDictionary<string, IDictionary<int, InspectorAction>> OnDraw = new Dictionary<string, IDictionary<int, InspectorAction>>();
-        
+
         public void AddCallback(InspectorAction callback, int priority = 0, string key = "") {
             if(OnDraw.ContainsKey(key)) {
                 OnDraw[key].Push(priority, callback);

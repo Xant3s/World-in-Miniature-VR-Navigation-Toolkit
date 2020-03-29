@@ -6,7 +6,6 @@ using UnityEngine;
 namespace WIM_Plugin {
     [CreateAssetMenu(menuName = "WIM/Input Mapping")]
     public class InputMapping : ScriptableObject {
-
         public List<string> Keys = new List<string>();
         public List<int> Values = new List<int>();
 

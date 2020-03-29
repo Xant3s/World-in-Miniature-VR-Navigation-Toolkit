@@ -9,8 +9,7 @@ namespace WIM_Plugin {
     public class Respawn : MonoBehaviour {
         public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, 
             bool maintainTransformRelativeToPlayer);
-        public static event RespawnAction OnEarlyRespawn;
-        public static event RespawnAction OnLateRespawn;
+
         public static bool RemoveOldWIMLevel = true;
         public static Material materialForOldWIM;
 
@@ -18,31 +17,8 @@ namespace WIM_Plugin {
         private static readonly string actionTooltip = "Button used to respawn the miniature model.";
         private WIMConfiguration config;
         private WIMData data;
-
-
-        private void OnEnable() {
-            MiniatureModel.OnLateInit += StartRespawn;
-            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
-            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
-            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
-        }
-
-        private void OnDisable() {
-            MiniatureModel.OnLateInit -= StartRespawn;
-            InputManager.UnregisterAction(actionName);
-        }
-
-        private void StartRespawn() {
-            RespawnWIM(false);
-        }
-
-        private void StartRespawn(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
-            RespawnWIM(false);
-        }
+        public static event RespawnAction OnEarlyRespawn;
+        public static event RespawnAction OnLateRespawn;
 
         public void RespawnWIM(bool maintainTransformRelativeToPlayer) {
             if(!Application.isPlaying) return;
@@ -111,6 +87,31 @@ namespace WIM_Plugin {
 
         private static void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
+        }
+
+
+        private void OnEnable() {
+            MiniatureModel.OnLateInit += StartRespawn;
+            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
+            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
+            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
+        }
+
+        private void OnDisable() {
+            MiniatureModel.OnLateInit -= StartRespawn;
+            InputManager.UnregisterAction(actionName);
+        }
+
+        private void StartRespawn() {
+            RespawnWIM(false);
+        }
+
+        private void StartRespawn(WIMConfiguration config, WIMData data) {
+            this.config = config;
+            this.data = data;
+            RespawnWIM(false);
         }
     }
 }

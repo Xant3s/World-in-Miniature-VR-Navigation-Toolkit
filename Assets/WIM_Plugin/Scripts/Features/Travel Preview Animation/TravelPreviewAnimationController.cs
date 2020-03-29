@@ -7,18 +7,17 @@ namespace WIM_Plugin {
     [RequireComponent(typeof(LineRenderer))]
     [DisallowMultipleComponent]
     public class TravelPreviewAnimationController : MonoBehaviour {
+        private LineRenderer lr;
+        private Transform animatedPlayerRepresentation;
+        private float animationProgress;
+        private float startAnimationProgress;
+        private float endAnimationProgress;
         public WIMSpaceConverter Converter { get; set; }
         public Transform DestinationInWIM { get; set; }
         public Transform PlayerRepresentationInWIM { get; set; }
         public Transform WIMLevelTransform { get; set; }
         public GameObject DestinationIndicator { get; set; }
         public float AnimationSpeed { get; set; } = 1.0f;
-
-        private LineRenderer lr;
-        private Transform animatedPlayerRepresentation;
-        private float animationProgress;
-        private float startAnimationProgress;
-        private float endAnimationProgress;
 
 
         private void Awake() {

@@ -9,8 +9,10 @@ namespace WIM_Plugin {
         [Header("Aim Assist (Experimental)")]
         [Tooltip("The hand this script is attached to.")]
         [SerializeField] private Hand hand;
+
         [Tooltip("The length of the laser pointer.")]
         [SerializeField] private float length = 10.0f;
+
         private LineRenderer lr;
 
 

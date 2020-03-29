@@ -9,27 +9,6 @@ namespace WIM_Plugin {
     public class PickupDestinationUpdate : MonoBehaviour {
         public delegate void WIMAction(in MiniatureModel WIM);
 
-        public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
-
-        public float DoubleTapInterval { get; set; } = 2;
-
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    material.color = value ? hightlightColor : defaultColor;
-                }
-            }
-        }
-
-        private enum TapState {
-            None,
-            FirstTap,
-            WaitingForSecondTap,
-            SecondTap
-        }
-
         private MiniatureModel WIM;
         private TapState tapState;
         private Material material;
@@ -44,6 +23,20 @@ namespace WIM_Plugin {
         private bool indexIsTouching;
         private bool isGrabbing;
         private bool stoppedGrabbing = true;
+
+        public float DoubleTapInterval { get; set; } = 2;
+
+        public bool HightlightFX {
+            get => hightlightFX;
+            set {
+                hightlightFX = value;
+                if (GetComponent<Renderer>()) {
+                    material.color = value ? hightlightColor : defaultColor;
+                }
+            }
+        }
+
+        public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
 
 
         private void OnEnable() {
@@ -177,6 +170,13 @@ namespace WIM_Plugin {
 
         private void StopVibration() {
             InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
+        }
+
+        private enum TapState {
+            None,
+            FirstTap,
+            WaitingForSecondTap,
+            SecondTap
         }
     }
 }

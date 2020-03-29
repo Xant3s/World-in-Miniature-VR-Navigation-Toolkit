@@ -10,6 +10,8 @@ namespace WIM_Plugin {
     public class ClosePreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
 
+        private bool once;
+
 
         private void Awake() {
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
@@ -20,7 +22,6 @@ namespace WIM_Plugin {
             GetComponent<Renderer>().enabled = true;
         }
 
-        private bool once;
         private void OnTriggerEnter(Collider other) {
             if(!other.CompareTag("IndexR") && !other.CompareTag("IndexL")) return;
             if (once) return;
