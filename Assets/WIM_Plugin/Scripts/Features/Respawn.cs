@@ -13,13 +13,14 @@ namespace WIM_Plugin {
         public static Material materialForOldWIM;
 
         private static readonly string actionName = "Respawn Button";
+        private static readonly string actionTooltip = "Button used to respawn the miniature model.";
         private WIMConfiguration config;
         private WIMData data;
 
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += StartRespawn;
-            InputManager.RegisterAction(actionName, StartRespawn);
+            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
             var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;

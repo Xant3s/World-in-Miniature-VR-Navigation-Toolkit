@@ -9,6 +9,9 @@ namespace WIM_Plugin {
         private static readonly string selectionActionName = "Destination Selection Button";
         private static readonly string rotationActionName = "Destination Rotation Thumbstick";
         private static readonly string confirmActionName = "Confirm Travel Button";
+        private static readonly string selectionTooltip = "Button used to select a destination.";
+        private static readonly string rotationTooltip = "Thumbstick used to rotate destination indicator. Only used when destination selection method is 'touch'.";
+        private static readonly string confirmTooltip = "Button used to confirm destination and start travel. Only used when destination selection method is 'touch'.";
         private WIMConfiguration config;
         private WIMData data;
         private MiniatureModel WIM;
@@ -21,9 +24,9 @@ namespace WIM_Plugin {
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += Init;
-            InputManager.RegisterAction(selectionActionName, DestinationSelection);
-            InputManager.RegisterAction(rotationActionName, SelectDestinationRotation);
-            InputManager.RegisterAction(confirmActionName, ConfirmTeleport);
+            InputManager.RegisterAction(selectionActionName, DestinationSelection, tooltip: selectionTooltip);
+            InputManager.RegisterAction(rotationActionName, SelectDestinationRotation, tooltip: rotationTooltip);
+            InputManager.RegisterAction(confirmActionName, ConfirmTeleport, tooltip: confirmTooltip);
         }
 
         private void OnDisable() {

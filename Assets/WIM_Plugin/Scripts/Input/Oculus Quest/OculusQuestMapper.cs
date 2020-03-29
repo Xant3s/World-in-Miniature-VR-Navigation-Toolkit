@@ -10,6 +10,7 @@ namespace WIM_Plugin {
             public delegate bool Trigger(OVRInput.RawButton btn, OVRInput.Controller controllerMask);
 
             public string Name { get; }
+            public string Tooltip { get; }
 
             public string MappingKey { get; }
             public Dictionary<Trigger, InputManager.InputButtonAction> ButtonActions { get; }
@@ -17,9 +18,10 @@ namespace WIM_Plugin {
 
 
             public InputButtonActionMapping(string name,
-                Dictionary<Trigger, InputManager.InputButtonAction> buttonActions,
+                Dictionary<Trigger, InputManager.InputButtonAction> buttonActions, string tooltip = "",
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
+                this.Tooltip = tooltip;
                 this.ButtonActions = buttonActions;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
                 if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
@@ -32,6 +34,8 @@ namespace WIM_Plugin {
             public delegate bool Trigger(OVRInput.RawTouch btn, OVRInput.Controller controllerMask);
 
             public string Name { get; }
+            public string Tooltip { get; }
+
 
             public string MappingKey { get; }
             public Dictionary<Trigger, InputManager.InputButtonTouchAction> ButtonActions { get; }
@@ -39,9 +43,10 @@ namespace WIM_Plugin {
 
 
             public InputButtonTouchActionMapping(string name,
-                Dictionary<Trigger, InputManager.InputButtonTouchAction> buttonActions,
+                Dictionary<Trigger, InputManager.InputButtonTouchAction> buttonActions, string tooltip = "",
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
+                this.Tooltip = tooltip;
                 this.ButtonActions = buttonActions;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
                 if (mapper && mapper.InputMappings.HasKey(MappingKey)) {
@@ -52,6 +57,8 @@ namespace WIM_Plugin {
 
         internal class InputAxisActionMapping {
             public string Name { get; }
+            public string Tooltip { get; }
+
             public string MappingKey { get; }
             public bool Axis1D { get; }
             public InputManager.InputAxis3DAction AxisAction { get; }
@@ -59,9 +66,10 @@ namespace WIM_Plugin {
             public OVRInput.RawAxis2D Mapping { get; set; } = OVRInput.RawAxis2D.None;
             public OVRInput.RawAxis1D Mapping1D { get; set; } = OVRInput.RawAxis1D.None;
 
-            public InputAxisActionMapping(string name, InputManager.InputAxis3DAction axisAction,
+            public InputAxisActionMapping(string name, InputManager.InputAxis3DAction axisAction, string tooltip = "",
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
+                this.Tooltip = tooltip;
                 this.Axis1D = false;
                 this.AxisAction = axisAction;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
@@ -70,9 +78,10 @@ namespace WIM_Plugin {
                 }
             }
 
-            public InputAxisActionMapping(string name, InputManager.InputAxis1DAction axisAction,
+            public InputAxisActionMapping(string name, InputManager.InputAxis1DAction axisAction, string tooltip = "",
                 OculusQuestMapper mapper = null) {
                 this.Name = name;
+                this.Tooltip = tooltip;
                 this.Axis1D = true;
                 this.Axis1DAction = axisAction;
                 MappingKey = "WIMInput_OculusQuestMapper_" + name;
@@ -120,19 +129,23 @@ namespace WIM_Plugin {
             actionButtonMappings.Clear();
             actionAxisMappings.Clear();
             foreach (var m in InputManager.ButtonActions) {
-                actionButtonMappings.Add(new InputButtonActionMapping(m.Key, convertTriggers(m.Value), this));
+                var tooltip = InputManager.Tooltips[m.Key];
+                actionButtonMappings.Add(new InputButtonActionMapping(m.Key, convertTriggers(m.Value), tooltip,this));
             }
 
             foreach (var m in InputManager.ButtonTouchActions) {
-                actionButtonTouchMappings.Add(new InputButtonTouchActionMapping(m.Key, convertTriggers(m.Value), this));
+                var tooltip = InputManager.Tooltips[m.Key];
+                actionButtonTouchMappings.Add(new InputButtonTouchActionMapping(m.Key, convertTriggers(m.Value), tooltip, this));
             }
 
             foreach (var m in InputManager.AxisActions) {
-                actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, this));
+                var tooltip = InputManager.Tooltips[m.Key];
+                actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, tooltip, this));
             }
 
             foreach (var m in InputManager.Axis1DActions) {
-                actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, this));
+                var tooltip = InputManager.Tooltips[m.Key];
+                actionAxisMappings.Add(new InputAxisActionMapping(m.Key, m.Value, tooltip, this));
             }
         }
 

@@ -25,7 +25,7 @@
             tooltip="If active, the destination will automatically snap to ground level. This protects the player from being teleported to a location in mid-air."/>
     <VisualElement name="basic-container" />
     <editor:EnumField name="destination-selection-method" label="Destination Selection Method" binding-path="DestinationSelectionMethod" 
-                      tooltip="How players choose a destination. Pickup: pickup and place player representation using index and thumb. Double-tap destination indicator using index to confirm. Touch: touch destination using index. Press button to confirm." />
+                      tooltip="How players choose a destination. Pickup: pickup and place player representation using index and thumb. Double-tap destination indicator using index to confirm. Touch: touch destination using index and press button. Press button to confirm." />
     <WIM:HelpBox name="destination-selection-method-info" message-type="Info" text="Add 'DestinationSelectionTouch' script to change destination selection method." />
     <editor:FloatField name="double-tap-interval" label="Double Tap Interval" binding-path="DoubleTapInterval" 
                        tooltip="Maximum time between two taps. Will not detect a double-tap if time is exceeded." />
