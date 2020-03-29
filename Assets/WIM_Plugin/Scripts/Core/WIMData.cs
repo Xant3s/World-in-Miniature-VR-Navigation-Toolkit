@@ -3,7 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
-    // Data describing the current WIM state. Data only. Modified at runtime.
+    /// <summary>
+    /// Data describing the current miniature model state. Modified at runtime.
+    /// </summary>
     public class WIMData : ScriptableObject {
         public Transform WIMLevelTransform;
         public Transform PlayerRepresentationTransform;

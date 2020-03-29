@@ -3,7 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
-    // The WIM configuration. Data only. Modified via GUI.
+    /// <summary>
+    /// The miniature model configuration. Modified via GUI.
+    /// </summary>
     [CreateAssetMenu(menuName = "WIM/Configuration")]
     public class WIMConfiguration : ScriptableObject {
         public bool AutoGenerateWIM;

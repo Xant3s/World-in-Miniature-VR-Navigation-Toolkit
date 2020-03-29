@@ -101,7 +101,7 @@ namespace WIM_Plugin {
 #else
             GameObject.DestroyImmediate(boxMask);
 #endif
-            WIMGenerator.RemoveAllColliders(WIM.transform);
+            WIM.transform.RemoveAllColliders();
             WIMGenerator.GenerateColliders(WIM);
         }
 
@@ -117,7 +117,7 @@ namespace WIM_Plugin {
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
             controller.materials = new[] {material};
             controller.SetBoxEnabled(true);
-            WIMGenerator.RemoveAllColliders(WIM.transform);
+            WIM.transform.RemoveAllColliders();
             WIM.gameObject.AddComponent<BoxCollider>().size =
                 WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
             maskController.transform.position = WIM.transform.position;
