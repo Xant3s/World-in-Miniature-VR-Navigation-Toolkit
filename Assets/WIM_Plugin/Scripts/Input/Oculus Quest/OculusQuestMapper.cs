@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 

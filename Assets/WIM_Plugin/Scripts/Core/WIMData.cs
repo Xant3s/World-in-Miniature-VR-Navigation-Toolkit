@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 namespace WIM_Plugin {
     // Data describing the current WIM state. Data only. Modified at runtime.

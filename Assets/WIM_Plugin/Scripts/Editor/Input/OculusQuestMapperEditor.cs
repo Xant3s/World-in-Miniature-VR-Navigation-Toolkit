@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;

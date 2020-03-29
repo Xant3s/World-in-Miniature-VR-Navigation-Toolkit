@@ -1,7 +1,14 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
+
 namespace WIM_Plugin {
+    /// <summary>
+    /// The core miniature model component. Turns this gameobject into a miniature model.
+    /// Add additional feature components to modify functionality.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(OVRGrabbable))]
     [RequireComponent(typeof(DistanceGrabbable))]
@@ -157,6 +164,9 @@ namespace WIM_Plugin {
             OnNewDestinationSelected?.Invoke(Configuration, Data);
         }
 
+        /// <summary>
+        /// Starts the travel phase.
+        /// </summary>
         public void ConfirmTravel() {
             if(!Configuration) return;
             DestinationIndicators.RemoveDestinationIndicators(this);

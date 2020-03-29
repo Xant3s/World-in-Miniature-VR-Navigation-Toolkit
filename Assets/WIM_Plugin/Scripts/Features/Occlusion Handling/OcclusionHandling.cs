@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEditor;
 using UnityEngine;
 
 namespace WIM_Plugin {

@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Assertions;

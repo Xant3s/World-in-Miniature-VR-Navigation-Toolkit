@@ -1,3 +1,5 @@
+// Author: Samuel Truman (contact@samueltruman.com)
+
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;

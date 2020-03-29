@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 

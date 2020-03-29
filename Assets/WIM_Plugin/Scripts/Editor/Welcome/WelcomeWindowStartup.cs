@@ -1,4 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 

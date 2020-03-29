@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 namespace WIM_Plugin {
     [CreateAssetMenu(menuName = "WIM/Feature Configuration/Preview Screen")]
