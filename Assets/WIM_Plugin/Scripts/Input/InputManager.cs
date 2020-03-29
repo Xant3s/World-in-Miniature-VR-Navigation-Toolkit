@@ -31,29 +31,38 @@ namespace WIM_Plugin {
 
         public static Dictionary<string, InputAxis1DAction> Axis1DActions = new Dictionary<string, InputAxis1DAction>();
 
-        public static void RegisterAction(string name, InputButtonAction buttonAction, ButtonTrigger trigger = ButtonTrigger.ButtonUp) {
+        public static Dictionary<string ,string> Tooltips = new Dictionary<string, string>();
+
+        public static void RegisterAction(string name, InputButtonAction buttonAction,
+            ButtonTrigger trigger = ButtonTrigger.ButtonUp,
+            string tooltip = "") {
             if (!ButtonActions.ContainsKey(name)) {
                 ButtonActions[name] = new Dictionary<ButtonTrigger, InputButtonAction>();
             }
             ButtonActions[name].Add(trigger, buttonAction);
+            if(!Tooltips.ContainsKey(name)) Tooltips.Add(name, tooltip);
             OnUpdateActions?.Invoke();
         }
 
-        public static void RegisterTouchAction(string name, InputButtonTouchAction buttonAction, ButtonTrigger trigger = ButtonTrigger.ButtonUp) {
+        public static void RegisterTouchAction(string name, InputButtonTouchAction buttonAction,
+            ButtonTrigger trigger = ButtonTrigger.ButtonUp, string tooltip = "") {
             if (!ButtonTouchActions.ContainsKey(name)) {
                 ButtonTouchActions[name] = new Dictionary<ButtonTrigger, InputButtonTouchAction>();
             }
             ButtonTouchActions[name].Add(trigger, buttonAction);
+            if(!Tooltips.ContainsKey(name)) Tooltips.Add(name, tooltip);
             OnUpdateActions?.Invoke();
         }
 
-        public static void RegisterAction(string name, InputAxis3DAction action) {
+        public static void RegisterAction(string name, InputAxis3DAction action, string tooltip = "") {
             AxisActions[name] = action;
+            if(!Tooltips.ContainsKey(name)) Tooltips.Add(name, tooltip);
             OnUpdateActions?.Invoke();
         }
 
-        public static void RegisterAction(string name, InputAxis1DAction action) {
+        public static void RegisterAction(string name, InputAxis1DAction action, string tooltip = "") {
             Axis1DActions[name] = action;
+            if(!Tooltips.ContainsKey(name)) Tooltips.Add(name, tooltip);
             OnUpdateActions?.Invoke();
         }
 
@@ -62,6 +71,7 @@ namespace WIM_Plugin {
             ButtonTouchActions.Remove(name);
             AxisActions.Remove(name);
             Axis1DActions.Remove(name);
+            Tooltips.Remove(name);
             OnUpdateActions?.Invoke();
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace WIM_Plugin {
@@ -20,7 +21,8 @@ namespace WIM_Plugin {
             root.Add(new ObjectField("Input Mapping") {
                 allowSceneObjects = false,
                 objectType = typeof(InputMapping),
-                bindingPath = nameof(mapper.InputMappings)
+                bindingPath = nameof(mapper.InputMappings),
+                tooltip = "Config file used to store the button mapping."
             });
             root.Bind(new SerializedObject(mapper));
 
@@ -31,9 +33,9 @@ namespace WIM_Plugin {
             Action action = () => {
                 for(var i = 0; i < InputManager.ButtonActions.Count; i++) {
                     EditorGUI.BeginChangeCheck();
+                    var content = new GUIContent(mapper.actionButtonMappings[i].Name, mapper.actionButtonMappings[i].Tooltip);
                     mapper.actionButtonMappings[i].Mapping =
-                        (OVRInput.RawButton) EditorGUILayout.EnumFlagsField(mapper.actionButtonMappings[i].Name,
-                            mapper.actionButtonMappings[i].Mapping);
+                        (OVRInput.RawButton) EditorGUILayout.EnumFlagsField(content, mapper.actionButtonMappings[i].Mapping);
                     if(EditorGUI.EndChangeCheck()) {
                         mapper.InputMappings.Set(mapper.actionButtonMappings[i].MappingKey,
                             (int) mapper.actionButtonMappings[i].Mapping);
@@ -42,9 +44,9 @@ namespace WIM_Plugin {
 
                 for(var i = 0; i < InputManager.ButtonTouchActions.Count; i++) {
                     EditorGUI.BeginChangeCheck();
+                    var content = new GUIContent(mapper.actionButtonTouchMappings[i].Name, mapper.actionButtonTouchMappings[i].Tooltip);
                     mapper.actionButtonTouchMappings[i].Mapping =
-                        (OVRInput.RawTouch) EditorGUILayout.EnumFlagsField(mapper.actionButtonTouchMappings[i].Name,
-                            mapper.actionButtonTouchMappings[i].Mapping);
+                        (OVRInput.RawTouch) EditorGUILayout.EnumFlagsField(content, mapper.actionButtonTouchMappings[i].Mapping);
                     if(EditorGUI.EndChangeCheck()) {
                         mapper.InputMappings.Set(mapper.actionButtonTouchMappings[i].MappingKey,
                             (int) mapper.actionButtonTouchMappings[i].Mapping);
@@ -53,9 +55,9 @@ namespace WIM_Plugin {
 
                 for(var i = 0; i < InputManager.AxisActions.Count; i++) {
                     EditorGUI.BeginChangeCheck();
+                    var content = new GUIContent(mapper.actionAxisMappings[i].Name, mapper.actionAxisMappings[i].Tooltip);
                     mapper.actionAxisMappings[i].Mapping =
-                        (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField(mapper.actionAxisMappings[i].Name,
-                            mapper.actionAxisMappings[i].Mapping);
+                        (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField(content, mapper.actionAxisMappings[i].Mapping);
                     if(EditorGUI.EndChangeCheck()) {
                         mapper.InputMappings.Set(mapper.actionAxisMappings[i].MappingKey,
                             (int) mapper.actionAxisMappings[i].Mapping);

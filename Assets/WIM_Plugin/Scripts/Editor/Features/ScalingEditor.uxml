@@ -6,12 +6,17 @@
 <WIM:HelpBox name="config-info" message-type="Error" text="Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script." />
 
 <VisualElement name="settings">
-  <Toggle name="allow-scaling" label="Allow WIM Scaling" binding-path="AllowWIMScaling" />
+  <Toggle name="allow-scaling" label="Allow WIM Scaling" binding-path="AllowWIMScaling"
+          tooltip="Whether scaling is enabled."/>
   <VisualElement name="scaling-settings2">
-    <editor:FloatField label="Min Scale Factor" binding-path="MinScaleFactor" />
-    <editor:FloatField label="Max Scale Factor" binding-path="MaxScaleFactor" />
-    <editor:FloatField label="Scale Step" binding-path="ScaleStep" />
-    <editor:FloatField label="Inter Hand Distance Delta Threshold" binding-path="InterHandDistanceDeltaThreshold" tooltip="Ignore inter hand distance deltas below this threshold for scaling." />
+    <editor:FloatField label="Min Scale Factor" binding-path="MinScaleFactor" 
+                       tooltip="Smallest allowed scale factor." />
+    <editor:FloatField label="Max Scale Factor" binding-path="MaxScaleFactor"
+                       tooltip="Largest allowed scale factor." />
+    <editor:FloatField label="Scale Step" binding-path="ScaleStep" 
+                       tooltip="Used to determine how fast the scale factor can change. Small numbers will only allow small changes, large number will allow much faster scaling." />
+    <editor:FloatField label="Inter Hand Distance Delta Threshold" binding-path="InterHandDistanceDeltaThreshold"
+                       tooltip="Ignore inter hand distance deltas below this threshold for scaling. Important so that not every tiny hand jitter will trigger scaling." />
   </VisualElement>
 </VisualElement>
 </UXML>

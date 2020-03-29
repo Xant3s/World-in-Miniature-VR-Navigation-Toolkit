@@ -11,6 +11,8 @@ namespace WIM_Plugin {
 
         private static readonly string scrollingActionName = "Scrolling Axis";
         private static readonly string verticalScrollingActionName = "Vertical Scrolling Axis";
+        private static readonly string scrollingTooltip = "Axis used to scroll miniature model. Only used if scrolling is enabled.";
+        private static readonly string verticalScrollingTooltip = "Axis used to vertical scroll miniature model. Only used if scrolling is enabled.";
         private WIMData data;
         private Vector2 verticalAxisInput;
 
@@ -21,8 +23,8 @@ namespace WIM_Plugin {
         }
 
         internal void Setup() {
-            InputManager.RegisterAction(scrollingActionName, ScrollWIM);
-            InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput);
+            InputManager.RegisterAction(scrollingActionName, ScrollWIM, scrollingTooltip);
+            InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput, verticalScrollingTooltip);
             WIMGenerator.OnPreConfigure += DisableScrolling;
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;

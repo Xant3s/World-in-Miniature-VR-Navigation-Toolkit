@@ -5,7 +5,9 @@
   <WIM:HelpBox name="config-info" message-type="Error" text="Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script." />
  
   <VisualElement name="settings">
-    <Toggle name="enabled" label="Travel Preview Animation" binding-path="TravelPreviewAnimation" />
-    <WIM:FloatSlider name="animation-speed" low-value="0" high-value="1" label="Travel Preview Animation Speed" binding-path="TravelPreviewAnimationSpeed" />
+    <Toggle name="enabled" label="Travel Preview Animation" binding-path="TravelPreviewAnimation"
+            tooltip="Whether to display a preview animation of the travel phase." />
+    <WIM:FloatSlider name="animation-speed" low-value="0" high-value="1" label="Travel Preview Animation Speed" binding-path="TravelPreviewAnimationSpeed"
+                     tooltip="How fast the travel preview animation should be played." />
   </VisualElement>
 </UXML>

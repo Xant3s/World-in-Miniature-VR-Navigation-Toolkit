@@ -5,13 +5,14 @@ namespace WIM_Plugin {
     [DisallowMultipleComponent]
     public class DetectArmLength : MonoBehaviour {
         private static readonly string actionName = "Confirm Arm Length Button";
+        private static readonly string actionTooltip = "Used to confirm the player's arm length.";
         private WIMConfiguration config;
         private WIMData data;
         private bool armLengthDetected;
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += Init;
-            InputManager.RegisterAction(actionName, Detect);
+            InputManager.RegisterAction(actionName, Detect, tooltip: actionTooltip);
         }
 
         private void OnDisable() {
