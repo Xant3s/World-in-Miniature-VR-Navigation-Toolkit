@@ -4,7 +4,16 @@ using System;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// A collection of math utils.
+    /// </summary>
     public static class MathUtils {
+        /// <summary>
+        /// Get corner position of a box collider specified by ID.
+        /// </summary>
+        /// <param name="box">The box collider.</param>
+        /// <param name="id">Specifies which corner of the box collider should be returned.</param>
+        /// <returns>The corner of the box collider specified by ID.</returns>
         public static Vector3 GetCorner(BoxCollider box, int id) {
             var extends = box.bounds.extents;
             var center = box.bounds.center;
@@ -46,6 +55,11 @@ namespace WIM_Plugin {
             }
         }
 
+        /// <summary>
+        /// Raycast straight down to get closest point on the floor.
+        /// </summary>
+        /// <param name="point">Start position.</param>
+        /// <returns>First raycast hit position straight down from provided start point.</returns>
         public static Vector3 GetGroundPosition(Vector3 point) {
             var layerMask = ~(1 << LayerMask.NameToLayer ("WIM") | 1 << LayerMask.NameToLayer ("Hands")); // Ignore both WIM and hands.
             return Physics.Raycast(point, Vector3.down, out var hit, Mathf.Infinity, layerMask) ? hit.point : point;

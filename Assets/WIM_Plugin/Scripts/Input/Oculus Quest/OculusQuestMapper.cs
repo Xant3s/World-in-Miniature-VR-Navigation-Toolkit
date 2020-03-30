@@ -5,6 +5,10 @@ using UnityEngine;
 using System.Linq;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Provides input mapping for Oculus Quest.
+    /// Will be eventually replaced by the new Unity input manager.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class OculusQuestMapper : MonoBehaviour {
@@ -13,6 +17,9 @@ namespace WIM_Plugin {
         internal List<InputAxisActionMapping> actionAxisMappings = new List<InputAxisActionMapping>();
         public InputMapping InputMappings;
 
+        /// <summary>
+        /// Apply platform specific button mapping to input manager.
+        /// </summary>
         public void UpdateActions() {
             actionButtonMappings.Clear();
             actionAxisMappings.Clear();
@@ -37,7 +44,7 @@ namespace WIM_Plugin {
             }
         }
 
-        public void SetVibration(float frequency, float amplitude, Hand hand) {
+        private void SetVibration(float frequency, float amplitude, Hand hand) {
             OVRInput.Controller controller;
             switch (hand) {
                 case Hand.LeftHand:

@@ -3,6 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Scaling configuration. Modified via GUI.
+    /// </summary>
     [CreateAssetMenu(menuName = "WIM/Feature Configuration/Scaling")]
     public class ScalingConfiguration : ScriptableObject {
         public bool AllowWIMScaling;

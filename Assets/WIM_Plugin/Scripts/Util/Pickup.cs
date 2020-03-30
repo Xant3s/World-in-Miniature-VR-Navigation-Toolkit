@@ -5,6 +5,10 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Detects whether object is being picked up and calls callbacks.
+    /// What exactly should happen and how the object is picked up must be specified by callbacks.
+    /// </summary>
     [DisallowMultipleComponent]
     public class Pickup : MonoBehaviour {
         public delegate void Action();

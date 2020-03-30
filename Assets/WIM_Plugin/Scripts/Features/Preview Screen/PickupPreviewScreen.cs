@@ -5,6 +5,9 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Used to open the preview screen when the player grabs the destination indicator's view cone.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PickupPreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
@@ -19,6 +22,9 @@ namespace WIM_Plugin {
         private bool isGrabbing;
         private bool stoppedGrabbing;
 
+        /// <summary>
+        /// The highlight effect displayed when the player touches the destination indicator's view cone.
+        /// </summary>
         public bool HightlightFX {
             get => hightlightFX;
             set {

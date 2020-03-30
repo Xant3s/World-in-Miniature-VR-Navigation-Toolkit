@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
-    // Allow scaling the WIM at runtime.
+    /// <summary>
+    /// Allows to scale the miniature model at runtime.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Scaling : MonoBehaviour {

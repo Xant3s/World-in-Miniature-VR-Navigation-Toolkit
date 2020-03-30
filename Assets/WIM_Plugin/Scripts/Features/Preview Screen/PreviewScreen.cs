@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to display a screen next to the miniature model that shows the selected destination.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PreviewScreen : MonoBehaviour {
         private static readonly int baseMap = Shader.PropertyToID("_BaseMap");

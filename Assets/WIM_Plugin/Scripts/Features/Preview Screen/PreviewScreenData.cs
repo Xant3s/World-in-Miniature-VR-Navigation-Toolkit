@@ -4,6 +4,9 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// The preview screen data. Modified at runtime.
+    /// </summary>
     public class PreviewScreenData : ScriptableObject {
         public bool PreviewScreenEnabled;
         public Transform PreviewScreenTransform;

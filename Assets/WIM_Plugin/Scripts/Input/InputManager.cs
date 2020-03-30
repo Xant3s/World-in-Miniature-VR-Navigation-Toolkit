@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// A platform independent input manager.
+    /// For each supported platform, a platform specific input mapper has to be provided.
+    /// Will be eventually replaced by the new Unity input manager.
+    /// </summary>
     public static class InputManager {
         public delegate void InputAxis1DAction(float axis);
 
@@ -35,6 +40,13 @@ namespace WIM_Plugin {
 
         public static event VibrationAction OnSetVibration;
 
+        /// <summary>
+        /// Registers a new button action.
+        /// </summary>
+        /// <param name="name">The unique action identifier. This will also be the name displayed in UI.</param>
+        /// <param name="buttonAction">The action to execute when triggered.</param>
+        /// <param name="trigger">Specifies what triggers the action.</param>
+        /// <param name="tooltip">Tooltip to display in UI.</param>
         public static void RegisterAction(string name, InputButtonAction buttonAction,
             ButtonTrigger trigger = ButtonTrigger.ButtonUp,
             string tooltip = "") {
@@ -46,6 +58,13 @@ namespace WIM_Plugin {
             OnUpdateActions?.Invoke();
         }
 
+        /// <summary>
+        /// Registers a new touch action.
+        /// </summary>
+        /// <param name="name">The unique action identifier. This will also be the name displayed in UI.</param>
+        /// <param name="buttonAction">The action to execute when triggered.</param>
+        /// <param name="trigger">Specifies what triggers the action.</param>
+        /// <param name="tooltip">Tooltip to display in UI.</param>
         public static void RegisterTouchAction(string name, InputButtonTouchAction buttonAction,
             ButtonTrigger trigger = ButtonTrigger.ButtonUp, string tooltip = "") {
             if (!ButtonTouchActions.ContainsKey(name)) {
@@ -56,18 +75,35 @@ namespace WIM_Plugin {
             OnUpdateActions?.Invoke();
         }
 
+        /// <summary>
+        /// Registers a new axis3D action.
+        /// </summary>
+        /// <param name="name">The unique action identifier. This will also be the name displayed in UI.</param>
+        /// <param name="action">The action to execute when triggered.</param>
+        /// <param name="tooltip">Tooltip to display in UI.</param>
         public static void RegisterAction(string name, InputAxis3DAction action, string tooltip = "") {
             AxisActions[name] = action;
             if(!Tooltips.ContainsKey(name)) Tooltips.Add(name, tooltip);
             OnUpdateActions?.Invoke();
         }
 
+        /// <summary>
+        /// Registers a new axis1D action.
+        /// </summary>
+        /// <param name="name">The unique action identifier. This will also be the name displayed in UI.</param>
+        /// <param name="action">The action to execute when triggered.</param>
+        /// <param name="tooltip">Tooltip to display in UI.</param>
         public static void RegisterAction(string name, InputAxis1DAction action, string tooltip = "") {
             Axis1DActions[name] = action;
             if(!Tooltips.ContainsKey(name)) Tooltips.Add(name, tooltip);
             OnUpdateActions?.Invoke();
         }
 
+        /// <summary>
+        /// Unregisters an input by name.
+        /// Type of input (button, touch, axis, etc) does not matter.
+        /// </summary>
+        /// <param name="name">The name of the input to unregister.</param>
         public static void UnregisterAction(string name) {
             ButtonActions.Remove(name);
             ButtonTouchActions.Remove(name);
@@ -77,6 +113,13 @@ namespace WIM_Plugin {
             OnUpdateActions?.Invoke();
         }
 
+        /// <summary>
+        /// Set the vibration state of the specified controller.
+        /// Set frequency and amplitude to 0 to stop vibration.
+        /// </summary>
+        /// <param name="frequency">The new frequency.</param>
+        /// <param name="amplitude">The new amplitude.</param>
+        /// <param name="hand">The controller to apply this changes to.</param>
         public static void SetVibration(float frequency, float amplitude, Hand hand) {
             OnSetVibration?.Invoke(frequency, amplitude, hand);
         }

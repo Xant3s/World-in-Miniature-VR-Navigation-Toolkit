@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
-    // Allow scrolling the WIM at runtime.
+    /// <summary>
+    /// Allows to scroll the visible part of the miniature model at runtime.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
@@ -16,17 +18,6 @@ namespace WIM_Plugin {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
         private WIMData data;
         private Vector2 verticalAxisInput;
-
-        public static void DisableScrolling(in MiniatureModel WIM) {
-            var boxMask = GameObject.FindWithTag("Box Mask");
-#if UNITY_EDITOR
-            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
-#else
-            GameObject.DestroyImmediate(boxMask);
-#endif
-            WIM.transform.RemoveAllColliders();
-            WIMGenerator.GenerateColliders(WIM);
-        }
 
         internal void Setup() {
             InputManager.RegisterAction(scrollingActionName, ScrollWIM, scrollingTooltip);
@@ -55,6 +46,17 @@ namespace WIM_Plugin {
             var boxMaskObj = GameObject.FindWithTag("Box Mask");
             if (!boxMaskObj) return;
             boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
+        }
+
+        private static void DisableScrolling(in MiniatureModel WIM) {
+            var boxMask = GameObject.FindWithTag("Box Mask");
+#if UNITY_EDITOR
+            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
+#else
+            GameObject.DestroyImmediate(boxMask);
+#endif
+            WIM.transform.RemoveAllColliders();
+            WIMGenerator.GenerateColliders(WIM);
         }
 
 

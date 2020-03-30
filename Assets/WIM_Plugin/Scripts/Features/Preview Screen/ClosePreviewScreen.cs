@@ -6,6 +6,9 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Closes the preview screen when player enters collider with index finger.
+    /// </summary>
     [DisallowMultipleComponent]
     public class ClosePreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;

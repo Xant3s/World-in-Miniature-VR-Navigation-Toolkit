@@ -4,6 +4,9 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Destroys gameobject if there is no destination indicator in the miniature model.
+    /// </summary>
     [DisallowMultipleComponent]
     public class Destroyer : MonoBehaviour {
         private MiniatureModel WIM;

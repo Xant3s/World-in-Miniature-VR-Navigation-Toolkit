@@ -3,6 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Align gameobject with target (position and orientation).
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class AlignWith : MonoBehaviour {

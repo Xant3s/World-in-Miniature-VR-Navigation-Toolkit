@@ -3,12 +3,19 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Converts between world space (full-sized level) and miniature model space.
+    /// </summary>
     public interface WIMSpaceConverter {
         Vector3 ConvertToLevelSpace(Vector3 pointInWIMSpace);
 
         Vector3 ConvertToWIMSpace(Vector3 pointInLevelSpace);
     }
 
+
+    /// <summary>
+    /// Implementation. Converts between world space (full-sized level) and miniature model space.
+    /// </summary>
     public sealed class WIMSpaceConverterImpl : WIMSpaceConverter {
         private readonly WIMConfiguration config;
         private readonly WIMData data;

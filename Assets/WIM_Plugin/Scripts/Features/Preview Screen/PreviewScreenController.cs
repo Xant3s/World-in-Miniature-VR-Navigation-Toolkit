@@ -5,6 +5,9 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Manages interactions with preview screen i.e. vibration on touch and pickup.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PreviewScreenController : MonoBehaviour {
         private Transform index;
