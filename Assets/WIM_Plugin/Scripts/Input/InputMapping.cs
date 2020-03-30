@@ -1,10 +1,16 @@
-﻿using System.Collections.Generic;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Stores platform dependent input mapping. Serializable.
+    /// For each supported platform, a platform specific input mapper has to be provided.
+    /// Will be eventually replaced by the new Unity input manager.
+    /// </summary>
     [CreateAssetMenu(menuName = "WIM/Input Mapping")]
     public class InputMapping : ScriptableObject {
-
         public List<string> Keys = new List<string>();
         public List<int> Values = new List<int>();
 

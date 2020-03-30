@@ -1,12 +1,19 @@
-﻿using System.Collections;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Closes the preview screen when player enters collider with index finger.
+    /// </summary>
     [DisallowMultipleComponent]
     public class ClosePreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
+
+        private bool once;
 
 
         private void Awake() {
@@ -18,7 +25,6 @@ namespace WIM_Plugin {
             GetComponent<Renderer>().enabled = true;
         }
 
-        private bool once;
         private void OnTriggerEnter(Collider other) {
             if(!other.CompareTag("IndexR") && !other.CompareTag("IndexL")) return;
             if (once) return;

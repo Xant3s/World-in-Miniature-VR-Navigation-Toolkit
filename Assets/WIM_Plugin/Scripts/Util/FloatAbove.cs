@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Set position to float above target using offset.
+    /// </summary>
     [DisallowMultipleComponent]
     public class FloatAbove : MonoBehaviour {
         public Transform Target;

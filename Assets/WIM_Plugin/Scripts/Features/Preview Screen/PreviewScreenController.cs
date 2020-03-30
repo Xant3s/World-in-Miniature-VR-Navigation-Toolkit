@@ -1,12 +1,19 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Manages interactions with preview screen i.e. vibration on touch and pickup.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PreviewScreenController : MonoBehaviour {
         private Transform index;
         private Transform WIMTransform;
+
+        private bool isVibrating;
 
         private void Awake() {
             WIMTransform = GameObject.FindWithTag("WIM")?.transform;
@@ -40,7 +47,6 @@ namespace WIM_Plugin {
             Vibrate();
         }
 
-        private bool isVibrating;
         private void Vibrate() {
             if (isVibrating) return;
             isVibrating = true;

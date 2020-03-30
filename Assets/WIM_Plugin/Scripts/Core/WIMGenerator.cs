@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -8,16 +10,23 @@ using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 namespace WIM_Plugin {
-    // Generates the actual WIM.
+    /// <summary>
+    /// Generates the miniature model by cloning the actual level etc.
+    /// </summary>
     public static class WIMGenerator {
         public delegate void GeneratorAction(in MiniatureModel WIM);
+
+        private static readonly int alpha = Shader.PropertyToID("_Alpha");
         public static event GeneratorAction OnConfigure;
         public static event GeneratorAction OnPreConfigure;
         public static event GeneratorAction OnAdaptScaleToPlayerHeight;
 
-        private static readonly int alpha = Shader.PropertyToID("_Alpha");
 
-
+        /// <summary>
+        /// Loads the default WIM material by name.
+        /// </summary>
+        /// <param name="WIM">The miniature model.</param>
+        /// <returns>The loaded material.</returns>
         public static Material LoadDefaultMaterial(MiniatureModel WIM) {
             var material = Resources.Load<Material>("WIM Material");
             var fullyOpaque = 1;
@@ -26,6 +35,11 @@ namespace WIM_Plugin {
             return material;
         }
 
+        /// <summary>
+        /// Applies specified material to every object that is part of the miniature model.
+        /// </summary>
+        /// <param name="material">The material to apply to the miniature model.</param>
+        /// <param name="WIM">The miniature model.</param>
         public static void SetWIMMaterial(Material material, in MiniatureModel WIM) {
             var WIMLevelTransform = WIM.transform.GetChild(0);
             foreach (var renderer in WIMLevelTransform.GetComponentsInChildren<Renderer>()) {
@@ -35,6 +49,110 @@ namespace WIM_Plugin {
                 }
                 renderer.sharedMaterials = newMaterials;
             }
+        }
+
+        /// <summary>
+        /// Generates colliders for miniature model. Therefore, the colliders from the full-sized level are copied.
+        /// </summary>
+        /// <param name="WIM">The miniature model.</param>
+        public static void GenerateColliders(in MiniatureModel WIM) {
+            // Generate colliders:
+            // 1. Copy colliders from actual level (to determine which objects should have a collider)
+            // [alternatively don't delete them while generating the WIM]
+            // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
+            var wimLevelTransform = WIM.transform.GetChild(0);
+            Assert.IsNotNull(wimLevelTransform);
+            var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
+            var level = GameObject.FindWithTag("Level")?.transform;
+            Assert.IsNotNull(level);
+            Assert.AreNotEqual(wimLevelTransform, level);
+            var levelChildTransforms = level.GetComponentsInChildren<Transform>();
+            if (WIMChildTransforms.Length != levelChildTransforms.Length) return;
+            var i = 0;
+            foreach (var childInWIM in WIMChildTransforms) {
+                Transform childEquivalentInLevel;
+                try {
+                    childEquivalentInLevel = levelChildTransforms.ElementAt(i);
+                    Assert.IsNotNull(childEquivalentInLevel);
+                }
+                catch {
+                    continue;
+                }
+
+                if (!childEquivalentInLevel) continue;
+                Assert.AreNotEqual(childEquivalentInLevel, childInWIM);
+                var collider = childEquivalentInLevel.GetComponent<Collider>();
+                i++;
+                if (!collider) continue;
+                childInWIM.RemoveAllColliders();
+                var childBoxCollider = childInWIM.gameObject.AddComponent<BoxCollider>();
+                // 3. move collider to WIM root (consider scale and position)
+                var rootCollider = WIM.gameObject.AddComponent<BoxCollider>();
+                rootCollider.center = childInWIM.localPosition;
+                rootCollider.size = Vector3.zero;
+                var bounds = rootCollider.bounds;
+                bounds.Encapsulate(childBoxCollider.bounds);
+                rootCollider.size = bounds.size / WIM.Configuration.ScaleFactor;
+                childInWIM.RemoveAllColliders();
+            }
+
+            // 4. remove every collider that is fully inside another one.
+            PruneColliders(WIM);
+            // 5. extend collider (esp. upwards)
+            ExpandColliders(WIM);
+        }
+
+        /// <summary>
+        /// Generates a new miniature model.
+        /// </summary>
+        /// <param name="WIM">The miniature model component.</param>
+        public static void GenerateNewWIM(in MiniatureModel WIM) {
+            WIM.transform.RemoveAllColliders();
+            AdaptScaleFactorToPlayerHeight(WIM);
+            var levelTransform = GameObject.FindWithTag("Level").transform;
+#if UNITY_EDITOR
+            if (WIM.transform.childCount > 0) Undo.DestroyObjectImmediate(WIM.transform.GetChild(0).gameObject);
+#else
+            if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
+#endif
+            var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
+#if UNITY_EDITOR
+            Undo.RegisterCreatedObjectUndo(WIMLevel.gameObject, "GenerateNewWIM");
+#endif
+            WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
+            WIMLevel.name = "WIM Level";
+            WIMLevel.tag = "Untagged";
+            WIMLevel.gameObject.isStatic = false;
+            var WIMLayer = LayerMask.NameToLayer("WIM");
+            WIMLevel.gameObject.layer = WIMLayer;
+            foreach (Transform child in WIMLevel) {
+                child.gameObject.layer = WIMLayer;
+                Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
+                Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
+                var renderer = child.GetComponent<Renderer>();
+                if (renderer) {
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                }
+
+                child.gameObject.isStatic = false;
+            }
+
+            WIM.transform.localScale = new Vector3(WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor);
+            ConfigureWIM(WIM);
+        }
+
+        /// <summary>
+        /// Configures the miniature model.
+        /// </summary>
+        /// <param name="WIM"></param>
+        public static void ConfigureWIM(in MiniatureModel WIM) {
+            // Cleanup old configuration.
+            OnPreConfigure?.Invoke(WIM);
+
+            // Setup new configuration.
+            var material = LoadDefaultMaterial(WIM);
+            SetWIMMaterial(material, WIM);
+            OnConfigure?.Invoke(WIM);
         }
 
         private static void ExpandColliders(in MiniatureModel WIM) {
@@ -81,96 +199,6 @@ namespace WIM_Plugin {
             }
         }
 
-        public static void GenerateColliders(in MiniatureModel WIM) {
-            // Generate colliders:
-            // 1. Copy colliders from actual level (to determine which objects should have a collider)
-            // [alternatively don't delete them while generating the WIM]
-            // 2. replace every collider with box collider (recursive, possibly multiple colliders per obj)
-            var wimLevelTransform = WIM.transform.GetChild(0);
-            Assert.IsNotNull(wimLevelTransform);
-            var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
-            var level = GameObject.FindWithTag("Level")?.transform;
-            Assert.IsNotNull(level);
-            Assert.AreNotEqual(wimLevelTransform, level);
-            var levelChildTransforms = level.GetComponentsInChildren<Transform>();
-            if (WIMChildTransforms.Length != levelChildTransforms.Length) return;
-            var i = 0;
-            foreach (var childInWIM in WIMChildTransforms) {
-                Transform childEquivalentInLevel;
-                try {
-                    childEquivalentInLevel = levelChildTransforms.ElementAt(i);
-                    Assert.IsNotNull(childEquivalentInLevel);
-                }
-                catch {
-                    continue;
-                }
-
-                if (!childEquivalentInLevel) continue;
-                Assert.AreNotEqual(childEquivalentInLevel, childInWIM);
-                var collider = childEquivalentInLevel.GetComponent<Collider>();
-                i++;
-                if (!collider) continue;
-                RemoveAllColliders(childInWIM);
-                var childBoxCollider = childInWIM.gameObject.AddComponent<BoxCollider>();
-                // 3. move collider to WIM root (consider scale and position)
-                var rootCollider = WIM.gameObject.AddComponent<BoxCollider>();
-                rootCollider.center = childInWIM.localPosition;
-                rootCollider.size = Vector3.zero;
-                var bounds = rootCollider.bounds;
-                bounds.Encapsulate(childBoxCollider.bounds);
-                rootCollider.size = bounds.size / WIM.Configuration.ScaleFactor;
-                RemoveAllColliders(childInWIM);
-            }
-
-            // 4. remove every collider that is fully inside another one.
-            PruneColliders(WIM);
-            // 5. extend collider (esp. upwards)
-            ExpandColliders(WIM);
-        }
-
-        public static void RemoveAllColliders(Transform t) {
-            Collider collider;
-            // ReSharper disable once AssignmentInConditionalExpression
-            while (collider = t.GetComponent<Collider>()) { // Assignment
-                Object.DestroyImmediate(collider);
-            }
-        }
-
-        public static void GenerateNewWIM(in MiniatureModel WIM) {
-            RemoveAllColliders(WIM.transform);
-            AdaptScaleFactorToPlayerHeight(WIM);
-            var levelTransform = GameObject.FindWithTag("Level").transform;
-#if UNITY_EDITOR
-            if (WIM.transform.childCount > 0) Undo.DestroyObjectImmediate(WIM.transform.GetChild(0).gameObject);
-#else
-            if (WIM.transform.childCount > 0) Object.DestroyImmediate(WIM.transform.GetChild(0).gameObject);
-#endif
-            var WIMLevel = Object.Instantiate(levelTransform, WIM.transform);
-#if UNITY_EDITOR
-            Undo.RegisterCreatedObjectUndo(WIMLevel.gameObject, "GenerateNewWIM");
-#endif
-            WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
-            WIMLevel.name = "WIM Level";
-            WIMLevel.tag = "Untagged";
-            WIMLevel.gameObject.isStatic = false;
-            var WIMLayer = LayerMask.NameToLayer("WIM");
-            WIMLevel.gameObject.layer = WIMLayer;
-            foreach (Transform child in WIMLevel) {
-                child.gameObject.layer = WIMLayer;
-                Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
-                Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
-                var renderer = child.GetComponent<Renderer>();
-                if (renderer) {
-                    renderer.shadowCastingMode = ShadowCastingMode.Off;
-                }
-
-                child.gameObject.isStatic = false;
-            }
-
-            WIM.transform.localScale = new Vector3(WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor);
-            ConfigureWIM(WIM);
-        }
-
         private static void AdaptScaleFactorToPlayerHeight(in MiniatureModel WIM) {
             var config = WIM.Configuration;
             if (!config.AdaptWIMSizeToPlayerHeight) return;
@@ -199,16 +227,6 @@ namespace WIM_Plugin {
             if(Math.Abs(heightDelta) < 0.0001) return;
             OnAdaptScaleToPlayerHeight?.Invoke(WIM);
             WIM.transform.localScale = new Vector3(config.ScaleFactor, config.ScaleFactor, config.ScaleFactor);
-        }
-
-        public static void ConfigureWIM(in MiniatureModel WIM) {
-            // Cleanup old configuration.
-            OnPreConfigure?.Invoke(WIM);
-
-            // Setup new configuration.
-            var material = LoadDefaultMaterial(WIM);
-            SetWIMMaterial(material, WIM);
-            OnConfigure?.Invoke(WIM);
         }
     }
 }

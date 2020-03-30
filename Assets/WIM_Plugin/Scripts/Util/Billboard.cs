@@ -1,6 +1,11 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Gameobject will always face the main camera.
+    /// </summary>
     [DisallowMultipleComponent]
     public class Billboard : MonoBehaviour {
         private void Update() {

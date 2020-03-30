@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
-    // Allow scaling the WIM at runtime.
+    /// <summary>
+    /// Allows to scale the miniature model at runtime.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Scaling : MonoBehaviour {
@@ -17,6 +21,40 @@ namespace WIM_Plugin {
         private CapsuleCollider rightGrabVolume;
         private Hand scalingHand = Hand.None;
         private float prevInterHandDistance;
+
+        private static void GetWorldSpaceCapsule(CapsuleCollider capsule, out Vector3 point0, out Vector3 point1, out float radius) {
+            var center = capsule.transform.TransformPoint(capsule.center);
+            radius = 0f;
+            var height = 0f;
+            var lossyScale = capsule.transform.lossyScale;
+            lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
+            var dir = Vector3.zero;
+
+            switch(capsule.direction) {
+                case 0: // x
+                    radius = Mathf.Max(lossyScale.y, lossyScale.z) * capsule.radius;
+                    height = lossyScale.x * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.right);
+                    break;
+                case 1: // y
+                    radius = Mathf.Max(lossyScale.x, lossyScale.z) * capsule.radius;
+                    height = lossyScale.y * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.up);
+                    break;
+                case 2: // z
+                    radius = Mathf.Max(lossyScale.x, lossyScale.y) * capsule.radius;
+                    height = lossyScale.z * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.forward);
+                    break;
+            }
+
+            if(height < radius * 2f) {
+                dir = Vector3.zero;
+            }
+
+            point0 = center + dir * (height * 0.5f - radius);
+            point1 = center - dir * (height * 0.5f - radius);
+        }
 
 
         private void OnEnable() {
@@ -128,40 +166,6 @@ namespace WIM_Plugin {
             GetWorldSpaceCapsule(grabVolume, out var p1, out var p2, out var radius);
             var hitColliders = Physics.OverlapCapsule(p1, p2, radius, LayerMask.GetMask("WIM"));
             return hitColliders.Length != 0;
-        }
-
-        private static void GetWorldSpaceCapsule(CapsuleCollider capsule, out Vector3 point0, out Vector3 point1, out float radius) {
-            var center = capsule.transform.TransformPoint(capsule.center);
-            radius = 0f;
-            var height = 0f;
-            var lossyScale = capsule.transform.lossyScale;
-            lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
-            var dir = Vector3.zero;
-
-            switch(capsule.direction) {
-                case 0: // x
-                    radius = Mathf.Max(lossyScale.y, lossyScale.z) * capsule.radius;
-                    height = lossyScale.x * capsule.height;
-                    dir = capsule.transform.TransformDirection(Vector3.right);
-                    break;
-                case 1: // y
-                    radius = Mathf.Max(lossyScale.x, lossyScale.z) * capsule.radius;
-                    height = lossyScale.y * capsule.height;
-                    dir = capsule.transform.TransformDirection(Vector3.up);
-                    break;
-                case 2: // z
-                    radius = Mathf.Max(lossyScale.x, lossyScale.y) * capsule.radius;
-                    height = lossyScale.z * capsule.height;
-                    dir = capsule.transform.TransformDirection(Vector3.forward);
-                    break;
-            }
-
-            if(height < radius * 2f) {
-                dir = Vector3.zero;
-            }
-
-            point0 = center + dir * (height * 0.5f - radius);
-            point1 = center - dir * (height * 0.5f - radius);
         }
 
         private void ClampScaleFactor(in MiniatureModel WIM) {

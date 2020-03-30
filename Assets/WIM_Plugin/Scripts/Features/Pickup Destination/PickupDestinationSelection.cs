@@ -1,23 +1,18 @@
-﻿using System.Linq;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to select a destination by picking up the player
+    /// representation and placing is at the desired location in the miniature model.
+    /// To confirm the destination the destination indicator hast to be double-tapped.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PickupDestinationSelection : MonoBehaviour {
-        public float DoubleTapInterval { get; set; } = 2;
-
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    material.color = value ? hightlightColor : defaultColor;
-                }
-            }
-        }
-
         private MiniatureModel WIM;
         private Material material;
         private Transform thumb;
@@ -31,6 +26,25 @@ namespace WIM_Plugin {
         private bool indexIsTouching;
         private bool isGrabbing;
         private bool stoppedGrabbing = true;
+
+        /// <summary>
+        /// Tapping the destination indicator twice will be considered a double-tap iff
+        /// time between tap does not exceed this time.
+        /// </summary>
+        public float DoubleTapInterval { get; set; } = 2;
+
+        /// <summary>
+        /// The highlight effect displayed when the player touches the player represenation.
+        /// </summary>
+        public bool HightlightFX {
+            get => hightlightFX;
+            set {
+                hightlightFX = value;
+                if (GetComponent<Renderer>()) {
+                    material.color = value ? hightlightColor : defaultColor;
+                }
+            }
+        }
 
 
         private void Awake() {

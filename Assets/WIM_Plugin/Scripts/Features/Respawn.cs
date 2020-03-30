@@ -1,14 +1,18 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Respawn : MonoBehaviour {
         public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, 
             bool maintainTransformRelativeToPlayer);
-        public static event RespawnAction OnEarlyRespawn;
-        public static event RespawnAction OnLateRespawn;
+
         public static bool RemoveOldWIMLevel = true;
         public static Material materialForOldWIM;
 
@@ -16,32 +20,17 @@ namespace WIM_Plugin {
         private static readonly string actionTooltip = "Button used to respawn the miniature model.";
         private WIMConfiguration config;
         private WIMData data;
+        public static event RespawnAction OnEarlyRespawn;
+        public static event RespawnAction OnLateRespawn;
 
 
-        private void OnEnable() {
-            MiniatureModel.OnLateInit += StartRespawn;
-            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
-            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
-            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
-        }
-
-        private void OnDisable() {
-            MiniatureModel.OnLateInit -= StartRespawn;
-            InputManager.UnregisterAction(actionName);
-        }
-
-        private void StartRespawn() {
-            RespawnWIM(false);
-        }
-
-        private void StartRespawn(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
-            RespawnWIM(false);
-        }
-
+        /// <summary>
+        /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
+        /// </summary>
+        /// <param name="maintainTransformRelativeToPlayer">
+        /// Whether the miniature model should be spawned at the same relative position to the player.
+        /// If false, the miniature model will be spawned at the default position relative to the player.
+        /// </param>
         public void RespawnWIM(bool maintainTransformRelativeToPlayer) {
             if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
@@ -109,6 +98,30 @@ namespace WIM_Plugin {
 
         private static void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
+        }
+
+        private void OnEnable() {
+            MiniatureModel.OnLateInit += StartRespawn;
+            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
+            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
+            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
+        }
+
+        private void OnDisable() {
+            MiniatureModel.OnLateInit -= StartRespawn;
+            InputManager.UnregisterAction(actionName);
+        }
+
+        private void StartRespawn() {
+            RespawnWIM(false);
+        }
+
+        private void StartRespawn(WIMConfiguration config, WIMData data) {
+            this.config = config;
+            this.data = data;
+            RespawnWIM(false);
         }
     }
 }

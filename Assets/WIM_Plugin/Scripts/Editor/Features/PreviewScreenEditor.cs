@@ -1,11 +1,23 @@
-﻿using UnityEditor;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(PreviewScreen))]
     public class PreviewScreenEditor : Editor {
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((PreviewScreen) target).Config;
+            if(config) return;
+            EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
+        }
+
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 1);
         }
@@ -32,13 +44,6 @@ namespace WIM_Plugin {
             container.Add(root);
             if(config) root.Bind(new SerializedObject(config));
             root.Bind(new SerializedObject(previewScreen));
-        }
-
-        public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
-            ref var config = ref ((PreviewScreen) target).Config;
-            if(config) return;
-            EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
         }
     }
 }

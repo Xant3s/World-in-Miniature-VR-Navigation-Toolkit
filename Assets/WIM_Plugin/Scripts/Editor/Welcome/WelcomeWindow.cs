@@ -1,3 +1,5 @@
+// Author: Samuel Truman (contact@samueltruman.com)
+
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -6,6 +8,9 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// The welcome window visible at the first start.
+    /// </summary>
     public class WelcomeWindow : EditorWindow {
         private static readonly string pluginVersion = "0.9.0";
         private static readonly string imagePath = "Assets/WIM_Plugin/Sprites/";

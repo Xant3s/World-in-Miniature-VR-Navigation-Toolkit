@@ -1,32 +1,16 @@
-﻿using System.Linq;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to pickup the destination indicator again to choose a new destination.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PickupDestinationUpdate : MonoBehaviour {
         public delegate void WIMAction(in MiniatureModel WIM);
-
-        public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
-
-        public float DoubleTapInterval { get; set; } = 2;
-
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    material.color = value ? hightlightColor : defaultColor;
-                }
-            }
-        }
-
-        private enum TapState {
-            None,
-            FirstTap,
-            WaitingForSecondTap,
-            SecondTap
-        }
 
         private MiniatureModel WIM;
         private TapState tapState;
@@ -42,6 +26,27 @@ namespace WIM_Plugin {
         private bool indexIsTouching;
         private bool isGrabbing;
         private bool stoppedGrabbing = true;
+
+        /// <summary>
+        /// Tapping the destination indicator twice will be considered a double-tap iff
+        /// time between tap does not exceed this time.
+        /// </summary>
+        public float DoubleTapInterval { get; set; } = 2;
+
+        /// <summary>
+        /// The highlight effect displayed when the player touches the player represenation.
+        /// </summary>
+        public bool HightlightFX {
+            get => hightlightFX;
+            set {
+                hightlightFX = value;
+                if (GetComponent<Renderer>()) {
+                    material.color = value ? hightlightColor : defaultColor;
+                }
+            }
+        }
+
+        public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
 
 
         private void OnEnable() {
@@ -175,6 +180,13 @@ namespace WIM_Plugin {
 
         private void StopVibration() {
             InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
+        }
+
+        private enum TapState {
+            None,
+            FirstTap,
+            WaitingForSecondTap,
+            SecondTap
         }
     }
 }

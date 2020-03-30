@@ -1,11 +1,23 @@
-﻿using UnityEditor;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(Scaling))]
     public class ScalingEditor : Editor {
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((Scaling) target).ScalingConfig;
+            if(config) return;
+            EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
+        }
+
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw);
         }
@@ -31,13 +43,6 @@ namespace WIM_Plugin {
             container.Add(root);
             if(config) root.Bind(new SerializedObject(config));
             root.Bind(new SerializedObject(scaling));
-        }
-
-        public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
-            ref var config = ref ((Scaling) target).ScalingConfig;
-            if(config) return;
-            EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
         }
     }
 }

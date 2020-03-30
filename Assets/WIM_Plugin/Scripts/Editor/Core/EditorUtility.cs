@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -7,11 +9,14 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Used by MiniatureModelEditor. Features can add additional UI utilizing callbacks.
+    /// </summary>
     public class DrawCallbackManager {
         public delegate void InspectorAction(WIMConfiguration config, VisualElement container);
 
         private static IDictionary<string, IDictionary<int, InspectorAction>> OnDraw = new Dictionary<string, IDictionary<int, InspectorAction>>();
-        
+
         public void AddCallback(InspectorAction callback, int priority = 0, string key = "") {
             if(OnDraw.ContainsKey(key)) {
                 OnDraw[key].Push(priority, callback);
@@ -41,6 +46,9 @@ namespace WIM_Plugin {
     }
 
 
+    /// <summary>
+    /// Editor utility functions.
+    /// </summary>
     public static class WIMEditorUtility {
         // Try to add with key priority. If key already exists, try key + 1.
         public static void Push(this IDictionary<int, DrawCallbackManager.InspectorAction> dict, int priority, DrawCallbackManager.InspectorAction callback) {
@@ -54,6 +62,14 @@ namespace WIM_Plugin {
             }
         }
 
+        /// <summary>
+        /// A Vector2 float field with custom axis names.
+        /// </summary>
+        /// <param name="text">The label.</param>
+        /// <param name="vector">The vector.</param>
+        /// <param name="xAxisName">X axis name.</param>
+        /// <param name="yAxisName">Y axis name.</param>
+        /// <returns></returns>
         public static Vector2 NamedVectorField(string text, Vector2 vector, string xAxisName = "X", string yAxisName = "Y") {
             var namedFloatFieldStyle = new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleRight};
             EditorGUILayout.BeginHorizontal();

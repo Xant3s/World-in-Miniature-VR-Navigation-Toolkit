@@ -1,7 +1,14 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
+
 namespace WIM_Plugin {
+    /// <summary>
+    /// The core miniature model component. Turns this gameobject into a miniature model.
+    /// Add additional feature components to modify functionality.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(OVRGrabbable))]
     [RequireComponent(typeof(DistanceGrabbable))]
@@ -10,12 +17,24 @@ namespace WIM_Plugin {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {
+        public delegate void WIMAction(WIMConfiguration config, WIMData data);
+
+        public delegate void WIMAxisAction(WIMConfiguration config, WIMData data, float axis);
+
+        private static readonly string pickupIndexActionName = "Pickup Index Button";
+        private static readonly string pickupThumbActionName = "Pickup Thumb Button";
+        private static readonly string pickupThumbActionName2 = "Pickup Thumb Button (touch)";
+        private static readonly string grabLActionName = "Left Grab Button";
+        private static readonly string grabRActionName = "Right Grab Button";
+        private static readonly string pickupIndexButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
+        private static readonly string pickupThumbButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
+        private static readonly string pickupThumbButtonTooltip2 = "This should have the same key assigned as 'pickup thumb button'. Allows the player to pick something up by just touching the thumb button instead of pressing it.";
+        private static readonly string grabLTooltip = "The grab button on the left hand. Used to grab the miniature model.";
+        private static readonly string grabRTooltip = "The grab button on the right hand. Used to grab the miniature model.";
         public WIMConfiguration Configuration;
         public WIMData Data;
         public WIMSpaceConverter Converter;
-
-        public delegate void WIMAction(WIMConfiguration config, WIMData data);
-        public delegate void WIMAxisAction(WIMConfiguration config, WIMData data, float axis);
+        private TravelStrategy travelStrategy;
         public static event WIMAction OnInit;
         public static event WIMAction OnLateInit;
         public static event WIMAction OnUpdate;
@@ -33,17 +52,21 @@ namespace WIM_Plugin {
         public static event WIMAction OnRightGrabButtonDown;
         public static event WIMAction OnRightGrabButtonUp;
 
-        private static readonly string pickupIndexActionName = "Pickup Index Button";
-        private static readonly string pickupThumbActionName = "Pickup Thumb Button";
-        private static readonly string pickupThumbActionName2 = "Pickup Thumb Button (touch)";
-        private static readonly string grabLActionName = "Left Grab Button";
-        private static readonly string grabRActionName = "Right Grab Button";
-        private static readonly string pickupIndexButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
-        private static readonly string pickupThumbButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
-        private static readonly string pickupThumbButtonTooltip2 = "This should have the same key assigned as 'pickup thumb button'. Allows the player to pick something up by just touching the thumb button instead of pressing it.";
-        private static readonly string grabLTooltip = "The grab button on the left hand. Used to grab the miniature model.";
-        private static readonly string grabRTooltip = "The grab button on the right hand. Used to grab the miniature model.";
-        private TravelStrategy travelStrategy;
+        public void NewDestination() {
+            if(!Configuration) return;
+            OnNewDestinationSelected?.Invoke(Configuration, Data);
+        }
+
+        /// <summary>
+        /// Starts the travel phase.
+        /// </summary>
+        public void ConfirmTravel() {
+            if(!Configuration) return;
+            DestinationIndicators.RemoveDestinationIndicators(this);
+            OnPreTravel?.Invoke(Configuration, Data);
+            travelStrategy.Travel(this);
+            OnPostTravel?.Invoke(Configuration, Data);
+        }
 
 
         private void Awake() {
@@ -150,19 +173,6 @@ namespace WIM_Plugin {
         private void RightGrabButtonUp() {
             if(!Configuration) return;
             OnRightGrabButtonUp?.Invoke(Configuration, Data);
-        }
-
-        public void NewDestination() {
-            if(!Configuration) return;
-            OnNewDestinationSelected?.Invoke(Configuration, Data);
-        }
-
-        public void ConfirmTravel() {
-            if(!Configuration) return;
-            DestinationIndicators.RemoveDestinationIndicators(this);
-            OnPreTravel?.Invoke(Configuration, Data);
-            travelStrategy.Travel(this);
-            OnPostTravel?.Invoke(Configuration, Data);
         }
     }
 }

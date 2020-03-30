@@ -1,7 +1,12 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to display an preview animation of the travel phase.
+    /// </summary>
     [DisallowMultipleComponent]
     public class TravelPreviewAnimation : MonoBehaviour {
         public TravelPreviewConfiguration Config;

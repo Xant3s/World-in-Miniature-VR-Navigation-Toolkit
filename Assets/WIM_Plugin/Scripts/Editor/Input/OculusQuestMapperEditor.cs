@@ -1,10 +1,15 @@
-﻿using System;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(OculusQuestMapper))]
     public class OculusQuestMapperEditor : Editor {
         private OculusQuestMapper mapper;

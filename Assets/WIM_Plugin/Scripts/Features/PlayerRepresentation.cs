@@ -1,15 +1,18 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
-    // Show a player representation in the WIM. Used to indicate the player's position and orientation in the virtual environment.
+   /// <summary>
+   /// Displays a player representation in the miniature model. Used to indicate the player's position and orientation in the virtual environment.
+   /// </summary>
     [DisallowMultipleComponent]
     public class PlayerRepresentation : MonoBehaviour {
-        public static event MiniatureModel.WIMAction OnUpdatePlayerRepresentationInWIM;
-
         private MiniatureModel WIM;
         private WIMSpaceConverter converter;
         private Transform playerTransform;
+        public static event MiniatureModel.WIMAction OnUpdatePlayerRepresentationInWIM;
 
 
         private void Start() {

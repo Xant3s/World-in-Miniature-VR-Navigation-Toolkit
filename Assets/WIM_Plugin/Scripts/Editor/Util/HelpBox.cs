@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -8,33 +10,18 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom UIElement. A help box similar to the IMGUI element.
+    /// Can be used to display info, warning, and error messages.
+    /// </summary>
     public class HelpBox : VisualElement {
         public enum MessageType {
             Info, Warning, Error
         }
 
-        public new class UxmlFactory : UxmlFactory<HelpBox, UxmlTraits> { }
-
-        public new class UxmlTraits : VisualElement.UxmlTraits {
-            UxmlStringAttributeDescription m_text = new UxmlStringAttributeDescription {
-                name = "text", defaultValue = ""
-            };
-
-            private UxmlEnumAttributeDescription<MessageType> m_messageType = new UxmlEnumAttributeDescription<MessageType> {
-                name = "message-type", defaultValue = MessageType.Info
-            };
-
-            public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription {
-                get { yield break; }    // No children.
-            }
-
-            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc) {
-                base.Init(ve, bag, cc);
-                var text = m_text.GetValueFromBag(bag, cc);
-                var messageType = m_messageType.GetValueFromBag(bag, cc);
-                ((HelpBox) ve).Init(text, messageType);
-            }
-        }
+        private readonly TextElement textElement;
+        private readonly Image image;
+        private MessageType type;
 
         public HelpBox() {
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Util/HelpBox.uxml");
@@ -50,12 +37,6 @@ namespace WIM_Plugin {
 
         public HelpBox(string text, MessageType messageType = MessageType.Info): this() {
             Init(text, messageType);
-        }
-
-        public void Init(string text, MessageType messageType = MessageType.Info) {
-            this.Text = text;
-            this.Type = messageType;
-            image.scaleMode = ScaleMode.ScaleToFit;
         }
 
         public string Text {
@@ -81,8 +62,33 @@ namespace WIM_Plugin {
             }
         }
 
-        private readonly TextElement textElement;
-        private readonly Image image;
-        private MessageType type;
+        public void Init(string text, MessageType messageType = MessageType.Info) {
+            this.Text = text;
+            this.Type = messageType;
+            image.scaleMode = ScaleMode.ScaleToFit;
+        }
+
+        public new class UxmlFactory : UxmlFactory<HelpBox, UxmlTraits> {}
+
+        public new class UxmlTraits : VisualElement.UxmlTraits {
+            UxmlStringAttributeDescription m_text = new UxmlStringAttributeDescription {
+                name = "text", defaultValue = ""
+            };
+
+            private UxmlEnumAttributeDescription<MessageType> m_messageType = new UxmlEnumAttributeDescription<MessageType> {
+                name = "message-type", defaultValue = MessageType.Info
+            };
+
+            public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription {
+                get { yield break; }    // No children.
+            }
+
+            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc) {
+                base.Init(ve, bag, cc);
+                var text = m_text.GetValueFromBag(bag, cc);
+                var messageType = m_messageType.GetValueFromBag(bag, cc);
+                ((HelpBox) ve).Init(text, messageType);
+            }
+        }
     }
 }

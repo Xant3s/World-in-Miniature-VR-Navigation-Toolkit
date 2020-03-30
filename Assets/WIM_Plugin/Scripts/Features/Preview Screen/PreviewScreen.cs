@@ -1,38 +1,21 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to display a screen next to the miniature model that shows the selected destination.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PreviewScreen : MonoBehaviour {
+        private static readonly int baseMap = Shader.PropertyToID("_BaseMap");
         public PreviewScreenConfiguration Config;
         [HideInInspector] public PreviewScreenData Data;
 
         private WIMConfiguration WIMConfig;
         private WIMData WIMData;
         private Material previewScreenMaterial;
-        private static readonly int baseMap = Shader.PropertyToID("_BaseMap");
-
-
-        private void Awake() {
-            if(!Config) return;
-            Data = ScriptableObject.CreateInstance<PreviewScreenData>();
-        }
-
-        private void OnEnable() {
-            if(!Config) return;
-            MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
-            DestinationIndicators.OnSpawnDestinationIndicatorInWIM += ConfigurePickupPreviewScreen;
-            DestinationIndicators.OnRemoveDestinationIndicators += RemovePreviewScreen;
-            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += RemovePreviewScreen;
-        }
-
-        private void OnDisable() {
-            if(!Config) return;
-            MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
-            DestinationIndicators.OnSpawnDestinationIndicatorInWIM -= ConfigurePickupPreviewScreen;
-            DestinationIndicators.OnRemoveDestinationIndicators -= RemovePreviewScreen;
-            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= RemovePreviewScreen;
-        }
 
         public void ShowPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
             this.WIMConfig = WIMConfig;
@@ -59,6 +42,37 @@ namespace WIM_Plugin {
             Data.PreviewScreenEnabled = true;
         }
 
+        public void RemovePreviewScreen() {
+            if(!Data) return;
+            Data.PreviewScreenEnabled = false;
+            var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
+            if(!previewScreen) return;
+            previewScreen.transform.parent = null;
+            Destroy(previewScreen);
+        }
+
+
+        private void Awake() {
+            if(!Config) return;
+            Data = ScriptableObject.CreateInstance<PreviewScreenData>();
+        }
+
+        private void OnEnable() {
+            if(!Config) return;
+            MiniatureModel.OnNewDestinationSelected += ShowPreviewScreen;
+            DestinationIndicators.OnSpawnDestinationIndicatorInWIM += ConfigurePickupPreviewScreen;
+            DestinationIndicators.OnRemoveDestinationIndicators += RemovePreviewScreen;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += RemovePreviewScreen;
+        }
+
+        private void OnDisable() {
+            if(!Config) return;
+            MiniatureModel.OnNewDestinationSelected -= ShowPreviewScreen;
+            DestinationIndicators.OnSpawnDestinationIndicatorInWIM -= ConfigurePickupPreviewScreen;
+            DestinationIndicators.OnRemoveDestinationIndicators -= RemovePreviewScreen;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM -= RemovePreviewScreen;
+        }
+
         private void InitPreviewScreen(GameObject previewScreen) {
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel);
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(1));
@@ -74,15 +88,6 @@ namespace WIM_Plugin {
             previewScreenMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
             previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
             previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
-        }
-
-        public void RemovePreviewScreen() {
-            if(!Data) return;
-            Data.PreviewScreenEnabled = false;
-            var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
-            if(!previewScreen) return;
-            previewScreen.transform.parent = null;
-            Destroy(previewScreen);
         }
 
         private void RemovePreviewScreen(WIMConfiguration config, WIMData data) {

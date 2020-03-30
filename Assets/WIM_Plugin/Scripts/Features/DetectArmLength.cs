@@ -1,6 +1,14 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Detect the player's arm length at the start of the application.
+    /// Therefore, the player has to fully extend the dominant arm and press a button.
+    /// The arm length is used to determine at what distance the miniature model has to be
+    /// spawned in front of the player.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class DetectArmLength : MonoBehaviour {

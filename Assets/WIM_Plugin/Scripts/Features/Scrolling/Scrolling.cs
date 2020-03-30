@@ -1,26 +1,23 @@
-﻿using UnityEditor;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
-    // Allow scrolling the WIM at runtime.
+    /// <summary>
+    /// Allows to scroll the visible part of the miniature model at runtime.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
-        [HideInInspector] public ScrollingConfiguration ScrollingConfig;
-
         private static readonly string scrollingActionName = "Scrolling Axis";
         private static readonly string verticalScrollingActionName = "Vertical Scrolling Axis";
         private static readonly string scrollingTooltip = "Axis used to scroll miniature model. Only used if scrolling is enabled.";
         private static readonly string verticalScrollingTooltip = "Axis used to vertical scroll miniature model. Only used if scrolling is enabled.";
+        [HideInInspector] public ScrollingConfiguration ScrollingConfig;
         private WIMData data;
         private Vector2 verticalAxisInput;
-
-
-        private void OnEnable() {
-            if(!ScrollingConfig) return;
-            Setup();
-        }
 
         internal void Setup() {
             InputManager.RegisterAction(scrollingActionName, ScrollWIM, scrollingTooltip);
@@ -33,10 +30,6 @@ namespace WIM_Plugin {
             MiniatureModel.OnUpdate += ScrollWIM;
         }
 
-        private void OnDisable() {
-            Remove();
-        }
-
         internal void Remove() {
             InputManager.UnregisterAction(scrollingActionName);
             InputManager.UnregisterAction(verticalScrollingActionName);
@@ -46,6 +39,34 @@ namespace WIM_Plugin {
             PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= AdjustPlayerRepresentationInWIM;
             if (!Application.isPlaying) return;
             MiniatureModel.OnUpdate -= ScrollWIM;
+        }
+
+        internal void UpdateScrollingMask(in MiniatureModel WIM) {
+            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
+            var boxMaskObj = GameObject.FindWithTag("Box Mask");
+            if (!boxMaskObj) return;
+            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
+        }
+
+        private static void DisableScrolling(in MiniatureModel WIM) {
+            var boxMask = GameObject.FindWithTag("Box Mask");
+#if UNITY_EDITOR
+            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
+#else
+            GameObject.DestroyImmediate(boxMask);
+#endif
+            WIM.transform.RemoveAllColliders();
+            WIMGenerator.GenerateColliders(WIM);
+        }
+
+
+        private void OnEnable() {
+            if(!ScrollingConfig) return;
+            Setup();
+        }
+
+        private void OnDisable() {
+            Remove();
         }
 
         private void OnDestroy() {
@@ -76,31 +97,13 @@ namespace WIM_Plugin {
             Assert.IsNotNull(data.WIMLevelTransform);
             data.WIMLevelTransform.Translate(Time.deltaTime * ScrollingConfig.ScrollSpeed * -direction, Space.World);
         }
-        
+
         private void AutoScrollWIM() {
             if(!ScrollingConfig.AllowWIMScrolling || !ScrollingConfig.AutoScroll) return;
             var scrollOffset = data.DestinationIndicatorInWIM
                 ? -data.DestinationIndicatorInWIM.localPosition
                 : -data.PlayerRepresentationTransform.localPosition;
             data.WIMLevelTransform.localPosition = scrollOffset;
-        }
-
-        internal void UpdateScrollingMask(in MiniatureModel WIM) {
-            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
-            var boxMaskObj = GameObject.FindWithTag("Box Mask");
-            if (!boxMaskObj) return;
-            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
-        }
-
-        public static void DisableScrolling(in MiniatureModel WIM) {
-            var boxMask = GameObject.FindWithTag("Box Mask");
-#if UNITY_EDITOR
-            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
-#else
-            GameObject.DestroyImmediate(boxMask);
-#endif
-            WIMGenerator.RemoveAllColliders(WIM.transform);
-            WIMGenerator.GenerateColliders(WIM);
         }
 
         private void EnableScrolling(in MiniatureModel WIM) {
@@ -115,7 +118,7 @@ namespace WIM_Plugin {
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
             controller.materials = new[] {material};
             controller.SetBoxEnabled(true);
-            WIMGenerator.RemoveAllColliders(WIM.transform);
+            WIM.transform.RemoveAllColliders();
             WIM.gameObject.AddComponent<BoxCollider>().size =
                 WIM.Configuration.ActiveAreaBounds / WIM.Configuration.ScaleFactor;
             maskController.transform.position = WIM.transform.position;

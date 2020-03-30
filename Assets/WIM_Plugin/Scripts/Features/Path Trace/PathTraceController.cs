@@ -1,27 +1,50 @@
-﻿using System.Linq;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Manages the path trace effect.
+    /// </summary>
     [RequireComponent(typeof(LineRenderer))]
     [DisallowMultipleComponent]
     public class PathTraceController : MonoBehaviour {
-        public WIMSpaceConverter Converter { get; set; }
-        public Transform NewPositionInWIM { get; set; }
-        public Transform OldPositionInWIM { get; set; }
-        public Transform WIMLevelTransform { get; set; }
-        public float TraceDurationInSeconds { get; set; }
-
         private LineRenderer lr;
         private float animationProgress;
         private float endTime;
 
+        /// <summary>
+        /// The converter used to convert between world space and WIM space.
+        /// </summary>
+        public WIMSpaceConverter Converter { get; set; }
 
-        private void Awake() {
-            lr = GetComponent<LineRenderer>();
-        }
+        /// <summary>
+        /// The position in the WIM after the travel phase.
+        /// </summary>
+        public Transform NewPositionInWIM { get; set; }
 
+        /// <summary>
+        /// The position in the WIM before the travel phase.
+        /// </summary>
+        public Transform OldPositionInWIM { get; set; }
+
+        /// <summary>
+        /// The miniature model level.
+        /// </summary>
+        public Transform WIMLevelTransform { get; set; }
+
+        /// <summary>
+        ///  The duration of the path trace animation.
+        /// </summary>
+        public float TraceDurationInSeconds { get; set; }
+
+
+        /// <summary>
+        /// Initialize.
+        /// </summary>
         public void Init() {
             Assert.IsNotNull(WIMLevelTransform);
 
@@ -42,6 +65,11 @@ namespace WIM_Plugin {
             lr.colorGradient = gradient;
             lr.material = Resources.Load<Material>("Materials/SemiTransparent");
             endTime = Time.time + TraceDurationInSeconds;
+        }
+
+
+        private void Awake() {
+            lr = GetComponent<LineRenderer>();
         }
 
         private void Update() {

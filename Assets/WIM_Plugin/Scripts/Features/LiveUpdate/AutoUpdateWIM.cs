@@ -1,8 +1,25 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Listens for changes to the transform component.
+    /// Triggers an update to the miniature model if any changes are detected.
+    /// </summary>
     [ExecuteInEditMode]
     public class AutoUpdateWIM : MonoBehaviour {
+        private static bool alreadyUpdatedThisFrame;
+
+        private MiniatureModel wim;
+        private Vector3 position;
+        private Quaternion rotation;
+        private Vector3 localScale;
+        private int childCount;
+
+        /// <summary>
+        /// The miniature model.
+        /// </summary>
         public MiniatureModel WIM {
             get => wim;
             set {
@@ -12,13 +29,6 @@ namespace WIM_Plugin {
                 }
             }
         }
-
-        private MiniatureModel wim;
-        private static bool alreadyUpdatedThisFrame;
-        private Vector3 position;
-        private Quaternion rotation;
-        private Vector3 localScale;
-        private int childCount;
 
         private void Start() {
             // Add to children (recursive).
@@ -31,21 +41,6 @@ namespace WIM_Plugin {
             UpdateValues();
 #endif
         }
-
-
-#if UNITY_EDITOR
-        private void Update() {
-            var somethingChanged = GetIsChanged();
-            if(!WIM) WIM = GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>();
-            if (!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
-            UpdateValues();
-            TriggerWIMUpdate();
-        }
-
-        private void LateUpdate() {
-            alreadyUpdatedThisFrame = false;
-        }
-#endif
 
         private void OnDestroy() {
             // Remove from children (recursive).
@@ -73,5 +68,20 @@ namespace WIM_Plugin {
             alreadyUpdatedThisFrame = true;
             WIMGenerator.GenerateNewWIM(WIM);
         }
+
+
+#if UNITY_EDITOR
+        private void Update() {
+            var somethingChanged = GetIsChanged();
+            if(!WIM) WIM = GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>();
+            if (!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
+            UpdateValues();
+            TriggerWIMUpdate();
+        }
+
+        private void LateUpdate() {
+            alreadyUpdatedThisFrame = false;
+        }
+#endif
     }
 }

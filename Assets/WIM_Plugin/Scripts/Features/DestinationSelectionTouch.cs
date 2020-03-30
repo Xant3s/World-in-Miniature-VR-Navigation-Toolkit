@@ -1,8 +1,14 @@
-﻿using System;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using System;
 using System.Linq;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to select a destination by touching it with the index finger and pressing a button.
+    /// To confirm another button has to be pressed.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class DestinationSelectionTouch : MonoBehaviour {

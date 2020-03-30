@@ -1,12 +1,22 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Manages the destination indicator in the miniature model.
+    /// </summary>
     public static class DestinationIndicators {
         public static event MiniatureModel.WIMAction OnSpawnDestinationIndicatorInWIM;
         public static event MiniatureModel.WIMAction OnRemoveDestinationIndicators;
 
 
+        /// <summary>
+        /// Spawns the destination indicator in the full-sized level.
+        /// The position and orientation will match its counterpart in the miniature model.
+        /// </summary>
+        /// <returns>The transform of the newly create destination indicator in the full-sized level.</returns>
         public static Transform SpawnDestinationIndicatorInLevel(WIMConfiguration config, WIMData data) {
             var converter = new WIMSpaceConverterImpl(config, data);
             var levelPosition = converter.ConvertToLevelSpace(data.DestinationIndicatorInWIM.position);
@@ -44,6 +54,10 @@ namespace WIM_Plugin {
             return data.DestinationIndicatorInLevel;
         }
 
+        /// <summary>
+        /// Spawns the destination indicator in the miniature model.
+        /// </summary>
+        /// <returns>The transform of the newly create destination indicator in the miniature model.</returns>
         public static Transform SpawnDestinationIndicatorInWIM(WIMConfiguration config, WIMData data) {
             Assert.IsNotNull(data.WIMLevelTransform);
             Assert.IsNotNull(config.DestinationIndicator);
@@ -54,6 +68,10 @@ namespace WIM_Plugin {
             return data.DestinationIndicatorInWIM;
         }
 
+        /// <summary>
+        /// Destroys both the destination indicator in the miniature model and in the full-sized level.
+        /// </summary>
+        /// <param name="WIM">The miniature model component.</param>
         public static void RemoveDestinationIndicators(MiniatureModel WIM) {
             Assert.IsNotNull(WIM);
             var data = WIM.Data;

@@ -1,14 +1,21 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Adds a laser pointer to hand to make it easier to aim using distance grabbing.
+    /// </summary>
     [RequireComponent(typeof(LineRenderer))]
     [DisallowMultipleComponent]
     public class AimAssist : MonoBehaviour {
         [Header("Aim Assist (Experimental)")]
         [Tooltip("The hand this script is attached to.")]
         [SerializeField] private Hand hand;
+
         [Tooltip("The length of the laser pointer.")]
         [SerializeField] private float length = 10.0f;
+
         private LineRenderer lr;
 
 
@@ -47,7 +54,6 @@ namespace WIM_Plugin {
         }
 
         private void Start() {
-            // Check if enabled.
             var grabber = gameObject.GetComponentInParent<DistanceGrabber>();
             if (grabber == null || !grabber.enabled) {
                 gameObject.GetComponent<LineRenderer>().enabled = false;

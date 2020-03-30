@@ -1,11 +1,23 @@
-﻿using UnityEditor;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(PathTrace))]
     public class PathTraceEditor : Editor {
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            ref var config = ref ((PathTrace) target).PathTraceConfig;
+            if(config) return;
+            EditorGUILayout.HelpBox("Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script.", MessageType.Error);
+        }
+
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 2);
         }
@@ -32,13 +44,6 @@ namespace WIM_Plugin {
             container.Add(root);
             if(config) root.Bind(new SerializedObject(config));
             root.Bind(new SerializedObject(pathTrace));
-        }
-
-        public override void OnInspectorGUI() {
-            base.OnInspectorGUI();
-            ref var config = ref ((PathTrace) target).PathTraceConfig;
-            if(config) return;
-            EditorGUILayout.HelpBox("Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script.", MessageType.Error);
         }
     }
 }

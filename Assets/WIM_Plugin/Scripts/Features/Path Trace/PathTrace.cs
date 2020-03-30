@@ -1,7 +1,13 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to display a path trace after the travel phase.
+    /// Used as orientation aid.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PathTrace : MonoBehaviour {
         public PathTraceConfiguration PathTraceConfig;

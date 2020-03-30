@@ -1,7 +1,12 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Transform follows specified target.
+    /// </summary>
     [DisallowMultipleComponent]
     public class FollowHand : MonoBehaviour {
         public Hand hand;

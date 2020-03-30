@@ -1,16 +1,17 @@
-﻿using UnityEngine;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
+using UnityEngine;
 using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Detects whether object is being picked up and calls callbacks.
+    /// What exactly should happen and how the object is picked up must be specified by callbacks.
+    /// </summary>
     [DisallowMultipleComponent]
     public class Pickup : MonoBehaviour {
         public delegate void Action();
-
-        public event Action OnStartGrabbing;
-        public event Action OnStopGrabbing;
-        public event Action OnStartTouch;
-        public event Action OnStopTouch;
 
         private Transform thumb;
         private Transform index;
@@ -20,6 +21,11 @@ namespace WIM_Plugin {
         private bool isGrabbing;
         private bool stoppedGrabbing;
         private bool indexIsPressed;
+
+        public event Action OnStartGrabbing;
+        public event Action OnStopGrabbing;
+        public event Action OnStartTouch;
+        public event Action OnStopTouch;
 
 
         private void Awake() {
