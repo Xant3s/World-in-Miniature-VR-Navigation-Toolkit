@@ -24,7 +24,7 @@ namespace WIM_Plugin {
 
             if(!this.Config.PreviewScreen || !this.Config.AutoPositionPreviewScreen) return;
             RemovePreviewScreen();
-            Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
+            Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
             Data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
             InitPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
@@ -36,7 +36,7 @@ namespace WIM_Plugin {
             if(!this.Config.PreviewScreen) return;
             Assert.IsFalse(this.Config.AutoPositionPreviewScreen);
             RemovePreviewScreen();
-            Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Prefabs/Preview Screen")).transform;
+            Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
             Destroy(Data.PreviewScreenTransform.GetComponent<FloatAbove>());
             InitPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
