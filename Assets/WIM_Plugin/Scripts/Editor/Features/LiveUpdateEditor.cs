@@ -5,6 +5,9 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(LiveUpdate))]
     public class LiveUpdateEditor : Editor {
         private void OnEnable() {

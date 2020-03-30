@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(TravelPreviewAnimation))]
     public class TravelPreviewAnimationEditor : Editor {
         public override void OnInspectorGUI() {

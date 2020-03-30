@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(Scaling))]
     public class ScalingEditor : Editor {
         public override void OnInspectorGUI() {

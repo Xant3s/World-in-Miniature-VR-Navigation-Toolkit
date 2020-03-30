@@ -7,7 +7,9 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace WIM_Plugin {
-// The custom inspector. Displays only relevant settings.
+    /// <summary>
+    /// Custom inspector. Displays only relevant settings.
+    /// </summary>
     [CustomEditor(typeof(MiniatureModel))]
     public class MiniatureModelEditor : Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();

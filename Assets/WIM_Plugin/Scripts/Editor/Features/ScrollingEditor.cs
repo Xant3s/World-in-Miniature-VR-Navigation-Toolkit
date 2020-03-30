@@ -7,6 +7,9 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(Scrolling))]
     public class ScrollingEditor : Editor {
         private MiniatureModel WIM;

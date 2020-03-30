@@ -8,6 +8,9 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom inspector.
+    /// </summary>
     [CustomEditor(typeof(OcclusionHandling))]
     public class OcclusionHandlingEditor : Editor {
         private MiniatureModel WIM;

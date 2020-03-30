@@ -10,6 +10,10 @@ using UnityEngine.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom UIElement. A help box similar to the IMGUI element.
+    /// Can be used to display info, warning, and error messages.
+    /// </summary>
     public class HelpBox : VisualElement {
         public enum MessageType {
             Info, Warning, Error

@@ -10,6 +10,9 @@ using UnityEditor.UIElements;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Custom UIElement. A float slider similar to the IMGUI element.
+    /// </summary>
     public class FloatSlider : VisualElement {
         private readonly Slider slider;
 

@@ -5,6 +5,10 @@ using UnityEditor;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Opens the welcome window on first start and every consecutive start of the Unity editor if
+    /// not configured otherwise.
+    /// </summary>
     [InitializeOnLoad]
     public class WelcomeWindowStartup : ScriptableObject {
         private static WelcomeWindowStartup instance;
