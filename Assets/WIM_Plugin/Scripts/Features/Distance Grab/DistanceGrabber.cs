@@ -3,6 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to pull distance grabbable objects that are not in range for regular grabbing.
+    /// </summary>
     public class DistanceGrabber : MonoBehaviour {
         [Header("Distance Grabber (Experimental)")]
         [Tooltip("Hand this script is attached to.")]

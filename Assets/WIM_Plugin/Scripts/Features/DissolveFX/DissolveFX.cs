@@ -5,6 +5,9 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Adds a dissolve-resolve effect when respawning miniature model.
+    /// </summary>
     [DisallowMultipleComponent]
     public class DissolveFX : MonoBehaviour {
         private static void DissolveWIM(Transform WIM) {

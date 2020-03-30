@@ -3,6 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Adds a laser pointer to hand to make it easier to aim using distance grabbing.
+    /// </summary>
     [RequireComponent(typeof(LineRenderer))]
     [DisallowMultipleComponent]
     public class AimAssist : MonoBehaviour {
@@ -51,7 +54,6 @@ namespace WIM_Plugin {
         }
 
         private void Start() {
-            // Check if enabled.
             var grabber = gameObject.GetComponentInParent<DistanceGrabber>();
             if (grabber == null || !grabber.enabled) {
                 gameObject.GetComponent<LineRenderer>().enabled = false;

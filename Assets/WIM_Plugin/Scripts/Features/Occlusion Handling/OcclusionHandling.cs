@@ -4,23 +4,15 @@ using UnityEditor;
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Adds occulusion handling strategies.
+    /// To Deal with occlusion, parts of the miniature model are hidden.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     internal sealed class OcclusionHandling : MonoBehaviour {
         [HideInInspector] public OcclusionHandlingConfiguration Config;
 
-        public void CleanupOcclusionHandling(in MiniatureModel WIM) {
-            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
-            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
-
-#if UNITY_EDITOR
-            if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
-            if(spotlightMask) Undo.DestroyObjectImmediate(spotlightMask);
-#else
-            GameObject.DestroyImmediate(cylinderMask);
-            GameObject.DestroyImmediate(spotlightMask);
-#endif
-        }
 
         internal void UpdateCylinderMask(in MiniatureModel WIM) {
             if(!Config) return;
@@ -50,6 +42,19 @@ namespace WIM_Plugin {
             }
 
             spotlight.color = color;
+        }
+
+        private void CleanupOcclusionHandling(in MiniatureModel WIM) {
+            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
+            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
+
+#if UNITY_EDITOR
+            if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
+            if(spotlightMask) Undo.DestroyObjectImmediate(spotlightMask);
+#else
+            GameObject.DestroyImmediate(cylinderMask);
+            GameObject.DestroyImmediate(spotlightMask);
+#endif
         }
 
         private void OnDestroy() {

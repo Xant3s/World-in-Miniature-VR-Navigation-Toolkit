@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Can be used to pickup the destination indicator again to choose a new destination.
+    /// </summary>
     [DisallowMultipleComponent]
     public class PickupDestinationUpdate : MonoBehaviour {
         public delegate void WIMAction(in MiniatureModel WIM);
@@ -24,8 +27,15 @@ namespace WIM_Plugin {
         private bool isGrabbing;
         private bool stoppedGrabbing = true;
 
+        /// <summary>
+        /// Tapping the destination indicator twice will be considered a double-tap iff
+        /// time between tap does not exceed this time.
+        /// </summary>
         public float DoubleTapInterval { get; set; } = 2;
 
+        /// <summary>
+        /// The highlight effect displayed when the player touches the player represenation.
+        /// </summary>
         public bool HightlightFX {
             get => hightlightFX;
             set {

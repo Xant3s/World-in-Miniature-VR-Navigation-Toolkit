@@ -6,18 +6,45 @@ using UnityEngine.Assertions;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Manages the path trace effect.
+    /// </summary>
     [RequireComponent(typeof(LineRenderer))]
     [DisallowMultipleComponent]
     public class PathTraceController : MonoBehaviour {
         private LineRenderer lr;
         private float animationProgress;
         private float endTime;
+
+        /// <summary>
+        /// The converter used to convert between world space and WIM space.
+        /// </summary>
         public WIMSpaceConverter Converter { get; set; }
+
+        /// <summary>
+        /// The position in the WIM after the travel phase.
+        /// </summary>
         public Transform NewPositionInWIM { get; set; }
+
+        /// <summary>
+        /// The position in the WIM before the travel phase.
+        /// </summary>
         public Transform OldPositionInWIM { get; set; }
+
+        /// <summary>
+        /// The miniature model level.
+        /// </summary>
         public Transform WIMLevelTransform { get; set; }
+
+        /// <summary>
+        ///  The duration of the path trace animation.
+        /// </summary>
         public float TraceDurationInSeconds { get; set; }
 
+
+        /// <summary>
+        /// Initialize.
+        /// </summary>
         public void Init() {
             Assert.IsNotNull(WIMLevelTransform);
 

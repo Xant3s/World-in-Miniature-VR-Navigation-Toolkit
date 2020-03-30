@@ -3,6 +3,9 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Makes object distance grabbable.
+    /// </summary>
     [DisallowMultipleComponent]
     public class DistanceGrabbable : MonoBehaviour {
         private static readonly int tintID = Shader.PropertyToID("_Tint");
@@ -16,10 +19,20 @@ namespace WIM_Plugin {
         private Color defaultColor = new Color(80f/255f, 80f/255f, 80f/255f);   // Gray
         private Rigidbody rb;
         private bool isWIM;
+
+        /// <summary>
+        /// The transform this object is moving towards to while being pulled by distance grabber.
+        /// </summary>
         public Transform Target { get; set; }
 
+        /// <summary>
+        /// Whether this object is currently being pulled by distance grabber.
+        /// </summary>
         public bool IsBeingGrabbed { get; set; }
 
+        /// <summary>
+        /// The highlight effect visible while player is aiming at this object to pull it using distance grabber.
+        /// </summary>
         public bool HighlightFX {
             get => highlightFX;
             set {
@@ -34,7 +47,14 @@ namespace WIM_Plugin {
             }
         }
 
+        /// <summary>
+        /// Specifies how fast the object is being pulled by distance grabber.
+        /// </summary>
         public float SnapSpeed { get; set; } = 1f;
+
+        /// <summary>
+        /// Specifies at which distance to the target the object will stop.
+        /// </summary>
         public float MinDistance { get; set; } = .1f;
 
         private void Awake() {

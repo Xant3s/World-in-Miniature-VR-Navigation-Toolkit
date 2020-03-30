@@ -3,6 +3,10 @@
 using UnityEngine;
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Listens for changes to the transform component.
+    /// Triggers an update to the miniature model if any changes are detected.
+    /// </summary>
     [ExecuteInEditMode]
     public class AutoUpdateWIM : MonoBehaviour {
         private static bool alreadyUpdatedThisFrame;
@@ -13,6 +17,9 @@ namespace WIM_Plugin {
         private Vector3 localScale;
         private int childCount;
 
+        /// <summary>
+        /// The miniature model.
+        /// </summary>
         public MiniatureModel WIM {
             get => wim;
             set {

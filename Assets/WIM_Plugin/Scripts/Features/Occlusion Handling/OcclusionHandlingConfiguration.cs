@@ -4,6 +4,9 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// The occlusion handling configuration. Modified via GUI.
+    /// </summary>
     [CreateAssetMenu(menuName = "WIM/Feature Configuration/Occlusion Handling")]
     public class OcclusionHandlingConfiguration : ScriptableObject {
         // Occlusion Handling: Melt Walls

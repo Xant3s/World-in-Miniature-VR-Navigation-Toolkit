@@ -4,6 +4,12 @@ using UnityEngine;
 
 
 namespace WIM_Plugin {
+    /// <summary>
+    /// Monitors the full-sized level for any changes.
+    /// Automatically apply changes to miniature model.
+    /// Works both in editor and at runtime.
+    /// Currently, only some changes are detected.
+    /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class LiveUpdate : MonoBehaviour {
