@@ -61,7 +61,7 @@ namespace WIM_Plugin {
 
         private void InitLineRenderer() {
             lr.widthMultiplier = .001f;
-            lr.material = Resources.Load<Material>("Materials/SemiTransparent");
+            lr.material = Resources.Load<Material>("SemiTransparent");
         }
 
         private void InitAnimatedPlayerRepresentation() {
@@ -72,7 +72,7 @@ namespace WIM_Plugin {
             animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
             animatedPlayerRepresentation.name = "Animated Player Travel Representation";
             animatedPlayerRepresentation.GetComponent<Renderer>().material =
-                Resources.Load<Material>("Materials/SemiTransparent");
+                Resources.Load<Material>("SemiTransparent");
         }
 
         private void OnDestroy() {

@@ -58,7 +58,7 @@ namespace WIM_Plugin {
         public float MinDistance { get; set; } = .1f;
 
         private void Awake() {
-            blueMaterial = Resources.Load<Material>("Materials/Blue");
+            blueMaterial = Resources.Load<Material>("Blue");
             material = GetComponentInChildren<Renderer>().sharedMaterial;
             colorProperty = material.HasProperty(tintID) ? tintID : colorID;    
             defaultColor = material.GetColor(colorProperty);

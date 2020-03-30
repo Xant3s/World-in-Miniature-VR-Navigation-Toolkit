@@ -63,7 +63,7 @@ namespace WIM_Plugin {
                 new[] {new GradientAlphaKey(0, 0), new GradientAlphaKey(1, 1)}
             );
             lr.colorGradient = gradient;
-            lr.material = Resources.Load<Material>("Materials/SemiTransparent");
+            lr.material = Resources.Load<Material>("SemiTransparent");
             endTime = Time.time + TraceDurationInSeconds;
         }
 
