@@ -23,19 +23,20 @@ namespace WIM_Plugin {
         }
 
         public override VisualElement CreateInspectorGUI() {
-            root.Add(new ObjectField("Input Mapping") {
+            var inputMapping = new ObjectField("Input Mapping") {
                 allowSceneObjects = false,
                 objectType = typeof(InputMapping),
                 bindingPath = nameof(mapper.InputMappings),
                 tooltip = "Config file used to store the button mapping."
-            });
+            };
+            root.Add(inputMapping);
             root.Bind(new SerializedObject(mapper));
-
-            if(InputManager.ButtonActions.Count != mapper.actionButtonMappings.Count
-               || InputManager.AxisActions.Count != mapper.actionAxisMappings.Count)
-                mapper.UpdateActions();
+            UpdateActions();
 
             Action action = () => {
+                if(!mapper.InputMappings) return;
+                UpdateActions();
+
                 for(var i = 0; i < InputManager.ButtonActions.Count; i++) {
                     EditorGUI.BeginChangeCheck();
                     var content = new GUIContent(mapper.actionButtonMappings[i].Name, mapper.actionButtonMappings[i].Tooltip);
@@ -69,9 +70,19 @@ namespace WIM_Plugin {
                     }
                 }
             };
-            root.Add(new IMGUIContainer(action));
+            var imguiContainer = new IMGUIContainer(action) {
+                visible = mapper.InputMappings != null
+            };
+            root.Add(imguiContainer);
+
+            inputMapping.RegisterValueChangedCallback(e => imguiContainer.visible = e.newValue != null);
 
             return root;
+        }
+
+        private void UpdateActions() {
+            if(!mapper.InputMappings) return;
+            mapper.UpdateActions();
         }
     }
 }
