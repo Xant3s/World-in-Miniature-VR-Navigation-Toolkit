@@ -1,0 +1,22 @@
+﻿<UXML xmlns="UnityEngine.UIElements"
+      xmlns:WIM="WIMVR"
+      xmlns:editor="UnityEditor.UIElements">
+  <Label text="Scrolling" class="Separator"/>
+  <editor:ObjectField name="configuration" label="Configuration" type="WIMVR.ScrollingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScrollingConfig" />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script." />
+
+  <VisualElement name="settings">
+    <Toggle name="allow-scrolling" label="Allow WIM Scrolling" binding-path="AllowWIMScrolling" 
+            tooltip="Whether the player has the option to scroll the miniature model." />
+    <VisualElement name="scrolling-settings2">
+      <editor:Vector3Field name="active-area-bounds" label="Active Area Bounds" binding-path="ActiveAreaBounds"
+                           tooltip="Bounds of the box collider the player can use to grab the miniature model." />
+      <Toggle name="auto-scroll" label="Auto Scroll" binding-path="AutoScroll"
+              tooltip="Whether scrolling should be automated, so that the destination indicator is centered. If no destination is selected, the player is centered. If disabled, the player can scroll manually using thumbsticks." />
+      <editor:FloatField name="scroll-speed" label="Scroll Speed" binding-path="ScrollSpeed"
+                         tooltip="The default scroll speed." />
+      <Toggle name="allow-vertical-scroll" label="Allow Vertical Scrolling" binding-path="AllowVerticalScrolling"
+              tooltip="Whether vertical scrolling should be allowed. This required a second thumbstick." />
+    </VisualElement>
+  </VisualElement>
+</UXML>

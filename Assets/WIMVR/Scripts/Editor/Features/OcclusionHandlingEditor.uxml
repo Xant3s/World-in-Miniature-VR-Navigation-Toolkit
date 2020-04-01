@@ -1,0 +1,27 @@
+﻿<UXML xmlns="UnityEngine.UIElements"
+      xmlns:WIM="WIMVR"
+      xmlns:editor="UnityEditor.UIElements">
+  <editor:ObjectField name="configuration" label="Configuration" type="WIMVR.OcclusionHandlingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="Config" />
+  <WIM:HelpBox name="config-error" message-type="Error" text="Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script." />
+
+  <editor:EnumField name="occlusion-handling-method" label="Occlusion Handling Method" binding-path="OcclusionHandlingMethod"
+                    tooltip="Select occlusion handling strategy. Melt walls: Hide miniature model partly in vicinity of player's arm. Cutout view: Hide miniature model partly depending on gaze direction and distance to player's eyes. " />
+
+  <VisualElement name="melt-settings">
+    <editor:FloatField label="Melt Radius" binding-path="MeltRadius" 
+                       tooltip="Radius around the player's arm in which the miniature model ist hidden." />
+    <editor:FloatField label="Melt Height" binding-path="MeltHeight" 
+                       tooltip="Distance parallel to the player's arm in which the miniature model is hidden."/>
+  </VisualElement>
+
+  <VisualElement name="cutout-view-settings">
+    <editor:FloatField label="Cutout Range" binding-path="CutoutRange"
+                       tooltip="Height of the view cone hiding the miniature model. The pointy end origins at the player's eyes."/>
+    <editor:FloatField label="Cutout Angle" binding-path="CutoutAngle" 
+                       tooltip="Angle of the view cone hiding the miniature model."/>
+    <Toggle name="show-cutout-light" label="Show Cutout Light" binding-path="ShowCutoutLight"
+            tooltip="Whether the view cone should be visualized by a spotlight."/>
+    <editor:ColorField name="cutout-light-color" label="Cutout Light Color" binding-path="CutoutLightColor"
+                       tooltip="The color of the spotlight."/>
+  </VisualElement>
+</UXML>
