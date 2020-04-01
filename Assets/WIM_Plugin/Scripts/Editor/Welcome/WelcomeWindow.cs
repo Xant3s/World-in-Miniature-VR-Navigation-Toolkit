@@ -16,10 +16,10 @@ namespace WIM_Plugin {
         private static readonly string imagePath = "Assets/WIM_Plugin/Sprites/";
 
 
-        [MenuItem("Window/WIM Plugin/Welcome Window")]
+        [MenuItem("Window/WIMVR/Welcome Window")]
         public static void ShowWindow() {
             var window = GetWindow<WelcomeWindow>();
-            window.titleContent = new GUIContent("WIM Plugin Welcome");
+            window.titleContent = new GUIContent("WIMVR Welcome");
             window.minSize = new Vector2(566, 384);
         }
 
