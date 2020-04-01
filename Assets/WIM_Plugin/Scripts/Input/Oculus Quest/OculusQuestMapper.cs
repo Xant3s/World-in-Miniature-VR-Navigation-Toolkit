@@ -21,6 +21,7 @@ namespace WIM_Plugin {
         /// Apply platform specific button mapping to input manager.
         /// </summary>
         public void UpdateActions() {
+            if (!InputMappings) return;
             actionButtonMappings.Clear();
             actionAxisMappings.Clear();
             foreach (var m in InputManager.ButtonActions) {
