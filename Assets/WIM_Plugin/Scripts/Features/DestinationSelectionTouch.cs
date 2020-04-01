@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to select a destination by touching it with the index finger and pressing a button.
     /// To confirm another button has to be pressed.
@@ -48,7 +48,7 @@ namespace WIM_Plugin {
         }
 
         private void DestinationSelection() {
-            if (config.DestinationSelectionMethod != WIM_Plugin.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != WIMVR.DestinationSelection.Touch) return;
             SelectDestination();
         }
 
@@ -113,7 +113,7 @@ namespace WIM_Plugin {
             if (!config) config = WIM.Configuration;
             if (!data || !config) return;
             if (!data.DestinationIndicatorInWIM) return;
-            if (config.DestinationSelectionMethod != WIM_Plugin.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != WIMVR.DestinationSelection.Touch) return;
 
             // Thumbstick input.
             Vector2 inputRotation = axis;
@@ -132,7 +132,7 @@ namespace WIM_Plugin {
 
         private void ConfirmTeleport() {
             if (!Application.isPlaying) return;
-            if (config.DestinationSelectionMethod != WIM_Plugin.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != WIMVR.DestinationSelection.Touch) return;
             if (!data.DestinationIndicatorInLevel) return;
             WIM.ConfirmTravel();
         }

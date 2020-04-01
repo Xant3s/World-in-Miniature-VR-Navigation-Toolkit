@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// The welcome window visible at the first start.
     /// </summary>

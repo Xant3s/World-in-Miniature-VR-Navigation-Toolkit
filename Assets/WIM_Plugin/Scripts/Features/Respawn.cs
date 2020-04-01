@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
     /// </summary>

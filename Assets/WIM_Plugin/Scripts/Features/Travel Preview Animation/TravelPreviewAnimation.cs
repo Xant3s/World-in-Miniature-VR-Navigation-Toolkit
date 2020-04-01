@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to display an preview animation of the travel phase.
     /// </summary>

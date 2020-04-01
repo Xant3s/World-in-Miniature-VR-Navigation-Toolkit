@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Align gameobject with target (position and orientation).
     /// </summary>

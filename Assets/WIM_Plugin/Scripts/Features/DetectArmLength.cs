@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Detect the player's arm length at the start of the application.
     /// Therefore, the player has to fully extend the dominant arm and press a button.

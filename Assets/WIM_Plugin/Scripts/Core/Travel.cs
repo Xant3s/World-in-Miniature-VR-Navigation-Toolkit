@@ -3,7 +3,7 @@
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Defines how the player is moved to the selected destination.
     /// </summary>

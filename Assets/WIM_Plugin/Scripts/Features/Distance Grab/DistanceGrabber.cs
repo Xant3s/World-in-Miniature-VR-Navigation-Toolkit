@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to pull distance grabbable objects that are not in range for regular grabbing.
     /// </summary>

@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Updates the capsule mask that is used to hide parts of the miniature model.
     /// </summary>

@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Converts between world space (full-sized level) and miniature model space.
     /// </summary>

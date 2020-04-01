@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Manages interactions with preview screen i.e. vibration on touch and pickup.
     /// </summary>

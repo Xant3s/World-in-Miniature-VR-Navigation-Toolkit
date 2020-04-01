@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Provides input mapping for Oculus Quest.
     /// Will be eventually replaced by the new Unity input manager.

@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Data describing the current miniature model state. Modified at runtime.
     /// </summary>

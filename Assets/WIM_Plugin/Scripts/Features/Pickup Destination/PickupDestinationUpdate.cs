@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to pickup the destination indicator again to choose a new destination.
     /// </summary>

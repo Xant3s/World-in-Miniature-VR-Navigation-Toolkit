@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 [assembly: UxmlNamespacePrefix("WIM_Plugin", "WIM")]
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Custom UIElement. A help box similar to the IMGUI element.
     /// Can be used to display info, warning, and error messages.

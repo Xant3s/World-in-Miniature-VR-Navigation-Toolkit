@@ -3,7 +3,7 @@
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// The scrolling configuration. Modified via GUI.
     /// </summary>

@@ -3,7 +3,7 @@
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// The travel preview animation configuration. Modified via GUI.
     /// </summary>

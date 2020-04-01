@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Allows to scroll the visible part of the miniature model at runtime.
     /// </summary>

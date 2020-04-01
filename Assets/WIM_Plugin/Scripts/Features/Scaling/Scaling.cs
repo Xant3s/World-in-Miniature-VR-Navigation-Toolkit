@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Allows to scale the miniature model at runtime.
     /// </summary>

@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to display a path trace after the travel phase.
     /// Used as orientation aid.

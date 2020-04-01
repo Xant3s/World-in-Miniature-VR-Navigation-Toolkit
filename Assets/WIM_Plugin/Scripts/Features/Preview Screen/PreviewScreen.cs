@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to display a screen next to the miniature model that shows the selected destination.
     /// </summary>

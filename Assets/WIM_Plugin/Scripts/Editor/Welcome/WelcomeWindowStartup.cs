@@ -4,7 +4,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Opens the welcome window on first start and every consecutive start of the Unity editor if
     /// not configured otherwise.

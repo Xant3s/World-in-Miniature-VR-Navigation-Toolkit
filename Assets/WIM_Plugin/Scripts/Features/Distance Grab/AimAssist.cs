@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Adds a laser pointer to hand to make it easier to aim using distance grabbing.
     /// </summary>

@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Updates the cone mask that is used to hides parts of the miniature model.
     /// </summary>

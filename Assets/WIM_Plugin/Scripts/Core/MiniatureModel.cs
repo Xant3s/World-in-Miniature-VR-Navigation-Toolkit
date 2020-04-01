@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// The core miniature model component. Turns this gameobject into a miniature model.
     /// Add additional feature components to modify functionality.

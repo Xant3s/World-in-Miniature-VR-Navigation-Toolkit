@@ -3,7 +3,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Adds occulusion handling strategies.
     /// To Deal with occlusion, parts of the miniature model are hidden.

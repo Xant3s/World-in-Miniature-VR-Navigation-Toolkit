@@ -3,7 +3,7 @@
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Transform follows specified target.
     /// </summary>

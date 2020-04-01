@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Custom inspector.
     /// </summary>

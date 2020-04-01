@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Can be used to select a destination by picking up the player
     /// representation and placing is at the desired location in the miniature model.

@@ -3,7 +3,7 @@
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Monitors the full-sized level for any changes.
     /// Automatically apply changes to miniature model.

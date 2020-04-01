@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace WIM_Plugin {
+namespace WIMVR {
    /// <summary>
    /// Displays a player representation in the miniature model. Used to indicate the player's position and orientation in the virtual environment.
    /// </summary>

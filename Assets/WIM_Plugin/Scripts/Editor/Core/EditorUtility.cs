@@ -8,7 +8,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Used by MiniatureModelEditor. Features can add additional UI utilizing callbacks.
     /// </summary>

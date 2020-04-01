@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Manages the path trace effect.
     /// </summary>

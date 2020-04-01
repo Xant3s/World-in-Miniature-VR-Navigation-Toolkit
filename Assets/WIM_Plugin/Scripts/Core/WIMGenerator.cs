@@ -9,7 +9,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Generates the miniature model by cloning the actual level etc.
     /// </summary>

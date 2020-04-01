@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Used to open the preview screen when the player grabs the destination indicator's view cone.
     /// </summary>

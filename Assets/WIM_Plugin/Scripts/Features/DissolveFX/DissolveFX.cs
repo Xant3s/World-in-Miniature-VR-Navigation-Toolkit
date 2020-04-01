@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Adds a dissolve-resolve effect when respawning miniature model.
     /// </summary>

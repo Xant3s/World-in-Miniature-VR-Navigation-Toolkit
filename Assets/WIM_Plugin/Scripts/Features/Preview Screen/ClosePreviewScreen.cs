@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Closes the preview screen when player enters collider with index finger.
     /// </summary>

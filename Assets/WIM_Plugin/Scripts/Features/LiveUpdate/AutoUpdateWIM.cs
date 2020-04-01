@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIM_Plugin {
+namespace WIMVR {
     /// <summary>
     /// Listens for changes to the transform component.
     /// Triggers an update to the miniature model if any changes are detected.
