@@ -1,8 +1,8 @@
 ﻿<UXML xmlns="UnityEngine.UIElements"
-      xmlns:WIM="WIM_Plugin"
+      xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
   <Label text="Scrolling" class="Separator"/>
-  <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.ScrollingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScrollingConfig" />
+  <editor:ObjectField name="configuration" label="Configuration" type="WIMVR.ScrollingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScrollingConfig" />
   <WIM:HelpBox name="config-info" message-type="Error" text="Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script." />
 
   <VisualElement name="settings">

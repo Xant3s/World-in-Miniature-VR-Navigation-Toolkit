@@ -29,7 +29,7 @@ namespace WIMVR {
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.UniqueSeparator("Orientation Aids");
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Features/PreviewScreenEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/PreviewScreenEditor.uxml");
             var root = new VisualElement();
             visualTree.CloneTree(root);
             var previewScreen = (PreviewScreen) target;

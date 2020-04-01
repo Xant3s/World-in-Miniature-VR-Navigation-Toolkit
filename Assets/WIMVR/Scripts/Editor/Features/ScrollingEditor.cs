@@ -41,7 +41,7 @@ namespace WIMVR {
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Features/ScrollingEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/ScrollingEditor.uxml");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
             var scrolling = (Scrolling) target;

@@ -1,7 +1,7 @@
 ﻿<UXML xmlns="UnityEngine.UIElements"
-      xmlns:WIM="WIM_Plugin"
+      xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
-  <editor:ObjectField name="configuration" label="Configuration" type="WIM_Plugin.OcclusionHandlingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="Config" />
+  <editor:ObjectField name="configuration" label="Configuration" type="WIMVR.OcclusionHandlingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="Config" />
   <WIM:HelpBox name="config-error" message-type="Error" text="Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script." />
 
   <editor:EnumField name="occlusion-handling-method" label="Occlusion Handling Method" binding-path="OcclusionHandlingMethod"

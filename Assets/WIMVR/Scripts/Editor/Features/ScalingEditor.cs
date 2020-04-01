@@ -27,7 +27,7 @@ namespace WIMVR {
         }
 
         private void Draw(WIMConfiguration WIMconfig, VisualElement container) {
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Features/ScalingEditor.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/ScalingEditor.uxml");
             if(!visualTree) return;
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);

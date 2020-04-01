@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 
-[assembly: UxmlNamespacePrefix("WIM_Plugin", "WIM")]
+[assembly: UxmlNamespacePrefix("WIMVR", "WIM")]
 
 
 namespace WIMVR {
@@ -18,7 +18,7 @@ namespace WIMVR {
 
         public FloatSlider() {
             var visualTree =
-                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Util/FloatSlider.uxml");
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Util/FloatSlider.uxml");
             var floatSlider = new VisualElement();
             visualTree.CloneTree(floatSlider);
             hierarchy.Add(floatSlider);

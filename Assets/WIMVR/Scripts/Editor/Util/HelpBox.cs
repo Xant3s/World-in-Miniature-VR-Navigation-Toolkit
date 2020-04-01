@@ -6,7 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[assembly: UxmlNamespacePrefix("WIM_Plugin", "WIM")]
+[assembly: UxmlNamespacePrefix("WIMVR", "WIM")]
 
 
 namespace WIMVR {
@@ -24,8 +24,8 @@ namespace WIMVR {
         private MessageType type;
 
         public HelpBox() {
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIM_Plugin/Scripts/Editor/Util/HelpBox.uxml");
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIM_Plugin/Scripts/Editor/Util/HelpBox.uss");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Util/HelpBox.uxml");
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIMVR/Scripts/Editor/Util/HelpBox.uss");
             var helpBox = new VisualElement();
             helpBox.styleSheets.Add(styleSheet);
             visualTree.CloneTree(helpBox);
