@@ -71,7 +71,7 @@ namespace WIMVR {
             Assert.IsNotNull(animatedPlayerRepresentation);
             animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
             animatedPlayerRepresentation.name = "Animated Player Travel Representation";
-            animatedPlayerRepresentation.GetComponent<Renderer>().material =
+            animatedPlayerRepresentation.GetComponentInChildren<Renderer>().material =
                 Resources.Load<Material>("SemiTransparent");
         }
 

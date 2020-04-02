@@ -20,12 +20,11 @@ namespace WIMVR {
         public static Transform SpawnDestinationIndicatorInLevel(WIMConfiguration config, WIMData data) {
             var converter = new WIMSpaceConverterImpl(config, data);
             var levelPosition = converter.ConvertToLevelSpace(data.DestinationIndicatorInWIM.position);
-            data.DestinationIndicatorInLevel =
-                Object.Instantiate(config.DestinationIndicator, data.LevelTransform).transform;
+            data.DestinationIndicatorInLevel = Object.Instantiate(config.DestinationIndicator, data.LevelTransform).transform;
             data.DestinationIndicatorInLevel.position = levelPosition;
 
             // Remove frustum.
-            Object.Destroy(data.DestinationIndicatorInLevel.GetChild(1).GetChild(0).gameObject);
+            Object.Destroy(data.DestinationIndicatorInLevel.GetChild(0).GetChild(1).GetChild(0).gameObject);
 
             // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
             if(config.DestinationAlwaysOnTheGround) {
@@ -61,8 +60,8 @@ namespace WIMVR {
         public static Transform SpawnDestinationIndicatorInWIM(WIMConfiguration config, WIMData data) {
             Assert.IsNotNull(data.WIMLevelTransform);
             Assert.IsNotNull(config.DestinationIndicator);
-            data.DestinationIndicatorInWIM =
-                Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
+            data.DestinationIndicatorInWIM = Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
+            
             data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
             OnSpawnDestinationIndicatorInWIM?.Invoke(config, data);
             return data.DestinationIndicatorInWIM;
