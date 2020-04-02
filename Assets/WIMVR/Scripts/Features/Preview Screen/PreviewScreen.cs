@@ -25,7 +25,7 @@ namespace WIMVR {
             if(!this.Config.PreviewScreen || !this.Config.AutoPositionPreviewScreen) return;
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
-            Data.PreviewScreenTransform.GetComponent<FloatAbove>().Target = transform;
+            Data.PreviewScreenTransform.GetComponentInChildren<FloatAbove>().Target = transform;
             InitPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
         }
@@ -37,7 +37,7 @@ namespace WIMVR {
             Assert.IsFalse(this.Config.AutoPositionPreviewScreen);
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
-            Destroy(Data.PreviewScreenTransform.GetComponent<FloatAbove>());
+            Destroy(Data.PreviewScreenTransform.GetComponentInChildren<FloatAbove>());
             InitPreviewScreen(Data.PreviewScreenTransform.gameObject);
             Data.PreviewScreenEnabled = true;
         }
@@ -75,8 +75,8 @@ namespace WIMVR {
 
         private void InitPreviewScreen(GameObject previewScreen) {
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel);
-            Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(1));
-            var camObj = WIMData.DestinationIndicatorInLevel.GetChild(1).gameObject; // Making assumptions on the prefab.
+            Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(0).GetChild(1));
+            var camObj = WIMData.DestinationIndicatorInLevel.GetChild(0).GetChild(1).gameObject; // Making assumptions on the prefab.
             Assert.IsNotNull(camObj);
             var cam = camObj.GetComponent<Camera>() ?? camObj.AddComponent<Camera>();
             Assert.IsNotNull(cam);
@@ -86,7 +86,7 @@ namespace WIMVR {
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
             previewScreenMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
-            previewScreen.GetComponent<Renderer>().material = previewScreenMaterial;
+            previewScreen.GetComponentInChildren<Renderer>().material = previewScreenMaterial;
             previewScreenMaterial.SetTexture(baseMap, cam.targetTexture);
         }
 
@@ -100,7 +100,7 @@ namespace WIMVR {
 
         private void ConfigurePickupPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
             if(!Config || Config.AutoPositionPreviewScreen) return;
-            WIMData.DestinationIndicatorInWIM.GetChild(1).GetChild(0).gameObject
+            WIMData.DestinationIndicatorInWIM.GetChild(0).GetChild(1).GetChild(0).gameObject
                 .AddComponent<PickupPreviewScreen>();
         }
     }

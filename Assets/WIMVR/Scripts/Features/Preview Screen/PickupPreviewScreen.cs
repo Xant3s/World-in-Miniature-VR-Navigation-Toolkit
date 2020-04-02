@@ -127,8 +127,8 @@ namespace WIMVR {
             Assert.IsNotNull(WIM);
             var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
             if(!previewScreenTransform) return;
-            previewScreenTransform.gameObject.AddComponent<PreviewScreenController>();
-            previewScreenTransform.GetChild(0).gameObject.AddComponent<ClosePreviewScreen>();
+            previewScreenTransform.GetChild(0).gameObject.AddComponent<PreviewScreenController>();
+            previewScreenTransform.GetChild(0).GetChild(0).gameObject.AddComponent<ClosePreviewScreen>();
 
             // Let go.
             previewScreenTransform.parent = WIMTransform.GetChild(0);
