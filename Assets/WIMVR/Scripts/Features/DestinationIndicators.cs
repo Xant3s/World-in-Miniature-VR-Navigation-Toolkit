@@ -28,13 +28,12 @@ namespace WIMVR {
 
             // Optional: Set to ground level to prevent the player from being moved to a location in mid-air.
             if(config.DestinationAlwaysOnTheGround) {
+                var destinationIndicatorHeight = config.DestinationIndicator.transform.GetChild(0).localScale.y;
                 data.DestinationIndicatorInLevel.position = MathUtils.GetGroundPosition(levelPosition) +
-                                                            new Vector3(0,
-                                                                config.DestinationIndicator.transform.localScale.y, 0);
+                                                            new Vector3(0, destinationIndicatorHeight, 0);
                 data.DestinationIndicatorInWIM.position =
                     converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(levelPosition))
-                    + config.ScaleFactor * config.DestinationIndicator.transform.localScale.y *
-                    data.WIMLevelTransform.up;
+                    + config.ScaleFactor * destinationIndicatorHeight * data.WIMLevelTransform.up;
             }
 
             // Fix orientation.

@@ -52,7 +52,8 @@ namespace WIMVR {
             // Position.
             Debug.Assert(Camera.main != null, "Camera.main != null");
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
-            data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * config.PlayerRepresentation.transform.localScale.y * config.ScaleFactor;
+            var playerRepresentationHeight = config.PlayerRepresentation.transform.GetChild(0).localScale.y;
+            data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * playerRepresentationHeight * config.ScaleFactor;
 
             // Rotation
             var rotationInLevel = data.WIMLevelTransform.rotation * playerTransform.rotation;
