@@ -11,7 +11,6 @@ namespace WIMVR {
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(OVRGrabbable))]
-    [RequireComponent(typeof(DistanceGrabbable))]
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
     [ExecuteAlways]
