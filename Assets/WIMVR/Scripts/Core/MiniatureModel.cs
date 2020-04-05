@@ -119,6 +119,12 @@ namespace WIMVR {
             InputManager.RegisterAction(grabLActionName, LeftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabLTooltip);
             InputManager.RegisterAction(grabRActionName, RightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabRTooltip);
             InputManager.RegisterAction(grabRActionName, RightGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabRTooltip);
+            if(!Application.isPlaying) {
+                gameObject.tag = "WIM";
+                gameObject.layer = LayerMask.NameToLayer("WIM");
+                GetComponent<Rigidbody>().useGravity = false;
+                if(name.Equals("GameObject")) name = "Miniature Model";
+            }
         }
 
         private void OnDisable() {

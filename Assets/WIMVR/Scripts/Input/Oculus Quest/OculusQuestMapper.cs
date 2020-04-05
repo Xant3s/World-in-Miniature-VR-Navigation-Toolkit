@@ -67,6 +67,9 @@ namespace WIMVR {
             InputManager.OnUpdateActions += UpdateActions;
             InputManager.OnSetVibration += SetVibration;
             UpdateActions();
+            if(!Application.isPlaying && name.Equals("GameObject")) {
+                name = "WIM Input Manager";
+            }
         }
 
         private void OnDisable() {
