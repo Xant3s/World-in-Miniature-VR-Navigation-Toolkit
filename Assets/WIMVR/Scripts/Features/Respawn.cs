@@ -103,6 +103,7 @@ namespace WIMVR {
         private void OnEnable() {
             MiniatureModel.OnLateInit += StartRespawn;
             InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
+            if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
             var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
