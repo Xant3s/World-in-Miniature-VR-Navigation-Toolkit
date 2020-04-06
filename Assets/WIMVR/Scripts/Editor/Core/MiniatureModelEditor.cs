@@ -59,6 +59,7 @@ namespace WIMVR {
             configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(e => {
                 root.Q<HelpBox>(name: "config-missing").SetDisplay(!e.newValue);
                 root.Q<VisualElement>("master-container").SetDisplay(e.newValue);
+                WIMGenerator.ConfigureWIM(WIM); // Redraw UI.
             });
             root.Q<HelpBox>(name: "config-missing").SetDisplay(!WIM.Configuration);
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
