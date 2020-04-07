@@ -8,14 +8,17 @@ namespace WIMVR {
    /// Displays a player representation in the miniature model. Used to indicate the player's position and orientation in the virtual environment.
    /// </summary>
     [DisallowMultipleComponent]
-    public class PlayerRepresentation : MonoBehaviour {
-        private MiniatureModel WIM;
-        private WIMSpaceConverter converter;
-        private Transform playerTransform;
-        public static event MiniatureModel.WIMAction OnUpdatePlayerRepresentationInWIM;
+   public class PlayerRepresentation : MonoBehaviour {
+       public static event MiniatureModel.WIMAction OnUpdatePlayerRepresentationInWIM;
+
+       private MiniatureModel WIM;
+       private WIMSpaceConverter converter;
+       private Transform playerTransform;
+       private Transform mainCameraTransform;
 
 
         private void Start() {
+            mainCameraTransform = Camera.main.transform;
             playerTransform = GameObject.Find("OVRCameraRig").transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -51,7 +54,7 @@ namespace WIMVR {
 
             // Position.
             Debug.Assert(Camera.main != null, "Camera.main != null");
-            data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(Camera.main.transform.position));
+            data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(mainCameraTransform.position));
             var playerRepresentationHeight = config.PlayerRepresentation.transform.GetChild(0).localScale.y;
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * playerRepresentationHeight * config.ScaleFactor;
 

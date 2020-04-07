@@ -61,7 +61,9 @@ namespace WIMVR {
         /// <param name="point">Start position.</param>
         /// <returns>First raycast hit position straight down from provided start point.</returns>
         public static Vector3 GetGroundPosition(Vector3 point) {
-            var layerMask = ~(1 << LayerMask.NameToLayer ("WIM") | 1 << LayerMask.NameToLayer ("Hands")); // Ignore both WIM and hands.
+            // Ignore WIM, Hands, Player, and the ignore raycast layer.
+            var layerMask = ~(1 << LayerMask.NameToLayer("WIM") | 1 << LayerMask.NameToLayer("Hands") |
+                              1 << LayerMask.NameToLayer("Player") |  1 << Physics.IgnoreRaycastLayer);
             return Physics.Raycast(point, Vector3.down, out var hit, Mathf.Infinity, layerMask) ? hit.point : point;
         }
     }
