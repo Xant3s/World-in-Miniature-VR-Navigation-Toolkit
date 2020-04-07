@@ -67,17 +67,18 @@ namespace WIMVR {
             OnPostTravel?.Invoke(Configuration, Data);
         }
 
-
-        private void Awake() {
+        private void Start() {
             if (!Application.isPlaying) return;
             if(!Configuration) return;
             Data = ScriptableObject.CreateInstance<WIMData>();
+            Assert.IsNotNull(Data);
             travelStrategy = new InstantTravel();
             Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
             Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
             Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
             Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
-            Data.OVRPlayerController = GameObject.Find("OVRPlayerController")?.transform;
+            Data.OVRPlayerController = GameObject.FindWithTag("Player")?.transform;
+            Data.WIMLevelTransform = transform.Find("WIM Level");
             Assert.IsNotNull(Data.HMDTransform);
             Assert.IsNotNull(Data.FingertipIndexR);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
@@ -85,13 +86,7 @@ namespace WIMVR {
             Assert.IsNotNull(Data.OVRPlayerController);
             Assert.IsNotNull(Data.LevelTransform);
             Assert.IsNotNull(Data.PlayerTransform);
-        }
-
-        private void Start() {
-            if (!Application.isPlaying) return;
-            Data.WIMLevelTransform = transform.Find("WIM Level");
             Assert.IsNotNull(Data.WIMLevelTransform);
-            if(!Configuration) return;
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
