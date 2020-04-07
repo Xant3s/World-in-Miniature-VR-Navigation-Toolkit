@@ -138,6 +138,8 @@ namespace WIMVR {
             }
 
             WIM.transform.localScale = new Vector3(WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor);
+            WIM.transform.RemoveAllColliders();
+            WIMGenerator.GenerateColliders(WIM);
             ConfigureWIM(WIM);
         }
 
