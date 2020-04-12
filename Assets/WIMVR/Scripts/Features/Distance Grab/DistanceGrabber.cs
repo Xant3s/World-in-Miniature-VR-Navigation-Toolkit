@@ -15,7 +15,7 @@ namespace WIMVR {
         [SerializeField] private Transform start;
 
         [Tooltip("Distance grabbing will be disabled if within specified distance to miniature model")]
-        [SerializeField] private float requieredDistanceToWIM = .5f;
+        [SerializeField] private float requiredDistanceToWIM = .5f;
 
         [Tooltip("Specifies how fast objects are pulled towards hand.")]
         [SerializeField] private float snapSpeed = 10f;
@@ -66,7 +66,7 @@ namespace WIMVR {
 
         private void LateUpdate() {
             var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
-            SetEnable(!(distanceToWIM < requieredDistanceToWIM) && !isInsideWIM);
+            SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
             if(isDisabled) return;
 
 
