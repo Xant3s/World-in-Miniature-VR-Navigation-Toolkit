@@ -8,16 +8,16 @@
                     tooltip="Select occlusion handling strategy. Melt walls: Hide miniature model partly in vicinity of player's arm. Cutout view: Hide miniature model partly depending on gaze direction and distance to player's eyes. " />
 
   <VisualElement name="melt-settings">
-    <editor:FloatField label="Melt Radius" binding-path="MeltRadius" 
-                       tooltip="Radius around the player's arm in which the miniature model ist hidden." />
-    <editor:FloatField label="Melt Height" binding-path="MeltHeight" 
+    <editor:FloatField label="Melt Radius" binding-path="MeltRadius"
+                       tooltip="Radius around the player's arm in which the miniature model is hidden." />
+    <editor:FloatField label="Melt Height" binding-path="MeltHeight"
                        tooltip="Distance parallel to the player's arm in which the miniature model is hidden."/>
   </VisualElement>
 
   <VisualElement name="cutout-view-settings">
     <editor:FloatField label="Cutout Range" binding-path="CutoutRange"
                        tooltip="Height of the view cone hiding the miniature model. The pointy end origins at the player's eyes."/>
-    <editor:FloatField label="Cutout Angle" binding-path="CutoutAngle" 
+    <editor:FloatField label="Cutout Angle" binding-path="CutoutAngle"
                        tooltip="Angle of the view cone hiding the miniature model."/>
     <Toggle name="show-cutout-light" label="Show Cutout Light" binding-path="ShowCutoutLight"
             tooltip="Whether the view cone should be visualized by a spotlight."/>
