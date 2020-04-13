@@ -44,11 +44,10 @@ namespace WIMVR {
 
             root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
             root.Q<Button>("VideoBtn").RegisterCallback<MouseUpEvent>((e) => {
-                // TODO 
+                // TODO
                 Application.OpenURL("");
             });
 
-            root.Q<Button>("ManualBtn").SetEnabled(false); // TODO remove as soon as manual is available
             root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>((e) => {
                 Application.OpenURL(Application.dataPath + "/WIMVR/Manual.pdf");
             });
