@@ -1,0 +1,3 @@
+echo Building PDF...
+pandoc content/*.md --toc --include-in-header header.tex -N --template eisvogel.tex -s --from markdown --highlight-style tango --variable urlcolor=cyan -o Manual.pdf
+echo Finished.

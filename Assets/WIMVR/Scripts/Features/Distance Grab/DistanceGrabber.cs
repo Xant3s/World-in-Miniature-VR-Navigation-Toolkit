@@ -20,7 +20,7 @@ namespace WIMVR {
         [Tooltip("Specifies how fast objects are pulled towards the hand.")]
         [SerializeField] private float snapSpeed = 10f;
 
-        [Tooltip("Stop pulling objects that are within specified distance to hand.")]
+        [Tooltip("Stop pulling objects that are within specified distance to the hand.")]
         [SerializeField] private float minDistance = .5f;
 
         [Tooltip("Automatically disable while this hand is touching the miniature model.")]
