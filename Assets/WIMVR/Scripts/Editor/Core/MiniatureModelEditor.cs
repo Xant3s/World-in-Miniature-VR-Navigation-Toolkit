@@ -69,6 +69,7 @@ namespace WIMVR {
 
             root.Q<ObjectField>("player-representation").objectType = typeof(GameObject);   // Hotfix until 2020.1
             root.Q<ObjectField>("destination-indicator").objectType = typeof(GameObject);   // Hotfix until 2020.1
+            root.Q<FloatSlider>("scale-factor").RegisterCallback<FocusOutEvent>(e => WIMGenerator.GenerateNewWIM(WIM));
 
             root.Q<VisualElement>("expand-colliders-container").Add(new IMGUIContainer(() => {
                 if(!WIM.Configuration) return;
@@ -91,7 +92,7 @@ namespace WIMVR {
             root.Q<HelpBox>("destination-selection-method-info").SetDisplay(!destinationSelectionTouchAvailable);
             root.Q<FloatField>("double-tap-interval").SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
 
-            root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e 
+            root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e
                 => root.schedule.Execute(()=>WIMGenerator.ConfigureWIM(WIM)));  // Delay so that newValue is set on execution.
 
             var transparencySliderRoot = root.Q<FloatSlider>("transparency");
