@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 [assembly: UxmlNamespacePrefix("WIMVR", "WIM")]
 
 
-namespace WIMVR.Editor.Util {
+namespace WIMVR {
     /// <summary>
     /// Custom UIElement. A float slider similar to the IMGUI element.
     /// </summary>

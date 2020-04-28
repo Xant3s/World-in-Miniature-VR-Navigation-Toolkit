@@ -7,9 +7,9 @@ using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Occlusion_Handling;
 using WIMVR.Util;
+
 
 namespace WIMVR.Editor.Features {
     /// <summary>
@@ -62,14 +62,14 @@ namespace WIMVR.Editor.Features {
             root.Q<VisualElement>("cutout-view-settings").SetDisplay(config && config.OcclusionHandlingMethod == OcclusionHandlingMethod.CutoutView);
 
             if(config) {
-                occlusionHandlingMethod.RegisterValueChangedCallback(e 
+                occlusionHandlingMethod.RegisterValueChangedCallback(e
                     => root.schedule.Execute(()=>WIMGenerator.ConfigureWIM(WIM)));
                 var cutoutLightColor = root.Q<ColorField>("cutout-light-color");
                 cutoutLightColor.SetDisplay(config.ShowCutoutLight);
                 root.Q<Toggle>("show-cutout-light").RegisterValueChangedCallback(e => cutoutLightColor.SetDisplay(e.newValue));
                 root.Bind(new SerializedObject(config));
             }
-           
+
             container.Add(root);
             root.Bind(new SerializedObject(occlusionHandling));
         }

@@ -5,8 +5,8 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Travel_Preview_Animation;
+
 
 namespace WIMVR.Editor.Features {
     /// <summary>
