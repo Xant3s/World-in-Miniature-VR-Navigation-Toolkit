@@ -3,14 +3,16 @@
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Core;
+using WIMVR.Features.Preview_Screen;
 
-
-namespace WIMVR {
+namespace WIMVR.Editor.Features {
     /// <summary>
     /// Custom inspector.
     /// </summary>
     [CustomEditor(typeof(PreviewScreen))]
-    public class PreviewScreenEditor : Editor {
+    public class PreviewScreenEditor : UnityEditor.Editor {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             ref var config = ref ((PreviewScreen) target).Config;

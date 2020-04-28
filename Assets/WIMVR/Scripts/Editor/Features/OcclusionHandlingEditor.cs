@@ -5,14 +5,18 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Core;
+using WIMVR.Editor.Util;
+using WIMVR.Features.Occlusion_Handling;
+using WIMVR.Util;
 
-
-namespace WIMVR {
+namespace WIMVR.Editor.Features {
     /// <summary>
     /// Custom inspector.
     /// </summary>
     [CustomEditor(typeof(OcclusionHandling))]
-    public class OcclusionHandlingEditor : Editor {
+    public class OcclusionHandlingEditor : UnityEditor.Editor {
         private MiniatureModel WIM;
 
         public override void OnInspectorGUI() {

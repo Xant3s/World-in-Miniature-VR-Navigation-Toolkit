@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Occlusion_Handling {
     /// <summary>
     /// Updates the capsule mask that is used to hide parts of the miniature model.
     /// </summary>

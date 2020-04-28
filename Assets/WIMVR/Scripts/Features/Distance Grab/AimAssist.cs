@@ -1,8 +1,10 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features.Distance_Grab {
     /// <summary>
     /// Adds a laser pointer to hand to make it easier to aim using distance grabbing.
     /// </summary>

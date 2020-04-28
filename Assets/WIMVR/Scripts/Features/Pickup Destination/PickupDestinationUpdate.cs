@@ -3,8 +3,11 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
+using WIMVR.Input;
 
-namespace WIMVR {
+namespace WIMVR.Features.Pickup_Destination {
     /// <summary>
     /// Can be used to pickup the destination indicator again to choose a new destination.
     /// </summary>

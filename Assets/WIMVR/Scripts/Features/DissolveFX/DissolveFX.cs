@@ -3,8 +3,7 @@
 using System.Collections;
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.DissolveFX {
     /// <summary>
     /// Adds a dissolve-resolve effect when respawning miniature model.
     /// </summary>

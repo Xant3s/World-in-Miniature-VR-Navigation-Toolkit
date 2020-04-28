@@ -3,14 +3,17 @@
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Core;
+using WIMVR.Editor.Util;
+using WIMVR.Features.Travel_Preview_Animation;
 
-
-namespace WIMVR {
+namespace WIMVR.Editor.Features {
     /// <summary>
     /// Custom inspector.
     /// </summary>
     [CustomEditor(typeof(TravelPreviewAnimation))]
-    public class TravelPreviewAnimationEditor : Editor {
+    public class TravelPreviewAnimationEditor : UnityEditor.Editor {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             ref var config = ref ((TravelPreviewAnimation)target).Config;

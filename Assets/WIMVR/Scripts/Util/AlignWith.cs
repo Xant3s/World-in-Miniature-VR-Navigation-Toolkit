@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Align gameobject with target (position and orientation).
     /// </summary>

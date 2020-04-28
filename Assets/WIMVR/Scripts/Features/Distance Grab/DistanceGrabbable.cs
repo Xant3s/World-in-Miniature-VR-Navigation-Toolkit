@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Features.Distance_Grab {
     /// <summary>
     /// Makes object distance grabbable.
     /// </summary>

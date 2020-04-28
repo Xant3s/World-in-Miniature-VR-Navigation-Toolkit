@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Preview_Screen {
     /// <summary>
     /// The preview screen data. Modified at runtime.
     /// </summary>

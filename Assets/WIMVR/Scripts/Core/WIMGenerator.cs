@@ -7,9 +7,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
+using WIMVR.Util;
+using MathUtils = WIMVR.Util.MathUtils;
 using Object = UnityEngine.Object;
 
-namespace WIMVR {
+namespace WIMVR.Core {
     /// <summary>
     /// Generates the miniature model by cloning the actual level etc.
     /// </summary>

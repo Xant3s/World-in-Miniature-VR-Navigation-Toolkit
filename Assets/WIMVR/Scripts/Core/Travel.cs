@@ -1,9 +1,10 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Features;
+using WIMVR.Util;
 
-
-namespace WIMVR {
+namespace WIMVR.Core {
     /// <summary>
     /// Defines how the player is moved to the selected destination.
     /// </summary>

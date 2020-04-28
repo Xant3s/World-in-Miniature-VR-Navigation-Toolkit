@@ -3,8 +3,11 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using WIMVR.Core;
+using WIMVR.Util;
+using WIMVR.Input;
 
-namespace WIMVR {
+namespace WIMVR.Features {
     /// <summary>
     /// Can be used to select a destination by touching it with the index finger and pressing a button.
     /// To confirm another button has to be pressed.
@@ -48,7 +51,7 @@ namespace WIMVR {
         }
 
         private void DestinationSelection() {
-            if (config.DestinationSelectionMethod != WIMVR.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != global::WIMVR.Util.DestinationSelection.Touch) return;
             SelectDestination();
         }
 
@@ -113,7 +116,7 @@ namespace WIMVR {
             if (!config) config = WIM.Configuration;
             if (!data || !config) return;
             if (!data.DestinationIndicatorInWIM) return;
-            if (config.DestinationSelectionMethod != WIMVR.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != global::WIMVR.Util.DestinationSelection.Touch) return;
 
             // Thumbstick input.
             Vector2 inputRotation = axis;
@@ -132,7 +135,7 @@ namespace WIMVR {
 
         private void ConfirmTeleport() {
             if (!Application.isPlaying) return;
-            if (config.DestinationSelectionMethod != WIMVR.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != global::WIMVR.Util.DestinationSelection.Touch) return;
             if (!data.DestinationIndicatorInLevel) return;
             WIM.ConfirmTravel();
         }

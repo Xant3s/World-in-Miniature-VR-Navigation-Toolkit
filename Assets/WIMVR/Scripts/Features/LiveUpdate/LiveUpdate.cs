@@ -1,9 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.LiveUpdate {
     /// <summary>
     /// Monitors the full-sized level for any changes.
     /// Automatically apply changes to miniature model.

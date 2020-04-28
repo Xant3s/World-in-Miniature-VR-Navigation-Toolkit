@@ -2,8 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Features.Pickup_Destination;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features {
    /// <summary>
    /// Displays a player representation in the miniature model. Used to indicate the player's position and orientation in the virtual environment.
    /// </summary>

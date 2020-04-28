@@ -2,9 +2,9 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
 
-
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Detects whether object is being picked up and calls callbacks.
     /// What exactly should happen and how the object is picked up must be specified by callbacks.

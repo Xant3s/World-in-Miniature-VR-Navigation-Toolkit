@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Path_Trace {
     /// <summary>
     /// The path trace configuration. Modified via GUI.
     /// </summary>

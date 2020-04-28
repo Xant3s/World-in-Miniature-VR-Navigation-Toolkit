@@ -2,8 +2,10 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Features.Pickup_Destination;
 
-namespace WIMVR {
+namespace WIMVR.Features.Travel_Preview_Animation {
     /// <summary>
     /// Can be used to display an preview animation of the travel phase.
     /// </summary>

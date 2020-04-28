@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Features.Scaling {
     /// <summary>
     /// Scaling configuration. Modified via GUI.
     /// </summary>

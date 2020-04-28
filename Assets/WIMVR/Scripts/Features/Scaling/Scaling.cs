@@ -2,8 +2,10 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features.Scaling {
     /// <summary>
     /// Allows to scale the miniature model at runtime.
     /// </summary>

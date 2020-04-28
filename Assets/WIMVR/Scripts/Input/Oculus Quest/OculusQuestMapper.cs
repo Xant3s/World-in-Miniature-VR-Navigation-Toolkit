@@ -1,10 +1,11 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Input.Oculus_Quest {
     /// <summary>
     /// Provides input mapping for Oculus Quest.
     /// Will be eventually replaced by the new Unity input manager.

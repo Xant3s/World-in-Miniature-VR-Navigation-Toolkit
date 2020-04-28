@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Scrolling {
     /// <summary>
     /// The scrolling configuration. Modified via GUI.
     /// </summary>

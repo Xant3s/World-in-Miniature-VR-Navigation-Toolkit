@@ -1,8 +1,10 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
+using WIMVR.Input;
 
-namespace WIMVR {
+namespace WIMVR.Features {
     /// <summary>
     /// Detect the player's arm length at the start of the application.
     /// Therefore, the player has to fully extend the dominant arm and press a button.

@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Scrolling {
     /// <summary>
     /// Updates the box mask that is used to hide parts of the miniature model.
     /// </summary>

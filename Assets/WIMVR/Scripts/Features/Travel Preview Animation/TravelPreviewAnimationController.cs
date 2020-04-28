@@ -2,8 +2,9 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features.Travel_Preview_Animation {
     /// <summary>
     /// Plays the travel preview animation.
     /// </summary>

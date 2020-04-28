@@ -2,8 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Features.Pickup_Destination;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features.Preview_Screen {
     /// <summary>
     /// Can be used to display a screen next to the miniature model that shows the selected destination.
     /// </summary>

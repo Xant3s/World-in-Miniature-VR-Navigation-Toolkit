@@ -2,14 +2,16 @@
 
 using UnityEditor;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Core;
+using WIMVR.Features.LiveUpdate;
 
-
-namespace WIMVR {
+namespace WIMVR.Editor.Features {
     /// <summary>
     /// Custom inspector.
     /// </summary>
     [CustomEditor(typeof(LiveUpdate))]
-    public class LiveUpdateEditor : Editor {
+    public class LiveUpdateEditor : UnityEditor.Editor {
         private void OnEnable() {
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Basic");
         }

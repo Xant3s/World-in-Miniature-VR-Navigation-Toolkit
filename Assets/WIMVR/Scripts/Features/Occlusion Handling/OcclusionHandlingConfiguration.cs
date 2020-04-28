@@ -1,9 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Util;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Occlusion_Handling {
     /// <summary>
     /// The occlusion handling configuration. Modified via GUI.
     /// </summary>

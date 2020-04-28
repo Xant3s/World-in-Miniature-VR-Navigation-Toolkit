@@ -4,14 +4,16 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Core;
+using WIMVR.Features.Scrolling;
 
-
-namespace WIMVR {
+namespace WIMVR.Editor.Features {
     /// <summary>
     /// Custom inspector.
     /// </summary>
     [CustomEditor(typeof(Scrolling))]
-    public class ScrollingEditor : Editor {
+    public class ScrollingEditor : UnityEditor.Editor {
         private MiniatureModel WIM;
 
         public override void OnInspectorGUI() {

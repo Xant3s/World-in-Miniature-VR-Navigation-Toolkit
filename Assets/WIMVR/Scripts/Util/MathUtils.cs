@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// A collection of math utils.
     /// </summary>

@@ -2,9 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Features;
+using WIMVR.Util;
+using WIMVR.Input;
 
-
-namespace WIMVR {
+namespace WIMVR.Core {
     /// <summary>
     /// The core miniature model component. Turns this gameobject into a miniature model.
     /// Add additional feature components to modify functionality.

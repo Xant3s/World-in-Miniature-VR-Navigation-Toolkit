@@ -2,15 +2,17 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Input;
 
-namespace WIMVR {
+namespace WIMVR.Features {
     /// <summary>
     /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Respawn : MonoBehaviour {
-        public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, 
+        public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform,
             bool maintainTransformRelativeToPlayer);
 
         public static bool RemoveOldWIMLevel = true;

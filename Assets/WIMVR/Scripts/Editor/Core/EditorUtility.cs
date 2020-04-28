@@ -7,8 +7,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Util;
 
-namespace WIMVR {
+namespace WIMVR.Editor.Core {
     /// <summary>
     /// Used by MiniatureModelEditor. Features can add additional UI utilizing callbacks.
     /// </summary>

@@ -3,9 +3,11 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
+using WIMVR.Input;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Preview_Screen {
     /// <summary>
     /// Closes the preview screen when player enters collider with index finger.
     /// </summary>

@@ -1,9 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
 
-
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Destroys gameobject if there is no destination indicator in the miniature model.
     /// </summary>

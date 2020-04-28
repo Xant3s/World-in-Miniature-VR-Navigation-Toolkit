@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// A collection of extension methods for the Transform component.
     /// </summary>

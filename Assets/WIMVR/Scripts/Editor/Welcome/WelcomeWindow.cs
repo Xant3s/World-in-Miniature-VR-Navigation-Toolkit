@@ -6,8 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-
-namespace WIMVR {
+namespace WIMVR.Editor.Welcome {
     /// <summary>
     /// The welcome window visible at the first start.
     /// </summary>

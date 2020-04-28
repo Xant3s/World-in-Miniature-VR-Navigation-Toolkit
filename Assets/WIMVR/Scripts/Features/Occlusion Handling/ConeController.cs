@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Occlusion_Handling {
     /// <summary>
     /// Updates the cone mask that is used to hides parts of the miniature model.
     /// </summary>

@@ -2,16 +2,20 @@
 
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Core;
+using WIMVR.Editor.Util;
+using WIMVR.Features;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Editor.Core {
     /// <summary>
     /// Custom inspector. Displays only relevant settings.
     /// </summary>
     [CustomEditor(typeof(MiniatureModel))]
-    public class MiniatureModelEditor : Editor {
+    public class MiniatureModelEditor : UnityEditor.Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();
         private static GUIStyle headerStyle;
         private static IDictionary<string, int> separators = new Dictionary<string, int>();

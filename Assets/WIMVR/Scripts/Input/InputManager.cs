@@ -2,8 +2,9 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Input {
     /// <summary>
     /// A platform independent input manager.
     /// For each supported platform, a platform specific input mapper has to be provided.

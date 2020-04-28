@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Core {
     /// <summary>
     /// Data describing the current miniature model state. Modified at runtime.
     /// </summary>

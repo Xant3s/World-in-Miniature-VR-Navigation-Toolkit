@@ -1,8 +1,10 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features.Distance_Grab {
     /// <summary>
     /// Can be used to pull distance grabbable objects that are not in range for regular grabbing.
     /// </summary>

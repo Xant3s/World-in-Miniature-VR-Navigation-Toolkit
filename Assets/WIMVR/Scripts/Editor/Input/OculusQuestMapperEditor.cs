@@ -5,13 +5,15 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Input;
+using WIMVR.Input.Oculus_Quest;
 
-namespace WIMVR {
+namespace WIMVR.Editor.Input {
     /// <summary>
     /// Custom inspector.
     /// </summary>
     [CustomEditor(typeof(OculusQuestMapper))]
-    public class OculusQuestMapperEditor : Editor {
+    public class OculusQuestMapperEditor : UnityEditor.Editor {
         private OculusQuestMapper mapper;
         private VisualElement root;
         private VisualTreeAsset visualTree;

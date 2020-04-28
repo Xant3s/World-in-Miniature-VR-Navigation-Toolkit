@@ -2,9 +2,10 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Util;
+using WIMVR.Input;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Preview_Screen {
     /// <summary>
     /// Manages interactions with preview screen i.e. vibration on touch and pickup.
     /// </summary>

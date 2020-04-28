@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Gameobject will always face the main camera.
     /// </summary>

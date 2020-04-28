@@ -1,8 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
 
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Converts between world space (full-sized level) and miniature model space.
     /// </summary>

@@ -2,9 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
+using WIMVR.Input;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Preview_Screen {
     /// <summary>
     /// Used to open the preview screen when the player grabs the destination indicator's view cone.
     /// </summary>

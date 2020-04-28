@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WIMVR {
+namespace WIMVR.Input {
     /// <summary>
     /// Stores platform dependent input mapping. Serializable.
     /// For each supported platform, a platform specific input mapper has to be provided.

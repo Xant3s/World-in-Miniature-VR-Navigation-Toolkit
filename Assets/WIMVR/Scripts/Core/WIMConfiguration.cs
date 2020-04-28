@@ -1,8 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Core {
     /// <summary>
     /// The miniature model configuration. Modified via GUI.
     /// </summary>

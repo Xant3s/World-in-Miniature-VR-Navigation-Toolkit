@@ -3,8 +3,11 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
+using WIMVR.Input;
 
-namespace WIMVR {
+namespace WIMVR.Features.Scrolling {
     /// <summary>
     /// Allows to scroll the visible part of the miniature model at runtime.
     /// </summary>

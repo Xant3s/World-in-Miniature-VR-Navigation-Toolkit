@@ -3,9 +3,11 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
+using WIMVR.Input;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Pickup_Destination {
     /// <summary>
     /// Can be used to select a destination by picking up the player
     /// representation and placing is at the desired location in the miniature model.

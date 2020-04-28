@@ -2,8 +2,10 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features {
     /// <summary>
     /// Manages the destination indicator in the miniature model.
     /// </summary>
@@ -60,7 +62,7 @@ namespace WIMVR {
             Assert.IsNotNull(data.WIMLevelTransform);
             Assert.IsNotNull(config.DestinationIndicator);
             data.DestinationIndicatorInWIM = Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
-            
+
             data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
             OnSpawnDestinationIndicatorInWIM?.Invoke(config, data);
             return data.DestinationIndicatorInWIM;

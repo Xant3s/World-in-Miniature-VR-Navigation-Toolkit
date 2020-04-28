@@ -3,9 +3,9 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Util;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Path_Trace {
     /// <summary>
     /// Manages the path trace effect.
     /// </summary>

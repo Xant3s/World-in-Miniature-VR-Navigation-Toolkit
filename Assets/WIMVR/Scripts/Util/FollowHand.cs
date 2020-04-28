@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Transform follows specified target.
     /// </summary>

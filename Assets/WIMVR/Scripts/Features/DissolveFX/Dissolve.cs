@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.DissolveFX {
     /// <summary>
     /// Plays the dissolve/resolve effect.
     /// </summary>

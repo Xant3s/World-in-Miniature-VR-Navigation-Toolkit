@@ -1,8 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
 
-namespace WIMVR {
+namespace WIMVR.Features.LiveUpdate {
     /// <summary>
     /// Listens for changes to the transform component.
     /// Triggers an update to the miniature model if any changes are detected.

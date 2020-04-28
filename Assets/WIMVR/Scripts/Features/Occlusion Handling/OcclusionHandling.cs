@@ -2,8 +2,10 @@
 
 using UnityEditor;
 using UnityEngine;
+using WIMVR.Core;
+using WIMVR.Util;
 
-namespace WIMVR {
+namespace WIMVR.Features.Occlusion_Handling {
     /// <summary>
     /// Adds occulusion handling strategies.
     /// To Deal with occlusion, parts of the miniature model are hidden.

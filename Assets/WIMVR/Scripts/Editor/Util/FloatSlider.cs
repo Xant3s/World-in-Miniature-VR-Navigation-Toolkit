@@ -2,14 +2,14 @@
 
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 
 [assembly: UxmlNamespacePrefix("WIMVR", "WIM")]
 
 
-namespace WIMVR {
+namespace WIMVR.Editor.Util {
     /// <summary>
     /// Custom UIElement. A float slider similar to the IMGUI element.
     /// </summary>

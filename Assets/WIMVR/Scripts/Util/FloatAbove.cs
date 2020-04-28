@@ -3,8 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-
-namespace WIMVR {
+namespace WIMVR.Util {
     /// <summary>
     /// Set position to float above target using offset.
     /// </summary>

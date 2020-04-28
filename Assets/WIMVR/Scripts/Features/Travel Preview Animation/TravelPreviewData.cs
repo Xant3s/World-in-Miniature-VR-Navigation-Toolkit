@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-
-namespace WIMVR {
+namespace WIMVR.Features.Travel_Preview_Animation {
     /// <summary>
     /// The travel preview animation data. Modified at runtime.
     /// </summary>

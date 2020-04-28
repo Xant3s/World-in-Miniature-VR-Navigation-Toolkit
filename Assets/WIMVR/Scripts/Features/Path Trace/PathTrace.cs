@@ -2,8 +2,9 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
 
-namespace WIMVR {
+namespace WIMVR.Features.Path_Trace {
     /// <summary>
     /// Can be used to display a path trace after the travel phase.
     /// Used as orientation aid.
