@@ -1,11 +1,14 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 
 namespace ST.Utils {
     public sealed class CustomBuildPipeline {
+        private static readonly string androidBuildPathPref = "ViaVRDemonstrator2_AndroidBuildPath";
+
+
         [MenuItem("Build/Build Oculus Quest")]
         private static void BuildQuest() {
             // ReSharper disable once IntroduceOptionalParameters.Local
@@ -23,14 +26,26 @@ namespace ST.Utils {
             BuildQuest(buildOptions);
         }
 
+        [MenuItem("Build/Reset Build Paths")]
+        private static void ResetBuildPaths() {
+            EditorPrefs.SetString(androidBuildPathPref, string.Empty);
+            Debug.Log("Build path preferences have been reset. You will be prompted next time you build.");
+        }
+
         private static void BuildQuest(BuildOptions buildOptions, string path = "") {
             if(string.IsNullOrEmpty(path)) {
-                path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
+                path = EditorPrefs.GetString(androidBuildPathPref);
+                if(string.IsNullOrEmpty(path)) {
+                    path = EditorUtility.SaveFolderPanel("Choose Location of Built Game", "", "");
+                }
             }
             if(string.IsNullOrEmpty(path)) return;
             var scenes = EditorBuildSettings.scenes;
             var fileName = Application.productName;
             var filePath = $"{path}/{fileName}.apk";
+
+            // Save path to editor prefs.
+            EditorPrefs.SetString(androidBuildPathPref, path);
 
             // Build player.
             BuildPipeline.BuildPlayer(scenes, filePath, BuildTarget.Android, buildOptions);
