@@ -21,24 +21,24 @@ namespace WIMVR.Features {
 
 
         private void Start() {
-            mainCameraTransform = Camera.main.transform;
-            playerTransform = GameObject.Find("OVRCameraRig").transform;
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-            if(!WIM.Configuration) return;
-            converter = WIM.Converter;
-            Assert.IsNotNull(playerTransform);
-            Assert.IsNotNull(converter);
+            //mainCameraTransform = Camera.main.transform;
+            //playerTransform = GameObject.Find("OVRCameraRig").transform;
+            //WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            //Assert.IsNotNull(WIM);
+            //if(!WIM.Configuration) return;
+            //converter = WIM.Converter;
+            //Assert.IsNotNull(playerTransform);
+            //Assert.IsNotNull(converter);
         }
 
         private void OnEnable() {
-            MiniatureModel.OnInit += setup;
-            MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
+            //MiniatureModel.OnInit += setup;
+            //MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnInit -= setup;
-            MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
+            //MiniatureModel.OnInit -= setup;
+            //MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
         }
 
         private void setup(WIMConfiguration config, WIMData data) {

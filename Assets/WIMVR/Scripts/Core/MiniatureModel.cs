@@ -12,7 +12,7 @@ namespace WIMVR.Core {
     /// Add additional feature components to modify functionality.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(OVRGrabbable))]
+    //[RequireComponent(typeof(OVRGrabbable))]
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
     [ExecuteAlways]
@@ -70,66 +70,66 @@ namespace WIMVR.Core {
         }
 
         private void Start() {
-            if (!Application.isPlaying) return;
-            if(!Configuration) return;
-            Data = ScriptableObject.CreateInstance<WIMData>();
-            Assert.IsNotNull(Data);
-            travelStrategy = new InstantTravel();
-            Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
-            Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
-            Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
-            Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
-            Data.OVRPlayerController = GameObject.FindWithTag("Player")?.transform;
-            Data.WIMLevelTransform = transform.Find("WIM Level");
-            Assert.IsNotNull(Data.HMDTransform);
-            Assert.IsNotNull(Data.FingertipIndexR);
-            Assert.IsNotNull(Configuration.PlayerRepresentation);
-            Assert.IsNotNull(Configuration.DestinationIndicator);
-            Assert.IsNotNull(Data.OVRPlayerController);
-            Assert.IsNotNull(Data.LevelTransform);
-            Assert.IsNotNull(Data.PlayerTransform);
-            Assert.IsNotNull(Data.WIMLevelTransform);
-            Converter = new WIMSpaceConverterImpl(Configuration, Data);
-            OnInit?.Invoke(Configuration, Data);
-            OnLateInit?.Invoke(Configuration, Data);
+            //if (!Application.isPlaying) return;
+            //if(!Configuration) return;
+            //Data = ScriptableObject.CreateInstance<WIMData>();
+            //Assert.IsNotNull(Data);
+            //travelStrategy = new InstantTravel();
+            //Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
+            //Data.PlayerTransform = GameObject.Find("OVRCameraRig")?.transform;
+            //Data.HMDTransform = GameObject.Find("CenterEyeAnchor")?.transform;
+            //Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
+            //Data.OVRPlayerController = GameObject.FindWithTag("Player")?.transform;
+            //Data.WIMLevelTransform = transform.Find("WIM Level");
+            //Assert.IsNotNull(Data.HMDTransform);
+            //Assert.IsNotNull(Data.FingertipIndexR);
+            //Assert.IsNotNull(Configuration.PlayerRepresentation);
+            //Assert.IsNotNull(Configuration.DestinationIndicator);
+            //Assert.IsNotNull(Data.OVRPlayerController);
+            //Assert.IsNotNull(Data.LevelTransform);
+            //Assert.IsNotNull(Data.PlayerTransform);
+            //Assert.IsNotNull(Data.WIMLevelTransform);
+            //Converter = new WIMSpaceConverterImpl(Configuration, Data);
+            //OnInit?.Invoke(Configuration, Data);
+            //OnLateInit?.Invoke(Configuration, Data);
         }
 
         private void Update() {
             if (!Application.isPlaying) return;
             if(!Configuration) return;
-            OnUpdate?.Invoke(Configuration, Data);
+            //OnUpdate?.Invoke(Configuration, Data);
         }
 
         private void PickupThumbTouchUp() {
             if(!Configuration) return;
-            OnPickupThumbTouchUp?.Invoke(Configuration, Data);
+            //OnPickupThumbTouchUp?.Invoke(Configuration, Data);
         }
 
         private void OnEnable() {
-            InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupIndexButtonTooltip);
-            InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupIndexButtonTooltip);
-            InputManager.RegisterAction(pickupIndexActionName, PickupIndexButton);
-            InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupThumbButtonTooltip);
-            InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip);
-            InputManager.RegisterTouchAction(pickupThumbActionName2, PickupThumbTouchUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip2);
-            InputManager.RegisterAction(grabLActionName, LeftGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabLTooltip);
-            InputManager.RegisterAction(grabLActionName, LeftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabLTooltip);
-            InputManager.RegisterAction(grabRActionName, RightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabRTooltip);
-            InputManager.RegisterAction(grabRActionName, RightGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabRTooltip);
-            if(!Application.isPlaying) {
-                gameObject.tag = "WIM";
-                gameObject.layer = LayerMask.NameToLayer("WIM");
-                GetComponent<Rigidbody>().useGravity = false;
-                if(name.Equals("GameObject")) name = "Miniature Model";
-            }
+            //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupIndexButtonTooltip);
+            //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupIndexButtonTooltip);
+            //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButton);
+            //InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupThumbButtonTooltip);
+            //InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip);
+            //InputManager.RegisterTouchAction(pickupThumbActionName2, PickupThumbTouchUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip2);
+            //InputManager.RegisterAction(grabLActionName, LeftGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabLTooltip);
+            //InputManager.RegisterAction(grabLActionName, LeftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabLTooltip);
+            //InputManager.RegisterAction(grabRActionName, RightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabRTooltip);
+            //InputManager.RegisterAction(grabRActionName, RightGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabRTooltip);
+            //if(!Application.isPlaying) {
+            //    gameObject.tag = "WIM";
+            //    gameObject.layer = LayerMask.NameToLayer("WIM");
+            //    GetComponent<Rigidbody>().useGravity = false;
+            //    if(name.Equals("GameObject")) name = "Miniature Model";
+            //}
         }
 
         private void OnDisable() {
-            InputManager.UnregisterAction(pickupIndexActionName);
-            InputManager.UnregisterAction(pickupThumbActionName);
-            InputManager.UnregisterAction(pickupThumbActionName2);
-            InputManager.UnregisterAction(grabLActionName);
-            InputManager.UnregisterAction(grabRActionName);
+            //InputManager.UnregisterAction(pickupIndexActionName);
+            //InputManager.UnregisterAction(pickupThumbActionName);
+            //InputManager.UnregisterAction(pickupThumbActionName2);
+            //InputManager.UnregisterAction(grabLActionName);
+            //InputManager.UnregisterAction(grabRActionName);
         }
 
         private void PickupIndexButtonDown() {

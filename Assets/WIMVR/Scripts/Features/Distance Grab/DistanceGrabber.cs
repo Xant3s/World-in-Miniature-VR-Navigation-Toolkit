@@ -75,10 +75,10 @@ namespace WIMVR.Features.Distance_Grab {
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
                 var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
-                if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
-                    grabStartedThisFrame = false;
-                    return;
-                }
+                //if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
+                //    grabStartedThisFrame = false;
+                //    return;
+                //}
                 if(!grabStartedThisFrame && grabButtonPressed) return;
                 grabbable.HighlightFX = true;
                 grabbable.IsBeingGrabbed = grabButtonPressed;

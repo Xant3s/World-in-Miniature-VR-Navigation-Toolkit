@@ -130,7 +130,7 @@ namespace WIMVR.Core {
             foreach (Transform child in WIMLevel) {
                 child.gameObject.layer = WIMLayer;
                 Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
-                Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
+                //Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
                 var renderer = child.GetComponent<Renderer>();
                 if (renderer) {
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
