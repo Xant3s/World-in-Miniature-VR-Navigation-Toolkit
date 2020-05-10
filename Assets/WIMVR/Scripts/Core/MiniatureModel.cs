@@ -44,6 +44,7 @@ namespace WIMVR.Core {
         private TravelStrategy travelStrategy;
         public static event WIMAction OnInit;
         public static event WIMAction OnInitHand;
+        public static event WIMAction OnLateInitHand;
         public static event WIMAction OnLateInit;
         public static event WIMAction OnUpdate;
         public static event WIMAction OnNewDestinationSelected;
@@ -94,7 +95,6 @@ namespace WIMVR.Core {
             Data.OVRPlayerController = GameObject.FindWithTag("Player")?.transform;
             Data.WIMLevelTransform = transform.Find("WIM Level");
             Assert.IsNotNull(Data.HMDTransform);
-            //Assert.IsNotNull(Data.FingertipIndexR);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
             Assert.IsNotNull(Configuration.DestinationIndicator);
             Assert.IsNotNull(Data.OVRPlayerController);
@@ -103,7 +103,7 @@ namespace WIMVR.Core {
             Assert.IsNotNull(Data.WIMLevelTransform);
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
-            //OnLateInit?.Invoke(Configuration, Data);
+            OnLateInit?.Invoke(Configuration, Data);
         }
 
         public void ReInitWIM() {
@@ -115,6 +115,7 @@ namespace WIMVR.Core {
         public void HandSpawned() {
             if(++numberOfHandsSpawned > 1) {
                 OnInitHand?.Invoke(Configuration, Data);
+                OnLateInitHand?.Invoke(Configuration, Data);
             }
         }
 
@@ -128,11 +129,6 @@ namespace WIMVR.Core {
             if(!Configuration) return;
             //OnPickupThumbTouchUp?.Invoke(Configuration, Data);
         }
-
-        //public void OnTest(InputValue value) {
-        //    Debug.Log("Test");
-        //    Debug.Log(value.Get<Vector2>());
-        //}
 
         private void OnEnable() {
             //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupIndexButtonTooltip);

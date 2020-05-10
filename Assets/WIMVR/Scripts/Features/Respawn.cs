@@ -46,6 +46,9 @@ namespace WIMVR.Features {
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
             WIMLevel.tag = "WIM Level Old";
+            Assert.IsNotNull(data);
+            Assert.IsNotNull(data.PlayerRepresentationTransform);
+            Assert.IsNotNull(data.PlayerRepresentationTransform.parent);
             data.PlayerRepresentationTransform.parent = null;
             data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
@@ -107,7 +110,7 @@ namespace WIMVR.Features {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnLateInit += StartRespawn;
+            MiniatureModel.OnLateInitHand += StartRespawn;
             if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -116,7 +119,7 @@ namespace WIMVR.Features {
         }
 
         private void OnDisable() {
-            MiniatureModel.OnLateInit -= StartRespawn;
+            MiniatureModel.OnLateInitHand -= StartRespawn;
         }
 
         private void StartRespawn(WIMConfiguration config, WIMData data) {
