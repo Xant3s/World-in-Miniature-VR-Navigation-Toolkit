@@ -1,8 +1,11 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 
 namespace WIMVR.Core {
@@ -12,11 +15,19 @@ namespace WIMVR.Core {
 
         private InputDevice targetDevice;
         private GameObject spawnedHandModel;
+        private GameObject WIM;
         private Animator handAnimator;
 
 
+        private void Awake() {
+            spawnedHandModel = Instantiate(handModelPrefab, transform);
+            handAnimator = spawnedHandModel.GetComponent<Animator>();
+            WIM = GameObject.FindWithTag("WIM");
+        }
+
         private void Start() {
             TryInitialize();
+            WIM.SendMessage("HandSpawned");
         }
 
         private void TryInitialize() {
@@ -25,8 +36,7 @@ namespace WIMVR.Core {
 
             if(devices.Count > 0) {
                 targetDevice = devices[0];
-                spawnedHandModel = Instantiate(handModelPrefab, transform);
-                handAnimator = spawnedHandModel.GetComponent<Animator>();
+                WIM.SendMessage("ReInitWIM");
             }
         }
 

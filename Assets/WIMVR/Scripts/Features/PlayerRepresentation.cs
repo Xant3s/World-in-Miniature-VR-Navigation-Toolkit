@@ -21,24 +21,24 @@ namespace WIMVR.Features {
 
 
         private void Start() {
-            //mainCameraTransform = Camera.main.transform;
-            //playerTransform = GameObject.Find("OVRCameraRig").transform;
-            //WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            //Assert.IsNotNull(WIM);
-            //if(!WIM.Configuration) return;
-            //converter = WIM.Converter;
-            //Assert.IsNotNull(playerTransform);
-            //Assert.IsNotNull(converter);
+            mainCameraTransform = Camera.main.transform;
+            playerTransform = GameObject.FindWithTag("Player").transform;
+            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            Assert.IsNotNull(WIM);
+            if (!WIM.Configuration) return;
+            converter = WIM.Converter;
+            Assert.IsNotNull(playerTransform);
+            Assert.IsNotNull(converter);
         }
 
         private void OnEnable() {
-            //MiniatureModel.OnInit += setup;
-            //MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
+            MiniatureModel.OnInitHand += setup;
+            MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
         }
 
         private void OnDisable() {
-            //MiniatureModel.OnInit -= setup;
-            //MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
+            MiniatureModel.OnInitHand -= setup;
+            MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
         }
 
         private void setup(WIMConfiguration config, WIMData data) {
@@ -48,8 +48,12 @@ namespace WIMVR.Features {
             Destroy(tmp.gameObject);
             data.PlayerRepresentationTransform = playerRepresentation;
             data.PlayerRepresentationTransform.transform.localScale = new Vector3(0.6155667f, 0.6155667f, 0.6155667f);
-            if(config.DestinationSelectionMethod == DestinationSelection.Pickup)
+            if(config.DestinationSelectionMethod == DestinationSelection.Pickup) {
+                Assert.IsNotNull(data.PlayerRepresentationTransform);
+                Assert.IsNotNull(config);
+                Assert.IsNotNull(data);
                 data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = config.DoubleTapInterval;
+            }
         }
 
         private void updatePlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {

@@ -98,13 +98,16 @@ namespace WIMVR.Features {
             if (RemoveOldWIMLevel) DestroyOldWIMLevel();
         }
 
+        public void OnRespawn() {
+            RespawnWIM(false);
+        }
+
         private static void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
 
         private void OnEnable() {
             MiniatureModel.OnLateInit += StartRespawn;
-            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
             if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -114,11 +117,6 @@ namespace WIMVR.Features {
 
         private void OnDisable() {
             MiniatureModel.OnLateInit -= StartRespawn;
-            InputManager.UnregisterAction(actionName);
-        }
-
-        private void StartRespawn() {
-            RespawnWIM(false);
         }
 
         private void StartRespawn(WIMConfiguration config, WIMData data) {

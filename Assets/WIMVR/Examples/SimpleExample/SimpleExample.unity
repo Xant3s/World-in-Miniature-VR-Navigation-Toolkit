@@ -1619,6 +1619,7 @@ GameObject:
   - component: {fileID: 460360203}
   - component: {fileID: 460360211}
   - component: {fileID: 460360206}
+  - component: {fileID: 460360248}
   - component: {fileID: 460360207}
   - component: {fileID: 460360238}
   - component: {fileID: 460360241}
@@ -2315,6 +2316,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8aa40e30cc8554ab1f0d512a0d810d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &460360248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460360202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+    type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b7477b37-cf57-421c-b3af-20373f66f2de
+    m_ActionName: Miniature Model/Test
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: XR
+  m_DefaultActionMap: Miniature Model
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &483032670
 GameObject:
   m_ObjectHideFlags: 0
@@ -4853,6 +4889,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1232922002}
   - component: {fileID: 1232922001}
+  - component: {fileID: 1232922004}
   m_Layer: 0
   m_Name: WIM Input Manager
   m_TagString: Untagged
@@ -4887,6 +4924,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1232922004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232922000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 616331c7b7291404e90277e685dba01b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1241056479
 GameObject:
   m_ObjectHideFlags: 0
@@ -5489,7 +5538,7 @@ GameObject:
   - component: {fileID: 1520019331}
   m_Layer: 10
   m_Name: XR Rig
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

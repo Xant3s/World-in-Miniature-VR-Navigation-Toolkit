@@ -48,8 +48,7 @@ namespace WIMVR.Features.Pickup_Destination {
             }
         }
 
-
-        private void Awake() {
+        private void Start() {
             thumb = GameObject.FindWithTag("ThumbR")?.transform;
             index = GameObject.FindWithTag("IndexR")?.transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
@@ -76,6 +75,8 @@ namespace WIMVR.Features.Pickup_Destination {
         }
 
         private void Update() {
+            Assert.IsNotNull(WIM);
+            Assert.IsNotNull(WIM.Configuration);
             var height = transform.localScale.y * WIM.Configuration.ScaleFactor;
             var capLowerCenter = transform.position - transform.up * height / 2.0f;
             var capUpperCenter = transform.position + transform.up * height / 2.0f;
@@ -85,7 +86,7 @@ namespace WIMVR.Features.Pickup_Destination {
             var prevIndexIsTouching = indexIsTouching;
             thumbIsTouching = colliders.Contains(thumbCol);
             indexIsTouching = colliders.Contains(indexCol);
-            if(!prevIndexIsTouching && indexIsTouching || 
+            if(!prevIndexIsTouching && indexIsTouching ||
                !prevThumbIsTouching && thumbIsTouching) Vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
             HightlightFX = thumbIsTouching || indexIsTouching;
