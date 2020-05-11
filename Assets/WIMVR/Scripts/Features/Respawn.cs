@@ -17,9 +17,6 @@ namespace WIMVR.Features {
 
         public static bool RemoveOldWIMLevel = true;
         public static Material materialForOldWIM;
-
-        private static readonly string actionName = "Respawn Button";
-        private static readonly string actionTooltip = "Button used to respawn the miniature model.";
         private WIMConfiguration config;
         private WIMData data;
         public static event RespawnAction OnEarlyRespawn;

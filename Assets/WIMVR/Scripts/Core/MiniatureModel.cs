@@ -107,7 +107,6 @@ namespace WIMVR.Core {
         }
 
         public void ReInitWIM() {
-            Debug.Log("ReInit WIM");
             Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
             Assert.IsNotNull(Data.FingertipIndexR);
         }

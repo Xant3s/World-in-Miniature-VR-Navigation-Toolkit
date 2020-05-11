@@ -20,6 +20,30 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "DestinationSelectionTouch",
+                    "type": "Button",
+                    "id": "a4f24501-8b29-4c9c-b839-bed52b42e955",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Confirm Travel",
+                    "type": "Button",
+                    "id": "934c9955-f001-460e-8f26-4348b3e0ba96",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Destination Rotation",
+                    "type": "Value",
+                    "id": "43c70a85-9362-4577-8294-01bb07331424",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -42,6 +66,39 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Respawn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1d10a82-ab4b-44dc-9023-c6adeebec74c",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "DestinationSelectionTouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "db0943c7-b2df-4d60-9749-950093515bef",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Confirm Travel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d03744c0-5526-456b-856a-70f836d5fe7c",
+                    "path": "<XRController>{RightHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Destination Rotation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
