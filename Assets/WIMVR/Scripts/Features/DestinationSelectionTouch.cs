@@ -41,7 +41,7 @@ namespace WIMVR.Features {
         }
 
         private void OnDestinationSelectionTouch() {
-            if (config.DestinationSelectionMethod != global::WIMVR.Util.DestinationSelection.Touch) return;
+            if (config.DestinationSelectionMethod != DestinationSelection.Touch) return;
             SelectDestination();
         }
 
