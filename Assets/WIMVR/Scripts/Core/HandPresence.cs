@@ -27,7 +27,12 @@ namespace WIMVR.Core {
 
         private void Start() {
             TryInitialize();
-            WIM.SendMessage("HandSpawned");
+            if(WIM) {
+                WIM.SendMessage("HandSpawned");
+            }
+            else {
+                Debug.LogWarning("No miniature model found in the scene.");
+            }
         }
 
         private void TryInitialize() {
@@ -36,7 +41,7 @@ namespace WIMVR.Core {
 
             if(devices.Count > 0) {
                 targetDevice = devices[0];
-                WIM.SendMessage("ReInitWIM");
+                if(WIM) WIM.SendMessage("ReInitWIM");
             }
         }
 
