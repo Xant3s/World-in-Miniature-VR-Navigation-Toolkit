@@ -1,86 +1,79 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.InputSystem;
 
 
 [RequireComponent(typeof(CharacterController))]
-public class MovementProvider : LocomotionProvider {
+public class MovementProvider : MonoBehaviour {
+    public const string playerMovementActionMapName = "Player Movement";
+    public const string directMovementActionName = "Direct Movement";
 
-    public float speed = 1f;
-    public float gravityMultiplier = 1f;
-    public List<XRController> controllers = null;
+    public InputActionAsset mappings;
+    public float movementSpeed = 1f;
+    public LayerMask groundLayer = 1;
 
-    private CharacterController characterController = null;
-    private GameObject head;
+    public InputAction action;
 
 
-    protected override void Awake() {
+
+    private CharacterController characterController;
+
+
+    private void Awake() {
         characterController = GetComponent<CharacterController>();
-        head = GetComponent<XRRig>().cameraGameObject;
     }
 
-    private void Start()
-    {
-        PositionController();
+    private void Start() {
+        if(mappings == null) Debug.Log("Movement provider requires input mapping.");
+        NotifyIfNoBinding();
+        BindAction();
     }
 
-    private void FixedUpdate()
-    {
-        PositionController();
-        CheckForInput();
-        ApplyGravity();
+    private void OnEnable() {
+        var action = GetAction();
+        if(action == null) return;
+        action.Enable();
     }
 
-    private void PositionController()
-    {
-        // Get the head in local, playspace ground
-        var headHeight = Mathf.Clamp(head.transform.localPosition.y, 1, 2);
-        characterController.height = headHeight;
-
-        // Cut in half, add skin
-        var newCenter = Vector3.zero;
-        newCenter.y = characterController.height / 2;
-        newCenter.y += characterController.skinWidth;
-
-        // Let's move the capsule in local space as well
-        newCenter.x = head.transform.localPosition.x;
-        newCenter.z = head.transform.localPosition.z;
-
-        // Apply
-        characterController.center = newCenter;
+    private void OnDisable() {
+        var action = GetAction();
+        if(action == null) return;
+        action.Disable();
     }
 
-    private void CheckForInput()
-    {
-        foreach(var controller in controllers) {
-            if(controller.enableInputActions)
-                CheckForMovement(controller.inputDevice);
-        }
+    private void NotifyIfNoBinding() {
+        if(!HasBinding()) Debug.Log($"No binding for {directMovementActionName}.");
     }
 
-    private void CheckForMovement(InputDevice device)
-    {
-        if(device.TryGetFeatureValue(CommonUsages.primary2DAxis, out var position))
-            StartMove(position);
+    private void BindAction() {
+        if(!HasBinding()) return;
+        var action = GetAction();
+        action.performed += Test;
     }
 
-    private void StartMove(Vector2 position) {
-        // Apply the touch position to the head's forward Vector
-        var direction = new Vector3(position.x, 0, position.y);
-        var headRotation = new Vector3(0, head.transform.eulerAngles.y, 0);
-
-        // Rotate the input direction by the horizontal head rotation
-        direction = Quaternion.Euler(headRotation) * direction;
-
-        // Apply speed and move
-        var movement = direction * speed;
-        characterController.Move(movement * Time.deltaTime);
+    public InputAction GetAction() {
+        var actionMap = mappings.FindActionMap(playerMovementActionMapName);
+        var action = actionMap.FindAction(directMovementActionName);
+        return action;
     }
 
-    private void ApplyGravity() {
-        var gravity = new Vector3(0, Physics.gravity.y * gravityMultiplier, 0);
-        gravity.y *= Time.deltaTime;
-        characterController.Move(gravity * Time.deltaTime);
+    private bool HasBinding() {
+        if(mappings == null) return false;
+        var actionMap = mappings.FindActionMap(playerMovementActionMapName);
+        var action = actionMap.FindAction(directMovementActionName);
+        var bindings = action.bindings;
+        var bindingFound = bindings.Any(b => !string.IsNullOrEmpty(b.path));
+        return bindings.Count != 0 && bindingFound;
+    }
+
+    //public void OnDirectMovement(InputValue value) {
+    //    if(!Application.isPlaying) return;
+    //    Debug.Log(value.Get<Vector2>());
+    //}
+
+    public void Test(InputAction.CallbackContext context) {
+        Debug.Log(context.ReadValue<Vector2>());
     }
 }

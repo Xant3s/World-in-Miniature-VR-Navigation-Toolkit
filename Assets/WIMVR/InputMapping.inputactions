@@ -94,11 +94,38 @@
                 {
                     "name": "",
                     "id": "d03744c0-5526-456b-856a-70f836d5fe7c",
-                    "path": "<XRController>{RightHand}/thumbstick",
+                    "path": "<XRController>{LeftHand}/thumbstick",
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
                     "action": "Destination Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Player Movement",
+            "id": "4166d5e3-1f2e-4f97-85e6-fad571e49101",
+            "actions": [
+                {
+                    "name": "Direct Movement",
+                    "type": "Value",
+                    "id": "5438f1f6-f9ea-4fb4-930e-d680757f9093",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "752410e1-b043-43c1-accb-7caba9087c48",
+                    "path": "<XRController>{LeftHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Direct Movement",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
