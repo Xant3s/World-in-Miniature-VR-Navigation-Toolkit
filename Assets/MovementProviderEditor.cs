@@ -12,12 +12,13 @@ public class MovementProviderEditor : Editor {
     private void OnEnable() {
         movementProvider = (MovementProvider) target;
         if(movementProvider.mappings == null) return;
+
+        // Copy action from input mappings asset to direct movement action. They should always have the same state.
+        // Used to allow inline binding editing in inspector.
         movementProvider.directMovement = new InputAction(MovementProvider.playerMovementActionMapName) {
             expectedControlType = "Vector2"
         };
-        foreach(var binding in movementProvider.GetActionFromMappings().bindings) {
-            movementProvider.directMovement.AddBinding(binding);
-        }
+        movementProvider.CopyBindings(movementProvider.GetActionFromMappings(), movementProvider.directMovement);
     }
 
     public override VisualElement CreateInspectorGUI() {
@@ -67,19 +68,10 @@ public class MovementProviderEditor : Editor {
 
 
         mappings.RegisterValueChangedCallback(e => {
-            SetupActionMap((InputActionAsset) e.newValue);
+            movementProvider.SetupActionMap((InputActionAsset) e.newValue);
             actionPropertyField.visible = e.newValue != null;
         });
 
         return root;
-    }
-
-    private void SetupActionMap(InputActionAsset mappings) {
-        if(mappings == null) return;
-        var actionMap = mappings.FindActionMap(MovementProvider.playerMovementActionMapName)
-                        ?? mappings.AddActionMap(MovementProvider.playerMovementActionMapName);
-        var action = actionMap.FindAction(MovementProvider.directMovementActionName)
-                     ?? actionMap.AddAction(MovementProvider.directMovementActionName);
-        action.expectedControlType = "Vector2";
     }
 }

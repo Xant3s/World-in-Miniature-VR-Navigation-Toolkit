@@ -61,19 +61,29 @@ public class MovementProvider : MonoBehaviour {
         if (mappings.FindAction(directMovementActionName) != null) mappings.RemoveAction(directMovementActionName);
         var newAction = actionMap.AddAction(directMovementActionName);
         newAction.expectedControlType = "Vector2";
-        foreach (var binding in directMovement.bindings) {
-            newAction.AddBinding(binding);
+        CopyBindings(directMovement, newAction);
+    }
+
+    public void CopyBindings(InputAction from, InputAction to) {
+        foreach(var binding in from.bindings) {
+            to.AddBinding(binding);
         }
-        // TODO: Refactoring: extract method
     }
 
     private bool HasBinding() {
         if(mappings == null) return false;
-        var actionMap = mappings.FindActionMap(playerMovementActionMapName);
-        var action = actionMap.FindAction(directMovementActionName);
-        var bindings = action.bindings;
+        var bindings = GetActionFromMappings().bindings;
         var bindingFound = bindings.Any(b => !string.IsNullOrEmpty(b.path));
         return bindings.Count != 0 && bindingFound;
+    }
+
+    public void SetupActionMap(InputActionAsset mappings) {
+        if(mappings == null) return;
+        var actionMap = mappings.FindActionMap(playerMovementActionMapName)
+                        ?? mappings.AddActionMap(playerMovementActionMapName);
+        var action = actionMap.FindAction(directMovementActionName)
+                     ?? actionMap.AddAction(directMovementActionName);
+        action.expectedControlType = "Vector2";
     }
 
     public void Test(InputAction.CallbackContext context) {

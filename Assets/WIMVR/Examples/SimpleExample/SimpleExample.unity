@@ -5634,16 +5634,24 @@ MonoBehaviour:
     m_Name: Player Movement
     m_Type: 0
     m_ExpectedControlType: Vector2
-    m_Id: e42fe233-fffe-4b97-8232-f4479e11216a
+    m_Id: 6dabb86c-aaf2-4f7d-8d67-8bd7e1dc1cec
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
       m_Id: 6e1d3978-72d4-43f9-a075-193d12473bd7
-      m_Path: <XRController>{LeftHand}/thumbstick
+      m_Path: <XRController>{RightHand}/thumbstick
       m_Interactions: 
       m_Processors: 
       m_Groups: XR
+      m_Action: Player Movement
+      m_Flags: 0
+    - m_Name: 
+      m_Id: aed62ece-1785-4e1b-9d27-4ba506282da6
+      m_Path: 
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
       m_Action: Player Movement
       m_Flags: 0
 --- !u!114 &1520019330
