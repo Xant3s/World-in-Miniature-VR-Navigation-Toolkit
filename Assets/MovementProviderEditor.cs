@@ -43,12 +43,10 @@ public class MovementProviderEditor : Editor {
 
         var actionPropertyField = new PropertyField {
             label = MovementProvider.directMovementActionName,
-            bindingPath = "directMovement"
+            bindingPath = "directMovement",
+            visible = movementProvider.mappings != null
         };
-
-        if(movementProvider.mappings != null) {
-            root.Add(actionPropertyField);
-        }
+        root.Add(actionPropertyField);
 
 
         //actionPropertyField.RegisterCallback<FocusOutEvent>(e =>
@@ -70,8 +68,7 @@ public class MovementProviderEditor : Editor {
 
         mappings.RegisterValueChangedCallback(e => {
             SetupActionMap((InputActionAsset) e.newValue);
-
-            // TODO: instantly display/hide bindings on mapping change
+            actionPropertyField.visible = e.newValue != null;
         });
 
         return root;
