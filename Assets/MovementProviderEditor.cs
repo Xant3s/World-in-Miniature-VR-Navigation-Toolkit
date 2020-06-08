@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -12,19 +11,17 @@ public class MovementProviderEditor : Editor {
 
     private void OnEnable() {
         movementProvider = (MovementProvider) target;
+        if(movementProvider.mappings == null) return;
+        movementProvider.directMovement = new InputAction(MovementProvider.playerMovementActionMapName) {
+            expectedControlType = "Vector2"
+        };
+        foreach(var binding in movementProvider.GetActionFromMappings().bindings) {
+            movementProvider.directMovement.AddBinding(binding);
+        }
     }
 
     public override VisualElement CreateInspectorGUI() {
-
         var root = new VisualElement();
-        var mappings = new ObjectField {
-            label = "Mappings",
-            bindingPath = "mappings",
-            allowSceneObjects = false,
-            objectType = typeof(InputActionAsset)
-        };
-        root.Add(mappings);
-
         root.Add(new FloatField {
             label = "Movement Speed",
             bindingPath = "movementSpeed"
@@ -36,14 +33,47 @@ public class MovementProviderEditor : Editor {
             bindingPath = "groundLayer"
         });
 
-        //Action action = () => {
+        var mappings = new ObjectField {
+            label = "Mappings",
+            bindingPath = "mappings",
+            allowSceneObjects = false,
+            objectType = typeof(InputActionAsset)
+        };
+        root.Add(mappings);
 
-        //}
+        var actionPropertyField = new PropertyField {
+            label = MovementProvider.directMovementActionName,
+            bindingPath = "directMovement"
+        };
 
-        // TODO: draw binding (action)
-        root.Add(base.CreateInspectorGUI());
+        if(movementProvider.mappings != null) {
+            root.Add(actionPropertyField);
+        }
 
-        mappings.RegisterValueChangedCallback(e => SetupActionMap((InputActionAsset) e.newValue));
+
+        //actionPropertyField.RegisterCallback<FocusOutEvent>(e =>
+        //{
+        //    //movementProvider.action3 = new InputAction(MovementProvider.playerMovementActionMapName) {
+        //    //    expectedControlType = "Vector2"
+        //    //};
+        //    //foreach(var binding in movementProvider.GetActionFromMappings().bindings) {
+        //    //    movementProvider.action3.AddBinding(binding);
+        //    //}
+        //    //movementProvider.UpdateActionInMappings();
+        //    Debug.Log("adsef");
+        //});
+
+        //actionPropertyField.RegisterCallback<ChangeEvent<PropertyField>>(e => {
+        //    Debug.Log("adsef");
+        //});
+
+
+        mappings.RegisterValueChangedCallback(e => {
+            SetupActionMap((InputActionAsset) e.newValue);
+
+            // TODO: instantly display/hide bindings on mapping change
+        });
+
         return root;
     }
 

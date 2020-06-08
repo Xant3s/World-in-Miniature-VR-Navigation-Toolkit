@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,10 +11,7 @@ public class MovementProvider : MonoBehaviour {
     public InputActionAsset mappings;
     public float movementSpeed = 1f;
     public LayerMask groundLayer = 1;
-
-    public InputAction action;
-
-
+    public InputAction directMovement;  // Should always have the same state as directMovementAction in mappings. Used to allow inline binding editing in inspector.
 
     private CharacterController characterController;
 
@@ -32,15 +27,16 @@ public class MovementProvider : MonoBehaviour {
     }
 
     private void OnEnable() {
-        var action = GetAction();
+        var action = GetActionFromMappings();
         if(action == null) return;
+        UpdateActionInMappings();
+        action = GetActionFromMappings();   // TODO: Update also in edit mode
         action.Enable();
     }
 
     private void OnDisable() {
-        var action = GetAction();
-        if(action == null) return;
-        action.Disable();
+        var action = GetActionFromMappings();
+        action?.Disable();
     }
 
     private void NotifyIfNoBinding() {
@@ -49,14 +45,26 @@ public class MovementProvider : MonoBehaviour {
 
     private void BindAction() {
         if(!HasBinding()) return;
-        var action = GetAction();
+        var action = GetActionFromMappings();
         action.performed += Test;
     }
 
-    public InputAction GetAction() {
+    public InputAction GetActionFromMappings() {
         var actionMap = mappings.FindActionMap(playerMovementActionMapName);
         var action = actionMap.FindAction(directMovementActionName);
         return action;
+    }
+
+    public void UpdateActionInMappings() {
+        var actionMap = mappings.FindActionMap(playerMovementActionMapName);
+        if (actionMap == null) return;
+        if (mappings.FindAction(directMovementActionName) != null) mappings.RemoveAction(directMovementActionName);
+        var newAction = actionMap.AddAction(directMovementActionName);
+        newAction.expectedControlType = "Vector2";
+        foreach (var binding in directMovement.bindings) {
+            newAction.AddBinding(binding);
+        }
+        // TODO: Refactoring: extract method
     }
 
     private bool HasBinding() {
@@ -67,11 +75,6 @@ public class MovementProvider : MonoBehaviour {
         var bindingFound = bindings.Any(b => !string.IsNullOrEmpty(b.path));
         return bindings.Count != 0 && bindingFound;
     }
-
-    //public void OnDirectMovement(InputValue value) {
-    //    if(!Application.isPlaying) return;
-    //    Debug.Log(value.Get<Vector2>());
-    //}
 
     public void Test(InputAction.CallbackContext context) {
         Debug.Log(context.ReadValue<Vector2>());

@@ -5630,14 +5630,22 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
-  action:
-    m_Name: 
+  directMovement:
+    m_Name: Player Movement
     m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 
+    m_ExpectedControlType: Vector2
+    m_Id: 13fb470b-e2a1-470f-9ae9-804115bd5bf0
     m_Processors: 
     m_Interactions: 
-    m_SingletonActionBindings: []
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 6e1d3978-72d4-43f9-a075-193d12473bd7
+      m_Path: <XRController>{LeftHand}/thumbstick
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: XR
+      m_Action: Player Movement
+      m_Flags: 0
 --- !u!114 &1520019330
 MonoBehaviour:
   m_ObjectHideFlags: 0
