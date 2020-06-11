@@ -11,6 +11,7 @@ public class MovementProvider2 : MonoBehaviour {
     [SerializeField] private XRNode inputSource = XRNode.LeftHand;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private LayerMask layer = 1;
+    [SerializeField] private float additionalHeight = .2f;
 
     private float gravityFactor = 1f;
     private XRRig rig;
@@ -29,6 +30,7 @@ public class MovementProvider2 : MonoBehaviour {
     }
 
     private void FixedUpdate() {
+        CapsuleFollowHeadset();
         var headYaw = Quaternion.Euler(0, rig.cameraGameObject.transform.eulerAngles.y, 0);
         var direction = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
 
@@ -42,6 +44,12 @@ public class MovementProvider2 : MonoBehaviour {
             gravityFactor += gravity * Time.fixedDeltaTime;
 
         characterController.Move(Vector3.up* gravityFactor * Time.fixedDeltaTime);
+    }
+
+    private void CapsuleFollowHeadset() {
+        characterController.height = rig.cameraInRigSpaceHeight + additionalHeight;
+        var capsuleCenter = transform.InverseTransformPoint(rig.cameraGameObject.transform.position);
+        characterController.center = new Vector3(capsuleCenter.x, characterController.height / 2 + characterController.skinWidth, capsuleCenter.z);
     }
 
     private bool CheckIfGround() {

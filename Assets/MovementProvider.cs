@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -10,13 +11,18 @@ public class MovementProvider : MonoBehaviour {
 
     public InputActionAsset mappings;
     public float movementSpeed = 1f;
+    public float additionalHeadHeight = .2f;
     public LayerMask groundLayer = 1;
 
     private CharacterController characterController;
+    private XRRig rig;
+    private Vector2 inputAxis;
+    private float gravityFactor = 1f;
 
 
     private void Awake() {
         characterController = GetComponent<CharacterController>();
+        rig = GetComponent<XRRig>();
     }
 
     private void Start() {
@@ -74,6 +80,27 @@ public class MovementProvider : MonoBehaviour {
     }
 
     public void Test(InputAction.CallbackContext context) {
-        Debug.Log(context.ReadValue<Vector2>());
+        inputAxis = context.ReadValue<Vector2>();
+    }
+
+    private void FixedUpdate() {
+        // Move character controller to headset.
+        characterController.height = rig.cameraInRigSpaceHeight + additionalHeadHeight;
+        var capsuleCenter = transform.InverseTransformPoint(rig.cameraGameObject.transform.position);
+        characterController.center = new Vector3(capsuleCenter.x, characterController.height / 2 + characterController.skinWidth, capsuleCenter.z);
+
+        // Move.
+        var headYaw = Quaternion.Euler(0, rig.cameraGameObject.transform.eulerAngles.y, 0);
+        var direction = headYaw * new Vector3(inputAxis.x, 0, inputAxis.y);
+        characterController.Move(direction * Time.fixedDeltaTime * movementSpeed);
+
+        // Gravity.
+        if(characterController.isGrounded) {
+            gravityFactor = 0;
+        }
+        else {
+            gravityFactor += Physics.gravity.y * Time.fixedDeltaTime;
+        }
+        characterController.Move(Vector3.up * gravityFactor * Time.fixedDeltaTime);
     }
 }
