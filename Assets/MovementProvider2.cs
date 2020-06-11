@@ -12,8 +12,6 @@ public class MovementProvider2 : MonoBehaviour {
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private LayerMask layer = 1;
 
-    public InputAction action;
-
     private float gravityFactor = 1f;
     private XRRig rig;
     private Vector2 inputAxis;

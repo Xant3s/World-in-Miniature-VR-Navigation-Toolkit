@@ -11,14 +11,6 @@ public class MovementProviderEditor : Editor {
 
     private void OnEnable() {
         movementProvider = (MovementProvider) target;
-        if(movementProvider.mappings == null) return;
-
-        // Copy action from input mappings asset to direct movement action. They should always have the same state.
-        // Used to allow inline binding editing in inspector.
-        movementProvider.directMovement = new InputAction(MovementProvider.playerMovementActionMapName) {
-            expectedControlType = "Vector2"
-        };
-        movementProvider.CopyBindings(movementProvider.GetActionFromMappings(), movementProvider.directMovement);
     }
 
     public override VisualElement CreateInspectorGUI() {
@@ -42,35 +34,9 @@ public class MovementProviderEditor : Editor {
         };
         root.Add(mappings);
 
-        var actionPropertyField = new PropertyField {
-            label = MovementProvider.directMovementActionName,
-            bindingPath = "directMovement",
-            visible = movementProvider.mappings != null
-        };
-        root.Add(actionPropertyField);
 
-
-        //actionPropertyField.RegisterCallback<FocusOutEvent>(e =>
-        //{
-        //    //movementProvider.action3 = new InputAction(MovementProvider.playerMovementActionMapName) {
-        //    //    expectedControlType = "Vector2"
-        //    //};
-        //    //foreach(var binding in movementProvider.GetActionFromMappings().bindings) {
-        //    //    movementProvider.action3.AddBinding(binding);
-        //    //}
-        //    //movementProvider.UpdateActionInMappings();
-        //    Debug.Log("adsef");
-        //});
-
-        //actionPropertyField.RegisterCallback<ChangeEvent<PropertyField>>(e => {
-        //    Debug.Log("adsef");
-        //});
-
-
-        mappings.RegisterValueChangedCallback(e => {
-            movementProvider.SetupActionMap((InputActionAsset) e.newValue);
-            actionPropertyField.visible = e.newValue != null;
-        });
+        mappings.RegisterValueChangedCallback(e
+            => movementProvider.SetupActionMap((InputActionAsset) e.newValue));
 
         return root;
     }
