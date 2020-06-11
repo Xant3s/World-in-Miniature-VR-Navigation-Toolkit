@@ -14,7 +14,7 @@ namespace WIMVR.Core {
     /// Add additional feature components to modify functionality.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(XRGrabInteractable))]
+    [RequireComponent(typeof(OffsetGrabInteractable))]
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
     [ExecuteAlways]

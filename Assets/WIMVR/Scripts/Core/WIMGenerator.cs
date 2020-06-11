@@ -131,6 +131,7 @@ namespace WIMVR.Core {
             foreach (Transform child in WIMLevel) {
                 child.gameObject.layer = WIMLayer;
                 Object.DestroyImmediate(child.GetComponent(typeof(XRGrabInteractable)));
+                Object.DestroyImmediate(child.GetComponent(typeof(OffsetGrabInteractable)));
                 Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
                 var renderer = child.GetComponent<Renderer>();
                 if (renderer) {
