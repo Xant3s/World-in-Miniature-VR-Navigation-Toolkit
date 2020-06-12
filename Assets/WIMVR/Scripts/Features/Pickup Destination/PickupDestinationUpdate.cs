@@ -53,12 +53,12 @@ namespace WIMVR.Features.Pickup_Destination {
 
 
         private void OnEnable() {
-            MiniatureModel.OnPickpuIndexButton += PickupIndexButton;
+            MiniatureModel.OnPickupIndexButton += PickupIndexButton;
             MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickpuIndexButton -= PickupIndexButton;
+            MiniatureModel.OnPickupIndexButton -= PickupIndexButton;
             MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
         }
 

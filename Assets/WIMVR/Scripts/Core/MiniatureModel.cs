@@ -52,7 +52,7 @@ namespace WIMVR.Core {
         public static event WIMAction OnPostTravel;
         public static event WIMAction OnPickupIndexButtonDown;
         public static event WIMAction OnPickupIndexButtonUp;
-        public static event WIMAxisAction OnPickpuIndexButton;
+        public static event WIMAxisAction OnPickupIndexButton;
         public static event WIMAction OnPickupThumbButtonDown;
         public static event WIMAction OnPickupThumbButtonUp;
         public static event WIMAction OnPickupThumbTouchUp;
@@ -168,7 +168,7 @@ namespace WIMVR.Core {
 
         private void PickupIndexButton(float axis) {
             if(!Configuration) return;
-            OnPickpuIndexButton?.Invoke(Configuration, Data, axis);
+            OnPickupIndexButton?.Invoke(Configuration, Data, axis);
         }
 
         private void PickupThumbButtonDown() {
