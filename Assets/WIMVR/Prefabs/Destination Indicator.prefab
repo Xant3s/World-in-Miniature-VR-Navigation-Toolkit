@@ -10,7 +10,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 4
+  serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: f46d2854bdd8b144ea97e0be12d5b6b4, type: 3}
@@ -166,7 +166,22 @@ PrefabInstance:
     - target: {fileID: 211811374534830392, guid: 5e0cce39ef7ccf341a6a7202d1350044,
         type: 3}
       propertyPath: m_Name
-      value: Player Representation
+      value: Destination Indicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 4707910854502269578, guid: 5e0cce39ef7ccf341a6a7202d1350044,
+        type: 3}
+      propertyPath: hightlightColor.r
+      value: 0.14509805
+      objectReference: {fileID: 0}
+    - target: {fileID: 4707910854502269578, guid: 5e0cce39ef7ccf341a6a7202d1350044,
+        type: 3}
+      propertyPath: hightlightColor.g
+      value: 0.8745098
+      objectReference: {fileID: 0}
+    - target: {fileID: 4707910854502269578, guid: 5e0cce39ef7ccf341a6a7202d1350044,
+        type: 3}
+      propertyPath: hightlightColor.b
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4723915841638900727, guid: 5e0cce39ef7ccf341a6a7202d1350044,
         type: 3}

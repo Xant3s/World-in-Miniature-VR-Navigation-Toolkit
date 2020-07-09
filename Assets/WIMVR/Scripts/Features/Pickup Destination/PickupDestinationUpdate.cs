@@ -17,14 +17,11 @@ namespace WIMVR.Features.Pickup_Destination {
 
         private MiniatureModel WIM;
         private TapState tapState;
-        private Material material;
         private Transform thumb;
         private Transform index;
         private Collider thumbCol;
         private Collider indexCol;
-        private Color defaultColor;
-        private Color hightlightColor = Color.cyan;
-        private bool hightlightFX;
+        private HighlightFX highlightFX;
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
@@ -35,19 +32,6 @@ namespace WIMVR.Features.Pickup_Destination {
         /// time between tap does not exceed this time.
         /// </summary>
         public float DoubleTapInterval { get; set; } = 2;
-
-        /// <summary>
-        /// The highlight effect displayed when the player touches the player represenation.
-        /// </summary>
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    material.color = value ? hightlightColor : defaultColor;
-                }
-            }
-        }
 
         public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
 
@@ -63,16 +47,13 @@ namespace WIMVR.Features.Pickup_Destination {
         }
 
         private void Awake() {
-            ColorUtility.TryParseHtmlString("#25DFFF", out hightlightColor);
+            highlightFX = GetComponent<HighlightFX>();
             thumb = GameObject.FindWithTag("ThumbR")?.transform;
             index = GameObject.FindWithTag("IndexR")?.transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            material = GetComponentInChildren<Renderer>()?.material;
-            defaultColor = material.color;
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
-            Assert.IsNotNull(material);
             thumbCol = thumb.GetComponent<Collider>();
             indexCol = index.GetComponent<Collider>();
             Assert.IsNotNull(thumbCol);
@@ -99,7 +80,7 @@ namespace WIMVR.Features.Pickup_Destination {
             if (!prevIndexIsTouching && indexIsTouching ||
                 !prevThumbIsTouching && thumbIsTouching) Vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
-            HightlightFX = thumbIsTouching || indexIsTouching;
+            highlightFX.HighlightEnabled = thumbIsTouching || indexIsTouching;
 
             if (!isGrabbing) {
                 // Handle double tap
@@ -110,7 +91,7 @@ namespace WIMVR.Features.Pickup_Destination {
                         Invoke(nameof(ResetDoubleTap), DoubleTapInterval);
                         break;
                     case TapState.FirstTap when !indexIsTouching:
-                        // Tapped once, now outside 
+                        // Tapped once, now outside
                         tapState = TapState.WaitingForSecondTap;
                         break;
                     case TapState.WaitingForSecondTap when indexIsTouching && !thumbIsTouching:
@@ -160,7 +141,7 @@ namespace WIMVR.Features.Pickup_Destination {
             if (stoppedGrabbing) return;
             stoppedGrabbing = true;
 
-            // Let go. 
+            // Let go.
             WIM.Data.DestinationIndicatorInWIM.parent = WIM.transform.GetChild(0);
 
             // Create destination indicator in level. Includes snap to ground.

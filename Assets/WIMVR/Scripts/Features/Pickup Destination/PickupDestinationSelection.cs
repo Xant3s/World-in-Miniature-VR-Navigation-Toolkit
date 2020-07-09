@@ -16,14 +16,11 @@ namespace WIMVR.Features.Pickup_Destination {
     [DisallowMultipleComponent]
     public class PickupDestinationSelection : MonoBehaviour {
         private MiniatureModel WIM;
-        private Material material;
         private Transform thumb;
         private Transform index;
         private Collider thumbCol;
         private Collider indexCol;
-        private Color defaultColor;
-        private Color hightlightColor = Color.red;
-        private bool hightlightFX;
+        private HighlightFX highlightFX;
         private bool thumbIsTouching;
         private bool indexIsTouching;
         private bool isGrabbing;
@@ -35,29 +32,15 @@ namespace WIMVR.Features.Pickup_Destination {
         /// </summary>
         public float DoubleTapInterval { get; set; } = 2;
 
-        /// <summary>
-        /// The highlight effect displayed when the player touches the player represenation.
-        /// </summary>
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if (GetComponent<Renderer>()) {
-                    material.color = value ? hightlightColor : defaultColor;
-                }
-            }
-        }
 
         private void Start() {
+            highlightFX = GetComponent<HighlightFX>();
             thumb = GameObject.FindWithTag("ThumbR")?.transform;
             index = GameObject.FindWithTag("IndexR")?.transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            material = GetComponentInChildren<Renderer>()?.material;
-            defaultColor = material.color;
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
-            Assert.IsNotNull(material);
             thumbCol = thumb.GetComponent<Collider>();
             indexCol = index.GetComponent<Collider>();
             Assert.IsNotNull(thumbCol);
@@ -89,7 +72,7 @@ namespace WIMVR.Features.Pickup_Destination {
             if(!prevIndexIsTouching && indexIsTouching ||
                !prevThumbIsTouching && thumbIsTouching) Vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
-            HightlightFX = thumbIsTouching || indexIsTouching;
+            highlightFX.HighlightEnabled = thumbIsTouching || indexIsTouching;
 
             if (!isGrabbing && thumbAndIndexTouching) {
                 isGrabbing = true;
