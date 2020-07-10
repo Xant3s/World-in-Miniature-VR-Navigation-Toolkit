@@ -80,7 +80,7 @@ namespace WIMVR.Features.Pickup_Destination {
             if (!prevIndexIsTouching && indexIsTouching ||
                 !prevThumbIsTouching && thumbIsTouching) Vibrate();
             var thumbAndIndexTouching = thumbIsTouching && indexIsTouching;
-            highlightFX.HighlightEnabled = thumbIsTouching || indexIsTouching;
+            //highlightFX.HighlightEnabled = thumbIsTouching || indexIsTouching;    // TODO
 
             if (!isGrabbing) {
                 // Handle double tap

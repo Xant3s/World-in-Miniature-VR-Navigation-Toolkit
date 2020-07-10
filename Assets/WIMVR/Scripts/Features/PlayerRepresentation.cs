@@ -52,7 +52,9 @@ namespace WIMVR.Features {
                 Assert.IsNotNull(data.PlayerRepresentationTransform);
                 Assert.IsNotNull(config);
                 Assert.IsNotNull(data);
-                data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>().DoubleTapInterval = config.DoubleTapInterval;
+                data.PlayerRepresentationTransform.gameObject.AddComponent<DetectPickupGesture>();
+                data.PlayerRepresentationTransform.gameObject.AddComponent<PickupDestinationSelection>()
+                    .DoubleTapInterval = config.DoubleTapInterval;
             }
         }
 
