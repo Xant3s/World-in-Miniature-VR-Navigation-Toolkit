@@ -1,38 +1,33 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.XR;
 using WIMVR.Core;
+using WIMVR.Util.XR;
 
 namespace WIMVR.Util {
     /// <summary>
     /// Detects whether object is being picked up and calls events.
     /// What exactly should happen and how the object is picked up must be specified by events.
-    /// This object is assumed to only collide with hands, i.e. its layer only collides with
-    /// the 'Fingers' layer.
+    /// This object is assumed to only collide with the player's fingertips,
+    /// i.e. its layer only collides with the 'Fingers' layer.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Collider))]
     public class DetectPickupGesture : MonoBehaviour {
+        #region Events
         public delegate void Action();
         public delegate void HandAction(Hand hand);
-
-        //private Transform thumb;
-        //private Transform index;
-        //private bool thumbIsGrabbing;
-        //private bool indexIsGrabbing;
-        //private bool isGrabbing;
-        //private bool stoppedGrabbing;
-        //private bool indexIsPressed;
-
         public event Action OnStartGrabbing;
         public event Action OnIsGrabbing;
         public event Action OnStopGrabbing;
         public event HandAction OnStartTouch;
         public event Action OnStopTouch;
-
+        #endregion
 
         #region Private Members
 
@@ -54,52 +49,23 @@ namespace WIMVR.Util {
         private bool LThumbInside => fingersInside[fingers[3]];
         private bool IsPinched => pinchingHand != Hand.None;
 
+        private InputDevice leftController;
+        private InputDevice rightController;
         #endregion
 
 
-        //private void Awake() {
-        //    thumb = GameObject.FindWithTag("ThumbR")?.transform;
-        //    index = GameObject.FindWithTag("IndexR")?.transform;
-        //    Assert.IsNotNull(thumb);
-        //    Assert.IsNotNull(index);
-        //}
-
-        //private void OnEnable() {
-        //    MiniatureModel.OnPickupIndexButtonDown += PickupIndexButtonDown;
-        //    MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
-        //    MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
-        //}
-
-        //private void OnDisable() {
-        //    MiniatureModel.OnPickupIndexButtonDown -= PickupIndexButtonDown;
-        //    MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
-        //    MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
-        //}
-
-        //private void PickupIndexButtonDown(WIMConfiguration config, WIMData data) {
-        //    indexIsPressed = true;
-        //}
-
-        //private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
-        //    indexIsPressed = false;
-        //    StopGrabbing();
-        //}
-
-        //private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-        //    StopGrabbing();
-        //}
+        private void Start() {
+            leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+            rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+        }
 
         private void Update() {
-            if(pinchingHand != Hand.None) OnIsGrabbing?.Invoke();
-            //var rightHandPinch = thumbIsGrabbing && indexIsGrabbing && indexIsPressed;
-            //if (rightHandPinch && !isGrabbing) {
-            //    isGrabbing = true;
-            //    stoppedGrabbing = false;
-            //    StartGrabbing();
-            //}
-            //else if (isGrabbing && !rightHandPinch) {
-            //    isGrabbing = false;
-            //}
+            if(pinchingHand != Hand.None) {
+                OnIsGrabbing?.Invoke();
+                var controller = pinchingHand == Hand.LeftHand ? leftController : rightController;
+                controller.TryGetFeatureValue(CommonUsages.triggerButton, out var triggerPressed);
+                if(!triggerPressed) StopGrabbing();
+            }
         }
 
         private void OnTriggerEnter(Collider other) {
@@ -116,14 +82,6 @@ namespace WIMVR.Util {
                 pinchingHand = Hand.LeftHand;
                 OnStartGrabbing?.Invoke();
             }
-            //if (other.transform == thumb) {
-            //    thumbIsGrabbing = true;
-            //    OnStartTouch?.Invoke();
-            //}
-            //else if (other.transform == index) {
-            //    indexIsGrabbing = true;
-            //    OnStartTouch?.Invoke();
-            //}
         }
 
         private void OnTriggerExit(Collider other) {
@@ -131,33 +89,11 @@ namespace WIMVR.Util {
             if(fingersInside.All(kvp => kvp.Value == false)) {
                 OnStopTouch?.Invoke();
             }
-            switch(pinchingHand) {
-                case Hand.RightHand when !RIndexInside || !RThumbInside: // fall-through
-                case Hand.LeftHand when !LIndexInside || !LThumbInside:
-                    StopGrabbing();
-                    break;
-                default:
-                    return;
-            }
-            //if (other.transform == thumb) {
-            //    thumbIsGrabbing = false;
-            //    OnStopTouch?.Invoke();
-            //}
-            //else if (other.transform == index) {
-            //    indexIsGrabbing = false;
-            //    OnStopTouch?.Invoke();
-            //}
         }
 
-        //private void StartGrabbing() {
-        //    OnStartGrabbing?.Invoke();
-        //}
-
         private void StopGrabbing() {
-            //if (stoppedGrabbing) return;
             pinchingHand = Hand.None;
             OnStopGrabbing?.Invoke();
-            //stoppedGrabbing = true;
         }
     }
 }
