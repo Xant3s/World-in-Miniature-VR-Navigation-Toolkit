@@ -1,12 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.XR;
-using WIMVR.Core;
 using WIMVR.Util.XR;
 
 namespace WIMVR.Util {

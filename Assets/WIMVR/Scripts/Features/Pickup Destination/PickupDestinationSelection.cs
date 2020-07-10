@@ -1,11 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
 using WIMVR.Util;
-using WIMVR.Input;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
 
@@ -93,8 +91,9 @@ namespace WIMVR.Features.Pickup_Destination {
 
         private void MakeDestinationIndicatorGrabbable() {
             Assert.IsNotNull(WIM.Data.DestinationIndicatorInWIM);
-            WIM.Data.DestinationIndicatorInWIM.gameObject.AddComponent<PickupDestinationUpdate>().DoubleTapInterval =
-                DoubleTapInterval;
+            var destinationIndicator = WIM.Data.DestinationIndicatorInWIM.gameObject;
+            var detectPickupGesture = destinationIndicator.transform.GetChild(0).gameObject.AddComponent<DetectPickupGesture>();
+            destinationIndicator.AddComponent<PickupDestinationUpdate>().DoubleTapInterval = DoubleTapInterval;
         }
     }
 }

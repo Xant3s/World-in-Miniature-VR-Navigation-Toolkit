@@ -14,6 +14,22 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: f46d2854bdd8b144ea97e0be12d5b6b4, type: 3}
+--- !u!54 &6314546167742119711
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8093601024634813839}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &4559420615863412666
 GameObject:
   m_ObjectHideFlags: 0
@@ -23,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3701168666687180979}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Camera
   m_TagString: PreviewCamera
   m_Icon: {fileID: 0}
@@ -140,7 +156,7 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: f46d2854bdd8b144ea97e0be12d5b6b4,
         type: 3}
       propertyPath: m_Layer
-      value: 8
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f46d2854bdd8b144ea97e0be12d5b6b4, type: 3}
@@ -188,6 +204,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 9646d5fdc1d0a3c4f93e540c0ab0cef9, type: 2}
+    - target: {fileID: 6536935987455194719, guid: 5e0cce39ef7ccf341a6a7202d1350044,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6536935987455194719, guid: 5e0cce39ef7ccf341a6a7202d1350044,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8636826645537975259, guid: 5e0cce39ef7ccf341a6a7202d1350044,
         type: 3}
       propertyPath: m_LocalPosition.x
