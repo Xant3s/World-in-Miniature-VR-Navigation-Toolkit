@@ -20,7 +20,7 @@ namespace WIMVR.Features.Scaling {
         private Transform handR;
         private Transform WIMTransform;
         private CapsuleCollider leftGrabVolume;
-        private CapsuleCollider rightGrabVolume;
+        private CapsuleCollider rightGrabVolume = null;
         private Hand scalingHand = Hand.None;
         private float prevInterHandDistance;
 

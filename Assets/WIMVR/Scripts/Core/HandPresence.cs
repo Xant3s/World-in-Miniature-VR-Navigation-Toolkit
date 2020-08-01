@@ -10,8 +10,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace WIMVR.Core {
     public class HandPresence : MonoBehaviour {
-        [SerializeField] private InputDeviceCharacteristics controllerCharacteristics;
-        [SerializeField] private GameObject handModelPrefab;
+        [SerializeField] private InputDeviceCharacteristics controllerCharacteristics = InputDeviceCharacteristics.None;
+        [SerializeField] private GameObject handModelPrefab = null;
 
         private InputDevice targetDevice;
         private GameObject spawnedHandModel;

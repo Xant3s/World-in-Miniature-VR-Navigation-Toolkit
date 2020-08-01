@@ -11,10 +11,10 @@ namespace WIMVR.Features.Distance_Grab {
     public class DistanceGrabber : MonoBehaviour {
         [Header("Distance Grabber (Experimental)")]
         [Tooltip("Hand this script is attached to.")]
-        [SerializeField] private Hand hand;
+        [SerializeField] private Hand hand = Hand.None;
 
         [Tooltip("Start point of the laser pointer.")]
-        [SerializeField] private Transform start;
+        [SerializeField] private Transform start = null;
 
         [Tooltip("Distance grabbing will be disabled if within specified distance to miniature model")]
         [SerializeField] private float requiredDistanceToWIM = .5f;
