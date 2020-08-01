@@ -90,7 +90,7 @@ namespace WIMVR.Features.Pickup_Destination {
         private void RemoveDestinationIndicatorsExceptWIM(MiniatureModel WIM) {
             if (!WIM.Data.DestinationIndicatorInWIM) return;
             OnRemoveDestinationIndicatorExceptWIM?.Invoke(WIM);
-            if (WIM.Data.DestinationIndicatorInLevel) DestroyImmediate(WIM.Data.DestinationIndicatorInLevel.gameObject);
+            if (WIM.Data.DestinationIndicatorInLevel) Destroy(WIM.Data.DestinationIndicatorInLevel.gameObject);
         }
 
         private void StopGrabbing() {
