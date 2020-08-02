@@ -1,6 +1,7 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.XR;
 
 
@@ -20,7 +21,10 @@ namespace WIMVR.Util.XR {
             var characteristics = hand == Hand.LeftHand ? InputDeviceCharacteristics.Left : InputDeviceCharacteristics.Right;
             var devices = new List<InputDevice>();
             InputDevices.GetDevicesWithCharacteristics(characteristics, devices);
-            return devices[0];
+            if(devices.Count == 0) {
+                Debug.LogWarning("Controller not found. Please make sure both controllers are present.");
+            }
+            return devices.Count > 0 ? devices[0] : new InputDevice();
         }
     }
 }

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR;
 using WIMVR.Util.XR;
 
@@ -17,13 +18,11 @@ namespace WIMVR.Util {
     [RequireComponent(typeof(Collider))]
     public class DetectPickupGesture : MonoBehaviour {
         #region Events
-        public delegate void Action();
-        public delegate void HandAction(Hand hand);
-        public event Action OnStartGrabbing;
-        public event Action OnIsGrabbing;
-        public event Action OnStopGrabbing;
-        public event HandAction OnStartTouch;
-        public event Action OnStopTouch;
+        public UnityEvent OnStartGrabbing = new UnityEvent();
+        public UnityEvent OnIsGrabbing = new UnityEvent();
+        public UnityEvent OnStopGrabbing = new UnityEvent();
+        public HandEvent OnStartTouch = new HandEvent();
+        public UnityEvent OnStopTouch = new UnityEvent();
         #endregion
 
         #region Private Members

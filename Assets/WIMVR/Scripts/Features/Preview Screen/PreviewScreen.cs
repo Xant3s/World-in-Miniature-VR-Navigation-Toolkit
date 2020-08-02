@@ -102,7 +102,7 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void ConfigurePickupPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
-            if(!Config || Config.AutoPositionPreviewScreen) return;
+            if(!Config || Config.AutoPositionPreviewScreen || !Config.PreviewScreen) return;
             WIMData.DestinationIndicatorInWIM.GetChild(0).GetChild(1).GetChild(0).gameObject
                 .AddComponent<PickupPreviewScreen>();
         }

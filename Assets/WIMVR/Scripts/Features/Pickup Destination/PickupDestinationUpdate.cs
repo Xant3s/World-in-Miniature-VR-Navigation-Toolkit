@@ -39,11 +39,11 @@ namespace WIMVR.Features.Pickup_Destination {
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);
             var detectPickupGesture = GetComponentInChildren<DetectPickupGesture>();
-            detectPickupGesture.OnStartTouch += OnStartTouch;
-            detectPickupGesture.OnStopTouch += OnStopTouch;
-            detectPickupGesture.OnStartGrabbing += StartGrabbing;
-            detectPickupGesture.OnStartGrabbing += ResetDoubleTap;
-            detectPickupGesture.OnStopGrabbing += StopGrabbing;
+            detectPickupGesture.OnStartTouch.AddListener(OnStartTouch);
+            detectPickupGesture.OnStopTouch.AddListener(OnStopTouch);
+            detectPickupGesture.OnStartGrabbing.AddListener(StartGrabbing);
+            detectPickupGesture.OnStartGrabbing.AddListener(ResetDoubleTap);
+            detectPickupGesture.OnStopGrabbing.AddListener(StopGrabbing);
         }
 
         private void OnStartTouch(Hand hand) {

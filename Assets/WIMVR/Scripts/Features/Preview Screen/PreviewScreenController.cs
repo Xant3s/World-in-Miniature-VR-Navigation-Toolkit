@@ -25,8 +25,8 @@ namespace WIMVR.Features.Preview_Screen {
 
         private void Start() {
             var pickup = gameObject.AddComponent<DetectPickupGesture>();
-            pickup.OnStartGrabbing += Pickup_OnStartGrabbing;
-            pickup.OnStopGrabbing += Pickup_OnStopGrabbing;
+            pickup.OnStartGrabbing.AddListener(Pickup_OnStartGrabbing);
+            pickup.OnStopGrabbing.AddListener(Pickup_OnStopGrabbing);
         }
 
         private void Pickup_OnStopGrabbing() {
