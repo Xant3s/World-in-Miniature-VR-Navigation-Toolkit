@@ -81,10 +81,6 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(0).GetChild(1));
             var camObj = WIMData.DestinationIndicatorInLevel.GetChild(0).GetChild(1).gameObject; // Making assumptions on the prefab.
             Assert.IsNotNull(camObj);
-            //var cam = camObj.GetComponent<Camera>();
-            //if(!cam) {
-            //    cam = camObj.AddComponent<Camera>();
-            //}
             var cam = camObj.GetOrAddComponent<Camera>();
             Assert.IsNotNull(cam);
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
