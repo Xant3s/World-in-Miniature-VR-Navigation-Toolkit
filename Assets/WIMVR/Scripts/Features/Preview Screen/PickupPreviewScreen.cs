@@ -1,16 +1,20 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
 using WIMVR.Util;
 using WIMVR.Input;
+using WIMVR.Util.Haptics;
+using WIMVR.Util.XR;
 
 namespace WIMVR.Features.Preview_Screen {
     /// <summary>
     /// Used to open the preview screen when the player grabs the destination indicator's view cone.
     /// </summary>
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(DetectPickupGesture))]
     public class PickupPreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
         private Material material;
@@ -51,41 +55,49 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(index);
         }
 
+        private void Start() {
+            var detectPickupGesture = GetComponent<DetectPickupGesture>();
+            Assert.IsNotNull(detectPickupGesture);
+            detectPickupGesture.OnStartGrabbing.AddListener(StartGrabbing);
+            detectPickupGesture.OnStopGrabbing.AddListener(StopGrabbing);
+
+        }
+
         private void OnEnable() {
-            MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonUp += PickupThumbButtonUp;
-            MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
+            //MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
+            //MiniatureModel.OnPickupThumbButtonUp += PickupThumbButtonUp;
+            //MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
-            MiniatureModel.OnPickupThumbButtonUp -= PickupThumbButtonUp;
-            MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
+            //MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
+            //MiniatureModel.OnPickupThumbButtonUp -= PickupThumbButtonUp;
+            //MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
         }
 
-        private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) StopGrabbing();
-        }
+        //private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
+        //    if(!isGrabbing) StopGrabbing();
+        //}
 
-        private void PickupThumbButtonUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) StopGrabbing();
-        }
+        //private void PickupThumbButtonUp(WIMConfiguration config, WIMData data) {
+        //    if(!isGrabbing) StopGrabbing();
+        //}
 
-        private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-            if(!isGrabbing) StopGrabbing();
-        }
+        //private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
+        //    if(!isGrabbing) StopGrabbing();
+        //}
 
-        private void Update() {
-            var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
-            if(rightHandPinch && !isGrabbing) {
-                isGrabbing = true;
-                stoppedGrabbing = false;
-                StartGrabbing();
-            }
-            else if(isGrabbing && !rightHandPinch) {
-                isGrabbing = false;
-            }
-        }
+        //private void Update() {
+        //    var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
+        //    if(rightHandPinch && !isGrabbing) {
+        //        isGrabbing = true;
+        //        stoppedGrabbing = false;
+        //        StartGrabbing();
+        //    }
+        //    else if(isGrabbing && !rightHandPinch) {
+        //        isGrabbing = false;
+        //    }
+        //}
 
         private void OnTriggerEnter(Collider other) {
             if(other.transform == thumb) {
@@ -100,15 +112,28 @@ namespace WIMVR.Features.Preview_Screen {
             }
         }
 
-        private void OnTriggerExit(Collider other) {
-            if(other.transform == thumb) {
-                thumbIsGrabbing = false;
-                HightlightFX = false;
-            }
-            else if(other.transform == index) {
-                indexIsGrabbing = false;
-                HightlightFX = false;
-            }
+        //private void OnTriggerExit(Collider other) {
+        //    if(other.transform == thumb) {
+        //        thumbIsGrabbing = false;
+        //        HightlightFX = false;
+        //    }
+        //    else if(other.transform == index) {
+        //        indexIsGrabbing = false;
+        //        HightlightFX = false;
+        //    }
+        //}
+
+        private void StartTouch(Hand hand) {
+            // Haptic feedback.
+            var inputDevice = XRUtils.FindCorrespondingInputDevice(hand);
+            Haptics.Vibrate(inputDevice, .1f, .1f);
+
+            // Visual feedback.
+            HightlightFX = true;
+        }
+
+        private void StopTouch() {
+            HightlightFX = false;
         }
 
         private void StartGrabbing() {

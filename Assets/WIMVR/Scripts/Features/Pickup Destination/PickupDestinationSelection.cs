@@ -40,7 +40,6 @@ namespace WIMVR.Features.Pickup_Destination {
             Assert.IsNotNull(indexR);
             Assert.IsNotNull(WIM);
             var detectPickupGesture = GetComponent<DetectPickupGesture>();
-            Assert.IsNotNull(detectPickupGesture);
             detectPickupGesture.OnStartTouch.AddListener(OnStartTouch);
             detectPickupGesture.OnStopTouch.AddListener(OnStopTouch);
             detectPickupGesture.OnStartGrabbing.AddListener(StartGrabbing);
