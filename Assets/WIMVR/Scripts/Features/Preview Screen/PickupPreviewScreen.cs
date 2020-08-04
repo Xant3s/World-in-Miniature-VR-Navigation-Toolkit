@@ -23,10 +23,10 @@ namespace WIMVR.Features.Preview_Screen {
         private Transform thumb;
         private Transform index;
         private Transform WIMTransform;
-        private bool thumbIsGrabbing;
-        private bool indexIsGrabbing;
-        private bool isGrabbing;
-        private bool stoppedGrabbing;
+        // private bool thumbIsGrabbing;
+        // private bool indexIsGrabbing;
+        // private bool isGrabbing;
+        // private bool stoppedGrabbing;
 
         /// <summary>
         /// The highlight effect displayed when the player touches the destination indicator's view cone.
@@ -58,22 +58,23 @@ namespace WIMVR.Features.Preview_Screen {
         private void Start() {
             var detectPickupGesture = GetComponent<DetectPickupGesture>();
             Assert.IsNotNull(detectPickupGesture);
+            detectPickupGesture.OnStartTouch.AddListener(StartTouch);
+            detectPickupGesture.OnStopTouch.AddListener(StopTouch);
             detectPickupGesture.OnStartGrabbing.AddListener(StartGrabbing);
             detectPickupGesture.OnStopGrabbing.AddListener(StopGrabbing);
-
         }
 
-        private void OnEnable() {
+        // private void OnEnable() {
             //MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
             //MiniatureModel.OnPickupThumbButtonUp += PickupThumbButtonUp;
             //MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
-        }
+        // }
 
-        private void OnDisable() {
+        // private void OnDisable() {
             //MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
             //MiniatureModel.OnPickupThumbButtonUp -= PickupThumbButtonUp;
             //MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
-        }
+        // }
 
         //private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
         //    if(!isGrabbing) StopGrabbing();
@@ -99,30 +100,6 @@ namespace WIMVR.Features.Preview_Screen {
         //    }
         //}
 
-        private void OnTriggerEnter(Collider other) {
-            if(other.transform == thumb) {
-                thumbIsGrabbing = true;
-                HightlightFX = true;
-                Vibrate();
-            }
-            else if(other.transform == index) {
-                indexIsGrabbing = true;
-                HightlightFX = true;
-                Vibrate();
-            }
-        }
-
-        //private void OnTriggerExit(Collider other) {
-        //    if(other.transform == thumb) {
-        //        thumbIsGrabbing = false;
-        //        HightlightFX = false;
-        //    }
-        //    else if(other.transform == index) {
-        //        indexIsGrabbing = false;
-        //        HightlightFX = false;
-        //    }
-        //}
-
         private void StartTouch(Hand hand) {
             // Haptic feedback.
             var inputDevice = XRUtils.FindCorrespondingInputDevice(hand);
@@ -137,6 +114,7 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void StartGrabbing() {
+            Debug.Log("start grabbing");
             // Spawn new preview screen.
             var previewScreen = WIMTransform.GetComponent<PreviewScreen>();
             previewScreen.ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
@@ -149,26 +127,20 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void StopGrabbing() {
-            if(stoppedGrabbing) return;
+            // if(stoppedGrabbing) return;
+            Debug.Log("stop grabbing");
             var previewScreen = WIM.GetComponent<PreviewScreen>();
-            Assert.IsNotNull(WIM);
             var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
-            if(!previewScreenTransform) return;
+            if (!previewScreenTransform) {
+                Debug.LogWarning("AAAAAAAAAAAAAAAA");
+                return;
+            }
             previewScreenTransform.GetChild(0).gameObject.AddComponent<PreviewScreenController>();
             previewScreenTransform.GetChild(0).GetChild(0).gameObject.AddComponent<ClosePreviewScreen>();
 
             // Let go.
             previewScreenTransform.parent = WIMTransform.GetChild(0);
-            stoppedGrabbing = true;
-        }
-
-        private void Vibrate() {
-            InputManager.SetVibration(frequency: .5f, amplitude: .1f, Hand.RightHand);
-            Invoke(nameof(StopVibration), time: .1f);
-        }
-
-        private void StopVibration() {
-            InputManager.SetVibration(frequency: 0, amplitude: 0, Hand.RightHand);
+            // stoppedGrabbing = true;
         }
     }
 }

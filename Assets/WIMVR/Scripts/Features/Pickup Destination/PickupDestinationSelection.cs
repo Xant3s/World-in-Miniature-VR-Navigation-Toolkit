@@ -20,9 +20,6 @@ namespace WIMVR.Features.Pickup_Destination {
         private Transform thumbR;
         private Transform indexR;
         private HighlightFX highlightFX;
-        private bool thumbIsTouching;
-        private bool indexIsTouching;
-        private bool isGrabbing;
 
         /// <summary>
         /// Tapping the destination indicator twice will be considered a double-tap iff
