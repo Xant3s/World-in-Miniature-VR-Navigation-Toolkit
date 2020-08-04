@@ -114,7 +114,6 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void StartGrabbing() {
-            Debug.Log("start grabbing");
             // Spawn new preview screen.
             var previewScreen = WIMTransform.GetComponent<PreviewScreen>();
             previewScreen.ShowPreviewScreenPickup(WIM.Configuration, WIM.Data);
@@ -128,13 +127,9 @@ namespace WIMVR.Features.Preview_Screen {
 
         private void StopGrabbing() {
             // if(stoppedGrabbing) return;
-            Debug.Log("stop grabbing");
             var previewScreen = WIM.GetComponent<PreviewScreen>();
             var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
-            if (!previewScreenTransform) {
-                Debug.LogWarning("AAAAAAAAAAAAAAAA");
-                return;
-            }
+            if (!previewScreenTransform) return;
             previewScreenTransform.GetChild(0).gameObject.AddComponent<PreviewScreenController>();
             previewScreenTransform.GetChild(0).GetChild(0).gameObject.AddComponent<ClosePreviewScreen>();
 

@@ -58,8 +58,7 @@ namespace WIMVR.Util {
         private void Update() {
             if(pinchingHand != Hand.None) {
                 OnIsGrabbing?.Invoke();
-                var controller = pinchingHand == Hand.LeftHand ? leftController : rightController;
-                controller.TryGetFeatureValue(CommonUsages.triggerButton, out var triggerPressed);
+                var triggerPressed = IndexPressed(pinchingHand);
                 if(!triggerPressed) StopGrabbing();
             }
         }
@@ -70,14 +69,20 @@ namespace WIMVR.Util {
             fingersInside[other.tag] = true;
             var hand = (other.tag.Equals(fingers[0]) || other.tag.Equals(fingers[1])) ? Hand.RightHand : Hand.LeftHand;
             OnStartTouch?.Invoke(hand);
-            if(!IsPinched && RIndexInside && RThumbInside) {
+            if(!IsPinched && RIndexInside && RThumbInside && IndexPressed(Hand.RightHand)) {
                 pinchingHand = Hand.RightHand;
                 OnStartGrabbing?.Invoke();
             }
-            else if(!IsPinched && LIndexInside && LThumbInside) {
+            else if(!IsPinched && LIndexInside && LThumbInside && IndexPressed(Hand.LeftHand)) {
                 pinchingHand = Hand.LeftHand;
                 OnStartGrabbing?.Invoke();
             }
+        }
+
+        private bool IndexPressed(Hand hand) {
+            var controller = hand == Hand.LeftHand ? leftController : rightController;
+            controller.TryGetFeatureValue(CommonUsages.triggerButton, out var triggerPressed);
+            return triggerPressed;
         }
 
         private void OnTriggerExit(Collider other) {
