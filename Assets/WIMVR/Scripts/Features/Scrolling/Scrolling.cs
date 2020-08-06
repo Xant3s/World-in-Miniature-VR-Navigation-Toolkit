@@ -81,10 +81,10 @@ namespace WIMVR.Features.Scrolling {
 
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
             Assert.IsNotNull(ScrollingConfig, "Scrolling configuration is missing.");
+            this.data = data;
             if (!data.WIMLevelTransform) return;    // TODO: Useless?
             if(!ScrollingConfig.AllowWIMScrolling) return;
             if (ScrollingConfig.AutoScroll) AutoScrollWIM();
-            this.data = data;
         }
 
         private void UpdateVerticalInput(Vector3 input) {
@@ -102,7 +102,10 @@ namespace WIMVR.Features.Scrolling {
         }
 
         private void AutoScrollWIM() {
-            if(!ScrollingConfig.AllowWIMScrolling || !ScrollingConfig.AutoScroll) return;
+            if (!ScrollingConfig.AllowWIMScrolling || !ScrollingConfig.AutoScroll ||
+                !data.PlayerRepresentationTransform) return;
+            Assert.IsNotNull(data.PlayerRepresentationTransform);
+            Assert.IsNotNull(data.WIMLevelTransform);
             var scrollOffset = data.DestinationIndicatorInWIM
                 ? -data.DestinationIndicatorInWIM.localPosition
                 : -data.PlayerRepresentationTransform.localPosition;
@@ -130,7 +133,7 @@ namespace WIMVR.Features.Scrolling {
         private void AdjustPlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
             if(ScrollingConfig && ScrollingConfig.AllowWIMScrolling) {
                 // Get closest point on active area bounds. Won't have any effect if already inside active area.
-                data.PlayerRepresentationTransform.position = 
+                data.PlayerRepresentationTransform.position =
                     data.WIMLevelTransform.GetComponentInParent<Collider>().ClosestPoint(data.PlayerRepresentationTransform.position);
             }
         }
