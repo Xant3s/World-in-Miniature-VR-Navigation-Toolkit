@@ -1,10 +1,7 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace WIMVR.Tests {
     public class GameObjectUtilsTests {

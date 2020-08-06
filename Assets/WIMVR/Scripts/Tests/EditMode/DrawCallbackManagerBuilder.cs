@@ -1,29 +1,28 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
-
 using System.Collections.Generic;
+using System.Linq;
 using WIMVR.Editor.Core;
 
 namespace WIMVR.Tests {
     public class DrawCallbackManagerBuilder {
-        private IEnumerable<Callback> callbacks = new List<Callback>();
-        
-        
-        public struct Callback {
-            public string Key;
-            public DrawCallbackManager.InspectorAction Action;
-            public int Priority;
-        }
+        private Callback[] callbacks;
+        // private List<Callback> callbacks = new List<Callback>();
+
 
         public DrawCallbackManagerBuilder WithCallbacks(params Callback[] callbacks) {
             this.callbacks = callbacks;
+            // this.callbacks = callbacks.ToList();
             return this;
         }
 
         public DrawCallbackManager Build() {
             var manager = new DrawCallbackManager();
-            foreach (var callback in callbacks) {
-                manager.AddCallback(callback.Action, callback.Priority, callback.Key);
+            if (callbacks != null) {
+                foreach (var callback in callbacks) {
+                    if (callback.Key == null) callback.Key = "";
+                    manager.AddCallback(callback.Action, callback.Priority, callback.Key);
+                }
             }
             return manager;
         }

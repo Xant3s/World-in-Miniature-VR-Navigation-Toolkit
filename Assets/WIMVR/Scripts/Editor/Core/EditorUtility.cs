@@ -14,7 +14,7 @@ namespace WIMVR.Editor.Core {
     /// <summary>
     /// Used by MiniatureModelEditor. Features can add additional UI utilizing callbacks.
     /// </summary>
-    public class DrawCallbackManager {
+    public class DrawCallbackManager : IDisposable {
         public delegate void InspectorAction(WIMConfiguration config, VisualElement container);
 
         private static IDictionary<string, IDictionary<int, InspectorAction>> OnDraw = new Dictionary<string, IDictionary<int, InspectorAction>>();
@@ -45,6 +45,19 @@ namespace WIMVR.Editor.Core {
             var pairs = OnDraw[key].ToList();
             pairs.Sort((x,y) =>x.Key.CompareTo(y.Key));
             pairs.ForEach(callback => callback.Value(WIM.Configuration, container));
+        }
+
+        private void ReleaseUnmanagedResources() {
+            OnDraw.Clear();
+        }
+
+        public void Dispose() {
+            ReleaseUnmanagedResources();
+            GC.SuppressFinalize(this);
+        }
+
+        ~DrawCallbackManager() {
+            ReleaseUnmanagedResources();
         }
     }
 
