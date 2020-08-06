@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace WIMVR.Tests {
-    public class GameObjectUtilsTest {
+    public class GameObjectUtilsTests {
         
         public class GetOrAddComponentTests {
             [Test]

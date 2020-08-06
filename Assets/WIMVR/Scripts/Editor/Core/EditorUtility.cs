@@ -19,6 +19,7 @@ namespace WIMVR.Editor.Core {
 
         private static IDictionary<string, IDictionary<int, InspectorAction>> OnDraw = new Dictionary<string, IDictionary<int, InspectorAction>>();
 
+        
         public void AddCallback(InspectorAction callback, int priority = 0, string key = "") {
             if(OnDraw.ContainsKey(key)) {
                 OnDraw[key].Push(priority, callback);
@@ -36,7 +37,7 @@ namespace WIMVR.Editor.Core {
         }
 
         public int GetNumberOfCallbacks(string key = "") {
-            return OnDraw[key].Count;
+            return OnDraw.ContainsKey(key) ? OnDraw[key].Count : 0;
         }
 
         public void InvokeCallbacks(MiniatureModel WIM, VisualElement container, string key = "") {
