@@ -8,5 +8,12 @@ namespace WIMVR.Util {
     public enum DestinationSelection { Pickup, Touch }
 
     public class HandEvent : UnityEvent<Hand>{}
+    
+    
+    public static class TypeUtils {
+        public static Hand GetOppositeHand(Hand hand) {
+            return (Hand) ((int) hand * 2 % 3);
+        }
+    }
 }
 

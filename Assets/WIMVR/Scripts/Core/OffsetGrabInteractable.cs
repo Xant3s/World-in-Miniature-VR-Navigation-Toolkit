@@ -14,6 +14,8 @@ namespace WIMVR.Core {
         private float angularDrag;
 
 
+        public bool IsGrabbed => selectingInteractor != null;
+
         protected override void OnSelectEnter(XRBaseInteractor interactor) {
             SaveRigidbody();
             base.OnSelectEnter(interactor);

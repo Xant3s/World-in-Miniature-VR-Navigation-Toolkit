@@ -1,9 +1,13 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Core;
 using WIMVR.Util;
+using Hand = WIMVR.Util.Hand;
 
 namespace WIMVR.Features.Scaling {
     /// <summary>
@@ -11,11 +15,12 @@ namespace WIMVR.Features.Scaling {
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(OffsetGrabInteractable))]
     public class Scaling : MonoBehaviour {
         public ScalingConfiguration ScalingConfig;
         private WIMConfiguration config;
         private WIMData data;
-        //private OVRGrabbable grabbable;
+        private OffsetGrabInteractable grabbable;
         private Transform handL;
         private Transform handR;
         private Transform WIMTransform;
@@ -23,40 +28,6 @@ namespace WIMVR.Features.Scaling {
         private CapsuleCollider rightGrabVolume = null;
         private Hand scalingHand = Hand.None;
         private float prevInterHandDistance;
-
-        private static void GetWorldSpaceCapsule(CapsuleCollider capsule, out Vector3 point0, out Vector3 point1, out float radius) {
-            var center = capsule.transform.TransformPoint(capsule.center);
-            radius = 0f;
-            var height = 0f;
-            var lossyScale = capsule.transform.lossyScale;
-            lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
-            var dir = Vector3.zero;
-
-            switch(capsule.direction) {
-                case 0: // x
-                    radius = Mathf.Max(lossyScale.y, lossyScale.z) * capsule.radius;
-                    height = lossyScale.x * capsule.height;
-                    dir = capsule.transform.TransformDirection(Vector3.right);
-                    break;
-                case 1: // y
-                    radius = Mathf.Max(lossyScale.x, lossyScale.z) * capsule.radius;
-                    height = lossyScale.y * capsule.height;
-                    dir = capsule.transform.TransformDirection(Vector3.up);
-                    break;
-                case 2: // z
-                    radius = Mathf.Max(lossyScale.x, lossyScale.y) * capsule.radius;
-                    height = lossyScale.z * capsule.height;
-                    dir = capsule.transform.TransformDirection(Vector3.forward);
-                    break;
-            }
-
-            if(height < radius * 2f) {
-                dir = Vector3.zero;
-            }
-
-            point0 = center + dir * (height * 0.5f - radius);
-            point1 = center - dir * (height * 0.5f - radius);
-        }
 
 
         private void OnEnable() {
@@ -82,14 +53,13 @@ namespace WIMVR.Features.Scaling {
         private void Awake() {
             if(!ScalingConfig) return;
             WIMTransform = GameObject.FindWithTag("WIM").transform;
-            //grabbable = WIMTransform.GetComponent<OVRGrabbable>();
+            grabbable = WIMTransform.GetComponent<OffsetGrabInteractable>();
             //handL = GameObject.FindWithTag("HandL").transform;
             //handR = GameObject.FindWithTag("HandR").transform;
             //leftGrabVolume = handL.GetComponentInChildren<CapsuleCollider>();
             //rightGrabVolume = handR.GetComponentInChildren<CapsuleCollider>();
             //Assert.IsNotNull(leftGrabVolume);
             //Assert.IsNotNull(rightGrabVolume);
-            ////Assert.IsNotNull(grabbable);
             //Assert.IsNotNull(handL);
             //Assert.IsNotNull(handR);
         }
@@ -112,10 +82,10 @@ namespace WIMVR.Features.Scaling {
 
         private void SetScalingHand(Hand hand) {
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
-            //if (!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
+            if (!ScalingConfig.AllowWIMScaling || !grabbable.IsGrabbed) return;
 
             var grabbingHand = GetGrabbingHand();
-            var oppositeHand = GetOppositeHand(grabbingHand); // This is the potential scaling hand.
+            var oppositeHand = TypeUtils.GetOppositeHand(grabbingHand); // This is the potential scaling hand.
             if (oppositeHand != hand) return;
 
             // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
@@ -154,13 +124,10 @@ namespace WIMVR.Features.Scaling {
         }
 
         private Hand GetGrabbingHand() {
-            //return grabbable.grabbedBy.CompareTag("HandL") ? Hand.LeftHand : Hand.RightHand;
-            return Hand.LeftHand;
-        }
-
-        private Hand GetOppositeHand(Hand hand) {
-            if (hand == Hand.None) return Hand.None;
-            return (hand == Hand.LeftHand) ? Hand.RightHand : Hand.LeftHand;
+            if (!grabbable || !grabbable.selectingInteractor) return Hand.None;
+            var xrController = grabbable?.selectingInteractor?.GetComponent<XRController>();
+            if (xrController == null) return Hand.None;
+            return xrController.controllerNode == XRNode.LeftHand ? Hand.LeftHand : Hand.RightHand; 
         }
 
         private bool GetHandIsInside(Hand hand) {
@@ -169,6 +136,40 @@ namespace WIMVR.Features.Scaling {
             GetWorldSpaceCapsule(grabVolume, out var p1, out var p2, out var radius);
             var hitColliders = Physics.OverlapCapsule(p1, p2, radius, LayerMask.GetMask("WIM"));
             return hitColliders.Length != 0;
+        }
+        
+        private static void GetWorldSpaceCapsule(CapsuleCollider capsule, out Vector3 point0, out Vector3 point1, out float radius) {
+            var center = capsule.transform.TransformPoint(capsule.center);
+            radius = 0f;
+            var height = 0f;
+            var lossyScale = capsule.transform.lossyScale;
+            lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
+            var dir = Vector3.zero;
+
+            switch(capsule.direction) {
+                case 0: // x
+                    radius = Mathf.Max(lossyScale.y, lossyScale.z) * capsule.radius;
+                    height = lossyScale.x * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.right);
+                    break;
+                case 1: // y
+                    radius = Mathf.Max(lossyScale.x, lossyScale.z) * capsule.radius;
+                    height = lossyScale.y * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.up);
+                    break;
+                case 2: // z
+                    radius = Mathf.Max(lossyScale.x, lossyScale.y) * capsule.radius;
+                    height = lossyScale.z * capsule.height;
+                    dir = capsule.transform.TransformDirection(Vector3.forward);
+                    break;
+            }
+
+            if(height < radius * 2f) {
+                dir = Vector3.zero;
+            }
+
+            point0 = center + dir * (height * 0.5f - radius);
+            point1 = center - dir * (height * 0.5f - radius);
         }
 
         private void ClampScaleFactor(in MiniatureModel WIM) {
