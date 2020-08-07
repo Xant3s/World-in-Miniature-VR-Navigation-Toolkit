@@ -44,6 +44,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Scroll WIM",
+                    "type": "Value",
+                    "id": "4b4812aa-2763-4b88-926c-62368c9deb60",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -99,6 +107,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Destination Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c4223eac-0f13-4765-8f6b-b7e153e78591",
+                    "path": "<XRController>{RightHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Scroll WIM",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

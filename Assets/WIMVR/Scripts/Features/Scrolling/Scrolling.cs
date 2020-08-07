@@ -3,9 +3,9 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.InputSystem;
 using WIMVR.Core;
 using WIMVR.Util;
-using WIMVR.Input;
 
 namespace WIMVR.Features.Scrolling {
     /// <summary>
@@ -23,8 +23,7 @@ namespace WIMVR.Features.Scrolling {
         private Vector2 verticalAxisInput;
 
         internal void Setup() {
-            InputManager.RegisterAction(scrollingActionName, ScrollWIM, scrollingTooltip);
-            InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput, verticalScrollingTooltip);
+            // InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput, verticalScrollingTooltip);
             WIMGenerator.OnPreConfigure += DisableScrolling;
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;
@@ -34,8 +33,7 @@ namespace WIMVR.Features.Scrolling {
         }
 
         internal void Remove() {
-            InputManager.UnregisterAction(scrollingActionName);
-            InputManager.UnregisterAction(verticalScrollingActionName);
+            // InputManager.UnregisterAction(verticalScrollingActionName);
             WIMGenerator.OnPreConfigure -= DisableScrolling;
             WIMGenerator.OnConfigure -= EnableScrolling;
             WIMGenerator.OnConfigure -= UpdateScrollingMask;
@@ -89,6 +87,10 @@ namespace WIMVR.Features.Scrolling {
 
         private void UpdateVerticalInput(Vector3 input) {
             verticalAxisInput = input;
+        }
+
+        public void OnScrollWIM(InputValue value) {
+            ScrollWIM(value.Get<Vector2>());
         }
 
         private void ScrollWIM(Vector3 scrollingInput) {
