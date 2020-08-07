@@ -23,7 +23,6 @@ namespace WIMVR.Features.Scrolling {
         private Vector2 verticalAxisInput;
 
         internal void Setup() {
-            // InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput, verticalScrollingTooltip);
             WIMGenerator.OnPreConfigure += DisableScrolling;
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;
@@ -33,7 +32,6 @@ namespace WIMVR.Features.Scrolling {
         }
 
         internal void Remove() {
-            // InputManager.UnregisterAction(verticalScrollingActionName);
             WIMGenerator.OnPreConfigure -= DisableScrolling;
             WIMGenerator.OnConfigure -= EnableScrolling;
             WIMGenerator.OnConfigure -= UpdateScrollingMask;
@@ -85,15 +83,16 @@ namespace WIMVR.Features.Scrolling {
             if (ScrollingConfig.AutoScroll) AutoScrollWIM();
         }
 
-        private void UpdateVerticalInput(Vector3 input) {
-            verticalAxisInput = input;
-        }
-
         public void OnScrollWIM(InputValue value) {
-            ScrollWIM(value.Get<Vector2>());
+            ManuallyScrollWIM(value.Get<Vector2>());
         }
 
-        private void ScrollWIM(Vector3 scrollingInput) {
+        public void OnScrollWIMVertically(InputValue value) {
+            verticalAxisInput = value.Get<Vector2>();
+            ManuallyScrollWIM(Vector3.zero);
+        }
+
+        private void ManuallyScrollWIM(Vector3 scrollingInput) {
             if (!Application.isPlaying) return;
             if (!ScrollingConfig.AllowWIMScrolling) return;
             var input = scrollingInput;

@@ -52,6 +52,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Scroll WIM Vertically",
+                    "type": "Value",
+                    "id": "969ed14b-42d4-4505-98cc-9fe8afbf12fe",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -118,6 +126,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Scroll WIM",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c7873fe3-ddd5-41b0-83a8-9b177590e7c1",
+                    "path": "<XRController>{LeftHand}/thumbstick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Scroll WIM Vertically",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
