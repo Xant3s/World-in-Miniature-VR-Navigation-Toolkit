@@ -67,7 +67,7 @@ namespace WIMVR.Editor.Features {
 
             var scrollSpeed = root.Q<FloatField>("scroll-speed");
             scrollSpeed.SetDisplay(config && config.AutoScroll);
-            allowVerticalScroll.SetDisplay(config && !config.AllowVerticalScrolling);
+            allowVerticalScroll.SetDisplay(config && config.AllowVerticalScrolling);
             root.Q<Toggle>("auto-scroll").RegisterValueChangedCallback(e => {
                 scrollSpeed.SetDisplay(e.newValue);
                 allowVerticalScroll.SetDisplay(!e.newValue);
