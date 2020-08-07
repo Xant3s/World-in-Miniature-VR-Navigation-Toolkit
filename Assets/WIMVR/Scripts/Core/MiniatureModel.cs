@@ -111,11 +111,6 @@ namespace WIMVR.Core {
             OnUpdate?.Invoke(Configuration, Data);
         }
 
-        private void PickupThumbTouchUp() {
-            if(!Configuration) return;
-            //OnPickupThumbTouchUp?.Invoke(Configuration, Data);
-        }
-
         private void OnEnable() {
             //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupIndexButtonTooltip);
             //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupIndexButtonTooltip);
@@ -135,54 +130,59 @@ namespace WIMVR.Core {
             }
         }
 
-        private void OnDisable() {
-            //InputManager.UnregisterAction(pickupIndexActionName);
-            //InputManager.UnregisterAction(pickupThumbActionName);
-            //InputManager.UnregisterAction(pickupThumbActionName2);
-            //InputManager.UnregisterAction(grabLActionName);
-            //InputManager.UnregisterAction(grabRActionName);
+        // private void OnDisable() {
+        //     //InputManager.UnregisterAction(pickupIndexActionName);
+        //     //InputManager.UnregisterAction(pickupThumbActionName);
+        //     //InputManager.UnregisterAction(pickupThumbActionName2);
+        //     //InputManager.UnregisterAction(grabLActionName);
+        //     //InputManager.UnregisterAction(grabRActionName);
+        // }
+        
+        private void PickupThumbTouchUp() {
+            if(!Configuration) return;
+            //OnPickupThumbTouchUp?.Invoke(Configuration, Data);
         }
 
         private void PickupIndexButtonDown() {
             if(!Configuration) return;
             OnPickupIndexButtonDown?.Invoke(Configuration, Data);
         }
-
+        
         private void PickupIndexButtonUp() {
             if(!Configuration) return;
             OnPickupIndexButtonUp?.Invoke(Configuration, Data);
         }
-
+        
         private void PickupIndexButton(float axis) {
             if(!Configuration) return;
             OnPickupIndexButton?.Invoke(Configuration, Data, axis);
         }
-
+        
         private void PickupThumbButtonDown() {
             if(!Configuration) return;
             OnPickupThumbButtonDown?.Invoke(Configuration, Data);
         }
-
+        
         private void PickupThumbButtonUp() {
             if(!Configuration) return;
             OnPickupThumbButtonUp?.Invoke(Configuration, Data);
         }
-
+        
         private void LeftGrabButtonDown() {
             if(!Configuration) return;
             OnLeftGrabButtonDown?.Invoke(Configuration, Data);
         }
-
+        
         private void LeftGrabButtonUp() {
             if(!Configuration) return;
             OnLeftGrabButtonUp?.Invoke(Configuration, Data);
         }
-
+        
         private void RightGrabButtonDown() {
             if(!Configuration) return;
             OnRightGrabButtonDown?.Invoke(Configuration, Data);
         }
-
+        
         private void RightGrabButtonUp() {
             if(!Configuration) return;
             OnRightGrabButtonUp?.Invoke(Configuration, Data);

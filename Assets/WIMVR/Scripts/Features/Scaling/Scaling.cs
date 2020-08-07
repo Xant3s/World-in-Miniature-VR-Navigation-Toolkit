@@ -1,19 +1,20 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Core;
 using WIMVR.Util;
+using WIMVR.Util.XR;
 using Hand = WIMVR.Util.Hand;
 
 namespace WIMVR.Features.Scaling {
     /// <summary>
     /// Allows to scale the miniature model at runtime.
     /// </summary>
-    [ExecuteAlways]
+    // [ExecuteAlways]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(OffsetGrabInteractable))]
     public class Scaling : MonoBehaviour {
@@ -27,12 +28,17 @@ namespace WIMVR.Features.Scaling {
         private CapsuleCollider leftGrabVolume;
         private CapsuleCollider rightGrabVolume = null;
         private Hand scalingHand = Hand.None;
+        private InputHelpers.Button leftGrabButton = InputHelpers.Button.Grip;
+        private InputHelpers.Button rightGrabButton = InputHelpers.Button.Grip;
+        private bool leftGrabPressedLastFrame;
+        private bool rightGrabPressedLastFrame;
         private float prevInterHandDistance;
 
 
         private void OnEnable() {
             if(!ScalingConfig) return;
-            //MiniatureModel.OnUpdate += ScaleWIM;
+            MiniatureModel.OnUpdate += ScaleWIM;
+            DetectGrabButtons();
             //MiniatureModel.OnLeftGrabButtonDown += LeftScalingButtonDown;
             //MiniatureModel.OnLeftGrabButtonUp += LeftScalingButtonUp;
             //MiniatureModel.OnRightGrabButtonDown += RightScalingButtonDown;
@@ -42,7 +48,7 @@ namespace WIMVR.Features.Scaling {
 
         private void OnDisable() {
             if(!ScalingConfig) return;
-            //MiniatureModel.OnUpdate -= ScaleWIM;
+            MiniatureModel.OnUpdate -= ScaleWIM;
             //MiniatureModel.OnLeftGrabButtonDown -= LeftScalingButtonDown;
             //MiniatureModel.OnLeftGrabButtonUp -= LeftScalingButtonUp;
             //MiniatureModel.OnRightGrabButtonDown -= RightScalingButtonDown;
@@ -54,35 +60,71 @@ namespace WIMVR.Features.Scaling {
             if(!ScalingConfig) return;
             WIMTransform = GameObject.FindWithTag("WIM").transform;
             grabbable = WIMTransform.GetComponent<OffsetGrabInteractable>();
-            //handL = GameObject.FindWithTag("HandL").transform;
-            //handR = GameObject.FindWithTag("HandR").transform;
-            //leftGrabVolume = handL.GetComponentInChildren<CapsuleCollider>();
-            //rightGrabVolume = handR.GetComponentInChildren<CapsuleCollider>();
-            //Assert.IsNotNull(leftGrabVolume);
-            //Assert.IsNotNull(rightGrabVolume);
-            //Assert.IsNotNull(handL);
-            //Assert.IsNotNull(handR);
+            // Assert.IsNotNull(leftGrabVolume);
+            // Assert.IsNotNull(rightGrabVolume);
+            // Assert.IsNotNull(handL);
+            // Assert.IsNotNull(handR);
         }
 
-        private void LeftScalingButtonDown(WIMConfiguration config, WIMData data) {
-            SetScalingHand(Hand.LeftHand);
+        private void Start() {
+            Init();
         }
 
-        private void LeftScalingButtonUp(WIMConfiguration config, WIMData data) {
-            scalingHand = Hand.None;
+        private void Update() {
+            if (!IsInitialized()) Init();
+            ReadInput();
         }
 
-        private void RightScalingButtonDown(WIMConfiguration config, WIMData data) {
-            SetScalingHand(Hand.RightHand);
+        private void ReadInput() {
+            var leftInputDevice = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+            var rightInputDevice = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+            leftInputDevice.TryGetFeatureValue(new InputFeatureUsage<float>(leftGrabButton.ToString()), out var leftGrabValue);
+            rightInputDevice.TryGetFeatureValue(new InputFeatureUsage<float>(rightInputDevice.ToString()),
+                out var rightGrabValue);
+            const float epsilon = .01f;
+            var leftGrabPressed = leftGrabValue < epsilon;
+            var rightGrabPressed = rightGrabValue < epsilon;
+
+            // call events
+            if (leftGrabPressed && !leftGrabPressedLastFrame) SetScalingHand(Hand.LeftHand);
+            else if (!leftGrabPressed && leftGrabPressedLastFrame) scalingHand = Hand.None;
+            if (rightGrabPressed && !rightGrabPressedLastFrame) SetScalingHand(Hand.RightHand);
+            else if (!rightGrabPressed && rightGrabPressedLastFrame) scalingHand = Hand.None;
+
+            leftGrabPressedLastFrame = leftGrabPressed;
+            rightGrabPressedLastFrame = rightGrabPressed;
         }
 
-        private void RightScalingButtonUp(WIMConfiguration config, WIMData data) {
-            scalingHand = Hand.None;
+        private bool IsInitialized() => handL && handR && leftGrabVolume && rightGrabVolume;
+
+        private void Init() {
+            handL = GameObject.FindWithTag("HandL")?.transform;
+            handR = GameObject.FindWithTag("HandR")?.transform;
+            if(handL) leftGrabVolume = handL.GetComponentInChildren<CapsuleCollider>();
+            if(handR) rightGrabVolume = handR.GetComponentInChildren<CapsuleCollider>();
         }
+
+        // private void LeftScalingButtonDown(WIMConfiguration config, WIMData data) {
+        //     SetScalingHand(Hand.LeftHand);
+        // }
+        //
+        // private void LeftScalingButtonUp(WIMConfiguration config, WIMData data) {
+        //     scalingHand = Hand.None;
+        // }
+        //
+        // private void RightScalingButtonDown(WIMConfiguration config, WIMData data) {
+        //     SetScalingHand(Hand.RightHand);
+        // }
+        //
+        // private void RightScalingButtonUp(WIMConfiguration config, WIMData data) {
+        //     scalingHand = Hand.None;
+        // }
 
         private void SetScalingHand(Hand hand) {
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
             if (!ScalingConfig.AllowWIMScaling || !grabbable.IsGrabbed) return;
+
+            if (!IsInitialized()) Init();
 
             var grabbingHand = GetGrabbingHand();
             var oppositeHand = TypeUtils.GetOppositeHand(grabbingHand); // This is the potential scaling hand.
@@ -100,10 +142,11 @@ namespace WIMVR.Features.Scaling {
             Assert.IsNotNull(ScalingConfig, "Scaling configuration is missing.");
 
             // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
-            //if (!ScalingConfig.AllowWIMScaling || !grabbable.isGrabbed) return;
+            if (!ScalingConfig.AllowWIMScaling || !grabbable.IsGrabbed) return;
 
             // Check if currently scaling. Abort if not.
             if (scalingHand == Hand.None) return;
+            Debug.Log("asdf");
 
             // Scale using inter hand distance delta.
             var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
@@ -172,9 +215,17 @@ namespace WIMVR.Features.Scaling {
             point1 = center - dir * (height * 0.5f - radius);
         }
 
-        private void ClampScaleFactor(in MiniatureModel WIM) {
-            if (ScalingConfig) config.ScaleFactor =
-                Mathf.Clamp(config.ScaleFactor, ScalingConfig.MinScaleFactor, ScalingConfig.MaxScaleFactor);
+        // private void ClampScaleFactor(in MiniatureModel WIM) {
+        //     if (ScalingConfig) config.ScaleFactor =
+        //         Mathf.Clamp(config.ScaleFactor, ScalingConfig.MinScaleFactor, ScalingConfig.MaxScaleFactor);
+        // }
+        
+        private void DetectGrabButtons() {
+            var controllers = GameObject.FindWithTag("Player").GetComponentsInChildren<XRController>();
+            var leftController = controllers.First(c => c.controllerNode == XRNode.LeftHand);
+            if (leftController) leftGrabButton = leftController.selectUsage;
+            var rightController = controllers.First(c => c.controllerNode == XRNode.RightHand);
+            if (rightController) rightGrabButton = rightController.selectUsage;
         }
     }
 }
