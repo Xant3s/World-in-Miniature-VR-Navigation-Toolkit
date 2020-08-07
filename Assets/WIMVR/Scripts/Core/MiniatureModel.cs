@@ -20,19 +20,6 @@ namespace WIMVR.Core {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {
-        #region Input Mappings Tooltips
-        private static readonly string pickupIndexActionName = "Pickup Index Button";
-        private static readonly string pickupThumbActionName = "Pickup Thumb Button";
-        private static readonly string pickupThumbActionName2 = "Pickup Thumb Button (touch)";
-        private static readonly string grabLActionName = "Left Grab Button";
-        private static readonly string grabRActionName = "Right Grab Button";
-        private static readonly string pickupIndexButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
-        private static readonly string pickupThumbButtonTooltip = "Used to detect pickup when the destination selection method is set to pickup.";
-        private static readonly string pickupThumbButtonTooltip2 = "This should have the same key assigned as 'pickup thumb button'. Allows the player to pick something up by just touching the thumb button instead of pressing it.";
-        private static readonly string grabLTooltip = "The grab button on the left hand. Used to grab the miniature model.";
-        private static readonly string grabRTooltip = "The grab button on the right hand. Used to grab the miniature model.";
-        #endregion
-
         #region Events
         public delegate void WIMAction(WIMConfiguration config, WIMData data);
 
