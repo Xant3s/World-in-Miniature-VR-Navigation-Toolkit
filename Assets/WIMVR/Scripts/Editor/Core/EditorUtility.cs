@@ -31,6 +31,7 @@ namespace WIMVR.Editor.Core {
         }
 
         public void RemoveCallback(InspectorAction callback, string key = "") {
+            if(!OnDraw.ContainsKey(key)) return;
             foreach(var item in OnDraw[key].Where(pair => pair.Value == callback).ToList()) {
                 OnDraw[key].Remove(item.Key);
             }
