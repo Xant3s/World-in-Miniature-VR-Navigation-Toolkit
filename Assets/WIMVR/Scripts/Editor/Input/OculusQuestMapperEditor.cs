@@ -35,49 +35,49 @@ namespace WIMVR.Editor.Input {
             root.Bind(new SerializedObject(mapper));
             UpdateActions();
 
-            Action action = () => {
-                if(!mapper.InputMappings) return;
-                UpdateActions();
+            //Action action = () => {
+            //    if(!mapper.InputMappings) return;
+            //    UpdateActions();
 
-                for(var i = 0; i < InputManager.ButtonActions.Count; i++) {
-                    EditorGUI.BeginChangeCheck();
-                    var content = new GUIContent(mapper.actionButtonMappings[i].Name, mapper.actionButtonMappings[i].Tooltip);
-                    mapper.actionButtonMappings[i].Mapping =
-                        (OVRInput.RawButton) EditorGUILayout.EnumFlagsField(content, mapper.actionButtonMappings[i].Mapping);
-                    if(EditorGUI.EndChangeCheck()) {
-                        mapper.InputMappings.Set(mapper.actionButtonMappings[i].MappingKey,
-                            (int) mapper.actionButtonMappings[i].Mapping);
-                    }
-                }
+            //    for(var i = 0; i < InputManager.ButtonActions.Count; i++) {
+            //        EditorGUI.BeginChangeCheck();
+            //        var content = new GUIContent(mapper.actionButtonMappings[i].Name, mapper.actionButtonMappings[i].Tooltip);
+            //        mapper.actionButtonMappings[i].Mapping =
+            //            (OVRInput.RawButton) EditorGUILayout.EnumFlagsField(content, mapper.actionButtonMappings[i].Mapping);
+            //        if(EditorGUI.EndChangeCheck()) {
+            //            mapper.InputMappings.Set(mapper.actionButtonMappings[i].MappingKey,
+            //                (int) mapper.actionButtonMappings[i].Mapping);
+            //        }
+            //    }
 
-                for(var i = 0; i < InputManager.ButtonTouchActions.Count; i++) {
-                    EditorGUI.BeginChangeCheck();
-                    var content = new GUIContent(mapper.actionButtonTouchMappings[i].Name, mapper.actionButtonTouchMappings[i].Tooltip);
-                    mapper.actionButtonTouchMappings[i].Mapping =
-                        (OVRInput.RawTouch) EditorGUILayout.EnumFlagsField(content, mapper.actionButtonTouchMappings[i].Mapping);
-                    if(EditorGUI.EndChangeCheck()) {
-                        mapper.InputMappings.Set(mapper.actionButtonTouchMappings[i].MappingKey,
-                            (int) mapper.actionButtonTouchMappings[i].Mapping);
-                    }
-                }
+            //    for(var i = 0; i < InputManager.ButtonTouchActions.Count; i++) {
+            //        EditorGUI.BeginChangeCheck();
+            //        var content = new GUIContent(mapper.actionButtonTouchMappings[i].Name, mapper.actionButtonTouchMappings[i].Tooltip);
+            //        mapper.actionButtonTouchMappings[i].Mapping =
+            //            (OVRInput.RawTouch) EditorGUILayout.EnumFlagsField(content, mapper.actionButtonTouchMappings[i].Mapping);
+            //        if(EditorGUI.EndChangeCheck()) {
+            //            mapper.InputMappings.Set(mapper.actionButtonTouchMappings[i].MappingKey,
+            //                (int) mapper.actionButtonTouchMappings[i].Mapping);
+            //        }
+            //    }
 
-                for(var i = 0; i < InputManager.AxisActions.Count; i++) {
-                    EditorGUI.BeginChangeCheck();
-                    var content = new GUIContent(mapper.actionAxisMappings[i].Name, mapper.actionAxisMappings[i].Tooltip);
-                    mapper.actionAxisMappings[i].Mapping =
-                        (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField(content, mapper.actionAxisMappings[i].Mapping);
-                    if(EditorGUI.EndChangeCheck()) {
-                        mapper.InputMappings.Set(mapper.actionAxisMappings[i].MappingKey,
-                            (int) mapper.actionAxisMappings[i].Mapping);
-                    }
-                }
-            };
-            var imguiContainer = new IMGUIContainer(action) {
-                visible = mapper.InputMappings != null
-            };
-            root.Add(imguiContainer);
+            //    for(var i = 0; i < InputManager.AxisActions.Count; i++) {
+            //        EditorGUI.BeginChangeCheck();
+            //        var content = new GUIContent(mapper.actionAxisMappings[i].Name, mapper.actionAxisMappings[i].Tooltip);
+            //        mapper.actionAxisMappings[i].Mapping =
+            //            (OVRInput.RawAxis2D) EditorGUILayout.EnumFlagsField(content, mapper.actionAxisMappings[i].Mapping);
+            //        if(EditorGUI.EndChangeCheck()) {
+            //            mapper.InputMappings.Set(mapper.actionAxisMappings[i].MappingKey,
+            //                (int) mapper.actionAxisMappings[i].Mapping);
+            //        }
+            //    }
+            //};
+            //var imguiContainer = new IMGUIContainer(action) {
+            //    visible = mapper.InputMappings != null
+            //};
+            //root.Add(imguiContainer);
 
-            inputMapping.RegisterValueChangedCallback(e => imguiContainer.visible = e.newValue != null);
+            //inputMapping.RegisterValueChangedCallback(e => imguiContainer.visible = e.newValue != null);
 
             return root;
         }

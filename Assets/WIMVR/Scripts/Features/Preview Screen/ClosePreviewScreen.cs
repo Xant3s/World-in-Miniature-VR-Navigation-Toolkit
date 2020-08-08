@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
 using WIMVR.Util;
-using WIMVR.Input;
+using WIMVR.Util.Haptics;
+using WIMVR.Util.XR;
 
 namespace WIMVR.Features.Preview_Screen {
     /// <summary>
@@ -14,7 +15,6 @@ namespace WIMVR.Features.Preview_Screen {
     [DisallowMultipleComponent]
     public class ClosePreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
-
         private bool once;
 
 
@@ -36,13 +36,12 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void StartClosing(Hand hand) {
-            InputManager.SetVibration(frequency: .5f, amplitude: .1f, hand);
+            Haptics.Vibrate(XRUtils.FindCorrespondingInputDevice(hand), .1f, .1f);
             StartCoroutine(Close(hand, .1f));
         }
 
         private IEnumerator Close(Hand hand, float time) {
             yield return new WaitForSeconds(time);
-            InputManager.SetVibration(frequency: 0, amplitude: 0, hand);
             WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
         }
     }

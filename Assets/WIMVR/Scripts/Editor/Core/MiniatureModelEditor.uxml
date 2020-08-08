@@ -45,7 +45,7 @@
                        tooltip="The player's height. No Exact value required." />
     <editor:FloatField name="spawn-distance" label="WIM Spawn Distance" binding-path="SpawnDistance"
                        tooltip="Specifies how far away from the player the miniature model should be spawned." />
-    <Toggle name="detect-arm-length" label="Auto Detect Arm Length" binding-path="AutoDetectArmLength"
+    <Toggle name="detect-arm-length" label="Auto Detect Arm Length (Experimental)" binding-path="AutoDetectArmLength"
             tooltip="At the start of the application, the player has to extend the arm and press the confirm teleport button. The detected arm length will be used instead of the spawn distance." />
     <WIM:HelpBox name="detect-arm-length-info" message-type="Info" text="Add 'DetectArmLength' script to enable this feature." />
     <Toggle label="Adapt miniature model Size to Player Height" binding-path="AdaptWIMSizeToPlayerHeight"

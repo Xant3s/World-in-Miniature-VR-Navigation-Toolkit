@@ -17,9 +17,6 @@ namespace WIMVR.Features {
 
         public static bool RemoveOldWIMLevel = true;
         public static Material materialForOldWIM;
-
-        private static readonly string actionName = "Respawn Button";
-        private static readonly string actionTooltip = "Button used to respawn the miniature model.";
         private WIMConfiguration config;
         private WIMData data;
         public static event RespawnAction OnEarlyRespawn;
@@ -46,6 +43,9 @@ namespace WIMVR.Features {
             WIMLevel.parent = null;
             WIMLevel.name = "WIM Level Old";
             WIMLevel.tag = "WIM Level Old";
+            Assert.IsNotNull(data);
+            Assert.IsNotNull(data.PlayerRepresentationTransform);
+            Assert.IsNotNull(data.PlayerRepresentationTransform.parent);
             data.PlayerRepresentationTransform.parent = null;
             data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
@@ -98,13 +98,16 @@ namespace WIMVR.Features {
             if (RemoveOldWIMLevel) DestroyOldWIMLevel();
         }
 
+        public void OnRespawn() {
+            RespawnWIM(false);
+        }
+
         private static void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
 
         private void OnEnable() {
-            MiniatureModel.OnLateInit += StartRespawn;
-            InputManager.RegisterAction(actionName, StartRespawn, tooltip: actionTooltip);
+            MiniatureModel.OnLateInitHand += StartRespawn;
             if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -113,12 +116,7 @@ namespace WIMVR.Features {
         }
 
         private void OnDisable() {
-            MiniatureModel.OnLateInit -= StartRespawn;
-            InputManager.UnregisterAction(actionName);
-        }
-
-        private void StartRespawn() {
-            RespawnWIM(false);
+            MiniatureModel.OnLateInitHand -= StartRespawn;
         }
 
         private void StartRespawn(WIMConfiguration config, WIMData data) {

@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
+using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Util;
 using MathUtils = WIMVR.Util.MathUtils;
 using Object = UnityEngine.Object;
@@ -129,8 +130,9 @@ namespace WIMVR.Core {
             WIMLevel.gameObject.layer = WIMLayer;
             foreach (Transform child in WIMLevel) {
                 child.gameObject.layer = WIMLayer;
+                Object.DestroyImmediate(child.GetComponent(typeof(XRGrabInteractable)));
+                Object.DestroyImmediate(child.GetComponent(typeof(OffsetGrabInteractable)));
                 Object.DestroyImmediate(child.GetComponent(typeof(Rigidbody)));
-                Object.DestroyImmediate(child.GetComponent(typeof(OVRGrabbable)));
                 var renderer = child.GetComponent<Renderer>();
                 if (renderer) {
                     renderer.shadowCastingMode = ShadowCastingMode.Off;

@@ -12,18 +12,25 @@ namespace WIMVR.Util {
 
         private Transform target;
 
+
         private void Start() {
+            TryGetTarget();
+        }
+
+        private void TryGetTarget() {
+            if(target) return;
             switch(hand) {
                 case Hand.LeftHand:
-                    target = GameObject.FindWithTag("HandL").transform;
+                    target = GameObject.FindWithTag("HandL")?.transform;
                     break;
                 case Hand.RightHand:
-                    target = GameObject.FindWithTag("HandR").transform;
+                    target = GameObject.FindWithTag("HandR")?.transform;
                     break;
             }
         }
 
         private void Update() {
+            TryGetTarget();
             if(!target) return;
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;

@@ -3,9 +3,9 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.InputSystem;
 using WIMVR.Core;
 using WIMVR.Util;
-using WIMVR.Input;
 
 namespace WIMVR.Features.Scrolling {
     /// <summary>
@@ -14,17 +14,11 @@ namespace WIMVR.Features.Scrolling {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
-        private static readonly string scrollingActionName = "Scrolling Axis";
-        private static readonly string verticalScrollingActionName = "Vertical Scrolling Axis";
-        private static readonly string scrollingTooltip = "Axis used to scroll miniature model. Only used if scrolling is enabled.";
-        private static readonly string verticalScrollingTooltip = "Axis used to vertical scroll miniature model. Only used if scrolling is enabled.";
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
         private WIMData data;
         private Vector2 verticalAxisInput;
 
         internal void Setup() {
-            InputManager.RegisterAction(scrollingActionName, ScrollWIM, scrollingTooltip);
-            InputManager.RegisterAction(verticalScrollingActionName, UpdateVerticalInput, verticalScrollingTooltip);
             WIMGenerator.OnPreConfigure += DisableScrolling;
             WIMGenerator.OnConfigure += EnableScrolling;
             WIMGenerator.OnConfigure += UpdateScrollingMask;
@@ -34,8 +28,6 @@ namespace WIMVR.Features.Scrolling {
         }
 
         internal void Remove() {
-            InputManager.UnregisterAction(scrollingActionName);
-            InputManager.UnregisterAction(verticalScrollingActionName);
             WIMGenerator.OnPreConfigure -= DisableScrolling;
             WIMGenerator.OnConfigure -= EnableScrolling;
             WIMGenerator.OnConfigure -= UpdateScrollingMask;
@@ -81,17 +73,22 @@ namespace WIMVR.Features.Scrolling {
 
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
             Assert.IsNotNull(ScrollingConfig, "Scrolling configuration is missing.");
+            this.data = data;
             if (!data.WIMLevelTransform) return;    // TODO: Useless?
             if(!ScrollingConfig.AllowWIMScrolling) return;
             if (ScrollingConfig.AutoScroll) AutoScrollWIM();
-            this.data = data;
         }
 
-        private void UpdateVerticalInput(Vector3 input) {
-            verticalAxisInput = input;
+        public void OnScrollWIM(InputValue value) {
+            ManuallyScrollWIM(value.Get<Vector2>());
         }
 
-        private void ScrollWIM(Vector3 scrollingInput) {
+        public void OnScrollWIMVertically(InputValue value) {
+            verticalAxisInput = value.Get<Vector2>();
+            ManuallyScrollWIM(Vector3.zero);
+        }
+
+        private void ManuallyScrollWIM(Vector3 scrollingInput) {
             if (!Application.isPlaying) return;
             if (!ScrollingConfig.AllowWIMScrolling) return;
             var input = scrollingInput;
@@ -102,7 +99,10 @@ namespace WIMVR.Features.Scrolling {
         }
 
         private void AutoScrollWIM() {
-            if(!ScrollingConfig.AllowWIMScrolling || !ScrollingConfig.AutoScroll) return;
+            if (!ScrollingConfig.AllowWIMScrolling || !ScrollingConfig.AutoScroll ||
+                !data.PlayerRepresentationTransform) return;
+            Assert.IsNotNull(data.PlayerRepresentationTransform);
+            Assert.IsNotNull(data.WIMLevelTransform);
             var scrollOffset = data.DestinationIndicatorInWIM
                 ? -data.DestinationIndicatorInWIM.localPosition
                 : -data.PlayerRepresentationTransform.localPosition;
@@ -130,7 +130,7 @@ namespace WIMVR.Features.Scrolling {
         private void AdjustPlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
             if(ScrollingConfig && ScrollingConfig.AllowWIMScrolling) {
                 // Get closest point on active area bounds. Won't have any effect if already inside active area.
-                data.PlayerRepresentationTransform.position = 
+                data.PlayerRepresentationTransform.position =
                     data.WIMLevelTransform.GetComponentInParent<Collider>().ClosestPoint(data.PlayerRepresentationTransform.position);
             }
         }

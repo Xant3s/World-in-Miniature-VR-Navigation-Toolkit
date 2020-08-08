@@ -11,10 +11,10 @@ namespace WIMVR.Features.Distance_Grab {
     public class DistanceGrabber : MonoBehaviour {
         [Header("Distance Grabber (Experimental)")]
         [Tooltip("Hand this script is attached to.")]
-        [SerializeField] private Hand hand;
+        [SerializeField] private Hand hand = Hand.None;
 
         [Tooltip("Start point of the laser pointer.")]
-        [SerializeField] private Transform start;
+        [SerializeField] private Transform start = null;
 
         [Tooltip("Distance grabbing will be disabled if within specified distance to miniature model")]
         [SerializeField] private float requiredDistanceToWIM = .5f;
@@ -75,10 +75,10 @@ namespace WIMVR.Features.Distance_Grab {
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
                 var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
-                if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
-                    grabStartedThisFrame = false;
-                    return;
-                }
+                //if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
+                //    grabStartedThisFrame = false;
+                //    return;
+                //}
                 if(!grabStartedThisFrame && grabButtonPressed) return;
                 grabbable.HighlightFX = true;
                 grabbable.IsBeingGrabbed = grabButtonPressed;

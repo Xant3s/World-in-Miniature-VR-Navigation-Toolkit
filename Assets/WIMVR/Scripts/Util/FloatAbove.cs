@@ -10,7 +10,7 @@ namespace WIMVR.Util {
     [DisallowMultipleComponent]
     public class FloatAbove : MonoBehaviour {
         public Transform Target;
-        [SerializeField] private Vector3 offset;
+        [SerializeField] private Vector3 offset = Vector3.zero;
 
         private void Start() {
             Assert.IsNotNull(Target);

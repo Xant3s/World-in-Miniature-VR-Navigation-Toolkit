@@ -12,11 +12,11 @@ namespace WIMVR.Features.Occlusion_Handling {
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
-    internal sealed class OcclusionHandling : MonoBehaviour {
+    public sealed class OcclusionHandling : MonoBehaviour {
         [HideInInspector] public OcclusionHandlingConfiguration Config;
 
 
-        internal void UpdateCylinderMask(in MiniatureModel WIM) {
+        public void UpdateCylinderMask(in MiniatureModel WIM) {
             if(!Config) return;
             if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
             var cylinderTransform = GameObject.FindWithTag("Cylinder Mask")?.transform;
@@ -25,7 +25,7 @@ namespace WIMVR.Features.Occlusion_Handling {
                 new Vector3(Config.MeltRadius, Config.MeltHeight, 1);
         }
 
-        internal void UpdateCutoutViewMask(in MiniatureModel WIM) {
+        public void UpdateCutoutViewMask(in MiniatureModel WIM) {
             if(!Config) return;
             if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
             var spotlightObj = GameObject.FindWithTag("Spotlight Mask");

@@ -13,7 +13,7 @@ namespace WIMVR.Features.Distance_Grab {
     public class AimAssist : MonoBehaviour {
         [Header("Aim Assist (Experimental)")]
         [Tooltip("The hand this script is attached to.")]
-        [SerializeField] private Hand hand;
+        [SerializeField] private Hand hand = Hand.None;
 
         [Tooltip("The length of the laser pointer.")]
         [SerializeField] private float length = 10.0f;

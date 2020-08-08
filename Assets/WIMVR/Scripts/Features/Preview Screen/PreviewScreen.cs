@@ -81,7 +81,7 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(WIMData.DestinationIndicatorInLevel.GetChild(0).GetChild(1));
             var camObj = WIMData.DestinationIndicatorInLevel.GetChild(0).GetChild(1).gameObject; // Making assumptions on the prefab.
             Assert.IsNotNull(camObj);
-            var cam = camObj.GetComponent<Camera>() ?? camObj.AddComponent<Camera>();
+            var cam = camObj.GetOrAddComponent<Camera>();
             Assert.IsNotNull(cam);
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
@@ -102,7 +102,7 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void ConfigurePickupPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
-            if(!Config || Config.AutoPositionPreviewScreen) return;
+            if(!Config || Config.AutoPositionPreviewScreen || !Config.PreviewScreen) return;
             WIMData.DestinationIndicatorInWIM.GetChild(0).GetChild(1).GetChild(0).gameObject
                 .AddComponent<PickupPreviewScreen>();
         }

@@ -23,9 +23,9 @@ namespace WIMVR.Editor.Features {
             scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
             if(EditorGUI.EndChangeCheck()) {
                 WIMGenerator.ConfigureWIM(WIM);
-                scrolling.Remove();
+                //scrolling.Remove();
                 if(scrolling.ScrollingConfig) {
-                    scrolling.Setup();
+                    //scrolling.Setup();
                 }
             }
             if(!scrolling.ScrollingConfig)
@@ -63,11 +63,11 @@ namespace WIMVR.Editor.Features {
                 root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM));
             });
 
-            root.Q<Vector3Field>("active-area-bounds").RegisterValueChangedCallback(e => scrolling.UpdateScrollingMask(WIM));
+            //root.Q<Vector3Field>("active-area-bounds").RegisterValueChangedCallback(e => scrolling.UpdateScrollingMask(WIM));
 
             var scrollSpeed = root.Q<FloatField>("scroll-speed");
             scrollSpeed.SetDisplay(config && config.AutoScroll);
-            allowVerticalScroll.SetDisplay(config && !config.AllowVerticalScrolling);
+            allowVerticalScroll.SetDisplay(config && config.AllowVerticalScrolling);
             root.Q<Toggle>("auto-scroll").RegisterValueChangedCallback(e => {
                 scrollSpeed.SetDisplay(e.newValue);
                 allowVerticalScroll.SetDisplay(!e.newValue);
