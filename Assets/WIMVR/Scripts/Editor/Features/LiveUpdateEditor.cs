@@ -29,9 +29,9 @@ namespace WIMVR.Editor.Features {
                 bindingPath = "AutoGenerateWIM",
                 tooltip = "Automatically update the miniature model when changes are made to the level. Works also in editor. Not all changes are detected (see manual to learn more). Experimental feature."
             };
-            //autoGenerateWIM.RegisterValueChangedCallback(e =>
-            //    autoGenerateWIM.schedule.Execute(() => LiveUpdate.UpdateAutoGenerateWIM(WIM))); // Delay so that newValue is set on execution.
-            //container.Add(autoGenerateWIM);
+            autoGenerateWIM.RegisterValueChangedCallback(e =>
+                autoGenerateWIM.schedule.Execute(() => LiveUpdate.UpdateAutoGenerateWIM(WIM))); // Delay so that newValue is set on execution.
+            container.Add(autoGenerateWIM);
         }
     }
 }
