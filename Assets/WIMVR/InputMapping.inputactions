@@ -60,6 +60,14 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Detect Arm Length",
+                    "type": "Button",
+                    "id": "4722071a-958e-42b3-b3d1-51c5d7d845f3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -137,6 +145,17 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Scroll WIM Vertically",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ae071ad-f483-4b37-980a-2ef608516cdf",
+                    "path": "<XRController>{RightHand}/primary",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Detect Arm Length",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
