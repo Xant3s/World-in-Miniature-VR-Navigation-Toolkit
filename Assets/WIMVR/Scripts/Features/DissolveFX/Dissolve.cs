@@ -12,7 +12,11 @@ namespace WIMVR.Features.DissolveFX {
         public Material[] materials;
         private bool isInverse;
         private float endTime;
+        
 
+        private void OnDestroy() {
+            SetProgress(0);
+        }
 
         /// <summary>
         /// Plays dissolve effect.
