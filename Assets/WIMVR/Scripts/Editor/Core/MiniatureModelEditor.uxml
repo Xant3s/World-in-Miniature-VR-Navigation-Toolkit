@@ -5,7 +5,7 @@
 
   <Label text="World-in-Miniature (WIM)" class="title" />
   <VisualElement name="ConfigurationContainer" />
-  <editor:ObjectField name="configuration" label="Configuration" type="WIMVR.WIMConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="Configuration" />
+  <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="Configuration" />
   <WIM:HelpBox name="config-missing" message-type="Error" text="WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script." />
   <VisualElement name="master-container">
     <Button name="GenerateWIMButton" text="Generate WIM" tooltip="Creates a new miniature model. Removes previously existing one. "/>

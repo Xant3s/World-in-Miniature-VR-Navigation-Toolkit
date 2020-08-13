@@ -2,7 +2,7 @@
       xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
 <Label text="Scaling" class="Separator"/>
-<editor:ObjectField name="configuration" label="Configuration" type="WIMVR.ScalingConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="ScalingConfig" />
+<editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="ScalingConfig" />
 <WIM:HelpBox name="config-info" message-type="Error" text="Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script." />
 
 <VisualElement name="settings">

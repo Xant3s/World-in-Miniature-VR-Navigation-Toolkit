@@ -1,7 +1,7 @@
 ﻿<UXML xmlns="UnityEngine.UIElements"
       xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
-  <editor:ObjectField name="configuration" label="Configuration" type="WIMVR.PathTraceConfiguration, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="PathTraceConfig" />
+  <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="PathTraceConfig" />
   <WIM:HelpBox name="config-info" message-type="Error" text="Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script." />
  
   <VisualElement name="settings">

@@ -57,7 +57,7 @@ namespace WIMVR.Editor.Features {
             if(visualTree) visualTree.CloneTree(root);
 
             var configField = root.Q<ObjectField>("configuration");
-            configField.objectType = typeof(OcclusionHandlingConfiguration); // TODO: Set in UXML
+            configField.objectType = typeof(OcclusionHandlingConfiguration);
             configField.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
 
             root.Q<HelpBox>("config-error").SetDisplay(!config);
