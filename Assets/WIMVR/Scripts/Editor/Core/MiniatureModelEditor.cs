@@ -58,12 +58,13 @@ namespace WIMVR.Editor.Core {
 
         public override VisualElement CreateInspectorGUI() {
             if(!visualTree) return new VisualElement();
-            root.Q<ObjectField>("configuration").objectType = typeof(WIMConfiguration);     // Hotfix until 2020.1
+            root.Q<ObjectField>("configuration").objectType = typeof(WIMConfiguration);
             var configField = root.Q<ObjectField>("configuration");
             configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(e => {
                 root.Q<HelpBox>(name: "config-missing").SetDisplay(!e.newValue);
                 root.Q<VisualElement>("master-container").SetDisplay(e.newValue);
-                WIMGenerator.ConfigureWIM(WIM); // Redraw UI.
+                if (e.newValue) root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM));    // Redraw UI: new config is not null so wait for the config to be loaded.
+                else WIMGenerator.ConfigureWIM(WIM); // Redraw UI: new config is null so do it now.
             });
             root.Q<HelpBox>(name: "config-missing").SetDisplay(!WIM.Configuration);
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
