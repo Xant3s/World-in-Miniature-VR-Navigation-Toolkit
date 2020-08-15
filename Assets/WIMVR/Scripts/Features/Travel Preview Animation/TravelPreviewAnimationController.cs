@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
 using WIMVR.Util;
 
 namespace WIMVR.Features.Travel_Preview_Animation {
@@ -55,9 +56,14 @@ namespace WIMVR.Features.Travel_Preview_Animation {
         }
 
         private void Start() {
+            RegisterCleanupOnWIMRespawnEvent();
             InitLineRenderer();
             InitAnimatedPlayerRepresentation();
             ResetAnimation();
+        }
+
+        private void RegisterCleanupOnWIMRespawnEvent() {
+            MiniatureModel.OnCleanupWIMBeforeRespawn += Cleanup;
         }
 
         private void InitLineRenderer() {
@@ -68,17 +74,15 @@ namespace WIMVR.Features.Travel_Preview_Animation {
         private void InitAnimatedPlayerRepresentation() {
             Assert.IsNotNull(DestinationIndicator);
             Assert.IsNotNull(WIMLevelTransform);
-            animatedPlayerRepresentation = GameObject.Instantiate(DestinationIndicator, WIMLevelTransform).transform;
-            Assert.IsNotNull(animatedPlayerRepresentation);
-            animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
+            animatedPlayerRepresentation = Instantiate(DestinationIndicator, WIMLevelTransform).transform;
             animatedPlayerRepresentation.name = "Animated Player Travel Representation";
             animatedPlayerRepresentation.GetComponentInChildren<Renderer>().material =
                 Resources.Load<Material>("SemiTransparent");
         }
 
-        private void OnDestroy() {
+        private void Cleanup(WIMConfiguration config, WIMData data) {
             if(!animatedPlayerRepresentation) return;
-            animatedPlayerRepresentation.gameObject.AddComponent<Destroyer>();
+            animatedPlayerRepresentation.parent = null;    // Prevent from being copied on copy WIM.
             Destroy(animatedPlayerRepresentation.gameObject);
         }
 
