@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
+using WIMVR.Features.Pickup_Destination;
 using WIMVR.Util;
 
 namespace WIMVR.Features.Travel_Preview_Animation {
@@ -64,6 +65,7 @@ namespace WIMVR.Features.Travel_Preview_Animation {
 
         private void RegisterCleanupOnWIMRespawnEvent() {
             MiniatureModel.OnCleanupWIMBeforeRespawn += Cleanup;
+            PickupDestinationUpdate.OnRemoveDestinationIndicatorExceptWIM += Cleanup;
         }
 
         private void InitLineRenderer() {
@@ -86,6 +88,8 @@ namespace WIMVR.Features.Travel_Preview_Animation {
             Destroy(animatedPlayerRepresentation.gameObject);
         }
 
+        private void Cleanup(in MiniatureModel WIM) => Cleanup(null, null);
+        
         private void Update() {
             UpdateLineRenderer();
             UpdateAnimatedPlayerRepresentation();
