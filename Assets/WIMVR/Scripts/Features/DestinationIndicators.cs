@@ -71,13 +71,12 @@ namespace WIMVR.Features {
         /// <summary>
         /// Destroys both the destination indicator in the miniature model and in the full-sized level.
         /// </summary>
-        /// <param name="WIM">The miniature model component.</param>
-        public static void RemoveDestinationIndicators(MiniatureModel WIM) {
-            Assert.IsNotNull(WIM);
-            var data = WIM.Data;
+        /// <param name="config"></param>
+        /// <param name="data"></param>
+        public static void RemoveDestinationIndicators(WIMConfiguration config, WIMData data) {
             if(!data.DestinationIndicatorInWIM) return;
 
-            OnRemoveDestinationIndicators?.Invoke(WIM.Configuration, WIM.Data);
+            OnRemoveDestinationIndicators?.Invoke(config, data);
             data.DestinationIndicatorInWIM.parent = null;
             Object.Destroy(data.DestinationIndicatorInWIM.gameObject);
             if(!data.DestinationIndicatorInLevel) return;

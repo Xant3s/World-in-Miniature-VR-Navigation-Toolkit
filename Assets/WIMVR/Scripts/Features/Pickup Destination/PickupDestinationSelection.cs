@@ -58,7 +58,7 @@ namespace WIMVR.Features.Pickup_Destination {
 
         private void StartGrabbing() {
             // Remove existing destination indicator.
-            DestinationIndicators.RemoveDestinationIndicators(WIM);
+            DestinationIndicators.RemoveDestinationIndicators(WIM.Configuration, WIM.Data);
 
             // Spawn new destination indicator.
             DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data);

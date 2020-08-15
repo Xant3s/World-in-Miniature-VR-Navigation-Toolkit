@@ -55,13 +55,13 @@ namespace WIMVR.Features {
             if (!IsInsideWIM(data.FingertipIndexR.position, WIM.gameObject)) return;
 
             // Remove previous destination point.
-            DestinationIndicators.RemoveDestinationIndicators(WIM);
+            DestinationIndicators.RemoveDestinationIndicators(config, data);
 
             // Show destination in WIM.
-            DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data);
+            DestinationIndicators.SpawnDestinationIndicatorInWIM(config, data);
 
             // Show destination in level.
-            DestinationIndicators.SpawnDestinationIndicatorInLevel(WIM.Configuration, WIM.Data);
+            DestinationIndicators.SpawnDestinationIndicatorInLevel(config, data);
 
             // Rotate destination indicator in WIM (align with pointing direction):
             // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.

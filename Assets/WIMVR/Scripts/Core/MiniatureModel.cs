@@ -64,7 +64,7 @@ namespace WIMVR.Core {
         /// </summary>
         public void ConfirmTravel() {
             if(!Configuration) return;
-            DestinationIndicators.RemoveDestinationIndicators(this);
+            DestinationIndicators.RemoveDestinationIndicators(Configuration, Data);
             OnPreTravel?.Invoke(Configuration, Data);
             travelStrategy.Travel(this);
             OnPostTravel?.Invoke(Configuration, Data);

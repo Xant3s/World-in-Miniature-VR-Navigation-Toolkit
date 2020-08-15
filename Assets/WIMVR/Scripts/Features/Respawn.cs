@@ -3,7 +3,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
-using WIMVR.Input;
 
 namespace WIMVR.Features {
     /// <summary>
@@ -12,16 +11,41 @@ namespace WIMVR.Features {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Respawn : MonoBehaviour {
-        public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform,
-            bool maintainTransformRelativeToPlayer);
-
-        public static bool RemoveOldWIMLevel = true;
-        public static Material materialForOldWIM;
-        private WIMConfiguration config;
-        private WIMData data;
+        public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, bool maintainTransformRelativeToPlayer);
         public static event RespawnAction OnEarlyRespawn;
         public static event RespawnAction OnLateRespawn;
+        public static bool RemoveOldWIMLevel = true;
+        public static Material materialForOldWIM;
+        
+        private WIMConfiguration config;
+        private WIMData data;
 
+
+        private void OnEnable() {
+            MiniatureModel.OnLateInitHand += StartRespawn;
+            if(!Application.isPlaying) return;
+            var WIM = TryFindWIM();
+            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
+            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
+        }
+
+        private void OnDisable() {
+            MiniatureModel.OnLateInitHand -= StartRespawn;
+        }
+
+        private void Start() {
+            MiniatureModel.OnCleanupWIMBeforeRespawn += DestinationIndicators.RemoveDestinationIndicators;
+        }
+
+        public void OnRespawn() {
+            RespawnWIM(false);
+        }
+
+        private void StartRespawn(WIMConfiguration config, WIMData data) {
+            this.config = config;
+            this.data = data;
+            RespawnWIM(false);
+        }
 
         /// <summary>
         /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
@@ -32,54 +56,81 @@ namespace WIMVR.Features {
         /// </param>
         public void RespawnWIM(bool maintainTransformRelativeToPlayer) {
             if(!Application.isPlaying) return;
+            var WIM = TryFindWIM();
+            WIM.CleanupBeforeRespawn();
+            CopyWIM(out var oldWIMLevel, out var levelPos);
+            OnEarlyRespawn?.Invoke(oldWIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
+            SetupNewWIM(maintainTransformRelativeToPlayer, levelPos);
+            OnLateRespawn?.Invoke(oldWIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
+            Cleanup(maintainTransformRelativeToPlayer);
+        }
+
+        private static MiniatureModel TryFindWIM() {
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
-            WIM.CleanupBeforeRespawn();
-            DestinationIndicators.RemoveDestinationIndicators(WIM);
+            return WIM;
+        }
 
+        private void CopyWIM(out Transform oldWIMLevel, out Vector3 levelPos) {
             // Copy WIM
-            var WIMLevel = transform.GetChild(0);
-            var levelPos = WIMLevel.position;
+            oldWIMLevel = transform.GetChild(0);
+            levelPos = oldWIMLevel.position;
 
-            WIMLevel.parent = null;
-            WIMLevel.name = "WIM Level Old";
-            WIMLevel.tag = "WIM Level Old";
+            oldWIMLevel.parent = null;
+            oldWIMLevel.name = "WIM Level Old";
+            oldWIMLevel.tag = "WIM Level Old";
             Assert.IsNotNull(data);
             Assert.IsNotNull(data.PlayerRepresentationTransform);
             Assert.IsNotNull(data.PlayerRepresentationTransform.parent);
             data.PlayerRepresentationTransform.parent = null;
-            data.WIMLevelTransform = Instantiate(WIMLevel.gameObject, transform).transform;
+            data.WIMLevelTransform = Instantiate(oldWIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
             data.WIMLevelTransform.tag = "Untagged";
 
             // Copy material
-            materialForOldWIM.CopyPropertiesFromMaterial(WIMLevel.GetComponentInChildren<Renderer>().material);
+            materialForOldWIM.CopyPropertiesFromMaterial(oldWIMLevel.GetComponentInChildren<Renderer>().material);
 
             // Apply material to old WIM
-            foreach (Transform t in WIMLevel) {
+            foreach (Transform t in oldWIMLevel) {
                 var r = t.GetComponent<Renderer>();
-                if(!r) continue;
+                if (!r) continue;
                 r.material = materialForOldWIM;
             }
+        }
 
-            OnEarlyRespawn?.Invoke(WIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
+        private void SetupNewWIM(bool maintainTransformRelativeToPlayer, Vector3 levelPos) {
+            ApplyWIMLayerToNewWIM();
+            StopAllMovementOfRigidbody();
+            SetNewWIMPositionAndOrientation(maintainTransformRelativeToPlayer, levelPos);
+        }
 
+        private void ApplyWIMLayerToNewWIM() {
             var WIMLayer = LayerMask.NameToLayer("WIM");
             data.WIMLevelTransform.gameObject.layer = WIMLayer;
             foreach (Transform child in data.WIMLevelTransform) {
                 child.gameObject.layer = WIMLayer;
             }
+        }
+
+        private void StopAllMovementOfRigidbody() {
             var rb = GetComponent<Rigidbody>();
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
-            data.WIMLevelTransform.position = levelPos;
+        }
 
+        private void Cleanup(bool maintainTransformRelativeToPlayer) {
+            if (maintainTransformRelativeToPlayer) transform.parent = null;
+            if (RemoveOldWIMLevel) DestroyOldWIMLevel();
+        }
+
+        private void SetNewWIMPositionAndOrientation(bool maintainTransformRelativeToPlayer, Vector3 levelPos) {
+            data.WIMLevelTransform.position = levelPos;
             data.WIMLevelTransform.rotation = Quaternion.identity;
             data.WIMLevelTransform.localRotation = Quaternion.identity;
             data.WIMLevelTransform.localScale = new Vector3(1, 1, 1);
             data.PlayerRepresentationTransform.parent = data.WIMLevelTransform;
 
-            if(!maintainTransformRelativeToPlayer) {
+            if (!maintainTransformRelativeToPlayer) {
                 var spawnDistanceZ = config.SpawnDistance;
                 var spawnDistanceY = (config.WIMSpawnHeight - config.PlayerHeightInCM) / 100;
                 var camForwardPosition = data.HMDTransform.position + data.HMDTransform.forward;
@@ -88,42 +139,14 @@ namespace WIMVR.Features {
                 transform.rotation = Quaternion.identity;
                 transform.position = data.HMDTransform.position + camForwardIgnoreY * spawnDistanceZ +
                                      Vector3.up * spawnDistanceY;
-            }
-            else {
+            } else {
                 transform.position = new Vector3(transform.position.x,
                     data.OVRPlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
             }
-
-            OnLateRespawn?.Invoke(WIMLevel, data.WIMLevelTransform, maintainTransformRelativeToPlayer);
-            if (maintainTransformRelativeToPlayer) transform.parent = null;
-            if (RemoveOldWIMLevel) DestroyOldWIMLevel();
-        }
-
-        public void OnRespawn() {
-            RespawnWIM(false);
         }
 
         private static void DestroyOldWIMLevel() {
             Destroy(GameObject.FindWithTag("WIM Level Old"));
-        }
-
-        private void OnEnable() {
-            MiniatureModel.OnLateInitHand += StartRespawn;
-            if(!Application.isPlaying) return;
-            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
-            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
-            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
-        }
-
-        private void OnDisable() {
-            MiniatureModel.OnLateInitHand -= StartRespawn;
-        }
-
-        private void StartRespawn(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
-            RespawnWIM(false);
         }
     }
 }
