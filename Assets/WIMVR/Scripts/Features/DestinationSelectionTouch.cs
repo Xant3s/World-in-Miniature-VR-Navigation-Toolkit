@@ -56,6 +56,7 @@ namespace WIMVR.Features {
 
             // Remove previous destination point.
             DestinationIndicators.RemoveDestinationIndicators(config, data);
+            WIM.CleanupBeforeRespawn();
 
             // Show destination in WIM.
             DestinationIndicators.SpawnDestinationIndicatorInWIM(config, data);
