@@ -37,6 +37,7 @@ namespace WIMVR.Core {
         public static event WIMAction OnNewDestinationSelected;
         public static event WIMAction OnPreTravel;
         public static event WIMAction OnPostTravel;
+        public static event WIMAction OnCleanupWIMBeforeRespawn;
         public static event WIMAction OnPickupIndexButtonDown;
         public static event WIMAction OnPickupIndexButtonUp;
         public static event WIMAxisAction OnPickupIndexButton;
@@ -103,6 +104,10 @@ namespace WIMVR.Core {
                 OnInitHand?.Invoke(Configuration, Data);
                 OnLateInitHand?.Invoke(Configuration, Data);
             }
+        }
+
+        public void CleanupBeforeRespawn() {
+            OnCleanupWIMBeforeRespawn?.Invoke(Configuration, Data);
         }
 
         private void Update() {

@@ -34,6 +34,7 @@ namespace WIMVR.Features {
             if(!Application.isPlaying) return;
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
+            WIM.CleanupBeforeRespawn();
             DestinationIndicators.RemoveDestinationIndicators(WIM);
 
             // Copy WIM
