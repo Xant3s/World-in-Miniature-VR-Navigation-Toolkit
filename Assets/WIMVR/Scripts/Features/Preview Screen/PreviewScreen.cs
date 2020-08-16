@@ -20,6 +20,7 @@ namespace WIMVR.Features.Preview_Screen {
         private WIMData WIMData;
         private Material previewScreenMaterial;
 
+        
         public void ShowPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
             this.WIMConfig = WIMConfig;
             this.WIMData = WIMData;
@@ -36,7 +37,7 @@ namespace WIMVR.Features.Preview_Screen {
         public void ShowPreviewScreenPickup(WIMConfiguration WIMConfig, WIMData WIMData) {
             this.WIMConfig = WIMConfig;
             this.WIMData = WIMData;
-            if(!this.Config.PreviewScreen) return;
+            if(!Config.PreviewScreen) return;
             Assert.IsFalse(this.Config.AutoPositionPreviewScreen);
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
@@ -85,6 +86,7 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(cam);
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
+            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("PinchGrabbable"));
             cam.targetTexture = new RenderTexture(1600, 900, 16, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
