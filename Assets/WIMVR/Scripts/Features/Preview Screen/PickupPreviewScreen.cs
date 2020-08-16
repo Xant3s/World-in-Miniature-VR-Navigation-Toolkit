@@ -1,11 +1,9 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
 using WIMVR.Util;
-using WIMVR.Input;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
 
@@ -17,29 +15,10 @@ namespace WIMVR.Features.Preview_Screen {
     [RequireComponent(typeof(DetectPickupGesture))]
     public class PickupPreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
-        private Material material;
-        private float defaultAlpha = .33f;
-        private bool hightlightFX;
         private Transform thumb;
         private Transform index;
         private Transform WIMTransform;
-        // private bool thumbIsGrabbing;
-        // private bool indexIsGrabbing;
-        // private bool isGrabbing;
-        // private bool stoppedGrabbing;
-
-        /// <summary>
-        /// The highlight effect displayed when the player touches the destination indicator's view cone.
-        /// </summary>
-        public bool HightlightFX {
-            get => hightlightFX;
-            set {
-                hightlightFX = value;
-                if(GetComponent<Renderer>()) {
-                    material.SetFloat("_Alpha", value ? defaultAlpha + .1f : defaultAlpha);
-                }
-            }
-        }
+        private HighlightFX highlightFX;
 
 
         private void Awake() {
@@ -48,8 +27,6 @@ namespace WIMVR.Features.Preview_Screen {
             WIMTransform = GameObject.FindWithTag("WIM")?.transform;
             Assert.IsNotNull(WIMTransform);
             WIM = WIMTransform.GetComponent<MiniatureModel>();
-            material = GetComponent<Renderer>()?.material;
-            defaultAlpha = material.GetFloat("_Alpha");
             Assert.IsNotNull(WIM);
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
@@ -57,6 +34,8 @@ namespace WIMVR.Features.Preview_Screen {
 
         private void Start() {
             var detectPickupGesture = GetComponent<DetectPickupGesture>();
+            highlightFX = gameObject.AddComponent<HighlightFX>();
+            highlightFX.SetUseAlpha(true, "_Alpha");
             Assert.IsNotNull(detectPickupGesture);
             detectPickupGesture.OnStartTouch.AddListener(StartTouch);
             detectPickupGesture.OnStopTouch.AddListener(StopTouch);
@@ -64,53 +43,17 @@ namespace WIMVR.Features.Preview_Screen {
             detectPickupGesture.OnStopGrabbing.AddListener(StopGrabbing);
         }
 
-        // private void OnEnable() {
-            //MiniatureModel.OnPickupIndexButtonUp += PickupIndexButtonUp;
-            //MiniatureModel.OnPickupThumbButtonUp += PickupThumbButtonUp;
-            //MiniatureModel.OnPickupThumbTouchUp += PickupThumbTouchUp;
-        // }
-
-        // private void OnDisable() {
-            //MiniatureModel.OnPickupIndexButtonUp -= PickupIndexButtonUp;
-            //MiniatureModel.OnPickupThumbButtonUp -= PickupThumbButtonUp;
-            //MiniatureModel.OnPickupThumbTouchUp -= PickupThumbTouchUp;
-        // }
-
-        //private void PickupIndexButtonUp(WIMConfiguration config, WIMData data) {
-        //    if(!isGrabbing) StopGrabbing();
-        //}
-
-        //private void PickupThumbButtonUp(WIMConfiguration config, WIMData data) {
-        //    if(!isGrabbing) StopGrabbing();
-        //}
-
-        //private void PickupThumbTouchUp(WIMConfiguration config, WIMData data) {
-        //    if(!isGrabbing) StopGrabbing();
-        //}
-
-        //private void Update() {
-        //    var rightHandPinch = thumbIsGrabbing && indexIsGrabbing;
-        //    if(rightHandPinch && !isGrabbing) {
-        //        isGrabbing = true;
-        //        stoppedGrabbing = false;
-        //        StartGrabbing();
-        //    }
-        //    else if(isGrabbing && !rightHandPinch) {
-        //        isGrabbing = false;
-        //    }
-        //}
-
         private void StartTouch(Hand hand) {
             // Haptic feedback.
             var inputDevice = XRUtils.FindCorrespondingInputDevice(hand);
             Haptics.Vibrate(inputDevice, .1f, .1f);
 
             // Visual feedback.
-            HightlightFX = true;
+            highlightFX.HighlightEnabled = true;
         }
 
         private void StopTouch() {
-            HightlightFX = false;
+            highlightFX.HighlightEnabled = false;
         }
 
         private void StartGrabbing() {
@@ -126,7 +69,6 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void StopGrabbing() {
-            // if(stoppedGrabbing) return;
             var previewScreen = WIM.GetComponent<PreviewScreen>();
             var previewScreenTransform = previewScreen.Data.PreviewScreenTransform;
             if (!previewScreenTransform) return;
@@ -135,7 +77,6 @@ namespace WIMVR.Features.Preview_Screen {
 
             // Let go.
             previewScreenTransform.parent = WIMTransform.GetChild(0);
-            // stoppedGrabbing = true;
         }
     }
 }

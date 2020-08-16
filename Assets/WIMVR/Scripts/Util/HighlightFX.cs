@@ -8,12 +8,16 @@ namespace WIMVR.Util {
     /// </summary>
     [DisallowMultipleComponent]
     public class HighlightFX : MonoBehaviour {
-        public Color hightlightColor = Color.cyan;
+        public Color HightlightColor = Color.cyan;
+        public float HightlightAlpha = 1.0f;
 
         private Material material;
         private Color defaultColor;
+        private float defaultAlpha;
+        private string alphaPropertyName = "_Alpha";
         private bool highlightEnabled;
         private bool hasRenderer;
+        private bool useAlpha;
 
 
         /// <summary>
@@ -24,15 +28,29 @@ namespace WIMVR.Util {
             get => highlightEnabled;
             set {
                 highlightEnabled = value;
-                if (hasRenderer) material.color = value ? hightlightColor : defaultColor;
+                if(hasRenderer) {
+                    material.color = value ? HightlightColor : defaultColor;
+                    if(useAlpha) {
+                        var alpha = value ? HightlightAlpha : defaultAlpha;
+                        material.SetFloat(alphaPropertyName, alpha);
+                    }
+                }
             }
+        }
+
+        public void SetUseAlpha(bool value, string alphaName = "_Alpha") {
+            useAlpha = value;
+            alphaPropertyName = alphaName;
+            if(useAlpha) defaultAlpha = material.GetFloat(alphaPropertyName);
         }
 
         private void Awake() {
             var renderer = GetComponent<Renderer>();
             hasRenderer = renderer != null;
-            material = renderer?.material;
-            defaultColor = material.color;
+            if(hasRenderer) {
+                material = renderer.material;
+                defaultColor = material.color;
+            }
         }
     }
 }
