@@ -22,20 +22,6 @@ namespace WIMVR.Features.DissolveFX {
             d.SetProgress(1);
         }
 
-        /// <summary>
-        /// At the end of the resolve effect the WIM will not be completely resolved due to float precision.
-        /// To prevent this, set the dissolve progress to a negative number (everything below 0 will be handled as 0 anyway).
-        /// </summary>
-        /// <param name="WIM"></param>
-        /// <param name="delay"></param>
-        private static IEnumerator FixResolveBug(Transform WIM, float delay) {
-            yield return new WaitForSeconds(delay);
-            var d = WIM.GetComponent<Dissolve>();
-            if(!d) yield break;
-            d.durationInSeconds = 1;
-            d.SetProgress(-0.1f);
-        }
-
         private void OnEnable() {
             Respawn.OnEarlyRespawn += DissolveOldWIM;
             Respawn.OnLateRespawn += ResolveNewWIM;
@@ -81,7 +67,6 @@ namespace WIMVR.Features.DissolveFX {
             d.durationInSeconds = resolveDuration;
             d.SetProgress(1);
             d.PlayInverse();
-            StartCoroutine(FixResolveBug(WIMLevel, resolveDuration));
         }
     }
 }

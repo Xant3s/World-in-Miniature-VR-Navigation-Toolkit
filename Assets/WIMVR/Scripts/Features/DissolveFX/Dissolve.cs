@@ -32,6 +32,7 @@ namespace WIMVR.Features.DissolveFX {
         public void PlayInverse() {
             isInverse = true;
             endTime = Time.realtimeSinceStartup + durationInSeconds;
+            Invoke(nameof(SetFullyResolved), durationInSeconds);
         }
 
         /// <summary>
@@ -50,6 +51,12 @@ namespace WIMVR.Features.DissolveFX {
             var percent = (durationInSeconds - remainingTime) / durationInSeconds;
             var progress = !isInverse ? percent : 1 - percent;
             SetProgress(progress);
+        }
+
+        // At the end of the resolve effect the target will not be completely resolved due to float precision.
+        // To prevent this, set the dissolve progress to a negative number (everything below 0 will be handled as 0 anyway).
+        private void SetFullyResolved() {
+            SetProgress(-.1f);
         }
     }
 }
