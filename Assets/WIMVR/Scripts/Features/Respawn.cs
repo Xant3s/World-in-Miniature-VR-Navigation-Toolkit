@@ -26,7 +26,7 @@ namespace WIMVR.Features {
             if(!Application.isPlaying) return;
             var WIM = TryFindWIM();
             var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
-            materialForOldWIM = new Material(Shader.Find(shaderName + "2"));
+            materialForOldWIM = new Material(Shader.Find(shaderName));
         }
 
         private void OnDisable() {
