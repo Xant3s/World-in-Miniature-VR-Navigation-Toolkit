@@ -135,9 +135,6 @@ Coming soon.
    * Add *Input Manager* prefab to scene
    * Select input mapping file
    * See Chapter 1.8 'Configure Input' to learn more
-5. Add WorkaroundDontDelete  
-   Note: This is just a workaround for a bug. This step will no longer be necessary once the bug is fixed.
-   * Add *WorkaroundDontDelete* prefab to the scene
 
 ## Configure Miniature Model
 
