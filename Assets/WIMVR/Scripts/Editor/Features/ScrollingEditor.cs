@@ -14,6 +14,8 @@ namespace WIMVR.Editor.Features {
     /// </summary>
     [CustomEditor(typeof(Scrolling))]
     public class ScrollingEditor : UnityEditor.Editor {
+        private static bool initialized;
+
         private MiniatureModel WIM;
 
         public override void OnInspectorGUI() {
@@ -33,6 +35,8 @@ namespace WIMVR.Editor.Features {
         }
 
         private void OnEnable() {
+            if(initialized) return;
+            initialized = true;
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 4);
             WIM = ((Scrolling) target).GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -40,6 +44,7 @@ namespace WIMVR.Editor.Features {
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
+            initialized = false;
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {

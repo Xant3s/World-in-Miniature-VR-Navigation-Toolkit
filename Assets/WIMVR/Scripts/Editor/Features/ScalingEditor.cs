@@ -13,6 +13,9 @@ namespace WIMVR.Editor.Features {
     /// </summary>
     [CustomEditor(typeof(Scaling))]
     public class ScalingEditor : UnityEditor.Editor {
+        private static bool initialized;
+
+        
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             ref var config = ref ((Scaling) target).ScalingConfig;
@@ -21,11 +24,14 @@ namespace WIMVR.Editor.Features {
         }
 
         private void OnEnable() {
+            if(initialized) return;
+            initialized = true;
             MiniatureModelEditor.OnDraw.AddCallback(Draw);
         }
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
+            initialized = false;
         }
 
         private void Draw(WIMConfiguration WIMconfig, VisualElement container) {
