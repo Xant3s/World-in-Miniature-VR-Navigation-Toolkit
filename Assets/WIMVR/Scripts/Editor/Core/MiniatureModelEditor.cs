@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Features;
@@ -49,15 +50,15 @@ namespace WIMVR.Editor.Core {
 
         public void OnEnable() {
             WIM = (MiniatureModel) target;
+        }
+
+        public override VisualElement CreateInspectorGUI() {
             root = new VisualElement();
             visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Core/MiniatureModelEditor.uxml");
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIMVR/Scripts/Editor/Core/MiniatureModelEditor.uss");
             root.styleSheets.Add(styleSheet);
             if(visualTree) visualTree.CloneTree(root);
-        }
 
-        public override VisualElement CreateInspectorGUI() {
-            if(!visualTree) return new VisualElement();
             root.Q<ObjectField>("configuration").objectType = typeof(WIMConfiguration);
             var configField = root.Q<ObjectField>("configuration");
             configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(e => {
@@ -88,7 +89,7 @@ namespace WIMVR.Editor.Core {
             }));
 
             InvokeCallbacks(root.Q<VisualElement>("basic-container"), "Basic");
-
+            
             var destinationSelectionTouchAvailable = WIM.GetComponent<DestinationSelectionTouch>() != null;
             var destinationSelectionMethodEnumField = root.Q<EnumField>("destination-selection-method");
             destinationSelectionMethodEnumField.SetEnabled(destinationSelectionTouchAvailable);
