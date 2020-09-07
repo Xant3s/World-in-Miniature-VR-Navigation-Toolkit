@@ -44,26 +44,36 @@ namespace WIMVR.Features.Distance_Grab {
             WIM = GameObject.FindWithTag("WIM").transform;
         }
 
-        private void OnEnable() {
-            if (hand == Hand.LeftHand) {
-                MiniatureModel.OnLeftGrabButtonDown += GrabButtonDown;
-                MiniatureModel.OnLeftGrabButtonUp += GrabButtonUp;
-            }
-            else if (hand == Hand.RightHand) {
-                MiniatureModel.OnRightGrabButtonDown += GrabButtonDown;
-                MiniatureModel.OnRightGrabButtonUp += GrabButtonUp;
-            }
+        // private void OnEnable() {
+        //     if (hand == Hand.LeftHand) {
+        //         // MiniatureModel.OnLeftGrabButtonDown += GrabButtonDown;
+        //         // MiniatureModel.OnLeftGrabButtonUp += GrabButtonUp;
+        //     }
+        //     else if (hand == Hand.RightHand) {
+        //         // MiniatureModel.OnRightGrabButtonDown += GrabButtonDown;
+        //         // MiniatureModel.OnRightGrabButtonUp += GrabButtonUp;
+        //     }
+        // }
+
+        // private void OnDisable() {
+        //     if (hand == Hand.LeftHand) {
+        //         // MiniatureModel.OnLeftGrabButtonDown -= GrabButtonDown;
+        //         // MiniatureModel.OnLeftGrabButtonUp -= GrabButtonUp;
+        //     }
+        //     else if (hand == Hand.RightHand) {
+        //         // MiniatureModel.OnRightGrabButtonDown -= GrabButtonDown;
+        //         // MiniatureModel.OnRightGrabButtonUp -= GrabButtonUp;
+        //     }
+        // }
+
+        public void OnDistanceGrabRightHand() {
+            if(hand == Hand.LeftHand) return;
+            Debug.Log("Distance grab right");
         }
 
-        private void OnDisable() {
-            if (hand == Hand.LeftHand) {
-                MiniatureModel.OnLeftGrabButtonDown -= GrabButtonDown;
-                MiniatureModel.OnLeftGrabButtonUp -= GrabButtonUp;
-            }
-            else if (hand == Hand.RightHand) {
-                MiniatureModel.OnRightGrabButtonDown -= GrabButtonDown;
-                MiniatureModel.OnRightGrabButtonUp -= GrabButtonUp;
-            }
+        public void OnDistanceGrabLeftHand() {
+            if(hand == Hand.RightHand) return;
+            Debug.Log("Distance grab left");
         }
 
         private void LateUpdate() {
