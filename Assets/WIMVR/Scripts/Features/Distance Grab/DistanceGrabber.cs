@@ -66,15 +66,7 @@ namespace WIMVR.Features.Distance_Grab {
         //     }
         // }
 
-        public void OnDistanceGrabRightHand() {
-            if(hand == Hand.LeftHand) return;
-            Debug.Log("Distance grab right");
-        }
 
-        public void OnDistanceGrabLeftHand() {
-            if(hand == Hand.RightHand) return;
-            Debug.Log("Distance grab left");
-        }
 
         private void LateUpdate() {
             var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
@@ -122,8 +114,8 @@ namespace WIMVR.Features.Distance_Grab {
         }
 
         private void SetEnable(bool value) {
-            aimAssist.enabled = value;
-            lineRenderer.enabled = value;
+            // aimAssist.enabled = value;
+            // lineRenderer.enabled = value;
             isDisabled = !value;
         }
     }
