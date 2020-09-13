@@ -192,5 +192,9 @@ namespace WIMVR.Core {
             if(!Configuration) return;
             OnRightGrabButtonUp?.Invoke(Configuration, Data);
         }
+        
+        public void OnTestButton() {
+            Debug.Log("asdfsssssssssssss");
+        }
     }
 }

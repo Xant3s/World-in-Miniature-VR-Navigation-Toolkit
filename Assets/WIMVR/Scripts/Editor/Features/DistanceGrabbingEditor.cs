@@ -1,5 +1,7 @@
+// Author: Samuel Truman (contact@samueltruman.com)
+
 using UnityEditor;
-using UnityEngine;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
@@ -14,7 +16,6 @@ namespace WIMVR.Editor.Features {
         private void OnEnable() {
             if(initialized) return;
             initialized = true;
-            Debug.Log("asdf");
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Usability");
         }
 
@@ -26,15 +27,13 @@ namespace WIMVR.Editor.Features {
         private void Draw(WIMConfiguration config, VisualElement container) {
             var distanceGrabbing = (DistanceGrabbing) target;
             if(!distanceGrabbing) return;
-            // var WIM = liveUpdate.GetComponent<MiniatureModel>();
             var distanceGrabbingToggle = new Toggle {
                 label="Distance Grabbing (experimental)",
-                bindingPath = "DistanceGrabbingEnabled",
+                bindingPath = "distanceGrabbingEnabled",
                 tooltip = "Description. Experimental feature." // TODO
             };
-            // distanceGrabbingToggle.RegisterValueChangedCallback(e =>
-            //     distanceGrabbingToggle.schedule.Execute(() => LiveUpdate.UpdateAutoGenerateWIM(WIM))); // Delay so that newValue is set on execution.
             container.Add(distanceGrabbingToggle);
+            container.Bind(new SerializedObject(distanceGrabbing));
         }
     }
 }

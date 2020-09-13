@@ -9,9 +9,9 @@ namespace WIMVR.Features.Distance_Grab {
     /// Can be used to pull distance grabbable objects that are not in range for regular grabbing.
     /// </summary>
     public class DistanceGrabber : MonoBehaviour {
-        [Header("Distance Grabber (Experimental)")]
-        [Tooltip("Hand this script is attached to.")]
-        [SerializeField] private Hand hand = Hand.None;
+        // [Header("Distance Grabber (Experimental)")]
+        // [Tooltip("Hand this script is attached to.")]
+        // [SerializeField] private Hand hand = Hand.None;
 
         [Tooltip("Start point of the laser pointer.")]
         [SerializeField] private Transform start = null;
