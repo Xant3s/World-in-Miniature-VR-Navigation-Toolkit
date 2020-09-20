@@ -1,7 +1,11 @@
 # Quick Start Guide
 
-Thank you for using WIMVR! This chapter explains how to get started as quickly as possible.
+Thank you for using WIMVR! This chapter explains how to get started as quickly as possible. 
+After importing the plugin, it will present the welcome screen. if it doesn't appear, you can open it by selecting
 
+`Window > WIMVR > Welcome Window` from the menu bar.
+
+![Welcome Window](content/res/WelcomeWindow.png)
 
 ## What is World-in-Miniature (WIM)?
 
@@ -57,9 +61,9 @@ Make sure you've followed all of the steps below.
   ```
   <category android:name="android.intent.category.LAUNCHER"/>
   ```. -->
-* Enable VR support: Go to `Project Settings -> Player -> XR Settings` and check 'Virtual Reality Supported'. Also add the Oculus SDK (see Fig.1).  
+* Enable VR support: Go to `Project Settings -> Player -> XR Settings` and check 'Virtual Reality Supported'. Also add the Oculus SDK (see Fig.2).  
 **Note: This will eventually be replaced by the new XR Management package.**
-* Set 'Stereo Rendering Mode' to Single Pass (see Fig.1)
+* Set 'Stereo Rendering Mode' to Single Pass (see Fig.2)
 
 ![XR Settings](content/res/XRSettings.png)
 
@@ -94,7 +98,7 @@ To add layers, go to ```Project Settings -> Tags and Layers```.
 
 ### Layer Collision Matrix
 
-Also, set up the layer collision matrix under `Project Settings -> Physics` so that the 'WIM' layer doesn't collide with any other layer except the 'Hands' layer (see Fig.2).
+Also, set up the layer collision matrix under `Project Settings -> Physics` so that the 'WIM' layer doesn't collide with any other layer except the 'Hands' layer (see Fig.3).
 
 ![Layer Collision Matrix](content/res/LayerCollisionMatrix.png)
 
