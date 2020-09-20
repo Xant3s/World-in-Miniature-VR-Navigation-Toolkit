@@ -26,7 +26,7 @@ namespace WIMVR.Editor.Features {
         private void OnEnable() {
             if(initialized) return;
             initialized = true;
-            MiniatureModelEditor.OnDraw.AddCallback(Draw, 1);
+            MiniatureModelEditor.OnDraw.AddCallback(Draw, 20);
         }
 
         private void OnDisable() {
