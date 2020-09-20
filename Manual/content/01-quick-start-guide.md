@@ -61,7 +61,7 @@ Make sure you've followed all of the steps below.
 **Note: This will eventually be replaced by the new XR Management package.**
 * Set 'Stereo Rendering Mode' to Single Pass (see Fig.1)
 
-![XR Settings](content/res/XRSettings.png)  
+![XR Settings](content/res/XRSettings.png)
 
 
 ### Tags
@@ -129,7 +129,7 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
 3. Add miniature model
    * Add *Miniature Model* prefab to scene
    * Make sure both the tag and layer are set to 'WIM'
-   * Configure miniature model to your preferences (see chapter 1.7 'Configure Miniature Model')
+   * Configure miniature model to your preferences (see [Chapter 1.6 'Configure Miniature Model'](#configure-miniature-model))
    * Press 'Generate WIM' button
 <!-- 4. Setup input manager
    * Add *Input Manager* prefab to scene
@@ -140,7 +140,7 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
 
 The configuration is stored in an *WIMConfiguration* asset. Select an existing *WIMConfiguration* file or create a new one using the create menu. Therefore, right-click anywhere on the project window and select `Create -> WIM -> Configuration`.
 
-To add or remove features, add or remove their respective scripts to the gameobject. See chapter 2 'Features' for a comprehensive list of all features. Some features might add additional settings to the *Miniature Model* inspector or the *Oculus Quest Mapper* (input manager) inspector.
+To add or remove features, add or remove their respective scripts to the gameobject. See [Chapter 2 'Features'](#features) for a comprehensive list of all features. Some features might add additional settings to the *Miniature Model* inspector.
 
 These are the basic settings:
 
@@ -152,12 +152,12 @@ These are the basic settings:
 * 'Destination Always on the Ground': If active, the destination will automatically snap to ground level. This protects the player from being teleported to a location in mid-air.
 * 'Destination Selection Method': How players choose a destination. Pickup: pickup and place player representation using index and thumb. Double-tap destination indicator using index to confirm. Touch: touch destination using index and press button. Press button to confirm.
 * 'Double Tap Interval': Maximum time between two taps. Will not detect a double-tap if time is exceeded. Double-tapping the destination indicator is used to confirm a destination and start the travel phase when the pickup destination selection method is selected.
-* 'Semi-Transparent': See Chapter 2.15
-* 'Transparency': See Chapter 2.15
+* 'Semi-Transparent': See [Chapter 2.15](#semi-transparent)
+* 'Transparency': See [Chapter 2.15](#semi-transparent)
 * 'WIM Spawn at Height': Default height to spawn the miniature model at.
 * 'Player Height (in cm): The player's height. No Exact value required.
 * 'WIM Spawn Distance': Specifies how far away from the player the miniature model should be spawned.
-* 'Detect Arm Length': See Chapter 2.3
+* 'Detect Arm Length': See [Chapter 2.3](#experimental-detect-arm-length)
 * 'Adapt miniature model Size to Player Height': Automatically adapt the miniature model's size to the player's height. The effect will be minimal. Also use scale factor.
 
 

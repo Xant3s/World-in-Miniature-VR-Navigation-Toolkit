@@ -1,5 +1,6 @@
 ---
 <!-- TODO: Ensure plugin name is correct -->
+<!-- TODO: ref paper -->
 title: "WIMVR: World-in-Miniature VR Navigation Toolkit"
 subtitle: "Quick Start Guide & Manual"
 author: [Samuel Truman]
