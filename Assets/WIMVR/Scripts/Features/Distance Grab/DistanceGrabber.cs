@@ -2,7 +2,6 @@
 
 using UnityEngine;
 using WIMVR.Core;
-using WIMVR.Util;
 
 namespace WIMVR.Features.Distance_Grab {
     /// <summary>
@@ -10,8 +9,6 @@ namespace WIMVR.Features.Distance_Grab {
     /// </summary>
     public class DistanceGrabber : MonoBehaviour {
         [Header("Distance Grabber (Experimental)")]
-        [Tooltip("Hand this script is attached to.")]
-        [SerializeField] private Hand hand = Hand.None;
 
         [Tooltip("Start point of the laser pointer.")]
         [SerializeField] private Transform start = null;
@@ -42,43 +39,22 @@ namespace WIMVR.Features.Distance_Grab {
             aimAssist = gameObject.GetComponentInChildren<AimAssist>();
             lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
             WIM = GameObject.FindWithTag("WIM").transform;
-        }
-
-        private void OnEnable() {
-            if (hand == Hand.LeftHand) {
-                MiniatureModel.OnLeftGrabButtonDown += GrabButtonDown;
-                MiniatureModel.OnLeftGrabButtonUp += GrabButtonUp;
-            }
-            else if (hand == Hand.RightHand) {
-                MiniatureModel.OnRightGrabButtonDown += GrabButtonDown;
-                MiniatureModel.OnRightGrabButtonUp += GrabButtonUp;
-            }
-        }
-
-        private void OnDisable() {
-            if (hand == Hand.LeftHand) {
-                MiniatureModel.OnLeftGrabButtonDown -= GrabButtonDown;
-                MiniatureModel.OnLeftGrabButtonUp -= GrabButtonUp;
-            }
-            else if (hand == Hand.RightHand) {
-                MiniatureModel.OnRightGrabButtonDown -= GrabButtonDown;
-                MiniatureModel.OnRightGrabButtonUp -= GrabButtonUp;
-            }
+            if(!start) start = aimAssist.transform;
         }
 
         private void LateUpdate() {
             var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
             SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
             if(isDisabled) return;
-
-
+        
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
                 var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
-                //if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
-                //    grabStartedThisFrame = false;
-                //    return;
-                //}
+
+                if(!grabbable || hit.transform.GetComponent<OffsetGrabInteractable>().IsGrabbed) {
+                    grabStartedThisFrame = false;
+                    return;
+                }
                 if(!grabStartedThisFrame && grabButtonPressed) return;
                 grabbable.HighlightFX = true;
                 grabbable.IsBeingGrabbed = grabButtonPressed;
@@ -92,25 +68,23 @@ namespace WIMVR.Features.Distance_Grab {
             }
         }
 
-        private void GrabButtonDown(WIMConfiguration config, WIMData data) {
+        public void GrabButtonDown() {
             grabButtonPressed = true;
             grabStartedThisFrame = true;
         }
-
-        private void GrabButtonUp(WIMConfiguration config, WIMData data) {
-            grabButtonPressed = false;
-        }
+        
+        public void GrabButtonUp() => grabButtonPressed = false;
 
         private void OnTriggerEnter(Collider other) {
             if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
             isInsideWIM = true;
         }
-
+        
         private void OnTriggerExit(Collider other) {
             if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
             isInsideWIM = false;
         }
-
+        
         private void SetEnable(bool value) {
             aimAssist.enabled = value;
             lineRenderer.enabled = value;

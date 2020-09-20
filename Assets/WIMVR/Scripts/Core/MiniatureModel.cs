@@ -17,6 +17,7 @@ namespace WIMVR.Core {
     [RequireComponent(typeof(OffsetGrabInteractable))]
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
+    [RequireComponent(typeof(PlayerInput))]
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {
@@ -191,6 +192,10 @@ namespace WIMVR.Core {
         private void RightGrabButtonUp() {
             if(!Configuration) return;
             OnRightGrabButtonUp?.Invoke(Configuration, Data);
+        }
+        
+        public void OnTestButton() {
+            Debug.Log("asdfsssssssssssss");
         }
     }
 }
