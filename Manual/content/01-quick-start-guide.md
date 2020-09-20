@@ -24,7 +24,7 @@ The Lite version provides only the core world-in-miniature VR navigation feature
 
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at Chapter 1.6 'Configure Scene'.
+Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.6 'Configure Scene'](#configure-scene).
 
 
 ### Requirements
@@ -99,12 +99,12 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
 ![Layer Collision Matrix](content/res/LayerCollisionMatrix.png)
 
 
-## Video Tutorial
+<!-- ## Video Tutorial -->
 <!-- TODO: Insert tutorial URL  -->
 
 <!-- Should you prefer to watch a video click [here (coming soon)](https://www.youtube.com/channel/UC0mxcocqWRJ30-0T9usPHWA). -->
 
-Coming soon.
+<!-- Coming soon. -->
 
 
 ## Configure Scene
@@ -131,10 +131,10 @@ Coming soon.
    * Make sure both the tag and layer are set to 'WIM'
    * Configure miniature model to your preferences (see chapter 1.7 'Configure Miniature Model')
    * Press 'Generate WIM' button
-4. Setup input manager
+<!-- 4. Setup input manager
    * Add *Input Manager* prefab to scene
    * Select input mapping file
-   * See Chapter 1.8 'Configure Input' to learn more
+   * See Chapter 1.8 'Configure Input' to learn more -->
 
 ## Configure Miniature Model
 
@@ -163,9 +163,9 @@ These are the basic settings:
 
 ## Configure Input
 
-### Configure Input Using WIMVR Input Manager
+<!-- ### Configure Input Using WIMVR Input Manager
 
 **Note: This will eventually be replaced by the new Unity Input System.**  
 **Note: The *Oculus Quest Mapper* will dynamically only display settings of enabled features. When you add a new feature which requires input, corresponding settings will become available in the *Oculus Quest Mapper* inspector. **
 
-To change the input mapping locate the *WIM Input Manager* gameobject in the scene. All input mappings are stored to an *Input Mapping* asset. In the *Oculus Quest Mapper* inspector choose the *Input Mapping* you would like to use. You can use the provided standard mapping called 'OcclusionHandlingConfig' (find it by searching in project window) or create a new one. You can create a new *Input Mapping* file using the create menu. Therefore, right-click anywhere in the project window and choose `Create -> WIM -> Input Mapping`. Once you selected the *Input Mapping* you would like to use, you can change the individual button mappings using the *Oculus Quest Mapper* inspector. Your changes will be saved automatically.
+To change the input mapping locate the *WIM Input Manager* gameobject in the scene. All input mappings are stored to an *Input Mapping* asset. In the *Oculus Quest Mapper* inspector choose the *Input Mapping* you would like to use. You can use the provided standard mapping called 'OcclusionHandlingConfig' (find it by searching in project window) or create a new one. You can create a new *Input Mapping* file using the create menu. Therefore, right-click anywhere in the project window and choose `Create -> WIM -> Input Mapping`. Once you selected the *Input Mapping* you would like to use, you can change the individual button mappings using the *Oculus Quest Mapper* inspector. Your changes will be saved automatically. -->
