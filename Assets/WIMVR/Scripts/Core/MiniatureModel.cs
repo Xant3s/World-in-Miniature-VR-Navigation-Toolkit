@@ -17,6 +17,7 @@ namespace WIMVR.Core {
     [RequireComponent(typeof(OffsetGrabInteractable))]
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
+    [RequireComponent(typeof(PlayerInput))]
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {

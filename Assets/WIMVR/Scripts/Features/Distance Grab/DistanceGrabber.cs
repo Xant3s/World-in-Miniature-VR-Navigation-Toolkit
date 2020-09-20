@@ -1,7 +1,7 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
-using WIMVR.Core;
+using UnityEngine.Assertions;
 using WIMVR.Util;
 
 namespace WIMVR.Features.Distance_Grab {
@@ -68,55 +68,53 @@ namespace WIMVR.Features.Distance_Grab {
 
 
 
-        private void LateUpdate() {
-            var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
-            SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
-            if(isDisabled) return;
+        // private void LateUpdate() {
+        //     var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
+        //     SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
+        //     if(isDisabled) return;
+        //
+        //
+        //     var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
+        //     if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
+        //         var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
+        //         //if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
+        //         //    grabStartedThisFrame = false;
+        //         //    return;
+        //         //}
+        //         if(!grabStartedThisFrame && grabButtonPressed) return;
+        //         grabbable.HighlightFX = true;
+        //         grabbable.IsBeingGrabbed = grabButtonPressed;
+        //         if(!grabStartedThisFrame) return;
+        //         grabStartedThisFrame = false;
+        //         if(grabButtonPressed) {
+        //             grabbable.MinDistance = minDistance;
+        //             grabbable.SnapSpeed = snapSpeed;
+        //             grabbable.Target = transform;
+        //         }
+        //     }
+        // }
 
-
-            var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
-            if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
-                var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
-                //if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
-                //    grabStartedThisFrame = false;
-                //    return;
-                //}
-                if(!grabStartedThisFrame && grabButtonPressed) return;
-                grabbable.HighlightFX = true;
-                grabbable.IsBeingGrabbed = grabButtonPressed;
-                if(!grabStartedThisFrame) return;
-                grabStartedThisFrame = false;
-                if(grabButtonPressed) {
-                    grabbable.MinDistance = minDistance;
-                    grabbable.SnapSpeed = snapSpeed;
-                    grabbable.Target = transform;
-                }
-            }
-        }
-
-        private void GrabButtonDown(WIMConfiguration config, WIMData data) {
+        public void GrabButtonDown() {
             grabButtonPressed = true;
             grabStartedThisFrame = true;
         }
+        
+        public void GrabButtonUp() => grabButtonPressed = false;
 
-        private void GrabButtonUp(WIMConfiguration config, WIMData data) {
-            grabButtonPressed = false;
-        }
-
-        private void OnTriggerEnter(Collider other) {
-            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
-            isInsideWIM = true;
-        }
-
-        private void OnTriggerExit(Collider other) {
-            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
-            isInsideWIM = false;
-        }
-
-        private void SetEnable(bool value) {
-            // aimAssist.enabled = value;
-            // lineRenderer.enabled = value;
-            isDisabled = !value;
-        }
+        // private void OnTriggerEnter(Collider other) {
+        //     if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+        //     isInsideWIM = true;
+        // }
+        //
+        // private void OnTriggerExit(Collider other) {
+        //     if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+        //     isInsideWIM = false;
+        // }
+        //
+        // private void SetEnable(bool value) {
+        //     // aimAssist.enabled = value;
+        //     // lineRenderer.enabled = value;
+        //     isDisabled = !value;
+        // }
     }
 }
