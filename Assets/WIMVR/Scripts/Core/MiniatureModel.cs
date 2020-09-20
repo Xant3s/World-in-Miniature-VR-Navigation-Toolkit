@@ -3,10 +3,8 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Features;
 using WIMVR.Util;
-using WIMVR.Input;
 
 namespace WIMVR.Core {
     /// <summary>
@@ -21,15 +19,13 @@ namespace WIMVR.Core {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {
-        #region Events
-        public delegate void WIMAction(WIMConfiguration config, WIMData data);
-
-        public delegate void WIMAxisAction(WIMConfiguration config, WIMData data, float axis);
-
         public WIMConfiguration Configuration;
         public WIMData Data;
         public WIMSpaceConverter Converter;
-        private TravelStrategy travelStrategy;
+        
+        #region Events
+        public delegate void WIMAction(WIMConfiguration config, WIMData data);
+       
         public static event WIMAction OnInit;
         public static event WIMAction OnInitHand;
         public static event WIMAction OnLateInitHand;
@@ -39,20 +35,10 @@ namespace WIMVR.Core {
         public static event WIMAction OnPreTravel;
         public static event WIMAction OnPostTravel;
         public static event WIMAction OnCleanupWIMBeforeRespawn;
-        public static event WIMAction OnPickupIndexButtonDown;
-        public static event WIMAction OnPickupIndexButtonUp;
-        public static event WIMAxisAction OnPickupIndexButton;
-        public static event WIMAction OnPickupThumbButtonDown;
-        public static event WIMAction OnPickupThumbButtonUp;
-        public static event WIMAction OnPickupThumbTouchUp;
-        public static event WIMAction OnLeftGrabButtonDown;
-        public static event WIMAction OnLeftGrabButtonUp;
-        public static event WIMAction OnRightGrabButtonDown;
-        public static event WIMAction OnRightGrabButtonUp;
         #endregion
 
+        private TravelStrategy travelStrategy;
         private int numberOfHandsSpawned;
-
 
 
         public void NewDestination() {
@@ -118,84 +104,12 @@ namespace WIMVR.Core {
         }
 
         private void OnEnable() {
-            //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupIndexButtonTooltip);
-            //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupIndexButtonTooltip);
-            //InputManager.RegisterAction(pickupIndexActionName, PickupIndexButton);
-            //InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonDown, InputManager.ButtonTrigger.ButtonDown, pickupThumbButtonTooltip);
-            //InputManager.RegisterAction(pickupThumbActionName, PickupThumbButtonUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip);
-            //InputManager.RegisterTouchAction(pickupThumbActionName2, PickupThumbTouchUp, InputManager.ButtonTrigger.ButtonUp, pickupThumbButtonTooltip2);
-            //InputManager.RegisterAction(grabLActionName, LeftGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabLTooltip);
-            //InputManager.RegisterAction(grabLActionName, LeftGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabLTooltip);
-            //InputManager.RegisterAction(grabRActionName, RightGrabButtonDown, InputManager.ButtonTrigger.ButtonDown, grabRTooltip);
-            //InputManager.RegisterAction(grabRActionName, RightGrabButtonUp, InputManager.ButtonTrigger.ButtonUp, grabRTooltip);
             if(!Application.isPlaying) {
                 gameObject.tag = "WIM";
                 gameObject.layer = LayerMask.NameToLayer("WIM");
                 GetComponent<Rigidbody>().useGravity = false;
                 if(name.Equals("GameObject")) name = "Miniature Model";
             }
-        }
-
-        // private void OnDisable() {
-        //     //InputManager.UnregisterAction(pickupIndexActionName);
-        //     //InputManager.UnregisterAction(pickupThumbActionName);
-        //     //InputManager.UnregisterAction(pickupThumbActionName2);
-        //     //InputManager.UnregisterAction(grabLActionName);
-        //     //InputManager.UnregisterAction(grabRActionName);
-        // }
-        
-        private void PickupThumbTouchUp() {
-            if(!Configuration) return;
-            //OnPickupThumbTouchUp?.Invoke(Configuration, Data);
-        }
-
-        private void PickupIndexButtonDown() {
-            if(!Configuration) return;
-            OnPickupIndexButtonDown?.Invoke(Configuration, Data);
-        }
-        
-        private void PickupIndexButtonUp() {
-            if(!Configuration) return;
-            OnPickupIndexButtonUp?.Invoke(Configuration, Data);
-        }
-        
-        private void PickupIndexButton(float axis) {
-            if(!Configuration) return;
-            OnPickupIndexButton?.Invoke(Configuration, Data, axis);
-        }
-        
-        private void PickupThumbButtonDown() {
-            if(!Configuration) return;
-            OnPickupThumbButtonDown?.Invoke(Configuration, Data);
-        }
-        
-        private void PickupThumbButtonUp() {
-            if(!Configuration) return;
-            OnPickupThumbButtonUp?.Invoke(Configuration, Data);
-        }
-        
-        private void LeftGrabButtonDown() {
-            if(!Configuration) return;
-            OnLeftGrabButtonDown?.Invoke(Configuration, Data);
-        }
-        
-        private void LeftGrabButtonUp() {
-            if(!Configuration) return;
-            OnLeftGrabButtonUp?.Invoke(Configuration, Data);
-        }
-        
-        private void RightGrabButtonDown() {
-            if(!Configuration) return;
-            OnRightGrabButtonDown?.Invoke(Configuration, Data);
-        }
-        
-        private void RightGrabButtonUp() {
-            if(!Configuration) return;
-            OnRightGrabButtonUp?.Invoke(Configuration, Data);
-        }
-        
-        public void OnTestButton() {
-            Debug.Log("asdfsssssssssssss");
         }
     }
 }
