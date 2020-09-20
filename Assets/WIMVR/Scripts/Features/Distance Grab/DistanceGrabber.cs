@@ -1,17 +1,14 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
-using UnityEngine.Assertions;
-using WIMVR.Util;
+using WIMVR.Core;
 
 namespace WIMVR.Features.Distance_Grab {
     /// <summary>
     /// Can be used to pull distance grabbable objects that are not in range for regular grabbing.
     /// </summary>
     public class DistanceGrabber : MonoBehaviour {
-        // [Header("Distance Grabber (Experimental)")]
-        // [Tooltip("Hand this script is attached to.")]
-        // [SerializeField] private Hand hand = Hand.None;
+        [Header("Distance Grabber (Experimental)")]
 
         [Tooltip("Start point of the laser pointer.")]
         [SerializeField] private Transform start = null;
@@ -42,57 +39,34 @@ namespace WIMVR.Features.Distance_Grab {
             aimAssist = gameObject.GetComponentInChildren<AimAssist>();
             lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
             WIM = GameObject.FindWithTag("WIM").transform;
+            if(!start) start = aimAssist.transform;
         }
 
-        // private void OnEnable() {
-        //     if (hand == Hand.LeftHand) {
-        //         // MiniatureModel.OnLeftGrabButtonDown += GrabButtonDown;
-        //         // MiniatureModel.OnLeftGrabButtonUp += GrabButtonUp;
-        //     }
-        //     else if (hand == Hand.RightHand) {
-        //         // MiniatureModel.OnRightGrabButtonDown += GrabButtonDown;
-        //         // MiniatureModel.OnRightGrabButtonUp += GrabButtonUp;
-        //     }
-        // }
+        private void LateUpdate() {
+            var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
+            SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
+            if(isDisabled) return;
+        
+            var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
+            if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
+                var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
 
-        // private void OnDisable() {
-        //     if (hand == Hand.LeftHand) {
-        //         // MiniatureModel.OnLeftGrabButtonDown -= GrabButtonDown;
-        //         // MiniatureModel.OnLeftGrabButtonUp -= GrabButtonUp;
-        //     }
-        //     else if (hand == Hand.RightHand) {
-        //         // MiniatureModel.OnRightGrabButtonDown -= GrabButtonDown;
-        //         // MiniatureModel.OnRightGrabButtonUp -= GrabButtonUp;
-        //     }
-        // }
-
-
-
-        // private void LateUpdate() {
-        //     var distanceToWIM = Vector3.Distance(WIM.position, transform.position);
-        //     SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
-        //     if(isDisabled) return;
-        //
-        //
-        //     var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
-        //     if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
-        //         var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
-        //         //if(!grabbable || hit.transform.GetComponent<OVRGrabbable>().isGrabbed) {
-        //         //    grabStartedThisFrame = false;
-        //         //    return;
-        //         //}
-        //         if(!grabStartedThisFrame && grabButtonPressed) return;
-        //         grabbable.HighlightFX = true;
-        //         grabbable.IsBeingGrabbed = grabButtonPressed;
-        //         if(!grabStartedThisFrame) return;
-        //         grabStartedThisFrame = false;
-        //         if(grabButtonPressed) {
-        //             grabbable.MinDistance = minDistance;
-        //             grabbable.SnapSpeed = snapSpeed;
-        //             grabbable.Target = transform;
-        //         }
-        //     }
-        // }
+                if(!grabbable || hit.transform.GetComponent<OffsetGrabInteractable>().IsGrabbed) {
+                    grabStartedThisFrame = false;
+                    return;
+                }
+                if(!grabStartedThisFrame && grabButtonPressed) return;
+                grabbable.HighlightFX = true;
+                grabbable.IsBeingGrabbed = grabButtonPressed;
+                if(!grabStartedThisFrame) return;
+                grabStartedThisFrame = false;
+                if(grabButtonPressed) {
+                    grabbable.MinDistance = minDistance;
+                    grabbable.SnapSpeed = snapSpeed;
+                    grabbable.Target = transform;
+                }
+            }
+        }
 
         public void GrabButtonDown() {
             grabButtonPressed = true;
@@ -101,20 +75,20 @@ namespace WIMVR.Features.Distance_Grab {
         
         public void GrabButtonUp() => grabButtonPressed = false;
 
-        // private void OnTriggerEnter(Collider other) {
-        //     if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
-        //     isInsideWIM = true;
-        // }
-        //
-        // private void OnTriggerExit(Collider other) {
-        //     if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
-        //     isInsideWIM = false;
-        // }
-        //
-        // private void SetEnable(bool value) {
-        //     // aimAssist.enabled = value;
-        //     // lineRenderer.enabled = value;
-        //     isDisabled = !value;
-        // }
+        private void OnTriggerEnter(Collider other) {
+            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+            isInsideWIM = true;
+        }
+        
+        private void OnTriggerExit(Collider other) {
+            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+            isInsideWIM = false;
+        }
+        
+        private void SetEnable(bool value) {
+            aimAssist.enabled = value;
+            lineRenderer.enabled = value;
+            isDisabled = !value;
+        }
     }
 }

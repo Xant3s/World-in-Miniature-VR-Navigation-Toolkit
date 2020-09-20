@@ -10,10 +10,6 @@ namespace WIMVR.Features.Distance_Grab {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PlayerInput))]
     public class DistanceGrabbing : HandInitializer {
-        // TODO update hands on enable/disable distance grabbing (in editor? -> runtime)
-        // TODO forward input to corresponding hand
-        // TODO setup when enabled (public bool member)
-        
         public bool distanceGrabbingEnabled;
 
         private DistanceGrabber leftDistanceGrabber;
@@ -67,24 +63,25 @@ namespace WIMVR.Features.Distance_Grab {
         private void OnRightDistanceGrabDown() {
             if(!rightHandInitialized && rightDistanceGrabber) return;
             rightAimAssist.GrabButtonDown();
+            rightDistanceGrabber.GrabButtonDown();
         }
 
         private void OnRightDistanceGrabUp() {
             if(!rightHandInitialized && rightDistanceGrabber) return;
             rightAimAssist.GrabButtonUp();
-
+            rightDistanceGrabber.GrabButtonUp();
         }
 
         private void OnLeftDistanceGrabDown() {
             if(!leftHandInitialized && leftDistanceGrabber) return;
             leftAimAssist.GrabButtonDown();
-
+            leftDistanceGrabber.GrabButtonDown();
         }
 
         private void OnLeftDistanceGrabUp() {
             if(!leftHandInitialized && leftDistanceGrabber) return;
             leftAimAssist.GrabButtonUp();
-
+            leftDistanceGrabber.GrabButtonUp();
         }
     }
 }
