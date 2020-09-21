@@ -17,8 +17,6 @@ namespace WIMVR.Editor.Features {
     /// </summary>
     [CustomEditor(typeof(OcclusionHandling))]
     public class OcclusionHandlingEditor : UnityEditor.Editor {
-        private static bool initialized;
-
         private MiniatureModel WIM;
 
         public override void OnInspectorGUI() {
@@ -39,8 +37,6 @@ namespace WIMVR.Editor.Features {
         }
 
         private void OnEnable() {
-            if(initialized) return;
-            initialized = true;
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Occlusion Handling");
             WIM = ((OcclusionHandling) target).GetComponent<MiniatureModel>();
             Assert.IsNotNull(WIM);
@@ -48,7 +44,6 @@ namespace WIMVR.Editor.Features {
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw, "Occlusion Handling");
-            initialized = false;
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
