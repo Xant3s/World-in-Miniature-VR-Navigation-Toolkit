@@ -26,11 +26,11 @@ namespace WIMVR.Editor.Features {
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
-            MiniatureModelEditor.UnregisterUniqueSeparator("Orientation Aids");
+            MiniatureModelEditor.Separators.UnregisterUnique("Orientation Aids");
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            MiniatureModelEditor.UniqueSeparator("Orientation Aids");
+            MiniatureModelEditor.Separators.RegisterUnique("Orientation Aids");
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/PathTraceEditor.uxml");
             var root = new VisualElement();
             visualTree.CloneTree(root);
