@@ -10,18 +10,12 @@ using WIMVR.Features.Distance_Grab;
 namespace WIMVR.Editor.Features {
     [CustomEditor(typeof(DistanceGrabbing))]
     public class DistanceGrabbingEditor : UnityEditor.Editor {
-        private static bool initialized;
-
-
         private void OnEnable() {
-            if(initialized) return;
-            initialized = true;
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Usability");
         }
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw, "Usability");
-            initialized = false;
         }
         
         private void Draw(WIMConfiguration config, VisualElement container) {

@@ -12,17 +12,12 @@ namespace WIMVR.Editor.Features {
     /// </summary>
     [CustomEditor(typeof(LiveUpdate))]
     public class LiveUpdateEditor : UnityEditor.Editor {
-        private static bool initialized;
-        
         private void OnEnable() {
-            if(initialized) return;
-            initialized = true;
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 0, "Basic");
         }
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw, "Basic");
-            initialized = false;
         }
 
         private void Draw(WIMConfiguration config, VisualElement container) {

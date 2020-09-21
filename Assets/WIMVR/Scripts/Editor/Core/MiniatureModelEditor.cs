@@ -1,6 +1,5 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -18,34 +17,13 @@ namespace WIMVR.Editor.Core {
     [CustomEditor(typeof(MiniatureModel))]
     public class MiniatureModelEditor : UnityEditor.Editor {
         public static DrawCallbackManager OnDraw = new DrawCallbackManager();
-        private static GUIStyle headerStyle;
-        private static IDictionary<string, int> separators = new Dictionary<string, int>();
-        private static IDictionary<string, Label> separatorLabels = new Dictionary<string, Label>();
-        private static VisualElement root;
+        public static ISeparatorManager Separators => separators;
 
+        private static ISeparatorManager separators;
+        private static GUIStyle headerStyle;
+        private static VisualElement root;
         private MiniatureModel WIM;
         private VisualTreeAsset visualTree;
-
-        public static void UniqueSeparator(string text = "", ushort space = 20) {
-            if(separators.ContainsKey(text)) {
-                separators[text]++;
-                return;
-            }
-            separators.Add(text, 1);
-            var newSeparator = new Label(text);
-            root.Add(newSeparator);
-            separatorLabels.Add(text, newSeparator);
-            newSeparator.AddToClassList("Separator");
-        }
-
-        public static void UnregisterUniqueSeparator(string text = "") {
-            if(!separators.ContainsKey(text)) return;
-            separators[text]--;
-            if(separators[text] > 0) return;
-            root.Remove(separatorLabels[text]);
-            separatorLabels.Remove(text);
-            separators.Remove(text);
-        }
 
 
         public void OnEnable() {
@@ -54,6 +32,7 @@ namespace WIMVR.Editor.Core {
 
         public override VisualElement CreateInspectorGUI() {
             root = new VisualElement();
+            separators = new SeparatorManager(root);
             visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Core/MiniatureModelEditor.uxml");
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIMVR/Scripts/Editor/Core/MiniatureModelEditor.uss");
             root.styleSheets.Add(styleSheet);

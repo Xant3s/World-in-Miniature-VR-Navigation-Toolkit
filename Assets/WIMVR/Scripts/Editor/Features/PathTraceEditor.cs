@@ -13,9 +13,6 @@ namespace WIMVR.Editor.Features {
     /// </summary>
     [CustomEditor(typeof(PathTrace))]
     public class PathTraceEditor : UnityEditor.Editor {
-        private static bool initialized;
-
-        
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             ref var config = ref ((PathTrace) target).PathTraceConfig;
@@ -24,19 +21,16 @@ namespace WIMVR.Editor.Features {
         }
 
         private void OnEnable() {
-            if(initialized) return;
-            initialized = true;
             MiniatureModelEditor.OnDraw.AddCallback(Draw, 30);
         }
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
-            MiniatureModelEditor.UnregisterUniqueSeparator("Orientation Aids");
-            initialized = false;
+            MiniatureModelEditor.Separators.UnregisterUnique("Orientation Aids");
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            MiniatureModelEditor.UniqueSeparator("Orientation Aids");
+            MiniatureModelEditor.Separators.RegisterUnique("Orientation Aids");
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/PathTraceEditor.uxml");
             var root = new VisualElement();
             visualTree.CloneTree(root);
