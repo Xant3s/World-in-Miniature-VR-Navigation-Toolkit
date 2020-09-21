@@ -69,7 +69,7 @@ namespace WIMVR.Tests {
             }
 
             [Test]
-            public void Given_Callback_Then_Add_Callback_With_Same_Priority_And_Key_Then_Use_Next_Free_Int_As_Key() {
+            public void Given_Callback_Then_Add_Callback_With_Same_Priority_And_Key_Then_Override() {
                 const int priority = 1;
                 const string key = "test";
                 Callback callback = A.Callback.WithAction(DummyCallback).WithKey(key).WithPriority(priority);
@@ -81,7 +81,7 @@ namespace WIMVR.Tests {
                     .WithPriority(priority);
                 Callback callback3 = A.Callback.WithAction(DummyCallback).WithKey(key).WithPriority(priority);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2,callback3);
-                Assert.AreEqual(3, manager.GetNumberOfCallbacks(key));
+                Assert.AreEqual(1, manager.GetNumberOfCallbacks(key));
                 manager.Dispose();
             }
         }
