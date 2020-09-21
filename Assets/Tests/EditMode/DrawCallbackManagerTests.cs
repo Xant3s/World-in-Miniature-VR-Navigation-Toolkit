@@ -1,12 +1,13 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
+using FluentAssertions;
 using NUnit.Framework;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace WIMVR.Tests {
+    [TestFixture]
     public class DrawCallbackManagerTests {
         public class GetNumberOfCallbacks {
             void DummyCallback(WIMConfiguration WIMConfig, VisualElement container) { }
@@ -15,14 +16,16 @@ namespace WIMVR.Tests {
             [Test]
             public void Given_Empty_Then_Return_Zero_Callbacks() {
                 DrawCallbackManager manager = A.DrawCallbackManager;
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks());
+                manager.GetNumberOfCallbacks().Should().Be(0);
             }
             
             [Test]
             public void Return_Correct_Number_Of_Callbacks_One() {
                 Callback callback = A.Callback.WithAction(DummyCallback).WithPriority(1);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback);
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(1);
+                
                 manager.Dispose();
             }
 
@@ -31,7 +34,9 @@ namespace WIMVR.Tests {
                 Callback callback = A.Callback.WithAction(DummyCallback);
                 Callback callback2 = A.Callback.WithAction(DummyCallback).WithPriority(1);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2);
-                Assert.AreEqual(2, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(2);
+                
                 manager.Dispose();
             }
             
@@ -41,8 +46,10 @@ namespace WIMVR.Tests {
                 Callback callback2 = A.Callback.WithAction(DummyCallback).WithKey("test");
                 Callback callback3 = A.Callback.WithAction(DummyCallback).WithKey("test").WithPriority(2);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2, callback3);
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks());
-                Assert.AreEqual(2, manager.GetNumberOfCallbacks("test"));
+
+                manager.GetNumberOfCallbacks().Should().Be(1);
+                manager.GetNumberOfCallbacks("test").Should().Be(2);
+                
                 manager.Dispose();
             }
         }
@@ -53,9 +60,13 @@ namespace WIMVR.Tests {
             [Test]
             public void Given_Empty_Then_Add_Callback_Return_Manager_With_Callback() {
                 DrawCallbackManager manager = A.DrawCallbackManager;
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(0);
+                
                 manager.AddCallback(DummyCallback);
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(1);
+                
                 manager.Dispose();
             }
 
@@ -63,8 +74,10 @@ namespace WIMVR.Tests {
             public void Given_Empty_Then_Add_Callback_With_Key() {
                 Callback callback = A.Callback.WithAction(DummyCallback).WithKey("test");
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback);
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks());
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks("test"));
+                
+                manager.GetNumberOfCallbacks().Should().Be(0);
+                manager.GetNumberOfCallbacks("test").Should().Be(1);
+                
                 manager.Dispose();
             }
 
@@ -81,7 +94,9 @@ namespace WIMVR.Tests {
                     .WithPriority(priority);
                 Callback callback3 = A.Callback.WithAction(DummyCallback).WithKey(key).WithPriority(priority);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2,callback3);
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks(key));
+                
+                manager.GetNumberOfCallbacks(key).Should().Be(1);
+                
                 manager.Dispose();
             }
         }
@@ -94,8 +109,10 @@ namespace WIMVR.Tests {
             public void Given_One_Then_Remove_Yields_Empty() {
                 Callback callback = A.Callback.WithAction(DummyCallback).WithPriority(1);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback);
+                
                 manager.RemoveCallback(DummyCallback);
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(0);
                 manager.Dispose();
             }
 
@@ -105,9 +122,12 @@ namespace WIMVR.Tests {
                 Callback callback = A.Callback.WithAction(DummyCallback);
                 Callback callback2 = A.Callback.WithAction(DummyCallback).WithKey(key);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2);
+                
                 manager.RemoveCallback(DummyCallback, key);
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks());
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks(key));
+                
+                manager.GetNumberOfCallbacks().Should().Be(1);
+                manager.GetNumberOfCallbacks(key).Should().Be(0);
+                
                 manager.Dispose();
             }
 
@@ -120,8 +140,11 @@ namespace WIMVR.Tests {
                     })
                     .WithPriority(1);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2);
+                
                 manager.RemoveCallback(DummyCallback);
-                Assert.AreEqual(1, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(1);
+
                 manager.Dispose();
             }
 
@@ -130,16 +153,21 @@ namespace WIMVR.Tests {
                 Callback callback = A.Callback.WithAction(DummyCallback);
                 Callback callback2 = A.Callback.WithAction(DummyCallback).WithPriority(1);
                 DrawCallbackManager manager = A.DrawCallbackManager.WithCallbacks(callback, callback2);
+                
                 manager.RemoveCallback(DummyCallback);
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(0);
                 manager.Dispose();
             }
 
             [Test]
             public void Given_Empty_Then_Remove_Yields_No_Effect() {
                 DrawCallbackManager manager = A.DrawCallbackManager;
+                
                 manager.RemoveCallback(DummyCallback);
-                Assert.AreEqual(0, manager.GetNumberOfCallbacks());
+                
+                manager.GetNumberOfCallbacks().Should().Be(0);
+                
                 manager.Dispose();
             }
         }
