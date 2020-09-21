@@ -6,14 +6,6 @@
             "id": "dc6b7926-d09f-47d9-8c1e-77632f940d92",
             "actions": [
                 {
-                    "name": "Test",
-                    "type": "Value",
-                    "id": "b7477b37-cf57-421c-b3af-20373f66f2de",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "Respawn",
                     "type": "Button",
                     "id": "184d9db3-31cb-475b-8c39-c506cbf00983",
@@ -68,28 +60,9 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "TestButton",
-                    "type": "Button",
-                    "id": "98cece39-0afb-4af4-b6d7-78d27f000cb2",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "81bc7276-2688-4e1f-8762-2e5d96e0011a",
-                    "path": "<XRController>{RightHand}/thumbstick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "XR",
-                    "action": "Test",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "301046cd-6f8b-4fe9-95c9-8c4ac3cb8085",
@@ -164,28 +137,6 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Detect Arm Length",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "01a97018-6d4b-491f-8512-131bc7ca6871",
-                    "path": "<XRController>{RightHand}/primary",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "XR",
-                    "action": "TestButton",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "969cbf06-ca68-4d09-89df-54f6cbe7aff9",
-                    "path": "<Keyboard>/b",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TestButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
