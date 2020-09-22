@@ -68,7 +68,8 @@ namespace WIMVR.Features {
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * playerRepresentationHeight * config.ScaleFactor;
 
             // Rotation
-            var rotationInLevel = data.WIMLevelTransform.rotation * playerTransform.rotation;
+            var playerRotation = new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0);  ;
+            var rotationInLevel = data.WIMLevelTransform.rotation * Quaternion.Euler(playerRotation);
             data.PlayerRepresentationTransform.rotation = rotationInLevel;
 
             OnUpdatePlayerRepresentationInWIM?.Invoke(config, data);
