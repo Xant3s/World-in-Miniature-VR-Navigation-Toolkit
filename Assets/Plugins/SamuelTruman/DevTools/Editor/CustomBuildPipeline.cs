@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿// Author: Samuel Truman (contact@samueltruman.com)
+
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 
-namespace ST.Utils {
+namespace ST.DevTools {
     public sealed class CustomBuildPipeline {
         private static readonly string androidBuildPathPref = "ViaVRDemonstrator2_AndroidBuildPath";
 
