@@ -34,7 +34,8 @@ namespace WIMVR.Features.Distance_Grab {
 
         protected override void RightHandInitialized(GameObject rightHand) {
             var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
-            rightGrabButtonListener = new ButtonListener(InputHelpers.Button.Grip, rightController);
+            var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
+            rightGrabButtonListener = new ButtonListener(grabButton, rightController);
             rightGrabButtonListener.OnButtonDown += StartDistanceGrabRight;
             rightGrabButtonListener.OnButtonUp += StopDistanceGrabRight;
             SetupHand(Hand.RightHand, rightHand, out rightDistanceGrabber, out rightAimAssist);
@@ -42,7 +43,8 @@ namespace WIMVR.Features.Distance_Grab {
 
         protected override void LeftHandInitialized(GameObject leftHand) {
             var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
-            leftGrabButtonListener = new ButtonListener(InputHelpers.Button.Grip, leftController);
+            var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
+            leftGrabButtonListener = new ButtonListener(grabButton, leftController);
             leftGrabButtonListener.OnButtonDown += StartDistanceGrabLeft;
             leftGrabButtonListener.OnButtonUp += StopDistanceGrabLeft;
             SetupHand(Hand.LeftHand, leftHand, out leftDistanceGrabber, out leftAimAssist);
