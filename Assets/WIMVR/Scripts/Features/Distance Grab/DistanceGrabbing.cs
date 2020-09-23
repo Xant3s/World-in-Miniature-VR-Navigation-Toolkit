@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using WIMVR.Core;
+using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;
 
@@ -10,17 +11,16 @@ namespace WIMVR.Features.Distance_Grab {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PlayerInput))]
     public class DistanceGrabbing : HandInitializer {
+        // TODO: allow distance grabbing for just one hand.
         public bool distanceGrabbingEnabled;
 
+        private IButtonListener rightGrabButtonListener;
+        private IButtonListener leftGrabButtonListener;
         private DistanceGrabber leftDistanceGrabber;
         private DistanceGrabber rightDistanceGrabber;
         private AimAssist leftAimAssist;
         private AimAssist rightAimAssist;
-        private UnityEngine.XR.InputDevice leftController;
-        private UnityEngine.XR.InputDevice rightController;
-        private bool rightGripWasPressedLastFrame;
-        private bool leftGripWasPressedLastFrame;
-        
+
 
         private void Start() {
             if(!distanceGrabbingEnabled) return;
@@ -28,28 +28,23 @@ namespace WIMVR.Features.Distance_Grab {
         }
 
         private void Update() {
-            if(rightController.isValid) {
-                rightController.IsPressed(InputHelpers.Button.Grip, out var rightGrabPressed);
-                if(!rightGripWasPressedLastFrame && rightGrabPressed) OnRightDistanceGrabDown();
-                else if(rightGripWasPressedLastFrame && !rightGrabPressed) OnRightDistanceGrabUp();
-                rightGripWasPressedLastFrame = rightGrabPressed;
-            }
-
-            if(leftController.isValid) {
-                leftController.IsPressed(InputHelpers.Button.Grip, out var leftGrabPressed);
-                if(!leftGripWasPressedLastFrame && leftGrabPressed) OnLeftDistanceGrabDown();
-                else if(leftGripWasPressedLastFrame && !leftGrabPressed) OnLeftDistanceGrabUp();
-                leftGripWasPressedLastFrame = leftGrabPressed;
-            }
+            rightGrabButtonListener?.Update();
+            leftGrabButtonListener?.Update();
         }
 
         protected override void RightHandInitialized(GameObject rightHand) {
-            rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+            var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+            rightGrabButtonListener = new ButtonListener(InputHelpers.Button.Grip, rightController);
+            rightGrabButtonListener.OnButtonDown += StartDistanceGrabRight;
+            rightGrabButtonListener.OnButtonUp += StopDistanceGrabRight;
             SetupHand(Hand.RightHand, rightHand, out rightDistanceGrabber, out rightAimAssist);
         }
 
         protected override void LeftHandInitialized(GameObject leftHand) {
-            leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+            var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+            leftGrabButtonListener = new ButtonListener(InputHelpers.Button.Grip, leftController);
+            leftGrabButtonListener.OnButtonDown += StartDistanceGrabLeft;
+            leftGrabButtonListener.OnButtonUp += StopDistanceGrabLeft;
             SetupHand(Hand.LeftHand, leftHand, out leftDistanceGrabber, out leftAimAssist);
         }
 
@@ -60,28 +55,28 @@ namespace WIMVR.Features.Distance_Grab {
             distanceGrabber = obj.AddComponent<DistanceGrabber>();
         }
 
-        private void OnRightDistanceGrabDown() {
+        private void StartDistanceGrabRight() {
             if(!rightHandInitialized && rightDistanceGrabber) return;
-            rightAimAssist.GrabButtonDown();
-            rightDistanceGrabber.GrabButtonDown();
+            rightAimAssist.Disable();
+            rightDistanceGrabber.StartDistanceGrab();
         }
 
-        private void OnRightDistanceGrabUp() {
+        private void StopDistanceGrabRight() {
             if(!rightHandInitialized && rightDistanceGrabber) return;
-            rightAimAssist.GrabButtonUp();
-            rightDistanceGrabber.GrabButtonUp();
+            rightAimAssist.Enable();
+            rightDistanceGrabber.StopDistanceGrab();
         }
 
-        private void OnLeftDistanceGrabDown() {
+        private void StartDistanceGrabLeft() {
             if(!leftHandInitialized && leftDistanceGrabber) return;
-            leftAimAssist.GrabButtonDown();
-            leftDistanceGrabber.GrabButtonDown();
+            leftAimAssist.Disable();
+            leftDistanceGrabber.StartDistanceGrab();
         }
 
-        private void OnLeftDistanceGrabUp() {
+        private void StopDistanceGrabLeft() {
             if(!leftHandInitialized && leftDistanceGrabber) return;
-            leftAimAssist.GrabButtonUp();
-            leftDistanceGrabber.GrabButtonUp();
+            leftAimAssist.Enable();
+            leftDistanceGrabber.StopDistanceGrab();
         }
     }
 }

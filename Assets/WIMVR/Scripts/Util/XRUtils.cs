@@ -1,8 +1,11 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using System.Collections.Generic;
+using System.Linq;
+using Castle.Core.Internal;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 
 namespace WIMVR.Util.XR {
@@ -25,6 +28,14 @@ namespace WIMVR.Util.XR {
                 Debug.LogWarning("Controller not found. Please make sure both controllers are present.");
             }
             return devices.Count > 0 ? devices[0] : new InputDevice();
+        }
+
+        public static InputHelpers.Button DetectGrabButton(Hand hand) {
+            var controllers = Object.FindObjectsOfType(typeof(XRController)) as XRController[];
+            if(controllers.IsNullOrEmpty()) return InputHelpers.Button.None;
+            var node = hand == Hand.RightHand ? XRNode.RightHand : XRNode.LeftHand;
+            var controller = controllers.First(c => c.controllerNode == node);
+            return controller.selectUsage;
         }
     }
 }

@@ -38,8 +38,8 @@ namespace WIMVR.Features.Distance_Grab {
             lr.SetPosition(1, position + transform.forward * length);
         }
 
-        public void GrabButtonDown() => lr.enabled = false;
+        public void Disable() => lr.enabled = false;
 
-        public void GrabButtonUp() => lr.enabled = true;
+        public void Enable() => lr.enabled = true;
     }
 }

@@ -68,12 +68,12 @@ namespace WIMVR.Features.Distance_Grab {
             }
         }
 
-        public void GrabButtonDown() {
+        public void StartDistanceGrab() {
             grabButtonPressed = true;
             grabStartedThisFrame = true;
         }
         
-        public void GrabButtonUp() => grabButtonPressed = false;
+        public void StopDistanceGrab() => grabButtonPressed = false;
 
         private void OnTriggerEnter(Collider other) {
             if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;

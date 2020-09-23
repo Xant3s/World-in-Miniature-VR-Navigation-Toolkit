@@ -6,6 +6,7 @@ using UnityEngine.Assertions;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Core;
+using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;
 using Hand = WIMVR.Util.Hand;
@@ -16,9 +17,11 @@ namespace WIMVR.Features.Scaling {
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(OffsetGrabInteractable))]
-    public class Scaling : MonoBehaviour {
+    public class Scaling : HandInitializer {
         public ScalingConfiguration ScalingConfig;
         private WIMConfiguration config;
+        private IButtonListener rightGrabButtonListener;
+        private IButtonListener leftGrabButtonListener;
         private OffsetGrabInteractable grabbable;
         private Transform handL;
         private Transform handR;
@@ -26,25 +29,25 @@ namespace WIMVR.Features.Scaling {
         private SphereCollider leftGrabVolume;
         private SphereCollider rightGrabVolume;
         private Hand scalingHand = Hand.None;
-        private InputHelpers.Button leftGrabButton = InputHelpers.Button.Grip;
-        private InputHelpers.Button rightGrabButton = InputHelpers.Button.Grip;
-        private bool leftGrabPressedLastFrame;
-        private bool rightGrabPressedLastFrame;
         private float prevInterHandDistance;
 
 
+        
+        
         private void OnEnable() {
+            // If config is present, register scale to OnUpdate.
             if(!ScalingConfig) return;
             MiniatureModel.OnUpdate += ScaleWIM;
-            DetectGrabButtons();
         }
 
         private void OnDisable() {
+            // Unregister scale.
             if(!ScalingConfig) return;
             MiniatureModel.OnUpdate -= ScaleWIM;
         }
 
         private void Awake() {
+            // Find references to WIM and grabbable.
             if(!ScalingConfig) return;
             WIMTransform = GameObject.FindWithTag("WIM").transform;
             grabbable = WIMTransform.GetComponent<OffsetGrabInteractable>();
@@ -52,38 +55,41 @@ namespace WIMVR.Features.Scaling {
 
         private void Start() {
             Init();
+            StartWaitForHands();
         }
 
         private void Update() {
+            // Initialize if initialization failed, i.e. hands where not found.
             if (!IsInitialized()) Init();
-            ReadInput();
+            
+            rightGrabButtonListener?.Update();
+            leftGrabButtonListener?.Update();
         }
 
-        private void ReadInput() {
-            var leftInputDevice = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
-            var rightInputDevice = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
-            leftInputDevice.TryGetFeatureValue(new InputFeatureUsage<float>(leftGrabButton.ToString()), out var leftGrabValue);
-            rightInputDevice.TryGetFeatureValue(new InputFeatureUsage<float>(rightGrabButton.ToString()),
-                out var rightGrabValue);
-            const float epsilon = .01f;
-            var leftGrabPressed = leftGrabValue > epsilon;
-            var rightGrabPressed = rightGrabValue > epsilon;
+        protected override void LeftHandInitialized(GameObject leftHand) {
+            var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+            var grabButton = XRUtils.DetectGrabButton(Hand.RightHand);
+            rightGrabButtonListener = new ButtonListener(grabButton, rightController);
+            rightGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.RightHand);
+            rightGrabButtonListener.OnButtonUp += () => scalingHand = Hand.None;
+        }
 
-            // call events
-            if (leftGrabPressed && !leftGrabPressedLastFrame) SetScalingHand(Hand.LeftHand);
-            else if (!leftGrabPressed && leftGrabPressedLastFrame) scalingHand = Hand.None;
-            if (rightGrabPressed && !rightGrabPressedLastFrame) SetScalingHand(Hand.RightHand);
-            else if (!rightGrabPressed && rightGrabPressedLastFrame) scalingHand = Hand.None;
-
-            leftGrabPressedLastFrame = leftGrabPressed;
-            rightGrabPressedLastFrame = rightGrabPressed;
+        protected override void RightHandInitialized(GameObject rightHand) {
+            var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+            var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
+            leftGrabButtonListener = new ButtonListener(grabButton, leftController);
+            leftGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.LeftHand);
+            leftGrabButtonListener.OnButtonUp += () => scalingHand = Hand.None;
         }
 
         private bool IsInitialized() => handL && handR && leftGrabVolume && rightGrabVolume;
 
         private void Init() {
+            // Find hands.
             handL = GameObject.FindWithTag("HandL")?.transform;
             handR = GameObject.FindWithTag("HandR")?.transform;
+            
+            // Find references to hand grab volumes.
             if(handL) leftGrabVolume = handL.GetComponentInParent<SphereCollider>();
             if(handR) rightGrabVolume = handR.GetComponentInParent<SphereCollider>();
         }
@@ -150,14 +156,6 @@ namespace WIMVR.Features.Scaling {
         private static void GetWorldSpaceSphere(SphereCollider sphere, out Vector3 center, out float radius) {
             center = sphere.transform.TransformPoint(sphere.center);
             radius = sphere.radius;
-        }
-        
-        private void DetectGrabButtons() {
-            var controllers = GameObject.FindWithTag("Player").GetComponentsInChildren<XRController>();
-            var leftController = controllers.First(c => c.controllerNode == XRNode.LeftHand);
-            if (leftController) leftGrabButton = leftController.selectUsage;
-            var rightController = controllers.First(c => c.controllerNode == XRNode.RightHand);
-            if (rightController) rightGrabButton = rightController.selectUsage;
         }
     }
 }
