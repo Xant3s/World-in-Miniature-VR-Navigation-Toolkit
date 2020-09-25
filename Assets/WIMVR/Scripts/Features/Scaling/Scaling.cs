@@ -16,9 +16,10 @@ namespace WIMVR.Features.Scaling {
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(OffsetGrabInteractable))]
-    public class Scaling : HandInitializer {
+    public class Scaling : MonoBehaviour {
         public ScalingConfiguration ScalingConfig;
         private WIMConfiguration config;
+        private IHandInitializer<InputDevice> handInitializer;
         private IButtonListener rightGrabButtonListener;
         private IButtonListener leftGrabButtonListener;
         private OffsetGrabInteractable grabbable;
@@ -49,7 +50,10 @@ namespace WIMVR.Features.Scaling {
 
         private void Start() {
             Init();
-            StartWaitForHands();
+            handInitializer = new XRControllerInitializer();
+            handInitializer.OnRightHandInitialized += RightHandInitialized;
+            handInitializer.OnLeftHandInitialized += LeftHandInitialized;
+            handInitializer.StartWaitForHands();
         }
 
         private void Update() {
@@ -59,16 +63,16 @@ namespace WIMVR.Features.Scaling {
             leftGrabButtonListener?.Update();
         }
 
-        protected override void RightHandInitialized(GameObject rightHand) {
-            var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+        private void RightHandInitialized(InputDevice rightController) {
+            // var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
             var grabButton = XRUtils.DetectGrabButton(Hand.RightHand);
             rightGrabButtonListener = new ButtonListener(grabButton, rightController);
             rightGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.RightHand);
             rightGrabButtonListener.OnButtonUp += () => scalingHand = Hand.None;
         }
 
-        protected override void LeftHandInitialized(GameObject leftHand) {
-            var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+        private void LeftHandInitialized(InputDevice leftController) {
+            // var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
             var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
             leftGrabButtonListener = new ButtonListener(grabButton, leftController);
             leftGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.LeftHand);

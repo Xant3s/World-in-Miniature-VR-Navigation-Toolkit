@@ -15,11 +15,26 @@ namespace WIMVR.Util.XR {
     public static class XRUtils {
         /// <summary>
         /// Tries to find the InputDevice to the corresponding hand.
+        /// If multiple InputDevices are found, the first one is returned.
+        /// Returns invalid input device if no input devices are found.
+        /// </summary>
+        /// <param name="hand"></param>
+        /// <returns></returns>
+        public static InputDevice TryFindCorrespondingInputDevice(Hand hand) {
+            var characteristics = hand == Hand.LeftHand ? InputDeviceCharacteristics.Left : InputDeviceCharacteristics.Right;
+            var devices = new List<InputDevice>();
+            InputDevices.GetDevicesWithCharacteristics(characteristics, devices);
+            return devices.Count > 0 ? devices[0] : new InputDevice();
+        }
+        
+        /// <summary>
+        /// Tries to find the InputDevice to the corresponding hand.
         /// Returns null if no InputDevice is found.
         /// If multiple InputDevices are found, the first one is returned.
         /// </summary>
         /// <param name="hand"></param>
         /// <returns></returns>
+        /// TODO: Remove
         public static InputDevice FindCorrespondingInputDevice(Hand hand) {
             var characteristics = hand == Hand.LeftHand ? InputDeviceCharacteristics.Left : InputDeviceCharacteristics.Right;
             var devices = new List<InputDevice>();

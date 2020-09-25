@@ -6,14 +6,16 @@ using WIMVR.Core;
 using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;
+using InputDevice = UnityEngine.XR.InputDevice;
 
 namespace WIMVR.Features.Distance_Grab {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PlayerInput))]
-    public class DistanceGrabbing : HandInitializer {
-        // TODO: allow distance grabbing for just one hand.
+    public class DistanceGrabbing : MonoBehaviour {
         public bool distanceGrabbingEnabled;
 
+        private readonly IHandInitializer<GameObject> handModelInitializer = new HandModelInitializer();
+        private readonly IHandInitializer<InputDevice> controllerInitializer = new XRControllerInitializer();
         private IButtonListener rightGrabButtonListener;
         private IButtonListener leftGrabButtonListener;
         private DistanceGrabber leftDistanceGrabber;
@@ -24,7 +26,13 @@ namespace WIMVR.Features.Distance_Grab {
 
         private void Start() {
             if(!distanceGrabbingEnabled) return;
-            StartWaitForHands();
+            handModelInitializer.OnRightHandInitialized += SetupRequiredComponentsForRightHand;
+            handModelInitializer.OnLeftHandInitialized += SetupRequiredComponentsForLeftHand;
+            handModelInitializer.StartWaitForHands();
+            
+            controllerInitializer.OnRightHandInitialized += SetupRightGrabButtonForwarding;
+            controllerInitializer.OnLeftHandInitialized += SetupLeftGrabButtonForwarding;
+            controllerInitializer.StartWaitForHands();
         }
 
         private void Update() {
@@ -32,53 +40,43 @@ namespace WIMVR.Features.Distance_Grab {
             leftGrabButtonListener?.Update();
         }
 
-        protected override void RightHandInitialized(GameObject rightHand) {
-            var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+        private void SetupRightGrabButtonForwarding(InputDevice rightController) {
             var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
             rightGrabButtonListener = new ButtonListener(grabButton, rightController);
-            rightGrabButtonListener.OnButtonDown += StartDistanceGrabRight;
-            rightGrabButtonListener.OnButtonUp += StopDistanceGrabRight;
-            SetupHand(Hand.RightHand, rightHand, out rightDistanceGrabber, out rightAimAssist);
+            rightGrabButtonListener.OnButtonDown += () => StartDistanceGrab(rightDistanceGrabber, rightAimAssist);
+            rightGrabButtonListener.OnButtonUp += () => StopDistanceGrab(rightDistanceGrabber, rightAimAssist);
         }
 
-        protected override void LeftHandInitialized(GameObject leftHand) {
-            var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
+        private void SetupLeftGrabButtonForwarding(InputDevice leftController) {
             var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
             leftGrabButtonListener = new ButtonListener(grabButton, leftController);
-            leftGrabButtonListener.OnButtonDown += StartDistanceGrabLeft;
-            leftGrabButtonListener.OnButtonUp += StopDistanceGrabLeft;
-            SetupHand(Hand.LeftHand, leftHand, out leftDistanceGrabber, out leftAimAssist);
+            leftGrabButtonListener.OnButtonDown += () => StartDistanceGrab(leftDistanceGrabber, leftAimAssist);
+            leftGrabButtonListener.OnButtonUp += () => StopDistanceGrab(leftDistanceGrabber, leftAimAssist);
         }
 
-        private void SetupHand(Hand hand, GameObject obj, out DistanceGrabber distanceGrabber, out AimAssist aimAssist) {
+        private void SetupRequiredComponentsForRightHand(GameObject rightHand) 
+            => SetupHand(Hand.RightHand, rightHand, out rightDistanceGrabber, out rightAimAssist);
+
+        private void SetupRequiredComponentsForLeftHand(GameObject leftHand) 
+            => SetupHand(Hand.LeftHand, leftHand, out leftDistanceGrabber, out leftAimAssist);
+
+        private static void SetupHand(Hand hand, GameObject obj, out DistanceGrabber distanceGrabber, out AimAssist aimAssist) {
             var aimAssistObj = Instantiate(Resources.Load<GameObject>("AimAssist"), obj.transform);
             aimAssist = aimAssistObj.GetComponent<AimAssist>();
             aimAssist.hand = hand;
             distanceGrabber = obj.AddComponent<DistanceGrabber>();
         }
 
-        private void StartDistanceGrabRight() {
-            if(!rightHandInitialized && rightDistanceGrabber) return;
-            rightAimAssist.Disable();
-            rightDistanceGrabber.StartDistanceGrab();
+        private static void StartDistanceGrab(DistanceGrabber distanceGrabber, AimAssist aimAssist) {
+            if(!distanceGrabber) return;
+            aimAssist.Disable();
+            distanceGrabber.StartDistanceGrab();
         }
 
-        private void StopDistanceGrabRight() {
-            if(!rightHandInitialized && rightDistanceGrabber) return;
-            rightAimAssist.Enable();
-            rightDistanceGrabber.StopDistanceGrab();
-        }
-
-        private void StartDistanceGrabLeft() {
-            if(!leftHandInitialized && leftDistanceGrabber) return;
-            leftAimAssist.Disable();
-            leftDistanceGrabber.StartDistanceGrab();
-        }
-
-        private void StopDistanceGrabLeft() {
-            if(!leftHandInitialized && leftDistanceGrabber) return;
-            leftAimAssist.Enable();
-            leftDistanceGrabber.StopDistanceGrab();
+        private static void StopDistanceGrab(DistanceGrabber distanceGrabber, AimAssist aimAssist) {
+            if(!distanceGrabber) return;
+            aimAssist.Enable();
+            distanceGrabber.StopDistanceGrab();
         }
     }
 }
