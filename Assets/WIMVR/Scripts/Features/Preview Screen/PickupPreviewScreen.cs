@@ -45,7 +45,7 @@ namespace WIMVR.Features.Preview_Screen {
 
         private void StartTouch(Hand hand) {
             // Haptic feedback.
-            var inputDevice = XRUtils.FindCorrespondingInputDevice(hand);
+            var inputDevice = XRUtils.TryFindCorrespondingInputDevice(hand);
             Haptics.Vibrate(inputDevice, .1f, .1f);
 
             // Visual feedback.

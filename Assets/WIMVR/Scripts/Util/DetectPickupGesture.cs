@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR;
+using WIMVR.Core;
 using WIMVR.Util.XR;
 
 namespace WIMVR.Util {
@@ -45,14 +46,16 @@ namespace WIMVR.Util {
         private bool LThumbInside => fingersInside[fingers[3]];
         private bool IsPinched => pinchingHand != Hand.None;
 
+        private readonly IHandInitializer<InputDevice> controllerInitializer = new XRControllerInitializer();
         private InputDevice leftController;
         private InputDevice rightController;
         #endregion
 
 
         private void Start() {
-            leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
-            rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
+            controllerInitializer.OnLeftHandInitialized += controller => leftController = controller; 
+            controllerInitializer.OnRightHandInitialized += controller => rightController = controller; 
+            controllerInitializer.StartWaitForHands();
         }
 
         private void Update() {

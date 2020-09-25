@@ -36,7 +36,7 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void StartClosing(Hand hand) {
-            Haptics.Vibrate(XRUtils.FindCorrespondingInputDevice(hand), .1f, .1f);
+            Haptics.Vibrate(XRUtils.TryFindCorrespondingInputDevice(hand), .1f, .1f);
             StartCoroutine(Close(hand, .1f));
         }
 

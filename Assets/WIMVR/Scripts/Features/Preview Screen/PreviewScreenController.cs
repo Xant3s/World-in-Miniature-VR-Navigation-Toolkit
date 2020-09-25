@@ -43,8 +43,7 @@ namespace WIMVR.Features.Preview_Screen {
             CancelInvoke();
         }
 
-        private void Vibrate(Hand hand) {
-            Haptics.Vibrate(XRUtils.FindCorrespondingInputDevice(hand), .1f, .1f);
-        }
+        private static void Vibrate(Hand hand) 
+            => Haptics.Vibrate(XRUtils.TryFindCorrespondingInputDevice(hand), .1f, .1f);
     }
 }
