@@ -13,7 +13,7 @@ namespace WIMVR.Features.LiveUpdate {
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class LiveUpdate : MonoBehaviour {
-        internal static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
+        public static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
             var level = GameObject.FindWithTag("Level");
             if(!level) {
                 Debug.LogWarning("Level not found.");
