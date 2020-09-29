@@ -1,0 +1,1 @@
+© Copyright Samuel Truman. All rights reserved.
