@@ -31,7 +31,7 @@ namespace WIMVR.Editor.Welcome {
             root.Add(uxmlContents);
 
             root.Q<Image>(name: "SceneIcon").image = EditorGUIUtility.IconContent("SceneAsset Icon").image;
-            root.Q<Image>(name: "YoutubeIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "youtube.png");
+            // root.Q<Image>(name: "YoutubeIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "youtube.png");
             root.Q<Image>(name: "ManualIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "help.png");
             root.Q<Image>(name: "EmailIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "email.png");
 
@@ -41,11 +41,11 @@ namespace WIMVR.Editor.Welcome {
                 EditorSceneManager.OpenScene("Assets/WIMVR/Examples/SimpleExample/SimpleExample.unity");
             });
 
-            root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
-            root.Q<Button>("VideoBtn").RegisterCallback<MouseUpEvent>((e) => {
-                // TODO
-                Application.OpenURL("");
-            });
+            // root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
+            // root.Q<Button>("VideoBtn").RegisterCallback<MouseUpEvent>((e) => {
+            //     // TODO
+            //     Application.OpenURL("");
+            // });
 
             root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>((e) => {
                 Application.OpenURL(Application.dataPath + "/WIMVR/Manual.pdf");
