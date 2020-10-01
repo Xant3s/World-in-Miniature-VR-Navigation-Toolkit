@@ -55,7 +55,8 @@ namespace WIMVR.Editor.Welcome {
                 Application.OpenURL("mailto:contact@samueltruman.com");
             });
 
-            var isLiteVersion = !File.Exists(Application.dataPath + "/WIMVR/Scripts/Features/Scrolling/Scrolling.cs");
+            // TODO: should not depend on exact asset path.
+            var isLiteVersion = !File.Exists(Application.dataPath + "/WIMVR/Scripts/Runtime/Features/Scrolling/Scrolling.cs");
             root.Q<VisualElement>(name: "FullFeatureLabel").visible = isLiteVersion;
             root.Q<Label>(name: "FullFeatureURL").RegisterCallback<MouseUpEvent>((e) => {
                 Application.OpenURL("https://assetstore.unity.com/");   // TODO: Link specific product page of the full-feature version
