@@ -19,7 +19,8 @@ namespace WIMVR.Features.Pickup_Destination {
         private MiniatureModel WIM;
         private Transform thumbR;
         private Transform indexR;
-        private HighlightFX highlightFX;
+        private IHighlighter colorHighlighter;
+        private DetectPickupGesture detectPickupGesture;
 
         /// <summary>
         /// Tapping the destination indicator twice will be considered a double-tap iff
@@ -29,14 +30,14 @@ namespace WIMVR.Features.Pickup_Destination {
 
 
         private void Start() {
-            highlightFX = GetComponent<HighlightFX>();
+            colorHighlighter = GetComponent<IHighlighter>();
             thumbR = GameObject.FindWithTag("ThumbR")?.transform;
             indexR = GameObject.FindWithTag("IndexR")?.transform;
             WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             Assert.IsNotNull(thumbR);
             Assert.IsNotNull(indexR);
             Assert.IsNotNull(WIM);
-            var detectPickupGesture = GetComponent<DetectPickupGesture>();
+            detectPickupGesture = GetComponent<DetectPickupGesture>();
             detectPickupGesture.OnStartTouch.AddListener(OnStartTouch);
             detectPickupGesture.OnStopTouch.AddListener(OnStopTouch);
             detectPickupGesture.OnStartGrabbing.AddListener(StartGrabbing);
@@ -49,11 +50,11 @@ namespace WIMVR.Features.Pickup_Destination {
             Haptics.Vibrate(inputDevice, .1f, .1f);
 
             // Visual feedback.
-            highlightFX.HighlightEnabled = true;
+            colorHighlighter.HighlightEnabled = true;
         }
 
         private void OnStopTouch() {
-            highlightFX.HighlightEnabled = false;
+            colorHighlighter.HighlightEnabled = false;
         }
 
         private void StartGrabbing() {

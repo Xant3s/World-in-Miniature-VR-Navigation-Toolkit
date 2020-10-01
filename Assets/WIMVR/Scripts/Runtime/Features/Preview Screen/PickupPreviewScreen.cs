@@ -18,7 +18,8 @@ namespace WIMVR.Features.Preview_Screen {
         private Transform thumb;
         private Transform index;
         private Transform WIMTransform;
-        private HighlightFX highlightFX;
+        private IHighlighter alphaHighlighter;
+        private DetectPickupGesture detectPickupGesture;
 
 
         private void Awake() {
@@ -33,9 +34,8 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void Start() {
-            var detectPickupGesture = GetComponent<DetectPickupGesture>();
-            highlightFX = gameObject.AddComponent<HighlightFX>();
-            highlightFX.SetUseAlpha(true, "_Alpha");
+            detectPickupGesture = GetComponent<DetectPickupGesture>();
+            alphaHighlighter = gameObject.AddComponent<AlphaHighlighter>();
             Assert.IsNotNull(detectPickupGesture);
             detectPickupGesture.OnStartTouch.AddListener(StartTouch);
             detectPickupGesture.OnStopTouch.AddListener(StopTouch);
@@ -49,11 +49,11 @@ namespace WIMVR.Features.Preview_Screen {
             Haptics.Vibrate(inputDevice, .1f, .1f);
 
             // Visual feedback.
-            highlightFX.HighlightEnabled = true;
+            alphaHighlighter.HighlightEnabled = true;
         }
 
         private void StopTouch() {
-            highlightFX.HighlightEnabled = false;
+            alphaHighlighter.HighlightEnabled = false;
         }
 
         private void StartGrabbing() {
