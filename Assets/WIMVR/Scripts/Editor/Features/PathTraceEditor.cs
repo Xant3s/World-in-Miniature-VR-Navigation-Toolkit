@@ -26,7 +26,7 @@ namespace WIMVR.Editor.Features {
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
-            MiniatureModelEditor.Separators.UnregisterUnique("Orientation Aids");
+            MiniatureModelEditor.Separators?.UnregisterUnique("Orientation Aids");
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
