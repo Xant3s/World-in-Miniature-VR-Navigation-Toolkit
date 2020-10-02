@@ -66,7 +66,6 @@ namespace WIMVR.Features.Distance_Grab {
         }
 
         private void Update() {
-            HighlightFX = false;
             if (!IsBeingGrabbed || !Target) return;
         
             if (Vector3.Distance(Target.position, transform.position) < MinDistance) {
