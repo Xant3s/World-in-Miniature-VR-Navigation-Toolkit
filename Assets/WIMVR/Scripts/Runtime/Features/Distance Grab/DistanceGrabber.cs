@@ -28,6 +28,7 @@ namespace WIMVR.Features.Distance_Grab {
         private AimAssist aimAssist;
         private LineRenderer lineRenderer;
         private Transform WIM;
+        private DistanceGrabbable lastGrabbable;
         private bool grabButtonPressed;
         private bool grabStartedThisFrame;
         private bool isDisabled;
@@ -49,21 +50,28 @@ namespace WIMVR.Features.Distance_Grab {
         
             var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
             if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
-                var grabbable = hit.transform.GetComponent<DistanceGrabbable>();
+                var currentGrabbable = hit.transform.GetComponent<DistanceGrabbable>();
 
-                if(!grabbable || hit.transform.GetComponent<OffsetGrabInteractable>().IsGrabbed) {
+                if(!currentGrabbable || hit.transform.GetComponent<OffsetGrabInteractable>().IsGrabbed) {
                     grabStartedThisFrame = false;
+                    
+                    if(lastGrabbable) {
+                        lastGrabbable.HighlightFX = false;
+                        lastGrabbable = null;
+                    }
                     return;
                 }
+
+                lastGrabbable = currentGrabbable;
                 if(!grabStartedThisFrame && grabButtonPressed) return;
-                grabbable.HighlightFX = true;
-                grabbable.IsBeingGrabbed = grabButtonPressed;
+                currentGrabbable.HighlightFX = true;
+                currentGrabbable.IsBeingGrabbed = grabButtonPressed;
                 if(!grabStartedThisFrame) return;
                 grabStartedThisFrame = false;
                 if(grabButtonPressed) {
-                    grabbable.MinDistance = minDistance;
-                    grabbable.SnapSpeed = snapSpeed;
-                    grabbable.Target = transform;
+                    currentGrabbable.MinDistance = minDistance;
+                    currentGrabbable.SnapSpeed = snapSpeed;
+                    currentGrabbable.Target = transform;
                 }
             }
         }
