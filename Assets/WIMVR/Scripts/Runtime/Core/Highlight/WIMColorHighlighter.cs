@@ -32,8 +32,14 @@ namespace WIMVR.Util {
         }
 
         private void Awake() {
-            material = Resources.Load<Material>("WIM Material");
+            var myRenderer = GetComponentInChildren<Renderer>();
+            material = myRenderer.sharedMaterial;
             defaultColor = material.GetColor(tint);
+        }
+
+        private void Update() {
+            if(Input.GetKeyDown(KeyCode.T))
+                HighlightEnabled = !HighlightEnabled;
         }
     }
 }
