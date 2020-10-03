@@ -19,7 +19,7 @@ namespace WIMVR.Editor.Welcome {
         public static void ShowWindow() {
             var window = GetWindow<WelcomeWindow>();
             window.titleContent = new GUIContent("WIMVR Welcome");
-            window.minSize = new Vector2(566, 384);
+            window.minSize = window.maxSize = new Vector2(566, 384);
         }
 
         public void OnEnable() {
