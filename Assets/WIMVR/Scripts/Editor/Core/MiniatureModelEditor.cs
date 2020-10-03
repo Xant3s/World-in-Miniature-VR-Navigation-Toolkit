@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 using WIMVR.Core;
+using WIMVR.Editor.Util;
 using WIMVR.Features;
 using WIMVR.Util;
 
@@ -33,8 +34,8 @@ namespace WIMVR.Editor.Core {
         public override VisualElement CreateInspectorGUI() {
             root = new VisualElement();
             separators = new SeparatorManager(root);
-            visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Core/MiniatureModelEditor.uxml");
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIMVR/Scripts/Editor/Core/MiniatureModelEditor.uss");
+            visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("MiniatureModelEditor.uxml", this);
+            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("MiniatureModelEditor.uss", this);
             root.styleSheets.Add(styleSheet);
             if(visualTree) visualTree.CloneTree(root);
 

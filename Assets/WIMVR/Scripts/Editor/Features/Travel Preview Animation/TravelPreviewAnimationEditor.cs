@@ -5,6 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
+using WIMVR.Editor.Util;
 using WIMVR.Features.Travel_Preview_Animation;
 
 
@@ -32,7 +33,7 @@ namespace WIMVR.Editor.Features {
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.Separators.RegisterUnique("Orientation Aids");
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/TravelPreviewAnimationEditor.uxml");
+            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("TravelPreviewAnimationEditor.uxml", this);
             var root = new VisualElement();
             visualTree.CloneTree(root);
             var travelPreviewAnimation = (TravelPreviewAnimation) target;

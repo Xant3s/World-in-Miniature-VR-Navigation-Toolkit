@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Editor.Util;
 
 namespace WIMVR.Editor.Welcome {
     /// <summary>
@@ -12,7 +13,6 @@ namespace WIMVR.Editor.Welcome {
     /// </summary>
     public class WelcomeWindow : EditorWindow {
         private static readonly string pluginVersion = "0.9.0";
-        private static readonly string imagePath = "Assets/WIMVR/Sprites/";
 
 
         [MenuItem("Window/WIMVR/Welcome Window")]
@@ -24,21 +24,22 @@ namespace WIMVR.Editor.Welcome {
 
         public void OnEnable() {
             var root = rootVisualElement;
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIMVR/Scripts/Editor/Welcome/WelcomeWindow.uss");
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Welcome/WelcomeWindow.uxml");
+            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("WelcomeWindow.uxml", this);
+            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("WelcomeWindow.uss", this);
             VisualElement uxmlContents = visualTree.CloneTree();
             uxmlContents.styleSheets.Add(styleSheet);
             root.Add(uxmlContents);
 
             root.Q<Image>(name: "SceneIcon").image = EditorGUIUtility.IconContent("SceneAsset Icon").image;
-            // root.Q<Image>(name: "YoutubeIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "youtube.png");
-            root.Q<Image>(name: "ManualIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "help.png");
-            root.Q<Image>(name: "EmailIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "email.png");
+            // root.Q<Image>(name: "YoutubeIcon").image = Resources.Load<Texture>("Sprites/youtube");
+            root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("Sprites/help");
+            root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("Sprites/email");
 
             root.Q<Label>(name: "VersionNumber").text = pluginVersion;
 
             root.Q<Button>("ExampleSceneBtn").RegisterCallback<MouseUpEvent>((e) => {
-                EditorSceneManager.OpenScene("Assets/WIMVR/Examples/SimpleExample/SimpleExample.unity");
+                var scenePath = AssetUtils.GetPathRelativeTo("../../../Examples/SimpleExample/SimpleExample.unity", this);
+                EditorSceneManager.OpenScene(scenePath);
             });
 
             // root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
@@ -55,8 +56,7 @@ namespace WIMVR.Editor.Welcome {
                 Application.OpenURL("mailto:contact@samueltruman.com");
             });
 
-            // TODO: should not depend on exact asset path.
-            var isLiteVersion = !File.Exists(Application.dataPath + "/WIMVR/Scripts/Runtime/Features/Scrolling/Scrolling.cs");
+            var isLiteVersion = !File.Exists(AssetUtils.GetPathRelativeTo("../Features/Scrolling/ScrollingEditor.cs", this));
             root.Q<VisualElement>(name: "FullFeatureLabel").visible = isLiteVersion;
             root.Q<Label>(name: "FullFeatureURL").RegisterCallback<MouseUpEvent>((e) => {
                 Application.OpenURL("https://assetstore.unity.com/");   // TODO: Link specific product page of the full-feature version
