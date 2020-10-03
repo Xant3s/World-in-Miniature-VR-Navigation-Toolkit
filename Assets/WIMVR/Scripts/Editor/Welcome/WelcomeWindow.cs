@@ -31,9 +31,9 @@ namespace WIMVR.Editor.Welcome {
             root.Add(uxmlContents);
 
             root.Q<Image>(name: "SceneIcon").image = EditorGUIUtility.IconContent("SceneAsset Icon").image;
-            // root.Q<Image>(name: "YoutubeIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "youtube.png");
-            root.Q<Image>(name: "ManualIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "help.png");
-            root.Q<Image>(name: "EmailIcon").image = AssetDatabase.LoadAssetAtPath<Texture>(imagePath + "email.png");
+            // root.Q<Image>(name: "YoutubeIcon").image = Resources.Load<Texture>("Sprites/youtube");
+            root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("Sprites/help");
+            root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("Sprites/email");
 
             root.Q<Label>(name: "VersionNumber").text = pluginVersion;
 
