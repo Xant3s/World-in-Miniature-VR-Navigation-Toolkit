@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Editor.Util;
 
 namespace WIMVR.Editor.Welcome {
     /// <summary>
@@ -12,7 +13,6 @@ namespace WIMVR.Editor.Welcome {
     /// </summary>
     public class WelcomeWindow : EditorWindow {
         private static readonly string pluginVersion = "0.9.0";
-        private static readonly string imagePath = "Assets/WIMVR/Sprites/";
 
 
         [MenuItem("Window/WIMVR/Welcome Window")]
@@ -24,8 +24,8 @@ namespace WIMVR.Editor.Welcome {
 
         public void OnEnable() {
             var root = rootVisualElement;
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/WIMVR/Scripts/Editor/Welcome/WelcomeWindow.uss");
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Welcome/WelcomeWindow.uxml");
+            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("WelcomeWindow.uxml", this);
+            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("WelcomeWindow.uss", this);
             VisualElement uxmlContents = visualTree.CloneTree();
             uxmlContents.styleSheets.Add(styleSheet);
             root.Add(uxmlContents);
