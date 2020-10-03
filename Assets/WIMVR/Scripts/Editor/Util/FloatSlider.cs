@@ -17,8 +17,7 @@ namespace WIMVR {
         private readonly Slider slider;
 
         public FloatSlider() {
-            var visualTree =
-                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Util/FloatSlider.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Util/FloatSlider.uxml");
             var floatSlider = new VisualElement();
             visualTree.CloneTree(floatSlider);
             hierarchy.Add(floatSlider);

@@ -17,11 +17,5 @@ namespace WIMVR.Editor.Util {
             var dir = relativeFilePath.Remove(relativeFilePath.LastIndexOf('/')) + "/";
             return AssetDatabase.LoadAssetAtPath<T>(dir + filePath);
         }
-        
-        public static T LoadAtRelativePath<T>(this ScriptableObject relativeTo, string filePath) where T : Object {
-            var relativeFilePath = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(relativeTo));
-            var dir = relativeFilePath.Remove(relativeFilePath.LastIndexOf('/')) + "/";
-            return AssetDatabase.LoadAssetAtPath<T>(dir + filePath);
-        }
     }
 }
