@@ -15,25 +15,36 @@ namespace WIMVR.Editor.Util {
         /// <typeparam name="T">The type of the asset to load.</typeparam>
         /// <returns>The loaded asset.</returns>
         public static T LoadAtRelativePath<T>(string filePath, ScriptableObject relativeTo) where T : Object {
-            var relativeFilePath = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(relativeTo));
-            var dir = relativeFilePath.Remove(relativeFilePath.LastIndexOf('/')) + "/";
-            return AssetDatabase.LoadAssetAtPath<T>(RemoveRedundanciesFromPath(dir + filePath));
+            return AssetDatabase.LoadAssetAtPath<T>(GetPathRelativeTo(filePath, relativeTo));
         }
 
-        private static string RemoveRedundanciesFromPath(string path) {
+        public static string GetPathRelativeTo(string filePath, ScriptableObject relativeTo) {
+            var relativeFilePath = AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(relativeTo));
+            var dir = relativeFilePath.Remove(relativeFilePath.LastIndexOf('/')) + "/";
+            return RemoveRedundanciesFromPath(dir + filePath);
+        }
+
+        public static string RemoveRedundanciesFromPath(string path) {
             var folders = new Stack<string>(path.Split('/'));
             var foldersWithoutRedundancies = new Stack<string>();
 
             while(folders.Count > 0) {
-                var top = folders.Pop();
-                if(top.Equals("..")) {
-                    folders.Pop();
-                } else {
-                    foldersWithoutRedundancies.Push(top);
-                }
+                PutTopOnSecondStackIfNoRedundancy(folders, foldersWithoutRedundancies);
             }
 
             return foldersWithoutRedundancies.Aggregate((folder1, folder2) => $"{folder1}/{folder2}");
+        }
+
+        private static void PutTopOnSecondStackIfNoRedundancy(Stack<string> folders, Stack<string> foldersWithoutRedundancies) {
+            var top = folders.Pop();
+            if(top.Equals("..")) {
+                if(folders.Peek().Equals("..")) {
+                    PutTopOnSecondStackIfNoRedundancy(folders, foldersWithoutRedundancies);
+                }
+                folders.Pop();
+            } else {
+                foldersWithoutRedundancies.Push(top);
+            }
         }
     }
 }

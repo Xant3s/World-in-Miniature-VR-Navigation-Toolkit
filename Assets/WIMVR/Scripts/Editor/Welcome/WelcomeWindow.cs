@@ -38,7 +38,8 @@ namespace WIMVR.Editor.Welcome {
             root.Q<Label>(name: "VersionNumber").text = pluginVersion;
 
             root.Q<Button>("ExampleSceneBtn").RegisterCallback<MouseUpEvent>((e) => {
-                EditorSceneManager.OpenScene("Assets/WIMVR/Examples/SimpleExample/SimpleExample.unity");
+                var scenePath = AssetUtils.GetPathRelativeTo("../../../Examples/SimpleExample/SimpleExample.unity", this);
+                EditorSceneManager.OpenScene(scenePath);
             });
 
             // root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
@@ -55,8 +56,7 @@ namespace WIMVR.Editor.Welcome {
                 Application.OpenURL("mailto:contact@samueltruman.com");
             });
 
-            // TODO: should not depend on exact asset path.
-            var isLiteVersion = !File.Exists(Application.dataPath + "/WIMVR/Scripts/Runtime/Features/Scrolling/Scrolling.cs");
+            var isLiteVersion = !File.Exists(AssetUtils.GetPathRelativeTo("../Features/Scrolling/ScrollingEditor.cs", this));
             root.Q<VisualElement>(name: "FullFeatureLabel").visible = isLiteVersion;
             root.Q<Label>(name: "FullFeatureURL").RegisterCallback<MouseUpEvent>((e) => {
                 Application.OpenURL("https://assetstore.unity.com/");   // TODO: Link specific product page of the full-feature version
