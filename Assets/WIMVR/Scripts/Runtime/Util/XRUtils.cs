@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Castle.Core.Internal;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -29,7 +28,7 @@ namespace WIMVR.Util.XR {
 
         public static InputHelpers.Button DetectGrabButton(Hand hand) {
             var controllers = Object.FindObjectsOfType(typeof(XRController)) as XRController[];
-            if(controllers.IsNullOrEmpty()) return InputHelpers.Button.None;
+            if(controllers == null || controllers.Length == 0) return InputHelpers.Button.None;
             var node = hand == Hand.RightHand ? XRNode.RightHand : XRNode.LeftHand;
             var controller = controllers.First(c => c.controllerNode == node);
             return controller.selectUsage;

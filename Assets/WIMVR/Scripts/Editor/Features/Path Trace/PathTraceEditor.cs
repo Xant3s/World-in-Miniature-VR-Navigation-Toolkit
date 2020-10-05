@@ -5,6 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
+using WIMVR.Editor.Util;
 using WIMVR.Features.Path_Trace;
 
 namespace WIMVR.Editor.Features {
@@ -26,12 +27,12 @@ namespace WIMVR.Editor.Features {
 
         private void OnDisable() {
             MiniatureModelEditor.OnDraw.RemoveCallback(Draw);
-            MiniatureModelEditor.Separators.UnregisterUnique("Orientation Aids");
+            MiniatureModelEditor.Separators?.UnregisterUnique("Orientation Aids");
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.Separators.RegisterUnique("Orientation Aids");
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/WIMVR/Scripts/Editor/Features/PathTraceEditor.uxml");
+            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("PathTraceEditor.uxml", this);
             var root = new VisualElement();
             visualTree.CloneTree(root);
             var pathTrace = (PathTrace) target;

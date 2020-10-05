@@ -27,9 +27,7 @@ namespace WIMVR.Editor.Welcome {
             EditorPrefs.SetBool("WIM_Plugin_NewEditorSession", false);    
 
             if(EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true)) {
-                var window = EditorWindow.GetWindow<WelcomeWindow>();
-                window.titleContent = new GUIContent("WIMVR Welcome");
-                window.minSize = new Vector2(566, 384);
+                WelcomeWindow.ShowWindow();
             }
         }
 
