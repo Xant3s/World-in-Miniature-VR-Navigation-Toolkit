@@ -166,29 +166,17 @@ deploy-github:
     - LOGIN="WIMVR-CI"
     - PW="uk9DbdMlbKGuwngwXA"
     - git clone https://${LOGIN}:${PW}@github.com/${REPOPATH}.git
-    - cd ${REPO}
-    # Remove all files to track:
-    - rm .gitattributes
-    - rm .gitignore
-    - rm -rf ProjectSettings
-    - rm -rf Packages
-    - rm -rf Assets
-    # -----
-    - cd ..
-    # Copy all files to track:
-    - cp .gitattributes ${REPO}
-    - cp .gitignore ${REPO}
-    - cp -r ./ProjectSettings ${REPO}
-    - cp -r ./Packages ${REPO}
-    - mkdir ${REPO}/Assets
-    - cp -r ./Assets/WIMVR ${REPO}/Assets
-    # -----
-    - cd ${REPO}
+    - chmod +x ./ci/deploy_github.sh
+    - cd ci
+    - ./deploy_github.sh
+    - cd ../${REPO}
     - git config user.email "contact@samueltruman.com"
     - git config user.name "Samuel Truman"
     - git status
     - git add -A
+    - git status
     - git commit -a -m ${CI_COMMIT_MESSAGE}
+    - git status
     - git push
   only:
     - master
