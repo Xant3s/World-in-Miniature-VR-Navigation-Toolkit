@@ -1,5 +1,4 @@
 ---
-<!-- TODO: ref paper -->
 titlepage: true
 title: "WIMVR: World-in-Miniature VR Navigation Toolkit"
 subtitle: "Quick Start Guide & Manual"

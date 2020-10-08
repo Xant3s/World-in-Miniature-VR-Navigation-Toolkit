@@ -25,8 +25,15 @@ provide a comprehensive practical solution for traveling in VR.
 
 ## Lite/Pro Version
 
-There are two versions available in the Unity Asset Store.
-The Lite version provides only the core world-in-miniature VR navigation features. To get the full-featured version, consider upgrading to Pro. Sections in this document that only apply to the Pro version of this plugin are marked as such.
+<!-- FIXME: -->
+[DEPRECATED]
+
+<!-- There are two versions available in the Unity Asset Store.
+The Lite version provides only the core world-in-miniature VR navigation features. To get the full-featured version, consider upgrading to Pro. Sections in this document that only apply to the Pro version of this plugin are marked as such. -->
+
+## Scientific Paper
+
+In case you need a scientific reference, you can cite this [paper](https://dl.acm.org/doi/10.1145/3402942.3402994). You can also access if for free [here](https://www.researchgate.net/publication/344368828_An_Integrated_Design_of_World-in-Miniature_Navigation_in_Virtual_Reality). This paper is also useful if you wish to learn more about World-in-Miniature navigation.
 
 ## Setup
 
