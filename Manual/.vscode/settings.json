@@ -3,7 +3,7 @@
         "commands": [
             {
                 "match": "\\.md$",
-                "cmd": "wsl pandoc content/*.md --toc --include-in-header header.tex -N --template eisvogel.tex -s --from markdown --highlight-style tango --variable urlcolor=cyan -o Manual.pdf"
+                "cmd": "wsl pandoc content/*.md --toc --include-in-header header.tex -N --template eisvogel.tex -s --from markdown --highlight-style tango --variable urlcolor=cyan -o Manual.pdf ; wsl rm ../Assets/WIMVR/Manual.pdf ; wsl rm ../Assets/WIMVR/Manual.pdf.meta ; cp Manual.pdf ../Assets/WIMVR/Manual.pdf"
             }
         ]
     },
