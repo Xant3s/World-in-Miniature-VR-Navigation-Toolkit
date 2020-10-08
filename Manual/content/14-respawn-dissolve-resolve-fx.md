@@ -2,9 +2,16 @@
 \pagebreak
 
 ## Respawn Dissolve/Resolve FX (Pro)
-<!-- TODO: improve image (multiple images?) -->
+<!-- TODO: improve image (multiple images?/gif?) -->
 
-![Respawn Dissolve-Resolve Effect](content/res/Dissolve1.png)
+<!-- ![Respawn Dissolve-Resolve Effect](content/res/Dissolve1.png) -->
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=.5\textwidth]{content/res/Dissolve1.png}
+    \caption{Respawn Dissolve-Resolve Effect}
+    \label{fig:Respawn}
+\end{figure}
 
 **Description**  
 Adds a dissolve-resolve effect to the miniature model on respawn.
@@ -18,5 +25,5 @@ Add *DissolveFX* scrip to the miniature model.
 **Configuration**  
  -
 
-**Input**  
+**Input Mappings**  
  -

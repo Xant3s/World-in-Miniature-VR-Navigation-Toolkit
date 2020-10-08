@@ -41,13 +41,17 @@ Before using this plugin, have a look at these steps to make sure it's set up pr
 
 ### Requirements
 
-- This plugin has so far only been tested with an **Oculus Quest**.
-- **Universal Render Pipeline (URP)**. Use the package manager to install the URP. Please follow [these instructions](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html) if you are trying to install the URP into an existing project.
-- Additionally, these packages must be installed from the package manager:
-  - **Input System**
-  - **XR Interaction Toolkit**
-  - **XR Plugin Management**
-  - The **XR plugin** for your respective device, e.g. the **Oculus XR Plugin**
+\begin{itemize}
+  \item This plugin has so far only been tested with an \textbf{Oculus Quest}.
+  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow \hyperlink{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html}{these instructions} if you are trying to install the URP into an existing project.
+  \item Additionally, these packages must be installed from the package manager:
+    \begin{itemize}
+      \item \textbf{Input System}
+      \item \textbf{XR Interaction Toolkit}
+      \item \textbf{XR Plugin Management}
+      \item The \textbf{XR plugin} for your respective device, e.g. the \textbf{Oculus XR Plugin}
+    \end{itemize}
+\end{itemize}
 
 ### Project Setup
 

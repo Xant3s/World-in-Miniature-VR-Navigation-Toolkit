@@ -16,8 +16,8 @@ Requires no setup. This is one of the basic features.
 **Configuration**  
 No configuration required.
 
-**Input**  
-Assign 'Respawn Button' in the input manager.
+**Input Mappings**  
+Assign 'Respawn' button in the input mappings.
 
 **Note**  
-This feature is always enabled by default. To disable it, don't assign any key mapping to the 'Respawn Button'.
+This feature is always enabled by default. To disable it, don't assign any key mapping to the 'Respawn' button.
