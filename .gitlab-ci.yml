@@ -175,7 +175,7 @@ deploy-github:
     - git status
     - git add -A
     - git status
-    - git commit -a -m ${CI_COMMIT_MESSAGE}
+    - git commit -a -m "${CI_COMMIT_MESSAGE}"
     - git status
     - git push
   only:
