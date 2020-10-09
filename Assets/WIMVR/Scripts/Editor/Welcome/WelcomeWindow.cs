@@ -12,7 +12,7 @@ namespace WIMVR.Editor.Welcome {
     /// The welcome window visible at the first start.
     /// </summary>
     public class WelcomeWindow : EditorWindow {
-        private static readonly string pluginVersion = "0.9.0";
+        private static readonly string pluginVersion = "0.9.2";
 
 
         [MenuItem("Window/WIMVR/Welcome Window")]

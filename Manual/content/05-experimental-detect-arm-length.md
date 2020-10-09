@@ -15,5 +15,5 @@ Add the *DetectArmLength* script to the miniature model gameobject. Check 'Auto 
 **Configuration**  
  -
 
-**Input**  
-The 'Confirm Travel Button' has to be set in the input manager.
+**Input Mappings**  
+The 'Detect Arm Length' button has to be assigned in the input mappings.

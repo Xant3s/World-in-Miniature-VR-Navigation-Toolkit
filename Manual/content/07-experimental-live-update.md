@@ -10,10 +10,10 @@ Updates the miniature model whenever a change to the full-sized level is made. W
  -
 
 **Setup**  
-Check 'Live Update WIM (experimental)' in miniature model inspector.
+Enable 'Live Update WIM (experimental)' in miniature model inspector.
 
 **Configuration**  
  -
 
-**Input**  
+**Input Mappings**  
  -

@@ -17,10 +17,10 @@ Add the *OcclusionHandling* script to the miniature model gameobject. Select 'Cu
 **Configuration**  
 The configuration is stored in an *OcclusionHandlingConfig* asset. Select an existing *OcclusionHandlingConfig* file or create a new one using the create menu. Therefore, right-click anywhere on the project window and select `Create -> WIM -> Feature Configureation -> Occlusion Handling`. Settings to configure:
 
-* 'Cutout Range': Height of the view cone hiding the miniature model. The pointy end origins at the player's eyes.
-* 'Cutout Angle': Angle of the view cone hiding the miniature model.
-* 'Show Cutout Light': Whether the view cone should be visualized by a spotlight.
-* 'Cutout Light Color': The color of the spotlight. Only available if 'Show Cutout Light' is enabled.
+- *Cutout Range*: Height of the view cone hiding the miniature model. The pointy end origins at the player's eyes.
+- *Cutout Angle*: Angle of the view cone hiding the miniature model.
+- *Show Cutout Light*: Whether the view cone should be visualized by a spotlight.
+- *Cutout Light Color*: The color of the spotlight. Only available if 'Show Cutout Light' is enabled.
 
-**Input**  
+**Input Mappings**  
  -
