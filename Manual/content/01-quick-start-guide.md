@@ -77,8 +77,7 @@ Make sure you've followed all of the steps below.
   ```
   <category android:name="android.intent.category.LAUNCHER"/>
   ```. -->
-<!-- FIXME: Add how to set up XR management -->
-- Configure the XR management
+- Make sure that your XR plugin - e.g. Oculus - is properly set up (`Project Settings -> XR Plugin-in Management`). You can learn more [here](https://docs.unity3d.com/Manual/configuring-project-for-xr.html).
 
 ### Tags
 
@@ -145,22 +144,8 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
 
 1. All gameobjects that are part of your level must be nested under an empty gameobject.
    - Tag this empty gameobject as 'Level'.
-<!-- FIXME: -->
-2. Add XR rig
-   <!-- * Add *OVRPlayerController Variant* prefab to scene (`WIMVR/Prefabs/Player/OVRPlayerController Variant`)
-   * Add both hand prefabs to scene (`WIMVR/Prefabs/Player/CustomHandLeft Variant` and `WIMVR/Prefabs/Player/CustomHandRight Variant`)
-   * Set the 'Parent Transform' property in the *OVR Grabber* inspector to the 'TrackingSpace' (child of 'OVRPlayerController') for both hands -->
-   <!-- * Add *OVRPlayerController* prefab to scene
-   * Uncheck 'Enable Rotation' in the *OVRPlayerController* inspector
-   * Add *CustomHandLeft* and *CustomHandRight* prefabs to scene
-   * Tag the left hand as 'HandL' and the right hand as 'HandR'
-   * Change the layer to 'Hands' for both hands. Also change children.
-   * Set the 'Parent Transform' property in the *OVR Grabber* inspector to the 'TrackingSpace' (child of 'OVRPlayerController') for both hands
-   * Setup right thumb:  
-     * Search for 'b_r_thumb_ignore' in hierarchy
-     * Set tag to 'ThumbR'
-     * Add *Rigidbody* component. Disable 'Use Gravity' and enable 'Is kinematic'. 
-     * Add *Sphere Collider* component. Check 'Is Trigger'. Set 'Center.X' to '-0.006' and 'Radius' to '0.01'. -->
+2. Add XR rig to the scene
+   - Drag the 'XR Rig' prefab (`WIMVR/Prefabs/XR Rig`) into the scene
 3. Add miniature model
    - Add *Miniature Model* prefab to scene
    - Make sure both the tag and layer are set to 'WIM'
