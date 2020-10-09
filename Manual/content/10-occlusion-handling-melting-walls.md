@@ -3,8 +3,6 @@
 
 ## Occlusion Handling: Melting Walls (Pro)
 
-<!-- ![Occlusion Handling Strategy: Melting Walls](content/res/MeltingWalls.png) -->
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=.5\textwidth]{content/res/MeltingWalls.png}

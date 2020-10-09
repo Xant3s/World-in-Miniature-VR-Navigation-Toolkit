@@ -3,8 +3,6 @@
 
 ## Semi-Transparent  
 
-<!-- ![Occlusion Handling: Semi-Transparent](content/res/TransparentWIM.png) -->
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=.5\textwidth]{content/res/TransparentWIM.png}

@@ -3,8 +3,6 @@
 
 ## Travel Preview Animation (Pro)
 
-<!-- ![Orientation Aid: Travel Preview Animation](content/res/TravelPreviewAnimation.png) -->
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=.5\textwidth]{content/res/TravelPreviewAnimation.png}

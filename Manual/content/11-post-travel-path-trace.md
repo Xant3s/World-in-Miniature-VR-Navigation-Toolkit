@@ -4,8 +4,6 @@
 ## Post-Travel Path Trace (Pro)
 <!-- TODO: Better image -->
 
-<!-- ![Orientation Aid: Path Trace](content/res/PathTrace.png) -->
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=.5\textwidth]{content/res/PathTrace.png}

@@ -3,8 +3,6 @@
 
 ## Preview Screen (Pro)
 
-<!-- ![Orientation Aid: Preview Screen](content/res/PreviewScreen.png) -->
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=.5\textwidth]{content/res/PreviewScreen.png}

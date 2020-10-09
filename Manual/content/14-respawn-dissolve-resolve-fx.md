@@ -4,8 +4,6 @@
 ## Respawn Dissolve/Resolve FX (Pro)
 <!-- TODO: improve image (multiple images?/gif?) -->
 
-<!-- ![Respawn Dissolve-Resolve Effect](content/res/Dissolve1.png) -->
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=.5\textwidth]{content/res/Dissolve1.png}
