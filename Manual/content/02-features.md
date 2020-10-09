@@ -3,8 +3,7 @@
 # Features
 
 This chapter provides a comprehensive overview of all features. Features are subject to change. Especially experimental features might be changed or discarded. To add a feature, add the respective script to the miniature model gameobejct. Some features can be configured. The configuration is stored in its own config file (very much like the miniature model configuration itself).
-If a feature can be configured, its settings will be displayed in the miniature model inspector among the other settings. If the feature requires player input, additional settings will also be added to the input manager.
-To remove a feature, remove the respective script from the miniature model gameobject. Settings of disabled features will not be displayed until these features are activated again.
+If a feature can be configured, its settings will be displayed in the miniature model inspector among the other settings. To remove a feature, remove the respective script from the miniature model gameobject. Settings of disabled features will not be displayed until these features are activated again.
 
 <!-- TODO: ingame vs in game?  -->
 <!-- TODO: smaller images? -->

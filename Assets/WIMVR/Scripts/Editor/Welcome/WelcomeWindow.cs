@@ -12,7 +12,7 @@ namespace WIMVR.Editor.Welcome {
     /// The welcome window visible at the first start.
     /// </summary>
     public class WelcomeWindow : EditorWindow {
-        private static readonly string pluginVersion = "0.9.0";
+        private static readonly string pluginVersion = "0.9.2";
 
 
         [MenuItem("Window/WIMVR/Welcome Window")]
@@ -53,12 +53,6 @@ namespace WIMVR.Editor.Welcome {
 
             root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>((e) => {
                 Application.OpenURL("mailto:contact@samueltruman.com");
-            });
-
-            var isLiteVersion = !File.Exists(AssetUtils.GetPathRelativeTo("../Features/Scrolling/ScrollingEditor.cs", this));
-            root.Q<VisualElement>(name: "FullFeatureLabel").visible = isLiteVersion;
-            root.Q<Label>(name: "FullFeatureURL").RegisterCallback<MouseUpEvent>((e) => {
-                Application.OpenURL("https://assetstore.unity.com/");   // TODO: Link specific product page of the full-feature version
             });
 
             root.Q<Toggle>("showOnStartup").value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
