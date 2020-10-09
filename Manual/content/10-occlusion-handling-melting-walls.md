@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Occlusion Handling: Melting Walls (Pro)
+## Occlusion Handling: Melting Walls
 
 \begin{figure}[!h]
     \centering

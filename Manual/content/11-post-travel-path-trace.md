@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Post-Travel Path Trace (Pro)
+## Post-Travel Path Trace
 <!-- TODO: Better image -->
 
 \begin{figure}[!h]

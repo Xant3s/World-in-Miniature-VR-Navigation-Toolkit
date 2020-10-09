@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Experimental: Distance Grabbing (Pro)
+## Experimental: Distance Grabbing
 
 <!-- TODO: Add image -->
 

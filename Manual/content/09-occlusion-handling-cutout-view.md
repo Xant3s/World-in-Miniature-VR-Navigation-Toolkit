@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Occlusion Handling: Cutout View  (Pro)
+## Occlusion Handling: Cutout View
 
 <!-- TODO: image -->
 **Description**  

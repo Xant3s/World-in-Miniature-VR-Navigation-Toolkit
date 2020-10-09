@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Travel Preview Animation (Pro)
+## Travel Preview Animation
 
 \begin{figure}[!h]
     \centering

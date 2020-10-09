@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Preview Screen (Pro)
+## Preview Screen
 
 \begin{figure}[!h]
     \centering

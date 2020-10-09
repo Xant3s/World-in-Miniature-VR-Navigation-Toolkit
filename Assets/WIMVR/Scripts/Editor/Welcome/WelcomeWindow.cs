@@ -55,12 +55,6 @@ namespace WIMVR.Editor.Welcome {
                 Application.OpenURL("mailto:contact@samueltruman.com");
             });
 
-            var isLiteVersion = !File.Exists(AssetUtils.GetPathRelativeTo("../Features/Scrolling/ScrollingEditor.cs", this));
-            root.Q<VisualElement>(name: "FullFeatureLabel").visible = isLiteVersion;
-            root.Q<Label>(name: "FullFeatureURL").RegisterCallback<MouseUpEvent>((e) => {
-                Application.OpenURL("https://assetstore.unity.com/");   // TODO: Link specific product page of the full-feature version
-            });
-
             root.Q<Toggle>("showOnStartup").value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
             var showOnStartupToggle = root.Q<Toggle>("showOnStartup");
             showOnStartupToggle.RegisterCallback<ChangeEvent<bool>>((e) => {

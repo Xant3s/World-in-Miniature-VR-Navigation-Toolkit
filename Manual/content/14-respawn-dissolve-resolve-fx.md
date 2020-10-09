@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Respawn Dissolve/Resolve FX (Pro)
+## Respawn Dissolve/Resolve FX
 <!-- TODO: improve image (multiple images?/gif?) -->
 
 \begin{figure}[!h]

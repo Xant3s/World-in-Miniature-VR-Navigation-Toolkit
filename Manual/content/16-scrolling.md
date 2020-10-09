@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Scrolling  (Pro)
+## Scrolling
 
 <!-- TODO: image -->
 **Description**  

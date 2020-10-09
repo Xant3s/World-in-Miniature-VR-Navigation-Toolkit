@@ -1,7 +1,7 @@
 
 \pagebreak
 
-## Scaling (Pro)
+## Scaling
 
 **Description**  
 Allows the player to resize the miniature model at runtime.
