@@ -78,6 +78,7 @@ Make sure you've followed all of the steps below.
   <category android:name="android.intent.category.LAUNCHER"/>
   ```. -->
 <!-- FIXME: Add how to set up XR management -->
+- Configure the XR management
 
 ### Tags
 
@@ -145,7 +146,7 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
 1. All gameobjects that are part of your level must be nested under an empty gameobject.
    - Tag this empty gameobject as 'Level'.
 <!-- FIXME: -->
-1. Player Controller **[DEPRECATED]**
+2. Add XR rig
    <!-- * Add *OVRPlayerController Variant* prefab to scene (`WIMVR/Prefabs/Player/OVRPlayerController Variant`)
    * Add both hand prefabs to scene (`WIMVR/Prefabs/Player/CustomHandLeft Variant` and `WIMVR/Prefabs/Player/CustomHandRight Variant`)
    * Set the 'Parent Transform' property in the *OVR Grabber* inspector to the 'TrackingSpace' (child of 'OVRPlayerController') for both hands -->
@@ -160,22 +161,22 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
      * Set tag to 'ThumbR'
      * Add *Rigidbody* component. Disable 'Use Gravity' and enable 'Is kinematic'. 
      * Add *Sphere Collider* component. Check 'Is Trigger'. Set 'Center.X' to '-0.006' and 'Radius' to '0.01'. -->
-1. Add miniature model
+3. Add miniature model
    - Add *Miniature Model* prefab to scene
    - Make sure both the tag and layer are set to 'WIM'
    - Configure miniature model to your preferences (see [Chapter 1.6 'Configure Miniature Model'](#configure-miniature-model))
    - Press 'Generate WIM' button
+4. Add a *PlayerInput* component to the WIM gameobject (see Fig. \ref{fig:PlayerInput})
+   - Assign an input actions configuration file: You can either use the provided 'InputMapping' configuration or create a new one (`Assets -> Create -> Input Actions`).
+   - [Optional] set the default scheme to XR
+   - [Optional] set the default map to 'Miniature Model'
+   - See Section \ref{section:ConfigureInput} on how to change the input mapping
 
-<!-- 4. Setup input manager
-   * Add *Input Manager* prefab to scene
-   * Select input mapping file
-   * See Chapter 1.8 'Configure Input' to learn more -->
-
-## Configure Miniature Model
+## Configure Miniature Model \label{section:ConfigureMiniatureModel}
 
 To configure the WIM, select the WIM gameobject in the scene. All settings are displayed in the *Miniature Model* component inspector.
 The configuration is stored in a *WIMConfiguration* asset, so you have to assign one.
-Therefore, you can either select an existing *WIMConfiguration* (see Fig. \ref{fig:AssignWIMConfiguration}) or crate a new one using the create menu (see Fig. \ref{fig:CreateWIMConfiguration}).
+Therefore, you can either select an existing *WIMConfiguration* (see Fig. \ref{fig:AssignWIMConfiguration}) or crate a new one using the create menu (see Fig. \ref{fig:CreateWIMConfiguration}). You can quickly switch between multiple WIM configurations by exchanging the assigned *InputWIMConfigurationActions*.
 
 \begin{figure}[!h]
     \centering
@@ -211,7 +212,17 @@ These are the basic settings:
 - *Detect Arm Length*: See [Chapter 2.3](#experimental-detect-arm-length)
 - *Adapt miniature model Size to Player Height*: Automatically adapt the miniature model's size to the player's height. The effect will be minimal. Also use scale factor.
 
-## Configure Input
+## Configure Input \label{section:ConfigureInput}
 
-<!-- FIXME: -->
-[SECTION DEPRECATED]
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{content/res/PlayerInput.png}
+    \caption{Player input}
+    \label{fig:PlayerInput}
+\end{figure}
+
+To configure the player input, select the WIM gameobject in the scene.
+The configuration is stored in a *InputActions* asset, so you have to assign one.
+Therefore, you can either select an existing *InputActions* (see Fig. \ref{fig:PlayerInput}) or crate a new one using the create menu (`Assets -> Create -> Input Actions`). You can quickly switch between multiple input mapping configurations by exchanging the assigned *InputActions* configuration.
+
+To edit the input mappings, open the *InputActions* asset by double-clicking it. Then, you can select the action you wish to modify and assign a new binding, or map the existing binding to another button. For information on how to edit Input Action Assets in the dedicated editor, see [Action Assets](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionAssets.html#editing-input-action-assets).
