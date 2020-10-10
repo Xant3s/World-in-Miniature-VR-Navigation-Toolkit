@@ -63,10 +63,6 @@ namespace WIMVR.Features.Pickup_Destination {
                     Invoke(nameof(ResetDoubleTap), DoubleTapInterval);
                     break;
                 case TapState.FirstTap:
-                    // Tapped once, now outside
-                    tapState = TapState.WaitingForSecondTap;
-                    break;
-                case TapState.WaitingForSecondTap:
                     // 2nd tap
                     tapState = TapState.SecondTap;
                     WIM.ConfirmTravel();
@@ -114,7 +110,6 @@ namespace WIMVR.Features.Pickup_Destination {
         private enum TapState {
             None,
             FirstTap,
-            WaitingForSecondTap,
             SecondTap
         }
     }
