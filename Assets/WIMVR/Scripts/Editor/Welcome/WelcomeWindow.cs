@@ -1,6 +1,5 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
-using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -37,7 +36,8 @@ namespace WIMVR.Editor.Welcome {
             root.Q<Label>(name: "VersionNumber").text = pluginVersion;
 
             root.Q<Button>("ExampleSceneBtn").RegisterCallback<MouseUpEvent>((e) => {
-                var scenePath = AssetUtils.GetPathRelativeTo("../../../Examples/SimpleExample/SimpleExample.unity", this);
+                var scenePath =
+                    AssetUtils.GetPathRelativeTo("../../../Examples/SimpleExample/SimpleExample.unity", this);
                 EditorSceneManager.OpenScene(scenePath);
             });
 
@@ -47,11 +47,13 @@ namespace WIMVR.Editor.Welcome {
             //     Application.OpenURL("");
             // });
 
-            root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>((e) => {
-                Application.OpenURL(Application.dataPath + "/WIMVR/Manual.pdf");
+            root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>(e => {
+                var manualPath = AssetUtils.GetPathRelativeTo("../../../Manual.pdf", this);
+                manualPath = $"{Application.dataPath}{manualPath.Remove(0, 6)}";
+                Application.OpenURL(manualPath);
             });
 
-            root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>((e) => {
+            root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>(e => {
                 Application.OpenURL("mailto:contact@samueltruman.com");
             });
 
