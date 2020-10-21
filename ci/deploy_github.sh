@@ -69,7 +69,7 @@ done
 
 # Copy all modifies file
 cmp --silent .gitattributes ${REPO}/.gitattributes || cp .gitattributes ${REPO}/.gitattributes
-cmp --silent .gitattributes ${REPO}/.gitignore || cp .gitignore ${REPO}/.gitignore
+cmp --silent .gitignore ${REPO}/.gitignore || cp .gitignore ${REPO}/.gitignore
 
 for f in $(find ./ProjectSettings -type f); do
     mkdir -p "$(dirname "${REPO}/$f")"
