@@ -16,17 +16,17 @@ namespace WIMVR.Core {
 
         public bool IsGrabbed => selectingInteractor != null;
 
-        protected override void OnSelectEnter(XRBaseInteractor interactor) {
+        protected override void OnSelectEntered(XRBaseInteractor interactor) {
             SaveRigidbody();
-            base.OnSelectEnter(interactor);
+            base.OnSelectEntered(interactor);
             interactorPosition = interactor.attachTransform.localPosition;
             interactorRotation = interactor.attachTransform.localRotation;
             interactor.attachTransform.position = attachTransform ? attachTransform.position : transform.position;
             interactor.attachTransform.rotation = attachTransform ? attachTransform.rotation : transform.rotation;
         }
 
-        protected override void OnSelectExit(XRBaseInteractor interactor) {
-            base.OnSelectExit(interactor);
+        protected override void OnSelectExited(XRBaseInteractor interactor) {
+            base.OnSelectExited(interactor);
             interactor.attachTransform.localPosition = interactorPosition;
             interactor.attachTransform.localRotation = interactorRotation;
             interactorPosition = Vector3.zero;
