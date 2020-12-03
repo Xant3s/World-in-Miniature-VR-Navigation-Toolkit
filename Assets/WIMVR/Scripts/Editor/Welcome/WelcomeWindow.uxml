@@ -2,45 +2,30 @@
   <VisualElement name="Content">
 
     <VisualElement class="row">
-      <Label class="title" text="WIMVR"  />
+      <Label class="title" text="wimVR"  />
       <Label class="bold" name="VersionLabel" text="Version "   />
-      <Label class="bold" name="VersionNumber" text="0.9.0"/>
+      <Label class="bold" name="VersionNumber" text="0.10.0"/>
     </VisualElement>
 
     <VisualElement class="row">
       <Label class="subtitle" text="World-in-Miniature VR Navigation Toolkit" />
     </VisualElement>
+    
+    <VisualElement class="space" />
 
     <VisualElement class="row">
-      <Label class="bold" text="Created by Samuel Truman"  />
+      <Label text="Developed by" />
+      <Label name="Samuel" text="Samuel" />
     </VisualElement>
-
-    <VisualElement class="row no-padding">
-      <TextElement text="Thank you for using WIMVR!"  />
-    </VisualElement>   
-    <VisualElement class="row no-padding">
-      <TextElement text="Here are some references to get you started as quickly as possible:"/>
-    </VisualElement>
+    <Label name="Truman" class="center" text="Truman" />
 
     <VisualElement class="row">
-      <!--<Button name="ExampleSceneBtn" text="Open Example Scene" tooltip="Switches to a simple example scene to demonstrate how to use the plugin." />
-      <Button name="VideoBtn" text="Video" tooltip="Plays a video to demonstrate how to use the plugin." />
-      <Button name="ManualBtn" text="Manual" tooltip="Opens the manual. The manual includes a quick start guide." />-->
-      <!--<Button name="SupportEmailBtn" text="Support Email" tooltip="Opens your email program to write an email to the plugin developer (me)." />-->
-     
       <Button name="ExampleSceneBtn" tooltip="Switches to a simple example scene to demonstrate how to use the plugin">
         <VisualElement class="row">
           <Image name="SceneIcon" class="button-icon" />
         </VisualElement>
         <Label class="button-label" text="Example Scene" />
       </Button>
-
-<!--      <Button name="VideoBtn" tooltip="Plays a video to demonstrate how to use the plugin.">-->
-<!--        <VisualElement class="row">-->
-<!--          <Image name="YoutubeIcon" class="button-icon test" />-->
-<!--        </VisualElement>-->
-<!--        <Label class="button-label" text="Tutorial" />-->
-<!--      </Button>-->
 
       <Button name="ManualBtn" tooltip="Opens the manual. The manual includes a quick start guide.">
         <VisualElement class="row">
@@ -56,6 +41,14 @@
         <Label class="button-label" text="Support Email" />
       </Button>
     </VisualElement>
+
+    <VisualElement class="space" />
+
+    <VisualElement class="row">
+      <Image name="RTF-icon" />
+      <Label name="RTF-text" text="Real Time Foundry" />
+    </VisualElement>
+    <Label class="center" text="2020" />
 
     <VisualElement class="row">
       <Toggle name="showOnStartup" text="Show on startup" tooltip="If enabled, this window will be displayed on editor startup. Uncheck to disable. To show this window again, choose 'Window/WIM Plugin/Welcome Window' from the toolbar." />
