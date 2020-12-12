@@ -24,7 +24,7 @@ namespace WIMVR.Editor.Features {
             var distanceGrabbingToggle = new Toggle {
                 label="Distance Grabbing",
                 bindingPath = "distanceGrabbingEnabled",
-                tooltip = "Description. Experimental feature." // TODO
+                tooltip = "Allows the player to point at the miniature model and grab it from a distance. Experimental feature."
             };
             container.Add(distanceGrabbingToggle);
             container.Bind(new SerializedObject(distanceGrabbing));
