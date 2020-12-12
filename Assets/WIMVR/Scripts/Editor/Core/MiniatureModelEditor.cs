@@ -39,9 +39,10 @@ namespace WIMVR.Editor.Core {
             root.styleSheets.Add(styleSheet);
             if(visualTree) visualTree.CloneTree(root);
 
-            root.Q<ObjectField>("configuration").objectType = typeof(WIMConfiguration);
             var configField = root.Q<ObjectField>("configuration");
+            configField.objectType = typeof(WIMConfiguration);
             configField.RegisterCallback<ChangeEvent<UnityEngine.Object>>(e => {
+                "change config detected".Print();
                 root.Q<HelpBox>(name: "config-missing").SetDisplay(!e.newValue);
                 root.Q<VisualElement>("master-container").SetDisplay(e.newValue);
                 if (e.newValue) root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM));    // Redraw UI: new config is not null so wait for the config to be loaded.
@@ -51,9 +52,25 @@ namespace WIMVR.Editor.Core {
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
             if (!WIM.Configuration) return root;
 
+            var playerRepresentationObjectField = root.Q<ObjectField>("player-representation");
+            var missingPlayerRepresentationHelpBox = root.Q<HelpBox>(name: "player-representation-missing");
+            missingPlayerRepresentationHelpBox.SetDisplay(!WIM.Configuration.PlayerRepresentation);
+            playerRepresentationObjectField.RegisterCallback<ChangeEvent<Object>>(e => {
+                root.schedule.Execute(() =>
+                    missingPlayerRepresentationHelpBox.SetDisplay(!WIM.Configuration.PlayerRepresentation));
+                WIMGenerator.ConfigureWIM(WIM); // Redraw UI
+            });
+            var destinationIndicatorObjectField = root.Q<ObjectField>(name: "destination-indicator");
+            var missingDestinationIndicatorHelpBox = root.Q<HelpBox>(name: "destination-indicator-missing");
+            missingDestinationIndicatorHelpBox.SetDisplay(!WIM.Configuration.DestinationIndicator);
+            destinationIndicatorObjectField.RegisterCallback<ChangeEvent<Object>>(e => {
+                missingDestinationIndicatorHelpBox.SetDisplay(!e.newValue);
+                WIMGenerator.ConfigureWIM(WIM); // Redraw UI
+            });
+
             root.Q<Button>("GenerateWIMButton").RegisterCallback<MouseUpEvent>(e => WIMGenerator.GenerateNewWIM(WIM));
 
-            root.Q<ObjectField>("player-representation").objectType = typeof(GameObject);   // Hotfix until 2020.1
+            playerRepresentationObjectField.objectType = typeof(GameObject);   // Hotfix until 2020.1
             root.Q<ObjectField>("destination-indicator").objectType = typeof(GameObject);   // Hotfix until 2020.1
             root.Q<FloatSlider>("scale-factor").RegisterCallback<FocusOutEvent>(e => WIMGenerator.GenerateNewWIM(WIM));
 
