@@ -23,7 +23,6 @@ namespace WIMVR.Editor.Welcome {
             root = rootVisualElement;
             LoadHierarchy();
             LoadStyle();
-            AdjustStyleToLightMode();
             LoadButtonIcons();
             AddStyleToIconButtons();
             RegisterOpenExampleSceneEvent();
@@ -38,19 +37,19 @@ namespace WIMVR.Editor.Welcome {
         }
 
         private void LoadStyle() {
+            var mode = EditorGUIUtility.isProSkin ? "DarkMode" : "LightMode";
             var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("WelcomeWindow.uss", this);
+            var modeSpecificStyleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>($"{mode}.uss", this);
             root.styleSheets.Add(styleSheet);
-        }
-
-        private void AdjustStyleToLightMode() {
-            
+            root.styleSheets.Add(modeSpecificStyleSheet);
         }
 
         private void LoadButtonIcons() {
+            root.Q<Image>(name: "SceneIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_app_dark");
             root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_manual_dark");
             root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_mail_dark");
-            root.Q<Image>(name: "RTF-icon").image = Resources.Load<Texture>("RTF/Logo/RTF-Logo-BrightCast");
-            root.Q<Image>(name: "SceneIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_app_dark");
+            var RTFIcon = EditorGUIUtility.isProSkin ? "RTF-Logo-BrightCast" : "RTF-Logo-WhiteCast";
+            root.Q<Image>(name: "RTF-icon").image = Resources.Load<Texture>($"RTF/Logo/{RTFIcon}");
         }
 
         private void AddStyleToIconButtons() {
