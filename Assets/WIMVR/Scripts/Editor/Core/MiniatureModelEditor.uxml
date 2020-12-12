@@ -15,8 +15,10 @@ To create a new configuration asset, click 'Assets -> Create -> WIM -> Configura
     <Label class="Separator" text="Basic Settings" />
     <editor:ObjectField name="player-representation" label="Player Representation" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="PlayerRepresentation"
                         tooltip="The player's representation in the miniature model. Used to indicate player's current position and orientation. Can be picked up and placed somewhere else if destination selection method is set to 'pickup'."/>
+    <WIM:HelpBox name="player-representation-missing" message-type="Error" text="Please assign a prefab, e.g. the provided 'Player Representation' prefab." />
     <editor:ObjectField name="destination-indicator" label="Destination Indicator" type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" binding-path="DestinationIndicator"
                         tooltip="Indicates the currently selected destination in the miniature model."/>
+    <WIM:HelpBox name="destination-indicator-missing" message-type="Error" text="Please assign a prefab, e.g. the provided 'Destination Indicator' prefab." />
     <WIM:FloatSlider name="scale-factor" low-value="0" high-value="1" label="Scale Factor" binding-path="ScaleFactor"
                      tooltip="The scale factor applied to the miniature model on creation. Smaller numbers will result in a smaller model. A value of '1' would not downsize the miniature model at all."/>
     <editor:Vector3Field label="WIM Level Offset" binding-path="WIMLevelOffset"
