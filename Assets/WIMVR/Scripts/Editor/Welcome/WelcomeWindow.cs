@@ -11,57 +11,82 @@ namespace WIMVR.Editor.Welcome {
     /// The welcome window visible at the first start.
     /// </summary>
     public class WelcomeWindow : EditorWindow {
-        private static readonly string pluginVersion = "0.9.2";
-
+        private VisualElement root;
 
         [MenuItem("Window/WIMVR/Welcome Window")]
         public static void ShowWindow() {
-            var window = GetWindow(typeof(WelcomeWindow), true, "WIMVR Welcome");
-            window.minSize = window.maxSize = new Vector2(566, 384);
+            var window = GetWindow(typeof(WelcomeWindow), true, "wimVR Welcome");
+            window.minSize = window.maxSize = new Vector2(600, 520);
         }
 
         public void OnEnable() {
-            var root = rootVisualElement;
+            root = rootVisualElement;
+            LoadHierarchy();
+            LoadStyle();
+            LoadButtonIcons();
+            AddStyleToIconButtons();
+            RegisterOpenExampleSceneEvent();
+            RegisterOpenManualEvent();
+            RegisterSupportMailEvent();
+            ShowOnStartupToggleBehavior();
+        }
+
+        private void LoadHierarchy() {
             var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("WelcomeWindow.uxml", this);
+            visualTree.CloneTree(root);
+        }
+
+        private void LoadStyle() {
+            var mode = EditorGUIUtility.isProSkin ? "DarkMode" : "LightMode";
             var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("WelcomeWindow.uss", this);
-            VisualElement uxmlContents = visualTree.CloneTree();
-            uxmlContents.styleSheets.Add(styleSheet);
-            root.Add(uxmlContents);
+            var modeSpecificStyleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>($"{mode}.uss", this);
+            root.styleSheets.Add(styleSheet);
+            root.styleSheets.Add(modeSpecificStyleSheet);
+        }
 
-            root.Q<Image>(name: "SceneIcon").image = EditorGUIUtility.IconContent("SceneAsset Icon").image;
-            // root.Q<Image>(name: "YoutubeIcon").image = Resources.Load<Texture>("Sprites/youtube");
-            root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("Sprites/help");
-            root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("Sprites/email");
+        private void LoadButtonIcons() {
+            root.Q<Image>(name: "SceneIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_app_dark");
+            root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_manual_dark");
+            root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_mail_dark");
+            var RTFIcon = EditorGUIUtility.isProSkin ? "RTF-Logo-BrightCast" : "RTF-Logo-WhiteCast";
+            root.Q<Image>(name: "RTF-icon").image = Resources.Load<Texture>($"RTF/Logo/{RTFIcon}");
+        }
 
-            root.Q<Label>(name: "VersionNumber").text = pluginVersion;
+        private void AddStyleToIconButtons() {
+            root.Query(className: "round-button").ForEach(roundButton => {
+                var lightGray = new Color(192 / 255f, 192 / 255f, 192 / 255f);
+                roundButton.RegisterCallback<MouseOverEvent>(e => roundButton.style.backgroundColor = lightGray);
+                roundButton.RegisterCallback<MouseOutEvent>(e => roundButton.style.backgroundColor = Color.white);
+            });
+        }
 
-            root.Q<Button>("ExampleSceneBtn").RegisterCallback<MouseUpEvent>((e) => {
+        private void RegisterOpenExampleSceneEvent() {
+            root.Q<Button>("ExampleSceneBtn").RegisterCallback<MouseUpEvent>(e => {
                 var scenePath =
                     AssetUtils.GetPathRelativeTo("../../../Examples/SimpleExample/SimpleExample.unity", this);
                 EditorSceneManager.OpenScene(scenePath);
             });
+        }
 
-            // root.Q<Button>("VideoBtn").SetEnabled(false); // TODO remove as soon as tutorial is available
-            // root.Q<Button>("VideoBtn").RegisterCallback<MouseUpEvent>((e) => {
-            //     // TODO
-            //     Application.OpenURL("");
-            // });
-
+        private void RegisterOpenManualEvent() {
             root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>(e => {
                 var manualPath = AssetUtils.GetPathRelativeTo("../../../Manual.pdf", this);
                 manualPath = $"{Application.dataPath}{manualPath.Remove(0, 6)}";
                 Application.OpenURL(manualPath);
             });
+        }
 
+        private void RegisterSupportMailEvent() {
             root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>(e => {
                 Application.OpenURL("mailto:contact@samueltruman.com");
             });
+        }
 
-            root.Q<Toggle>("showOnStartup").value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
+        private void ShowOnStartupToggleBehavior() {
             var showOnStartupToggle = root.Q<Toggle>("showOnStartup");
-            showOnStartupToggle.RegisterCallback<ChangeEvent<bool>>((e) => {
-                EditorPrefs.SetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", e.newValue);
-            });
+            showOnStartupToggle.value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
+            showOnStartupToggle.RegisterCallback<ChangeEvent<bool>>(e
+                => EditorPrefs.SetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", e.newValue));
         }
     }
 }
