@@ -23,6 +23,7 @@ namespace WIMVR.Editor.Welcome {
             root = rootVisualElement;
             LoadHierarchy();
             LoadStyle();
+            AdjustStyleToLightMode();
             LoadButtonIcons();
             AddStyleToIconButtons();
             RegisterOpenExampleSceneEvent();
@@ -31,24 +32,32 @@ namespace WIMVR.Editor.Welcome {
             ShowOnStartupToggleBehavior();
         }
 
-        private void ShowOnStartupToggleBehavior() {
-            var showOnStartupToggle = root.Q<Toggle>("showOnStartup");
-            showOnStartupToggle.value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
-            showOnStartupToggle.RegisterCallback<ChangeEvent<bool>>(e
-                => EditorPrefs.SetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", e.newValue));
+        private void LoadHierarchy() {
+            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("WelcomeWindow.uxml", this);
+            visualTree.CloneTree(root);
         }
 
-        private void RegisterSupportMailEvent() {
-            root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>(e => {
-                Application.OpenURL("mailto:contact@samueltruman.com");
-            });
+        private void LoadStyle() {
+            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("WelcomeWindow.uss", this);
+            root.styleSheets.Add(styleSheet);
         }
 
-        private void RegisterOpenManualEvent() {
-            root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>(e => {
-                var manualPath = AssetUtils.GetPathRelativeTo("../../../Manual.pdf", this);
-                manualPath = $"{Application.dataPath}{manualPath.Remove(0, 6)}";
-                Application.OpenURL(manualPath);
+        private void AdjustStyleToLightMode() {
+            
+        }
+
+        private void LoadButtonIcons() {
+            root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_manual_dark");
+            root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_mail_dark");
+            root.Q<Image>(name: "RTF-icon").image = Resources.Load<Texture>("RTF/Logo/RTF-Logo-BrightCast");
+            root.Q<Image>(name: "SceneIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_app_dark");
+        }
+
+        private void AddStyleToIconButtons() {
+            root.Query(className: "round-button").ForEach(roundButton => {
+                var lightGray = new Color(192 / 255f, 192 / 255f, 192 / 255f);
+                roundButton.RegisterCallback<MouseOverEvent>(e => roundButton.style.backgroundColor = lightGray);
+                roundButton.RegisterCallback<MouseOutEvent>(e => roundButton.style.backgroundColor = Color.white);
             });
         }
 
@@ -60,29 +69,25 @@ namespace WIMVR.Editor.Welcome {
             });
         }
 
-        private void AddStyleToIconButtons() {
-            root.Query(className: "round-button").ForEach(roundButton => {
-                var lightGray = new Color(192 / 255f, 192 / 255f, 192 / 255f);
-                roundButton.RegisterCallback<MouseOverEvent>(e => roundButton.style.backgroundColor = lightGray);
-                roundButton.RegisterCallback<MouseOutEvent>(e => roundButton.style.backgroundColor = Color.white);
+        private void RegisterOpenManualEvent() {
+            root.Q<Button>("ManualBtn").RegisterCallback<MouseUpEvent>(e => {
+                var manualPath = AssetUtils.GetPathRelativeTo("../../../Manual.pdf", this);
+                manualPath = $"{Application.dataPath}{manualPath.Remove(0, 6)}";
+                Application.OpenURL(manualPath);
             });
         }
 
-        private void LoadButtonIcons() {
-            root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_manual_dark");
-            root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_mail_dark");
-            root.Q<Image>(name: "RTF-icon").image = Resources.Load<Texture>("RTF/Logo/RTF-Logo-BrightCast");
-            root.Q<Image>(name: "SceneIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_app_dark");
+        private void RegisterSupportMailEvent() {
+            root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>(e => {
+                Application.OpenURL("mailto:contact@samueltruman.com");
+            });
         }
 
-        private void LoadStyle() {
-            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("WelcomeWindow.uss", this);
-            root.styleSheets.Add(styleSheet);
-        }
-
-        private void LoadHierarchy() {
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("WelcomeWindow.uxml", this);
-            visualTree.CloneTree(root);
+        private void ShowOnStartupToggleBehavior() {
+            var showOnStartupToggle = root.Q<Toggle>("showOnStartup");
+            showOnStartupToggle.value = EditorPrefs.GetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", true);
+            showOnStartupToggle.RegisterCallback<ChangeEvent<bool>>(e
+                => EditorPrefs.SetBool("WIM_Plugin_ShowWelcomeWindowOnStartup", e.newValue));
         }
     }
 }
