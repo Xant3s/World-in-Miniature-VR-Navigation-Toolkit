@@ -25,7 +25,7 @@ namespace WIMVR.Editor.Features {
             if(!liveUpdate) return;
             var WIM = liveUpdate.GetComponent<MiniatureModel>();
             var autoGenerateWIM = new Toggle {
-                label="Live Update WIM (experimental)",
+                label="Live Update WIM",
                 bindingPath = "AutoGenerateWIM",
                 tooltip = "Automatically update the miniature model when changes are made to the level. Works also in editor. Not all changes are detected (see manual to learn more). Experimental feature."
             };

@@ -21,10 +21,10 @@
                          tooltip="Initial miniature model offset relative to this (parent) gameobject."/>
     <VisualElement name="expand-colliders-container"
                    tooltip="Amount by which colliders of all miniature model objects should be extended to make it easier to grab. "/>
-    <Toggle label="Destination Always on the Ground" binding-path="DestinationAlwaysOnTheGround"
+    <Toggle label="Snap Destination to Floor" binding-path="DestinationAlwaysOnTheGround"
             tooltip="If active, the destination will automatically snap to ground level. This protects the player from being teleported to a location in mid-air."/>
     <VisualElement name="basic-container" />
-    <editor:EnumField name="destination-selection-method" label="Destination Selection Method" binding-path="DestinationSelectionMethod"
+    <editor:EnumField name="destination-selection-method" label="Destination Selection" binding-path="DestinationSelectionMethod"
                       tooltip="How players choose a destination. Pickup: pickup and place player representation using index and thumb. Double-tap destination indicator using index to confirm. Touch: touch destination using index and press button. Press button to confirm." />
     <WIM:HelpBox name="destination-selection-method-info" message-type="Info" text="Add 'DestinationSelectionTouch' script to change destination selection method." />
     <editor:FloatField name="double-tap-interval" label="Double Tap Interval" binding-path="DoubleTapInterval"
@@ -41,14 +41,14 @@
     <Label class="Separator" text="Usability" />
     <editor:FloatField label="WIM Spawn at Height" binding-path="WIMSpawnHeight"
                        tooltip="Default height to spawn the miniature model at." />
-    <editor:FloatField label="Player Height (in cm)" binding-path="PlayerHeightInCM"
-                       tooltip="The player's height. No Exact value required." />
+    <editor:FloatField label="Player Height" binding-path="PlayerHeightInCM"
+                       tooltip="The player's height in centimeter. No Exact value required." />
     <editor:FloatField name="spawn-distance" label="WIM Spawn Distance" binding-path="SpawnDistance"
                        tooltip="Specifies how far away from the player the miniature model should be spawned." />
-    <Toggle name="detect-arm-length" label="Auto Detect Arm Length (Experimental)" binding-path="AutoDetectArmLength"
-            tooltip="At the start of the application, the player has to extend the arm and press the confirm teleport button. The detected arm length will be used instead of the spawn distance." />
+    <Toggle name="detect-arm-length" label="Detect Arm Length" binding-path="AutoDetectArmLength"
+            tooltip="At the start of the application, the player has to extend the arm and press the confirm teleport button. The detected arm length will be used instead of the spawn distance. Experimental feature." />
     <WIM:HelpBox name="detect-arm-length-info" message-type="Info" text="Add 'DetectArmLength' script to enable this feature." />
-    <Toggle label="Adapt miniature model Size to Player Height" binding-path="AdaptWIMSizeToPlayerHeight"
+    <Toggle label="Adapt to Player Height" binding-path="AdaptWIMSizeToPlayerHeight"
             tooltip="Automatically adapt the miniature model's size to the player's height. The effect will be minimal. Also use scale factor. " />
     <VisualElement name="usability-container" />
   </VisualElement>

@@ -22,7 +22,7 @@ namespace WIMVR.Editor.Features {
             var distanceGrabbing = (DistanceGrabbing) target;
             if(!distanceGrabbing) return;
             var distanceGrabbingToggle = new Toggle {
-                label="Distance Grabbing (experimental)",
+                label="Distance Grabbing",
                 bindingPath = "distanceGrabbingEnabled",
                 tooltip = "Description. Experimental feature." // TODO
             };
