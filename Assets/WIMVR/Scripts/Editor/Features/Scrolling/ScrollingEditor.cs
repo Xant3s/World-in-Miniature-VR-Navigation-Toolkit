@@ -30,7 +30,11 @@ namespace WIMVR.Editor.Features {
                 }
             }
             if(!scrolling.ScrollingConfig)
-                EditorGUILayout.HelpBox("Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script.", MessageType.Error);
+                EditorGUILayout.HelpBox("Scrolling configuration missing. " +
+                                        "Create a scrolling configuration asset and add it to the scrolling component, " +
+                                        "or re-add the provided default configuration. " +
+                                        "To create a new configuration asset, " +
+                                        "click 'Assets -> Create -> WIM -> Feature Configuration -> Scrolling'.", MessageType.Error);
         }
 
         private void OnEnable() {

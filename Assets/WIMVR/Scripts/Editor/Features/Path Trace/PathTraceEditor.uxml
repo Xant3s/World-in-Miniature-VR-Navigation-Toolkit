@@ -2,7 +2,9 @@
       xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
   <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="PathTraceConfig" />
-  <WIM:HelpBox name="config-info" message-type="Error" text="Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script." />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Path trace configuration missing. 
+Create a path trace configuration asset and add it to the PathTrace component, or re-add the provided default configuration.
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Feature Configuration -> Path Trace'." />
  
   <VisualElement name="settings">
     <Toggle name="enabled" label="Post Travel Path Trace" binding-path="PostTravelPathTrace"

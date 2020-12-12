@@ -2,7 +2,9 @@
       xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
   <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="Config" />
-  <WIM:HelpBox name="config-info" message-type="Error" text="Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script." />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Travel preview animation configuration missing. 
+Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation component, or re-add the provided default configuration. 
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Feature Configuration -> Travel Preview Animation'." />
 
   <VisualElement name="settings">
     <Toggle name="enabled" label="Travel Preview Animation" binding-path="TravelPreviewAnimation"

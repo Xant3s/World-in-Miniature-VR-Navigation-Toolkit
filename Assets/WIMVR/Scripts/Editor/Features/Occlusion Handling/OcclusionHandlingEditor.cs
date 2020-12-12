@@ -33,7 +33,10 @@ namespace WIMVR.Editor.Features {
             ref var config = ref ((OcclusionHandling) target).Config;
             if(!config)
                 EditorGUILayout.HelpBox(
-                    "Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script.",
+                    "Occlusion handling configuration missing. " +
+                    "Create an occlusion handling configuration asset and add it to the OcclusionHandling component, " +
+                    "or re-add the provided default configuration. To create a new configuration asset, " +
+                    "click 'Assets -> Create -> WIM -> Feature Configuration -> Occlusion Handling'.",
                     MessageType.Error);
         }
 

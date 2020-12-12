@@ -18,7 +18,11 @@ namespace WIMVR.Editor.Features {
             base.OnInspectorGUI();
             ref var config = ref ((PathTrace) target).PathTraceConfig;
             if(config) return;
-            EditorGUILayout.HelpBox("Path trace configuration missing. Create a path trace configuration asset and add it to the PathTrace script.", MessageType.Error);
+            EditorGUILayout.HelpBox("Path trace configuration missing. " +
+                                    "Create a path trace configuration asset and add it to the PathTrace component, " +
+                                    "or re-add the provided default configuration. " +
+                                    "To create a new configuration asset, " +
+                                    "click 'Assets -> Create -> WIM -> Feature Configuration -> Path Trace'.", MessageType.Error);
         }
 
         private void OnEnable() {

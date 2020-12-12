@@ -19,7 +19,11 @@ namespace WIMVR.Editor.Features {
             base.OnInspectorGUI();
             ref var config = ref ((TravelPreviewAnimation)target).Config;
             if(config) return;
-            EditorGUILayout.HelpBox("Travel preview animation configuration missing. Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation script.", MessageType.Error);
+            EditorGUILayout.HelpBox("Travel preview animation configuration missing. " +
+                                    "Create a travel preview animation configuration asset and add it to the TravelPreviewAnimation component, " +
+                                    "or re-add the provided default configuration. " +
+                                    "To create a new configuration asset, " +
+                                    "click 'Assets -> Create -> WIM -> Feature Configuration -> Travel Preview Animation'.", MessageType.Error);
         }
 
         private void OnEnable() {

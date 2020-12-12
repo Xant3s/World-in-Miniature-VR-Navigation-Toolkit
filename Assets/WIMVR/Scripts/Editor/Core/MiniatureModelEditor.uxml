@@ -6,7 +6,9 @@
   <Label text="World-in-Miniature (WIM)" class="title" />
   <VisualElement name="ConfigurationContainer" />
   <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="Configuration" />
-  <WIM:HelpBox name="config-missing" message-type="Error" text="WIM configuration missing. Create a WIM configuration asset and add it to the Miniature Model script." />
+  <WIM:HelpBox name="config-missing" message-type="Error" text="WIM configuration missing. 
+Create a WIM configuration asset and add it to the Miniature Model component, or re-add the provided default configuration. 
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Configuration'." />
   <VisualElement name="master-container">
     <Button name="GenerateWIMButton" text="Generate WIM" tooltip="Creates a new miniature model. Removes previously existing one. "/>
 
