@@ -20,21 +20,21 @@
     <Label name="Truman" class="center" text="Truman" />
 
     <VisualElement class="row">
-      <Button name="ExampleSceneBtn" tooltip="Switches to a simple example scene to demonstrate how to use the plugin">
+      <Button name="ExampleSceneBtn" class="round-button" tooltip="Switches to a simple example scene to demonstrate how to use the plugin">
         <VisualElement class="row">
           <Image name="SceneIcon" class="button-icon" />
         </VisualElement>
         <Label class="button-label" text="Example Scene" />
       </Button>
 
-      <Button name="ManualBtn" tooltip="Opens the manual. The manual includes a quick start guide.">
+      <Button name="ManualBtn" class="round-button" tooltip="Opens the manual. The manual includes a quick start guide.">
         <VisualElement class="row">
           <Image name="ManualIcon" class="button-icon" />
         </VisualElement>
         <Label class="button-label" text="Manual" />
       </Button>
 
-      <Button name="SupportEmailBtn" tooltip="Opens your email program to write an email to the plugin developer (me).">
+      <Button name="SupportEmailBtn" class="round-button" tooltip="Opens your email program to write an email to the plugin developer (me).">
         <VisualElement class="row">
           <Image name="EmailIcon" class="button-icon" />
         </VisualElement>

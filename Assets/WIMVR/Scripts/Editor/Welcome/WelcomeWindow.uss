@@ -10,6 +10,7 @@ Button {
 Label {
     margin-bottom: 10px;
     -unity-font: resource("RTF/Font/Montserrat-Regular");
+    color: white;
 }
 
 TextElement {
@@ -62,6 +63,21 @@ TextElement {
 
 .space{
     height: 25px;
+}
+
+.round-button{
+    border-radius: 30;
+    background-color: white;
+    padding: 20px;
+    -unity-text-align: middle-center;
+    display: flex;
+    font-size: 16px;
+    width: 184px;
+    height: 184px;
+}
+
+.button-label{
+    color: black;
 }
 
 #Content {
