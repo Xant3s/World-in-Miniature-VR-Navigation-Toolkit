@@ -85,13 +85,13 @@ test-editmode:
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
     - unity
-  only:
-    - develop
 
 build-StandaloneLinux64:
   <<: *build
   variables:
     BUILD_TARGET: StandaloneLinux64
+  only:
+    - develop
 
 # linux il2cpp currently unsupported, see https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/139
 #build-StandaloneLinux64-il2cpp:
@@ -120,6 +120,8 @@ build-StandaloneWindows64:
   image: $IMAGE:$UNITY_VERSION-windows-mono-$IMAGE_VERSION
   variables:
     BUILD_TARGET: StandaloneWindows64
+  only:
+  - develop
 
 # webgl is currently unsupported, see https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/139
 #build-WebGL:
@@ -135,6 +137,8 @@ build-android:
     BUILD_TARGET: Android
     BUNDLE_VERSION_CODE: $CI_PIPELINE_IID
     BUILD_APP_BUNDLE: "false"
+  only:
+    - develop
 
 #deploy-android:
 #  stage: deploy
