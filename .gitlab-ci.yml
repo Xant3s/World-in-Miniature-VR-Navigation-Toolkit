@@ -86,10 +86,10 @@ test-editmode:
   tags:
     - unity
 
-build-StandaloneLinux64:
-  <<: *build
-  variables:
-    BUILD_TARGET: StandaloneLinux64
+# build-StandaloneLinux64:
+#   <<: *build
+#   variables:
+#     BUILD_TARGET: StandaloneLinux64
 
 # linux il2cpp currently unsupported, see https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/139
 #build-StandaloneLinux64-il2cpp:
