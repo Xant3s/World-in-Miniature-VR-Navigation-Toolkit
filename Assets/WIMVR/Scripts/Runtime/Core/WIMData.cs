@@ -14,7 +14,7 @@ namespace WIMVR.Core {
         public Transform LevelTransform;
         public Transform PlayerTransform;
         public float WIMHeightRelativeToPlayer;
-        public Transform OVRPlayerController;
+        public Transform PlayerController;
         public Transform HMDTransform;
         public Transform FingertipIndexR;
     }

@@ -40,7 +40,7 @@ namespace WIMVR.Core {
         private TravelStrategy travelStrategy;
         private int numberOfHandsSpawned;
         private OffsetGrabInteractable grabbable;
-        private Rigidbody rigidbody;
+        private new Rigidbody rigidbody;
 
 
         public void NewDestination() {
@@ -69,14 +69,14 @@ namespace WIMVR.Core {
             Data.PlayerTransform = GameObject.FindWithTag("Player")?.transform;
             Data.HMDTransform = GameObject.FindWithTag("MainCamera")?.transform;
             Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
-            Data.OVRPlayerController = GameObject.FindWithTag("Player")?.transform;
+            Data.PlayerController = GameObject.FindWithTag("Player")?.transform;
             Data.WIMLevelTransform = transform.Find("WIM Level");
             grabbable = GetComponent<OffsetGrabInteractable>();
             rigidbody = GetComponent<Rigidbody>();
             Assert.IsNotNull(Data.HMDTransform);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
             Assert.IsNotNull(Configuration.DestinationIndicator);
-            Assert.IsNotNull(Data.OVRPlayerController);
+            Assert.IsNotNull(Data.PlayerController);
             Assert.IsNotNull(Data.LevelTransform);
             Assert.IsNotNull(Data.PlayerTransform);
             Assert.IsNotNull(Data.WIMLevelTransform);
