@@ -18,7 +18,11 @@ namespace WIMVR.Editor.Features {
             base.OnInspectorGUI();
             ref var config = ref ((PreviewScreen) target).Config;
             if(config) return;
-            EditorGUILayout.HelpBox("Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script.", MessageType.Error);
+            EditorGUILayout.HelpBox("Preview screen configuration missing. " +
+                                    "Create a preview screen configuration asset and add it to the PreviewScreen component, " +
+                                    "or re-add the provided default configuration. " +
+                                    "To create a new configuration asset, " +
+                                    "click 'Assets -> Create -> WIM -> Feature Configuration -> Preview Screen'.", MessageType.Error);
         }
 
         private void OnEnable() {

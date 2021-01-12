@@ -2,12 +2,14 @@
       xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
   <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="Config" />
-  <WIM:HelpBox name="config-info" message-type="Error" text="Preview screen configuration missing. Create a preview screen configuration asset and add it to the PreviewScreen script." />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Preview screen configuration missing. 
+Create a preview screen configuration asset and add it to the PreviewScreen component, or re-add the provided default configuration. 
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Feature Configuration -> Preview Screen'." />
  
   <VisualElement name="settings">
     <Toggle name="enabled" label="Show Preview Screen" binding-path="PreviewScreen"
             tooltip="Whether the preview screen is enabled."/>
-    <Toggle name="auto-position" label="Auto Position Preview Screen" binding-path="AutoPositionPreviewScreen" 
+    <Toggle name="auto-position" label="Auto Position Screen" binding-path="AutoPositionPreviewScreen" 
             tooltip="Whether the preview screen should be automatically opened and placed at a fixed position above the miniature model. Otherwise, the player has to grab the destination indicator's view cone using index and thumb and place the preview screen somewhere." />
   </VisualElement>
 </UXML>

@@ -141,7 +141,7 @@ namespace WIMVR.Features {
                                      Vector3.up * spawnDistanceY;
             } else {
                 transform.position = new Vector3(transform.position.x,
-                    data.OVRPlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
+                    data.PlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
             }
         }
 

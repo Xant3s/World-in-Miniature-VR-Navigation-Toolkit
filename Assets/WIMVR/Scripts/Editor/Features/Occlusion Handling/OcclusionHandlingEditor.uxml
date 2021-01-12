@@ -2,9 +2,12 @@
       xmlns:WIM="WIMVR"
       xmlns:editor="UnityEditor.UIElements">
   <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="Config" />
-  <WIM:HelpBox name="config-error" message-type="Error" text="Occlusion handling configuration missing. Create an occlusion handling configuration asset and add it to the OcclusionHandling script." />
+  <WIM:HelpBox name="config-error" message-type="Error" 
+               text="Occlusion handling configuration missing. 
+Create an occlusion handling configuration asset and add it to the OcclusionHandling component, or re-add the provided default configuration. 
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Feature Configuration -> Occlusion Handling'." />
 
-  <editor:EnumField name="occlusion-handling-method" label="Occlusion Handling Method" binding-path="OcclusionHandlingMethod"
+  <editor:EnumField name="occlusion-handling-method" label="Occlusion Handling" binding-path="OcclusionHandlingMethod"
                     tooltip="Select occlusion handling strategy. Melt walls: Hide miniature model partly in vicinity of player's arm. Cutout view: Hide miniature model partly depending on gaze direction and distance to player's eyes. " />
 
   <VisualElement name="melt-settings">

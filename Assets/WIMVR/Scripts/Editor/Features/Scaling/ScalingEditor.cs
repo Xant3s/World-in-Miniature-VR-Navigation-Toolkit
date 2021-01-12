@@ -18,7 +18,11 @@ namespace WIMVR.Editor.Features {
             base.OnInspectorGUI();
             ref var config = ref ((Scaling) target).ScalingConfig;
             if(config) return;
-            EditorGUILayout.HelpBox("Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script.", MessageType.Error);
+            EditorGUILayout.HelpBox("Scaling configuration missing. " +
+                                    "Create a scaling configuration asset and add it to the scaling component, " +
+                                    "or re-add the provided default configuration. " +
+                                    "To create a new configuration asset, " +
+                                    "click 'Assets -> Create -> WIM -> Feature Configuration -> Scaling'.", MessageType.Error);
         }
 
         private void OnEnable() {

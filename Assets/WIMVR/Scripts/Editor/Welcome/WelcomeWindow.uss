@@ -9,6 +9,7 @@ Button {
 
 Label {
     margin-bottom: 10px;
+    -unity-font: resource("RTF/Font/Montserrat-Regular");
 }
 
 TextElement {
@@ -34,16 +35,12 @@ TextElement {
 }
 
 .title {
-    color: rgb(0, 255, 255); /* light blue */
-    -unity-font-style: bold;
     font-size: 30px;
     display: flex;
     margin-left: 100px;
 }
 
 .subtitle{
-    color: rgb(0, 255, 255); /* light blue */
-    -unity-font-style: bold;
     font-size: 20px;
 }
 
@@ -56,6 +53,69 @@ TextElement {
     -unity-font-style: bold;
 }
 
+.center{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    -unity-text-align: middle-center;
+}
+
+.space{
+    height: 25px;
+}
+
+.round-button{
+    border-radius: 30px;
+    background-color: white;
+    padding: 20px;
+    -unity-text-align: middle-center;
+    display: flex;
+    font-size: 16px;
+    width: 184px;
+    height: 184px;
+}
+
+.button-label{
+    color: black;
+}
+
 #Content {
     margin: 10px;
+}
+
+#RTF-icon {
+    width: 40px;
+    height: 51.5px;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+#RTF-text{
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+#Samuel {
+    font-size: 20px;
+    margin-top: -7px;
+}
+
+#Truman{
+    font-size: 20px;
+    margin-top: -5px;
+}
+
+#SceneIcon{
+    width: 75px;
+    height: 70px;
+}
+
+#ManualIcon{
+    width: 60px;
+    height: 70px;
+}
+
+#EmailIcon{
+    width: 95px;
+    height: 60px;
 }

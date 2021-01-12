@@ -3,7 +3,9 @@
       xmlns:editor="UnityEditor.UIElements">
 <Label text="Scaling" class="Separator"/>
 <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="ScalingConfig" />
-<WIM:HelpBox name="config-info" message-type="Error" text="Scaling configuration missing. Create a scaling configuration asset and add it to the scaling script." />
+<WIM:HelpBox name="config-info" message-type="Error" text="Scaling configuration missing. 
+Create a scaling configuration asset and add it to the scaling component, or re-add the provided default configuration.
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Feature Configuration -> Scaling'." />
 
 <VisualElement name="settings">
   <Toggle name="allow-scaling" label="Allow WIM Scaling" binding-path="AllowWIMScaling"
@@ -15,7 +17,7 @@
                        tooltip="Largest allowed scale factor." />
     <editor:FloatField label="Scale Step" binding-path="ScaleStep" 
                        tooltip="Used to determine how fast the scale factor can change. Small numbers will only allow small changes, large number will allow much faster scaling." />
-    <editor:FloatField label="Inter Hand Distance Delta Threshold" binding-path="InterHandDistanceDeltaThreshold"
+    <editor:FloatField label="Min Threshold" binding-path="InterHandDistanceDeltaThreshold"
                        tooltip="Ignore inter hand distance deltas below this threshold for scaling. Important so that not every tiny hand jitter will trigger scaling." />
   </VisualElement>
 </VisualElement>

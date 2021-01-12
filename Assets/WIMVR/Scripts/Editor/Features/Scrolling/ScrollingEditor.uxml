@@ -3,7 +3,9 @@
       xmlns:editor="UnityEditor.UIElements">
   <Label text="Scrolling" class="Separator"/>
   <editor:ObjectField name="configuration" label="Configuration" allow-scene-objects="false" binding-path="ScrollingConfig" />
-  <WIM:HelpBox name="config-info" message-type="Error" text="Scrolling configuration missing. Create a scrolling configuration asset and add it to the scrolling script." />
+  <WIM:HelpBox name="config-info" message-type="Error" text="Scrolling configuration missing. 
+Create a scrolling configuration asset and add it to the scrolling component, or re-add the provided default configuration.
+To create a new configuration asset, click 'Assets -> Create -> WIM -> Feature Configuration -> Scrolling'." />
 
   <VisualElement name="settings">
     <Toggle name="allow-scrolling" label="Allow WIM Scrolling" binding-path="AllowWIMScrolling" 
