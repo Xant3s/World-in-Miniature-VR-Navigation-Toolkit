@@ -179,12 +179,19 @@ build-android:
 deploy-github:
   when: manual
   stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - REPO="WIMVR-Deployment"
     - REPOPATH="WIMVR-Plugin/${REPO}"
-    - LOGIN="WIMVR-CI"
-    - PW="uk9DbdMlbKGuwngwXA"
-    - git clone https://${LOGIN}:${PW}@github.com/${REPOPATH}.git
+    # - LOGIN="WIMVR-CI"
+    # - PW="uk9DbdMlbKGuwngwXA"
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    # - git clone https://${LOGIN}:${PW}@github.com/${REPOPATH}.git
+    - git clone git@github.com:${REPOPATH}.git
     - chmod +x ./ci/deploy_github.sh
     - cd ci
     - ./deploy_github.sh
