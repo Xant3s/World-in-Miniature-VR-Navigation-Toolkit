@@ -8,10 +8,10 @@ REPO="WIMVR-Deployment"
 
 # Delete all files that no longer exist
 cd ..
-cd ${REPO}
-if ! test -f .gitattributes; then
-    rm .gitattributes
-fi
+# cd ${REPO}
+# if ! test -f .gitattributes; then
+#     rm .gitattributes
+# fi
 
 if ! test -f .gitignore; then
     rm .gitignore
@@ -38,9 +38,9 @@ done
 
 # Copy all new files
 cd ..
-if ! test -f ${REPO}/.gitattributes; then
-    cp .gitattributes ${REPO}/.gitattributes
-fi
+# if ! test -f ${REPO}/.gitattributes; then
+#     cp .gitattributes ${REPO}/.gitattributes
+# fi
 
 if ! test -f ${REPO}/.gitignore; then
     cp .gitignore ${REPO}/.gitignore
