@@ -7,7 +7,7 @@ After importing the plugin, it will present the welcome screen. if it doesn't ap
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=\textwidth]{content/res/WelcomeWindow2.png}
+    \includegraphics[width=\textwidth]{content/res/WelcomeWindow3.png}
     \caption{Welcome window.}
     \label{fig:WelcomeWindow}
 \end{figure}
@@ -15,7 +15,7 @@ After importing the plugin, it will present the welcome screen. if it doesn't ap
 ## What is World-in-Miniature (WIM)?
 
 Navigation is one of the most fundamental challenges
-in Virtual Reality (VR). The world-in-miniature (WIM) metaphor allows players to travel in large-scale virtual environments (VEs) regardless of available physical space while maintaining a high-level overview of the VE. It relies on a hand-held, scaled-down duplicate of the entire VE, where the user’s current position is displayed, and an interface provided to introduce his/her next movements. This scaled-down version of the VE is called WIM or miniature model.
+in Virtual Reality (VR). The world-in-miniature (WIM) metaphor allows players to travel in large-scale virtual environments (VEs) regardless of available physical space while maintaining a high-level overview of the VE. It relies on a hand-held, scaled-down duplicate of the entire VE or parts of it. This is the world in miniature. The user sees his avatar located on the WIM and he can plan his/her next movements.
 
 ## What is WIMVR?
 
@@ -23,19 +23,19 @@ World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that integrat
 visualization concepts to overcome open conceptual gaps and to
 provide a comprehensive practical solution for traveling in VR.
 
-## Scientific Pape
+## Scientific Paper
 
-In case you need a scientific reference, you can cite this [paper](https://dl.acm.org/doi/10.1145/3402942.3402994). You can also access if for free [here](https://www.researchgate.net/publication/344368828_An_Integrated_Design_of_World-in-Miniature_Navigation_in_Virtual_Reality). This paper is also useful if you wish to learn more about World-in-Miniature navigation.
+In case you need a scientific reference, you can cite this [paper](https://dl.acm.org/doi/10.1145/3402942.3402994) \footnote{https://dl.acm.org/doi/10.1145/3402942.3402994}. You can also access if for free [here](https://www.researchgate.net/publication/344368828_An_Integrated_Design_of_World-in-Miniature_Navigation_in_Virtual_Reality). This paper is also useful if you wish to learn more about World-in-Miniature navigation.
 
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.6 'Configure Scene'](#configure-scene).
+Before using this plugin, have a look at these steps to make sure it's set up properly and you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.6 'Configure Scene'](#configure-scene).
 
 ### Requirements
 
 \begin{itemize}
   \item This plugin has so far only been tested with an \textbf{Oculus Quest}.
-  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow \hyperlink{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html}{these instructions} if you are trying to install the URP into an existing project.
+  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow \href{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html}{these instructions} \footnote{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html} if you are trying to install the URP into an existing project.
   \item Additionally, these packages must be installed from the package manager:
     \begin{itemize}
       \item \textbf{Input System}
