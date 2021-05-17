@@ -175,7 +175,7 @@ These are the basic settings:
 
 - *Player Representation*: The player's representation (prefab) in the miniature model. Used to indicate player's current position and orientation. Can be picked up and placed somewhere else if destination selection method is set to 'pickup'.
 - *Destination Indicator*: Indicates the currently selected destination in the miniature model.
-- *Scale Factor*: The scale factor applied to the miniature model on creation. Smaller numbers will result in a smaller model. A value of '1' would not downsize the miniature model at all.
+- *Scale Factor*: The scale factor applied to the miniature model on creation. Smaller numbers will result in a smaller model. A value of '1' would not downsize the virtual environment at all.
 - *WIM Level Offset*: Initial miniature model offset relative to this (parent) gameobject.
 - *Expand Colliders*: Amount by which colliders of all miniature model objects should be extended to make it easier to grab.
 - *Destination Always on the Ground*: If active, the destination will automatically snap to ground level. This protects the player from being teleported to a location in mid-air.
@@ -199,7 +199,7 @@ These are the basic settings:
 \end{figure}
 
 To configure the player input, select the WIM gameobject in the scene.
-The configuration is stored in a *InputActions* asset, so you have to assign one.
+The configuration is stored in an *InputActions* asset, so you have to assign one.
 Therefore, you can either select an existing *InputActions* (see Fig. \ref{fig:PlayerInput}) or crate a new one using the create menu (`Assets -> Create -> Input Actions`). You can quickly switch between multiple input mapping configurations by exchanging the assigned *InputActions* configuration.
 
 To edit the input mappings, open the *InputActions* asset by double-clicking it. Then, you can select the action you wish to modify and assign a new binding, or map the existing binding to another button. For information on how to edit Input Action Assets in the dedicated editor, see [Action Assets](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionAssets.html#editing-input-action-assets).
