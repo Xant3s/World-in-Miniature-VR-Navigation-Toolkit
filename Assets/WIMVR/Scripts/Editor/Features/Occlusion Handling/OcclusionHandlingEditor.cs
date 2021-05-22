@@ -7,7 +7,6 @@ using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Occlusion_Handling;
 using WIMVR.Util;
 
@@ -54,7 +53,7 @@ namespace WIMVR.Editor.Features {
             if(!target) return;
             var occlusionHandling = (OcclusionHandling) target;
             ref var config = ref occlusionHandling.Config;
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("OcclusionHandlingEditor.uxml", this);
+            var visualTree = Resources.Load<VisualTreeAsset>("OcclusionHandlingEditor");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
 

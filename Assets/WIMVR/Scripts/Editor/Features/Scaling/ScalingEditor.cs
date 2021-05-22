@@ -2,10 +2,10 @@
 
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Scaling;
 
 namespace WIMVR.Editor.Features {
@@ -34,7 +34,7 @@ namespace WIMVR.Editor.Features {
         }
 
         private void Draw(WIMConfiguration WIMconfig, VisualElement container) {
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("ScalingEditor.uxml", this);
+            var visualTree = Resources.Load<VisualTreeAsset>("ScalingEditor");
             if(!visualTree) return;
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);

@@ -2,11 +2,11 @@
 
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Scrolling;
 
 namespace WIMVR.Editor.Features {
@@ -48,7 +48,7 @@ namespace WIMVR.Editor.Features {
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("ScrollingEditor.uxml", this);
+            var visualTree = Resources.Load<VisualTreeAsset>("ScrollingEditor");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
             var scrolling = (Scrolling) target;

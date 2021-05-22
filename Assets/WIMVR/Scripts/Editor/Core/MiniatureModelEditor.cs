@@ -5,7 +5,6 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using WIMVR.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features;
 using WIMVR.Util;
 
@@ -56,12 +55,12 @@ namespace WIMVR.Editor.Core {
         }
 
         private void LoadHierarchy() {
-            visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("MiniatureModelEditor.uxml", this);
+            visualTree = Resources.Load<VisualTreeAsset>("MiniatureModelEditor");
             if(visualTree) visualTree.CloneTree(root);
         }
 
         private void LoadStyle() {
-            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("MiniatureModelEditor.uss", this);
+            var styleSheet = Resources.Load<StyleSheet>("MiniatureModelEditor");
             root.styleSheets.Add(styleSheet);
         }
 

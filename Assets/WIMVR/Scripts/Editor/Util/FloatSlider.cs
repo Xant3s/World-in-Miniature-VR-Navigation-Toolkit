@@ -1,13 +1,9 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
 using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using WIMVR.Editor.Util;
-using WIMVR.Editor.Welcome;
 
 [assembly: UxmlNamespacePrefix("WIMVR", "WIM")]
 
@@ -20,8 +16,7 @@ namespace WIMVR {
         private readonly Slider slider;
 
         public FloatSlider() {
-            var tmp = ScriptableObject.CreateInstance<WelcomeWindow>();
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("../Util/FloatSlider.uxml", tmp);
+            var visualTree = Resources.Load<VisualTreeAsset>("FloatSlider");
             if(!visualTree) return;
             
             var floatSlider = new VisualElement();

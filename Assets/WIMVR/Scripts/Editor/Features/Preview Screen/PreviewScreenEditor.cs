@@ -2,10 +2,10 @@
 
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Preview_Screen;
 
 namespace WIMVR.Editor.Features {
@@ -36,7 +36,7 @@ namespace WIMVR.Editor.Features {
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
             MiniatureModelEditor.Separators.RegisterUnique("Orientation Aids");
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("PreviewScreenEditor.uxml", this);
+            var visualTree = Resources.Load<VisualTreeAsset>("PreviewScreenEditor");
             var root = new VisualElement();
             visualTree.CloneTree(root);
             var previewScreen = (PreviewScreen) target;
