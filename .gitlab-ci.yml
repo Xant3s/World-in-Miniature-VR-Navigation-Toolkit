@@ -60,21 +60,18 @@ get-activation-file:
   tags:
     - unity
   coverage: /<Linecoverage>(.*?)</Linecoverage>/
-  when: manual
 
 
 test-playmode:
   <<: *test
   variables:
     TEST_PLATFORM: playmode
-  when: manual
 
 
 test-editmode:
   <<: *test
   variables:
     TEST_PLATFORM: editmode
-  when: manual
 
 
 .build: &build
@@ -91,7 +88,6 @@ test-editmode:
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
     - unity
-  when: manual
 
 
 # build-StandaloneLinux64:
