@@ -32,14 +32,14 @@ namespace WIMVR.Editor.Welcome {
         }
 
         private void LoadHierarchy() {
-            var visualTree = Resources.Load<VisualTreeAsset>("WelcomeWindow.uxml");
+            var visualTree = Resources.Load<VisualTreeAsset>("WelcomeWindow");
             visualTree.CloneTree(root);
         }
 
         private void LoadStyle() {
             var mode = EditorGUIUtility.isProSkin ? "DarkMode" : "LightMode";
-            var styleSheet = Resources.Load<StyleSheet>("WelcomeWindow.uss");
-            var modeSpecificStyleSheet = Resources.Load<StyleSheet>($"{mode}.uss");
+            var styleSheet = Resources.Load<StyleSheet>("WelcomeWindow");
+            var modeSpecificStyleSheet = Resources.Load<StyleSheet>(mode);
             root.styleSheets.Add(styleSheet);
             root.styleSheets.Add(modeSpecificStyleSheet);
         }
