@@ -60,6 +60,8 @@ get-activation-file:
   tags:
     - unity
   coverage: /<Linecoverage>(.*?)</Linecoverage>/
+  when: manual
+
 
 
 test-playmode:
@@ -88,6 +90,8 @@ test-editmode:
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
     - unity
+  when: manual
+
 
 
 # build-StandaloneLinux64:
@@ -122,7 +126,6 @@ build-StandaloneWindows64:
   image: $IMAGE:$UNITY_VERSION-windows-mono-$IMAGE_VERSION
   variables:
     BUILD_TARGET: StandaloneWindows64
-  when: manual
 
 
 # webgl is currently unsupported, see https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/139
@@ -139,7 +142,6 @@ build-android:
     BUILD_TARGET: Android
     BUNDLE_VERSION_CODE: $CI_PIPELINE_IID
     BUILD_APP_BUNDLE: "false"
-  when: manual
 
 
 #deploy-android:
