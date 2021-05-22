@@ -70,11 +70,6 @@ namespace WIMVR.Editor.Core {
             configField.RegisterCallback<ChangeEvent<Object>>(e => {
                 root.Q<HelpBox>(name: "config-missing").SetDisplay(!e.newValue);
                 root.Q<VisualElement>("master-container").SetDisplay(e.newValue);
-                if(e.newValue)
-                    root.schedule.Execute(() =>
-                        WIMGenerator
-                            .ConfigureWIM(WIM)); // Redraw UI: new config is not null so wait for the config to be loaded.
-                else WIMGenerator.ConfigureWIM(WIM); // Redraw UI: new config is null so do it now.
             });
             root.Q<HelpBox>(name: "config-missing").SetDisplay(!WIM.Configuration);
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
@@ -84,10 +79,7 @@ namespace WIMVR.Editor.Core {
             var objectField = root.Q<ObjectField>(name: objectFieldName);
             var helpBox = root.Q<HelpBox>(name: helpBoxName);
             helpBox.SetDisplay(!obj);
-            objectField.RegisterCallback<ChangeEvent<Object>>(e => {
-                helpBox.SetDisplay(!e.newValue);
-                WIMGenerator.ConfigureWIM(WIM); // Redraw UI
-            });
+            objectField.RegisterCallback<ChangeEvent<Object>>(e => helpBox.SetDisplay(!e.newValue));
         }
 
         private void AddGenerateWIMButtonBehavior() {
@@ -130,8 +122,8 @@ namespace WIMVR.Editor.Core {
         }
 
         private void ShowTransparencySettings() {
-            root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e
-                => root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM))); // Delay so that newValue is set on execution.
+            // root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e
+            // => root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM))); // Delay so that newValue is set on execution.
         }
 
         private void AddChangeTransparencyBehavior() {

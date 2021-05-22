@@ -25,10 +25,8 @@ namespace WIMVR.Editor.Features {
             occlusionHandling.UpdateCutoutViewMask(WIM);
             occlusionHandling.UpdateCylinderMask(WIM);
             DrawDefaultInspector();
-            EditorGUI.BeginChangeCheck();
             occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config",
                 occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
-            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
             ref var config = ref ((OcclusionHandling) target).Config;
             if(!config)
                 EditorGUILayout.HelpBox(
@@ -59,7 +57,6 @@ namespace WIMVR.Editor.Features {
 
             var configField = root.Q<ObjectField>("configuration");
             configField.objectType = typeof(OcclusionHandlingConfiguration);
-            configField.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
 
             root.Q<HelpBox>("config-error").SetDisplay(!config);
             configField.SetDisplay(!config);
