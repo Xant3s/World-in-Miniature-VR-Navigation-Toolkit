@@ -16,19 +16,19 @@ namespace WIMVR.Core {
 
         public bool IsGrabbed => selectingInteractor != null;
 
-        protected override void OnSelectEntered(XRBaseInteractor interactor) {
+        protected override void OnSelectEntered(SelectEnterEventArgs args) {
             SaveRigidbody();
-            base.OnSelectEntered(interactor);
-            interactorPosition = interactor.attachTransform.localPosition;
-            interactorRotation = interactor.attachTransform.localRotation;
-            interactor.attachTransform.position = attachTransform ? attachTransform.position : transform.position;
-            interactor.attachTransform.rotation = attachTransform ? attachTransform.rotation : transform.rotation;
+            base.OnSelectEntered(args);
+            interactorPosition = args.interactor.attachTransform.localPosition;
+            interactorRotation = args.interactor.attachTransform.localRotation;
+            args.interactor.attachTransform.position = attachTransform ? attachTransform.position : transform.position;
+            args.interactor.attachTransform.rotation = attachTransform ? attachTransform.rotation : transform.rotation;
         }
 
-        protected override void OnSelectExited(XRBaseInteractor interactor) {
-            base.OnSelectExited(interactor);
-            interactor.attachTransform.localPosition = interactorPosition;
-            interactor.attachTransform.localRotation = interactorRotation;
+        protected override void OnSelectExited(SelectExitEventArgs args) {
+            base.OnSelectExited(args);
+            args.interactor.attachTransform.localPosition = interactorPosition;
+            args.interactor.attachTransform.localRotation = interactorRotation;
             interactorPosition = Vector3.zero;
             interactorRotation = Quaternion.identity;
             RestoreRigidbody();
