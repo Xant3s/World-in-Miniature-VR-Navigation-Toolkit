@@ -161,6 +161,11 @@ namespace WIMVR.Core {
             OnConfigure?.Invoke(WIM);
         }
 
+        public static void UpdateTransparency(in MiniatureModel WIM) {
+            var material = LoadDefaultMaterial(WIM);
+            SetWIMMaterial(material, WIM);
+        }
+
         private static void ExpandColliders(in MiniatureModel WIM) {
             foreach (var boxCollider in WIM.gameObject.GetComponents<BoxCollider>()) {
                 boxCollider.size += new Vector3(WIM.Configuration.ExpandCollidersX.x + WIM.Configuration.ExpandCollidersX.y, 0, 0);

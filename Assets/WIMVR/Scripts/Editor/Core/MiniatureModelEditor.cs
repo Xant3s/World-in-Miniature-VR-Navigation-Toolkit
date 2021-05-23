@@ -44,7 +44,6 @@ namespace WIMVR.Editor.Core {
             AddExpandCollidersVectorFields();
             InvokeCallbacks(root.Q<VisualElement>("basic-container"), "Basic");
             ShowSettingsDependingOnDestinationSelectionMethod();
-            ShowTransparencySettings();
             AddChangeTransparencyBehavior();
             InvokeCallbacks(root.Q<VisualElement>("occlusion-handling-container"), "Occlusion Handling");
             ShowDetectArmLengthSettings();
@@ -121,12 +120,11 @@ namespace WIMVR.Editor.Core {
                 .SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
         }
 
-        private void ShowTransparencySettings() {
-            // root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e
-            // => root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM))); // Delay so that newValue is set on execution.
-        }
-
         private void AddChangeTransparencyBehavior() {
+            root.Q<Toggle>("semi-transparent")
+                .RegisterValueChangedCallback(e => root.schedule.Execute(
+                    () => WIMGenerator.UpdateTransparency(WIM))); // Delay so that newValue is set on execution.
+            
             var transparencySliderRoot = root.Q<FloatSlider>("transparency");
             var transparencySlider = transparencySliderRoot.Q<Slider>();
             transparencySlider.RegisterCallback<FocusOutEvent>(e => {
