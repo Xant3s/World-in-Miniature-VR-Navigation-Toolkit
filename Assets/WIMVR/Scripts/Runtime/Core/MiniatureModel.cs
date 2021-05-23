@@ -40,7 +40,7 @@ namespace WIMVR.Core {
         private TravelStrategy travelStrategy;
         private int numberOfHandsSpawned;
         private OffsetGrabInteractable grabbable;
-        private new Rigidbody rigidbody;
+        private Rigidbody _rigidbody;
 
 
         public void NewDestination() {
@@ -72,7 +72,7 @@ namespace WIMVR.Core {
             Data.PlayerController = GameObject.FindWithTag("Player")?.transform;
             Data.WIMLevelTransform = transform.Find("WIM Level");
             grabbable = GetComponent<OffsetGrabInteractable>();
-            rigidbody = GetComponent<Rigidbody>();
+            _rigidbody = GetComponent<Rigidbody>();
             Assert.IsNotNull(Data.HMDTransform);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
             Assert.IsNotNull(Configuration.DestinationIndicator);
@@ -109,8 +109,8 @@ namespace WIMVR.Core {
         }
 
         private void ResetRigidbody() {
-            rigidbody.velocity = Vector3.zero;
-            rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
         }
 
         private void OnEnable() {
