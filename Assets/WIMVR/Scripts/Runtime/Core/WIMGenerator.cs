@@ -143,7 +143,7 @@ namespace WIMVR.Core {
 
             WIM.transform.localScale = new Vector3(WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor, WIM.Configuration.ScaleFactor);
             WIM.transform.RemoveAllColliders();
-            WIMGenerator.GenerateColliders(WIM);
+            GenerateColliders(WIM);
             ConfigureWIM(WIM);
         }
 
@@ -159,6 +159,11 @@ namespace WIMVR.Core {
             var material = LoadDefaultMaterial(WIM);
             SetWIMMaterial(material, WIM);
             OnConfigure?.Invoke(WIM);
+        }
+
+        public static void UpdateTransparency(in MiniatureModel WIM) {
+            var material = LoadDefaultMaterial(WIM);
+            SetWIMMaterial(material, WIM);
         }
 
         private static void ExpandColliders(in MiniatureModel WIM) {

@@ -5,8 +5,6 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using WIMVR.Editor.Util;
-using WIMVR.Editor.Welcome;
 
 [assembly: UxmlNamespacePrefix("WIMVR", "WIM")]
 
@@ -26,16 +24,15 @@ namespace WIMVR {
         private MessageType type;
 
         public HelpBox() {
-            var tmp = ScriptableObject.CreateInstance<WelcomeWindow>();
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("../Util/HelpBox.uxml", tmp);
-            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("../Util/HelpBox.uss", tmp);
+            var visualTree = Resources.Load<VisualTreeAsset>("HelpBox");
+            var styleSheet = Resources.Load<StyleSheet>("HelpBox");
             var helpBox = new VisualElement();
             helpBox.styleSheets.Add(styleSheet);
             visualTree.CloneTree(helpBox);
             hierarchy.Add(helpBox);
             textElement = helpBox.Q<TextElement>();
             image = helpBox.Q<Image>();
-            this.Type = MessageType.Info;
+            Type = MessageType.Info;
         }
 
         public HelpBox(string text, MessageType messageType = MessageType.Info): this() {

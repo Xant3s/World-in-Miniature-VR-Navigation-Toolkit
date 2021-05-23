@@ -5,7 +5,6 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using WIMVR.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features;
 using WIMVR.Util;
 
@@ -45,7 +44,6 @@ namespace WIMVR.Editor.Core {
             AddExpandCollidersVectorFields();
             InvokeCallbacks(root.Q<VisualElement>("basic-container"), "Basic");
             ShowSettingsDependingOnDestinationSelectionMethod();
-            ShowTransparencySettings();
             AddChangeTransparencyBehavior();
             InvokeCallbacks(root.Q<VisualElement>("occlusion-handling-container"), "Occlusion Handling");
             ShowDetectArmLengthSettings();
@@ -56,12 +54,12 @@ namespace WIMVR.Editor.Core {
         }
 
         private void LoadHierarchy() {
-            visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("MiniatureModelEditor.uxml", this);
+            visualTree = Resources.Load<VisualTreeAsset>("MiniatureModelEditor");
             if(visualTree) visualTree.CloneTree(root);
         }
 
         private void LoadStyle() {
-            var styleSheet = AssetUtils.LoadAtRelativePath<StyleSheet>("MiniatureModelEditor.uss", this);
+            var styleSheet = Resources.Load<StyleSheet>("MiniatureModelEditor");
             root.styleSheets.Add(styleSheet);
         }
 
@@ -71,11 +69,6 @@ namespace WIMVR.Editor.Core {
             configField.RegisterCallback<ChangeEvent<Object>>(e => {
                 root.Q<HelpBox>(name: "config-missing").SetDisplay(!e.newValue);
                 root.Q<VisualElement>("master-container").SetDisplay(e.newValue);
-                if(e.newValue)
-                    root.schedule.Execute(() =>
-                        WIMGenerator
-                            .ConfigureWIM(WIM)); // Redraw UI: new config is not null so wait for the config to be loaded.
-                else WIMGenerator.ConfigureWIM(WIM); // Redraw UI: new config is null so do it now.
             });
             root.Q<HelpBox>(name: "config-missing").SetDisplay(!WIM.Configuration);
             root.Q<VisualElement>("master-container").SetDisplay(WIM.Configuration);
@@ -85,10 +78,7 @@ namespace WIMVR.Editor.Core {
             var objectField = root.Q<ObjectField>(name: objectFieldName);
             var helpBox = root.Q<HelpBox>(name: helpBoxName);
             helpBox.SetDisplay(!obj);
-            objectField.RegisterCallback<ChangeEvent<Object>>(e => {
-                helpBox.SetDisplay(!e.newValue);
-                WIMGenerator.ConfigureWIM(WIM); // Redraw UI
-            });
+            objectField.RegisterCallback<ChangeEvent<Object>>(e => helpBox.SetDisplay(!e.newValue));
         }
 
         private void AddGenerateWIMButtonBehavior() {
@@ -130,12 +120,11 @@ namespace WIMVR.Editor.Core {
                 .SetDisplay(WIM.Configuration.DestinationSelectionMethod == DestinationSelection.Pickup);
         }
 
-        private void ShowTransparencySettings() {
-            root.Q<Toggle>("semi-transparent").RegisterValueChangedCallback(e
-                => root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM))); // Delay so that newValue is set on execution.
-        }
-
         private void AddChangeTransparencyBehavior() {
+            root.Q<Toggle>("semi-transparent")
+                .RegisterValueChangedCallback(e => root.schedule.Execute(
+                    () => WIMGenerator.UpdateTransparency(WIM))); // Delay so that newValue is set on execution.
+            
             var transparencySliderRoot = root.Q<FloatSlider>("transparency");
             var transparencySlider = transparencySliderRoot.Q<Slider>();
             transparencySlider.RegisterCallback<FocusOutEvent>(e => {

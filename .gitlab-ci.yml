@@ -7,9 +7,9 @@ stages:
 variables:
   BUILD_NAME: ExampleProjectName
   UNITY_ACTIVATION_FILE: ./unity3d.alf
-  UNITY_VERSION: "2020.1.10f1"
+  UNITY_VERSION: "2020.3.5f1"
   IMAGE: unityci/editor # https://hub.docker.com/r/unityci/editor
-  IMAGE_VERSION: "0.7" # https://github.com/Unity-CI/docker/releases
+  IMAGE_VERSION: "0.12.0" # https://github.com/Unity-CI/docker/releases
   UNITY_DIR: $CI_PROJECT_DIR # this needs to be an absolute path. Defaults to the root of your tree.
 
 
@@ -61,15 +61,19 @@ get-activation-file:
     - unity
   coverage: /<Linecoverage>(.*?)</Linecoverage>/
 
-test-playmode:
-  <<: *test
-  variables:
-    TEST_PLATFORM: playmode
 
-test-editmode:
-  <<: *test
-  variables:
-    TEST_PLATFORM: editmode
+
+# test-playmode:
+#   <<: *test
+#   variables:
+#     TEST_PLATFORM: playmode
+
+
+# test-editmode:
+#   <<: *test
+#   variables:
+#     TEST_PLATFORM: editmode
+
 
 .build: &build
   stage: build_and_test
@@ -85,6 +89,8 @@ test-editmode:
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
     - unity
+
+
 
 # build-StandaloneLinux64:
 #   <<: *build
@@ -113,11 +119,12 @@ test-editmode:
 #   variables:
 #     BUILD_TARGET: StandaloneOSXUniversal
 
-build-StandaloneWindows64:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-windows-mono-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: StandaloneWindows64
+# build-StandaloneWindows64:
+#   <<: *build
+#   image: $IMAGE:$UNITY_VERSION-windows-mono-$IMAGE_VERSION
+#   variables:
+#     BUILD_TARGET: StandaloneWindows64
+
 
 # webgl is currently unsupported, see https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/139
 #build-WebGL:
@@ -126,13 +133,14 @@ build-StandaloneWindows64:
 #  variables:
 #    BUILD_TARGET: WebGL
 
-build-android:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: Android
-    BUNDLE_VERSION_CODE: $CI_PIPELINE_IID
-    BUILD_APP_BUNDLE: "false"
+# build-android:
+#   <<: *build
+#   image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
+#   variables:
+#     BUILD_TARGET: Android
+#     BUNDLE_VERSION_CODE: $CI_PIPELINE_IID
+#     BUILD_APP_BUNDLE: "false"
+
 
 #deploy-android:
 #  stage: deploy
