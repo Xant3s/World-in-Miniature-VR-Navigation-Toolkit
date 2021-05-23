@@ -48,17 +48,18 @@ namespace WIMVR.Editor.Features {
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            if(!target) return;
-            var occlusionHandling = (OcclusionHandling) target;
-            ref var config = ref occlusionHandling.Config;
             var visualTree = Resources.Load<VisualTreeAsset>("OcclusionHandlingEditor");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
+            var occlusionHandling = (OcclusionHandling) target;
+            ref var config = ref occlusionHandling.Config;
+            
+            WIMEditorUtility.DisplaySettingsIfConfigNotNull(root, config, typeof(OcclusionHandlingConfiguration));
 
             var configField = root.Q<ObjectField>("configuration");
             configField.objectType = typeof(OcclusionHandlingConfiguration);
 
-            root.Q<HelpBox>("config-error").SetDisplay(!config);
+            root.Q<HelpBox>("config-info").SetDisplay(!config);
             configField.SetDisplay(!config);
             var occlusionHandlingMethod = root.Q<EnumField>("occlusion-handling-method");
             occlusionHandlingMethod.SetDisplay(config);
