@@ -1,6 +1,5 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System.Collections;
 using UnityEngine;
 
 namespace WIMVR.Features.DissolveFX {

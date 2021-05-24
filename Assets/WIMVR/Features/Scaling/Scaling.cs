@@ -64,7 +64,6 @@ namespace WIMVR.Features.Scaling {
         }
 
         private void RightHandInitialized(InputDevice rightController) {
-            // var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
             var grabButton = XRUtils.DetectGrabButton(Hand.RightHand);
             rightGrabButtonListener = new ButtonListener(grabButton, rightController);
             rightGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.RightHand);
@@ -72,7 +71,6 @@ namespace WIMVR.Features.Scaling {
         }
 
         private void LeftHandInitialized(InputDevice leftController) {
-            // var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
             var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
             leftGrabButtonListener = new ButtonListener(grabButton, leftController);
             leftGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.LeftHand);

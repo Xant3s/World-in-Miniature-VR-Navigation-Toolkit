@@ -1,17 +1,14 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
 
 
 namespace WIMVR.Core {
     public class HandPresence : MonoBehaviour {
         [SerializeField] private InputDeviceCharacteristics controllerCharacteristics = InputDeviceCharacteristics.None;
-        [SerializeField] private GameObject handModelPrefab = null;
+        [SerializeField] private GameObject handModelPrefab;
 
         private InputDevice targetDevice;
         private GameObject spawnedHandModel;

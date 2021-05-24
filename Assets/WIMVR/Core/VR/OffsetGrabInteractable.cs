@@ -6,7 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace WIMVR.Core {
     public class OffsetGrabInteractable : XRGrabInteractable {
-        [SerializeField] private bool restoreRigidbodyOnRelease = false;
+        [SerializeField] private bool restoreRigidbodyOnRelease;
 
         private Vector3 interactorPosition;
         private Quaternion interactorRotation;
