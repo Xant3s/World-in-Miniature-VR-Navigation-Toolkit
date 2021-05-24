@@ -181,16 +181,41 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelectEntered:
@@ -208,10 +233,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -239,8 +267,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 0
 --- !u!65 &68225678
 BoxCollider:
@@ -420,6 +449,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &126991304
@@ -512,6 +542,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &161005484
@@ -590,6 +621,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &161005486
@@ -966,6 +998,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!1 &290755240
@@ -1633,7 +1666,8 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_OnFirstHoverEntered:
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 460360250}
@@ -1648,13 +1682,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  m_OnHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
+  m_LastHoverExited:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 460360250}
@@ -1669,6 +1697,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnSelectEntered:
     m_PersistentCalls:
       m_Calls: []
@@ -1684,10 +1742,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 460360203}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -1715,8 +1776,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 1
 --- !u!114 &460360207
 MonoBehaviour:
@@ -2293,7 +2355,7 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 43c70a85-9362-4577-8294-01bb07331424
     m_ActionName: Miniature Model/Destination Rotation
-  m_NeverAutoSwitchControlSchemes: 0
+  m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: XR
   m_DefaultActionMap: Miniature Model
   m_SplitScreenIndex: -1
@@ -2380,16 +2442,41 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelectEntered:
@@ -2407,10 +2494,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -2438,8 +2528,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 0
 --- !u!65 &483032673
 BoxCollider:
@@ -2761,16 +2852,41 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelectEntered:
@@ -2788,10 +2904,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -2819,8 +2938,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 0
 --- !u!65 &544803420
 BoxCollider:
@@ -3324,6 +3444,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 3e-45, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &705507995
@@ -4968,16 +5089,41 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelectEntered:
@@ -4995,10 +5141,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -5026,8 +5175,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 0
 --- !u!65 &1260264507
 BoxCollider:
@@ -5300,7 +5450,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
-  serializedVersion: 2
+  serializedVersion: 3
   m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 1
   m_EnableRealtimeLightmaps: 1
@@ -5322,7 +5472,7 @@ LightingSettings:
   m_MixedBakeMode: 1
   m_LightmapsBakeMode: 1
   m_FilterMode: 1
-  m_LightmapParameters: {fileID: 0}
+  m_LightmapParameters: {fileID: 15204, guid: 0000000000000000f000000000000000, type: 0}
   m_ExportTrainingData: 0
   m_TrainingDataDestination: TrainingData
   m_RealtimeResolution: 2
@@ -5339,7 +5489,7 @@ LightingSettings:
   m_PVREnvironmentReferencePointCount: 2048
   m_LightProbeSampleCountMultiplier: 4
   m_PVRBounces: 2
-  m_PVRRussianRouletteStartBounce: 2
+  m_PVRMinBounces: 1
   m_PVREnvironmentMIS: 0
   m_PVRFilteringMode: 2
   m_PVRDenoiserTypeDirect: 0
@@ -6235,16 +6385,41 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelectEntered:
@@ -6262,10 +6437,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -6293,8 +6471,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 0
 --- !u!65 &1922629742
 BoxCollider:
@@ -6521,16 +6700,41 @@ MonoBehaviour:
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_CustomReticle: {fileID: 0}
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnFirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   m_OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_OnLastHoverExited:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelectEntered:
@@ -6548,10 +6752,13 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_CustomReticle: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
   m_MovementType: 1
+  m_VelocityDamping: 0.4
+  m_VelocityScale: 1
+  m_AngularVelocityDamping: 0.4
+  m_AngularVelocityScale: 0.95
   m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 5
@@ -6579,8 +6786,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 0.25
-  m_GravityOnDetach: 0
+  m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
+  m_AttachPointCompatibilityMode: 0
   restoreRigidbodyOnRelease: 0
 --- !u!65 &1987462451
 BoxCollider:
@@ -6827,6 +7035,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &2008246526
@@ -7429,6 +7638,11 @@ PrefabInstance:
       objectReference: {fileID: 925591822}
     - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.63
       objectReference: {fileID: 0}
@@ -7444,6 +7658,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -7456,16 +7675,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5569907483073558544, guid: e3fd0923a84a9764ca9b13470affc50e,
         type: 3}

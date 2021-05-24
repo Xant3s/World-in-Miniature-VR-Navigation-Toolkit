@@ -1,6 +1,7 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
 using System;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace WIMVR.Core.Input {
     internal class ButtonListener : IButtonListener {

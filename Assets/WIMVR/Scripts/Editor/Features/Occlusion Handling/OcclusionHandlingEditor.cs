@@ -7,7 +7,6 @@ using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Occlusion_Handling;
 using WIMVR.Util;
 
@@ -26,10 +25,8 @@ namespace WIMVR.Editor.Features {
             occlusionHandling.UpdateCutoutViewMask(WIM);
             occlusionHandling.UpdateCylinderMask(WIM);
             DrawDefaultInspector();
-            EditorGUI.BeginChangeCheck();
             occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config",
                 occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
-            if(EditorGUI.EndChangeCheck()) WIMGenerator.ConfigureWIM(WIM);
             ref var config = ref ((OcclusionHandling) target).Config;
             if(!config)
                 EditorGUILayout.HelpBox(
@@ -51,18 +48,18 @@ namespace WIMVR.Editor.Features {
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            if(!target) return;
-            var occlusionHandling = (OcclusionHandling) target;
-            ref var config = ref occlusionHandling.Config;
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("OcclusionHandlingEditor.uxml", this);
+            var visualTree = Resources.Load<VisualTreeAsset>("OcclusionHandlingEditor");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
+            var occlusionHandling = (OcclusionHandling) target;
+            ref var config = ref occlusionHandling.Config;
+            
+            WIMEditorUtility.DisplaySettingsIfConfigNotNull(root, config, typeof(OcclusionHandlingConfiguration));
 
             var configField = root.Q<ObjectField>("configuration");
             configField.objectType = typeof(OcclusionHandlingConfiguration);
-            configField.RegisterValueChangedCallback(e => WIMGenerator.ConfigureWIM(WIM));
 
-            root.Q<HelpBox>("config-error").SetDisplay(!config);
+            root.Q<HelpBox>("config-info").SetDisplay(!config);
             configField.SetDisplay(!config);
             var occlusionHandlingMethod = root.Q<EnumField>("occlusion-handling-method");
             occlusionHandlingMethod.SetDisplay(config);

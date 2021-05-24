@@ -2,11 +2,11 @@
 
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
-using WIMVR.Editor.Util;
 using WIMVR.Features.Scrolling;
 
 namespace WIMVR.Editor.Features {
@@ -20,15 +20,7 @@ namespace WIMVR.Editor.Features {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
             var scrolling = (Scrolling) target;
-            EditorGUI.BeginChangeCheck();
             scrolling.ScrollingConfig = (ScrollingConfiguration) EditorGUILayout.ObjectField("Config", scrolling.ScrollingConfig, typeof(ScrollingConfiguration), false);
-            if(EditorGUI.EndChangeCheck()) {
-                WIMGenerator.ConfigureWIM(WIM);
-                //scrolling.Remove();
-                if(scrolling.ScrollingConfig) {
-                    //scrolling.Setup();
-                }
-            }
             if(!scrolling.ScrollingConfig)
                 EditorGUILayout.HelpBox("Scrolling configuration missing. " +
                                         "Create a scrolling configuration asset and add it to the scrolling component, " +
@@ -48,7 +40,7 @@ namespace WIMVR.Editor.Features {
         }
 
         private void Draw(WIMConfiguration WIMConfig, VisualElement container) {
-            var visualTree = AssetUtils.LoadAtRelativePath<VisualTreeAsset>("ScrollingEditor.uxml", this);
+            var visualTree = Resources.Load<VisualTreeAsset>("ScrollingEditor");
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
             var scrolling = (Scrolling) target;
@@ -63,10 +55,8 @@ namespace WIMVR.Editor.Features {
                 allowVerticalScroll.SetDisplay(e.newValue && !((ScrollingConfiguration)e.newValue).AllowVerticalScrolling));
 
             scrollingSettings2.SetDisplay(config && config.AllowWIMScrolling);
-            root.Q<Toggle>("allow-scrolling").RegisterValueChangedCallback(e => {
-                scrollingSettings2.SetDisplay(e.newValue);
-                root.schedule.Execute(() => WIMGenerator.ConfigureWIM(WIM));
-            });
+            root.Q<Toggle>("allow-scrolling")
+                .RegisterValueChangedCallback(e => scrollingSettings2.SetDisplay(e.newValue));
 
             //root.Q<Vector3Field>("active-area-bounds").RegisterValueChangedCallback(e => scrolling.UpdateScrollingMask(WIM));
 
