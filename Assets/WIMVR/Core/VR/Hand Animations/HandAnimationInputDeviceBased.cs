@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
     [RequireComponent(typeof(HandAnimationController))]
     public class HandAnimationInputDeviceBased : MonoBehaviour {
         [SerializeField] private XRController controller;

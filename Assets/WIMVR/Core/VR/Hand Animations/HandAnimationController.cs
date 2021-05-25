@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
     public class HandAnimationController : MonoBehaviour {
         public enum Gesture {
             Grip,
