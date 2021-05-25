@@ -57,12 +57,12 @@ namespace WIMVR.Core {
 
         private void GetLastAnimationState(Gesture gesture, out float lastState) => lastState = gesture switch {
             Gesture.Grip => lastGripState,
-            Gesture.Pinch => lastPinchState
+            _ => lastPinchState
         };
 
         private void GetLastAnimationState(PinchFinger finger, out float lastState) => lastState = finger switch {
             PinchFinger.Index => lastIndexTouchState,
-            PinchFinger.Thumb => lastThumbTouchState
+            _ => lastThumbTouchState
         };
 
         private void UpdateLastAnimationState(Gesture gesture, float value) {
@@ -77,12 +77,12 @@ namespace WIMVR.Core {
 
         private static void GetPropertyIndex(Gesture gesture, out int index) => index = gesture switch {
             Gesture.Grip => grabPropertyID,
-            Gesture.Pinch => pinchPropertyID
+            _ => pinchPropertyID
         };
 
         private static void GetLayerIndex(PinchFinger finger, out int index) => index = finger switch {
             PinchFinger.Index => pointLayerID,
-            PinchFinger.Thumb => thumbLayerID
+            _ => thumbLayerID
         };
     }
 }
