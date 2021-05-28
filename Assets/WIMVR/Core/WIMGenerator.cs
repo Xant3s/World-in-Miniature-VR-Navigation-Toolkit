@@ -44,6 +44,7 @@ namespace WIMVR.Core {
         /// <param name="material">The material to apply to the miniature model.</param>
         /// <param name="WIM">The miniature model.</param>
         public static void SetWIMMaterial(Material material, in MiniatureModel WIM) {
+            if(WIM.transform.childCount == 0) return;
             var WIMLevelTransform = WIM.transform.GetChild(0);
             foreach (var renderer in WIMLevelTransform.GetComponentsInChildren<Renderer>()) {
                 var newMaterials = renderer.sharedMaterials;
