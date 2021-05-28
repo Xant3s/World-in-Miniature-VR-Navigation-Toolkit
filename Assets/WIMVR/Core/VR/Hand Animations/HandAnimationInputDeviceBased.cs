@@ -12,8 +12,6 @@ namespace WIMVR.VR {
         private HandAnimationController animationController;
         private float gripState;
         private float pinchState;
-        private float indexTouchState;
-        private float thumbTouchState;
 
 
         private void Awake() {
@@ -29,15 +27,11 @@ namespace WIMVR.VR {
         private void ReadInputs() {
             controller.inputDevice.TryGetFeatureValue(CommonUsages.grip, out gripState);
             controller.inputDevice.TryGetFeatureValue(CommonUsages.trigger, out pinchState);
-            controller.inputDevice.TryGetFeatureValue(CommonUsages.indexTouch, out indexTouchState);
-            controller.inputDevice.TryGetFeatureValue(CommonUsages.thumbTouch, out thumbTouchState);
         }
 
         private void UpdateAnimations() {
             animationController.UpdateGesture(HandAnimationController.Gesture.Grip, gripState);
             animationController.UpdateGesture(HandAnimationController.Gesture.Pinch, pinchState);
-            animationController.UpdatePinchGesture(HandAnimationController.PinchFinger.Index, indexTouchState);
-            animationController.UpdatePinchGesture(HandAnimationController.PinchFinger.Thumb, thumbTouchState);
         }
     }
 }
