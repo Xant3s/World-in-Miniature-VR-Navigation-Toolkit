@@ -2,8 +2,9 @@
 
 using System;
 using UnityEngine;
+using WIMVR.Core;
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
     /// <summary>
     /// Waits for the hand models to be initialized.
     /// </summary>

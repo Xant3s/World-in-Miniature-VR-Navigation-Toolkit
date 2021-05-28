@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using WIMVR.Features;
 using WIMVR.Util;
+using WIMVR.VR;
 
 namespace WIMVR.Core {
     /// <summary>

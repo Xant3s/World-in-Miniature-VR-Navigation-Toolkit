@@ -8,6 +8,7 @@ using WIMVR.Core;
 using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;
+using WIMVR.VR;
 using Hand = WIMVR.Util.Hand;
 
 namespace WIMVR.Features.Scaling {

@@ -4,10 +4,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using WIMVR.Core;
+using WIMVR.VR;
 
 
-namespace WIMVR.Editor.Core {
+namespace WIMVR.Editor.VR {
     [CustomEditor(typeof(MovementProvider))]
     public class MovementProviderEditor : UnityEditor.Editor {
         private MovementProvider movementProvider;

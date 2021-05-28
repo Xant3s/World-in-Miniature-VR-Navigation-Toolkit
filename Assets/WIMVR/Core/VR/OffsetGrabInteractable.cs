@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
     public class OffsetGrabInteractable : XRGrabInteractable {
         [SerializeField] private bool restoreRigidbodyOnRelease;
 

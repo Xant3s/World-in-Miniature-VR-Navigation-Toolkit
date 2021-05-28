@@ -5,8 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR;
-using WIMVR.Core;
-using WIMVR.Util.XR;
+using WIMVR.VR;
 
 namespace WIMVR.Util {
     /// <summary>

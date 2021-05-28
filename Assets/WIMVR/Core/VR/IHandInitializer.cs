@@ -2,7 +2,7 @@
 
 using System;
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
     public interface IHandInitializer<out T> {
         event Action<T> OnRightHandInitialized;
         event Action<T> OnLeftHandInitialized;

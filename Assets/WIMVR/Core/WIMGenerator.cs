@@ -9,6 +9,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Util;
+using WIMVR.VR;
 using MathUtils = WIMVR.Util.MathUtils;
 using Object = UnityEngine.Object;
 

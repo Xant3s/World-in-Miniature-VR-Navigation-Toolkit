@@ -2,10 +2,10 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using WIMVR.Core;
 using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;
+using WIMVR.VR;
 using InputDevice = UnityEngine.XR.InputDevice;
 
 namespace WIMVR.Features.Distance_Grab {

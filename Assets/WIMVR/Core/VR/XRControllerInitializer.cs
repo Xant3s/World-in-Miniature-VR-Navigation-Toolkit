@@ -2,10 +2,11 @@
 
 using System;
 using UnityEngine.XR;
+using WIMVR.Core;
 using WIMVR.Util.XR;
 using Hand = WIMVR.Util.Hand;
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
     /// <summary>
     /// Waits for the XR controllers to be initialized, i.e. no longer in standby.
     /// </summary>

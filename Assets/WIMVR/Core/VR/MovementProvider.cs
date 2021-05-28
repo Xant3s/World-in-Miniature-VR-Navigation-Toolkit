@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 
 
-namespace WIMVR.Core {
+namespace WIMVR.VR {
 
     [RequireComponent(typeof(CharacterController))]
     public class MovementProvider : MonoBehaviour {

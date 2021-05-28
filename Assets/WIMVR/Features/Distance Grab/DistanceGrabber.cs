@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using WIMVR.Core;
+using WIMVR.VR;
 
 namespace WIMVR.Features.Distance_Grab {
     /// <summary>
