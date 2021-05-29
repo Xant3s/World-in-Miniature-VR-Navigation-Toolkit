@@ -7,16 +7,13 @@ namespace WIMVR.Features.DissolveFX {
     /// Plays the dissolve/resolve effect.
     /// </summary>
     public class Dissolve : MonoBehaviour {
-        private static readonly int progressProperty = Shader.PropertyToID("_Progress");
         [Range(0.1f, 10.0f)] public float durationInSeconds = 1.0f;
         public Material[] materials;
+        
+        private static readonly int progressProperty = Shader.PropertyToID("_Progress");
         private bool isInverse;
         private float endTime;
-        
 
-        private void OnDestroy() {
-            SetProgress(0);
-        }
 
         /// <summary>
         /// Plays dissolve effect.
@@ -57,6 +54,10 @@ namespace WIMVR.Features.DissolveFX {
         // To prevent this, set the dissolve progress to a negative number (everything below 0 will be handled as 0 anyway).
         private void SetFullyResolved() {
             SetProgress(-.1f);
+        }
+
+        private void OnDestroy() {
+            SetProgress(0);
         }
     }
 }
