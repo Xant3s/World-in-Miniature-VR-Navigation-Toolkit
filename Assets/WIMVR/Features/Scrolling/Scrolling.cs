@@ -6,6 +6,7 @@ using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using WIMVR.Core;
 using WIMVR.Util;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Features.Scrolling {
     /// <summary>

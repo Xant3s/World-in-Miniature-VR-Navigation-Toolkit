@@ -3,6 +3,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using UnityEngine;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Tests {
     [TestFixture]

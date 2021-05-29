@@ -2,11 +2,11 @@
 
 using UnityEngine;
 
-namespace WIMVR.Util {
+namespace WIMVR.Util.Extensions {
     /// <summary>
     /// A collection of extension methods for the Transform component.
     /// </summary>
-    public static class TransformUtils {
+    public static class TransformExtensions {
         /// <summary>
         /// Removes all colliders attached to this transform. Does not touch colliders in children.
         /// </summary>

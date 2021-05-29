@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 using WIMVR.Core;
 using WIMVR.Features.Pickup_Destination;
 using WIMVR.Util;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Features.Preview_Screen {
     /// <summary>
