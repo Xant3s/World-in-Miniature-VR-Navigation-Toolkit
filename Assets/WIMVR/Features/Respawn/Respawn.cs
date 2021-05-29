@@ -8,13 +8,12 @@ namespace WIMVR.Features {
     /// <summary>
     /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
     /// </summary>
-    [ExecuteAlways]
     [DisallowMultipleComponent]
     public class Respawn : MonoBehaviour {
         public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, bool maintainTransformRelativeToPlayer);
         public static event RespawnAction OnEarlyRespawn;
         public static event RespawnAction OnLateRespawn;
-        public static bool RemoveOldWIMLevel = true;
+        public static bool removeOldWIMLevel = true;
         public static Material materialForOldWIM;
         
         private WIMConfiguration config;
@@ -23,7 +22,6 @@ namespace WIMVR.Features {
 
         private void OnEnable() {
             MiniatureModel.OnLateInitHand += StartRespawn;
-            if(!Application.isPlaying) return;
             var WIM = TryFindWIM();
             var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
             materialForOldWIM = new Material(Shader.Find(shaderName));
@@ -55,7 +53,6 @@ namespace WIMVR.Features {
         /// If false, the miniature model will be spawned at the default position relative to the player.
         /// </param>
         public void RespawnWIM(bool maintainTransformRelativeToPlayer) {
-            if(!Application.isPlaying) return;
             var WIM = TryFindWIM();
             WIM.CleanupBeforeRespawn();
             CopyWIM(out var oldWIMLevel, out var levelPos);
@@ -120,7 +117,7 @@ namespace WIMVR.Features {
 
         private void Cleanup(bool maintainTransformRelativeToPlayer) {
             if (maintainTransformRelativeToPlayer) transform.parent = null;
-            if (RemoveOldWIMLevel) DestroyOldWIMLevel();
+            if (removeOldWIMLevel) DestroyOldWIMLevel();
         }
 
         private void SetNewWIMPositionAndOrientation(bool maintainTransformRelativeToPlayer, Vector3 levelPos) {

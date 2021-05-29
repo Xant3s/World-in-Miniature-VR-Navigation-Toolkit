@@ -24,13 +24,13 @@ namespace WIMVR.Features.DissolveFX {
         private void OnEnable() {
             Respawn.OnEarlyRespawn += DissolveOldWIM;
             Respawn.OnLateRespawn += ResolveNewWIM;
-            Respawn.RemoveOldWIMLevel = false;
+            Respawn.removeOldWIMLevel = false;
         }
 
         private void OnDisable() {
             Respawn.OnEarlyRespawn -= DissolveOldWIM;
             Respawn.OnLateRespawn -= ResolveNewWIM;
-            Respawn.RemoveOldWIMLevel = true;
+            Respawn.removeOldWIMLevel = true;
         }
 
         private void Awake() {
