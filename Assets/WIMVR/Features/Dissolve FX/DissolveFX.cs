@@ -52,9 +52,9 @@ namespace WIMVR.Features.DissolveFX {
         }
 
         private static void InstantDissolveWIM(Transform WIM) {
-            var d = WIM.GetComponent<Dissolve>();
-            if(!d) return;
-            d.SetProgress(1);
+            var dissolve = WIM.GetComponent<Dissolve>();
+            if(!dissolve) return;
+            dissolve.SetProgress(1);
         }
 
         private void ResolveNewWIM(in Transform oldWIMTransform, in Transform newWIMTransform, bool maintainTransformRelativeToPlayer)
@@ -62,11 +62,11 @@ namespace WIMVR.Features.DissolveFX {
 
         private static void ResolveWIM(Transform WIMLevel) {
             const int resolveDuration = 1;
-            var d = WIMLevel.GetComponentInParent<Dissolve>();
-            if(!d) return;
-            d.durationInSeconds = resolveDuration;
-            d.SetProgress(1);
-            d.PlayInverse();
+            var dissolve = WIMLevel.GetComponentInParent<Dissolve>();
+            if(!dissolve) return;
+            dissolve.durationInSeconds = resolveDuration;
+            dissolve.SetProgress(1);
+            dissolve.PlayInverse();
         }
     }
 }
