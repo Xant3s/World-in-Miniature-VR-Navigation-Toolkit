@@ -10,19 +10,6 @@ namespace WIMVR.Features.DissolveFX {
     /// </summary>
     [DisallowMultipleComponent]
     public class DissolveFX : MonoBehaviour {
-        private static void DissolveWIM(Transform WIM) {
-            var d = WIM.GetComponent<Dissolve>();
-            if(!d) return;
-            d.durationInSeconds = 1f;
-            d.Play();
-        }
-
-        private static void InstantDissolveWIM(Transform WIM) {
-            var d = WIM.GetComponent<Dissolve>();
-            if(!d) return;
-            d.SetProgress(1);
-        }
-
         private void OnEnable() {
             Respawn.OnEarlyRespawn += DissolveOldWIM;
             Respawn.OnLateRespawn += ResolveNewWIM;
@@ -55,6 +42,19 @@ namespace WIMVR.Features.DissolveFX {
             } else {
                 InstantDissolveWIM(oldWIMTransform);
             }
+        }
+
+        private static void DissolveWIM(Transform WIM) {
+            var dissolve = WIM.GetComponent<Dissolve>();
+            if(!dissolve) return;
+            dissolve.durationInSeconds = 1f;
+            dissolve.Play();
+        }
+
+        private static void InstantDissolveWIM(Transform WIM) {
+            var d = WIM.GetComponent<Dissolve>();
+            if(!d) return;
+            d.SetProgress(1);
         }
 
         private void ResolveNewWIM(in Transform oldWIMTransform, in Transform newWIMTransform, bool maintainTransformRelativeToPlayer)

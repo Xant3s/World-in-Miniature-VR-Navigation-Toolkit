@@ -75,7 +75,7 @@ namespace WIMVR.Features {
             levelPos = oldWIMLevel.position;
             oldWIMLevel.parent = null;
             oldWIMLevel.name = "WIM Level Old";
-            oldWIMLevel.tag = "Untagged";   // TODO: Remove
+            oldWIMLevel.tag = "Untagged";
             Assert.IsNotNull(data);
             Assert.IsNotNull(data.PlayerRepresentationTransform);
             Assert.IsNotNull(data.PlayerRepresentationTransform.parent);
