@@ -18,6 +18,7 @@ namespace WIMVR.Features {
         
         private WIMConfiguration config;
         private WIMData data;
+        private Transform oldWIMLevel;
 
 
         private void OnEnable() {
@@ -63,8 +64,8 @@ namespace WIMVR.Features {
         }
 
         private static MiniatureModel TryFindWIM() {
-            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
-            Assert.IsNotNull(WIM);
+            var WIM = FindObjectOfType<MiniatureModel>();
+            Assert.IsNotNull(WIM, "No miniature model was found in this scene.");
             return WIM;
         }
 
@@ -72,10 +73,9 @@ namespace WIMVR.Features {
             // Copy WIM
             oldWIMLevel = transform.GetChild(0);
             levelPos = oldWIMLevel.position;
-
             oldWIMLevel.parent = null;
             oldWIMLevel.name = "WIM Level Old";
-            oldWIMLevel.tag = "WIM Level Old";
+            oldWIMLevel.tag = "Untagged";   // TODO: Remove
             Assert.IsNotNull(data);
             Assert.IsNotNull(data.PlayerRepresentationTransform);
             Assert.IsNotNull(data.PlayerRepresentationTransform.parent);
@@ -93,6 +93,8 @@ namespace WIMVR.Features {
                 if (!r) continue;
                 r.material = materialForOldWIM;
             }
+            
+            this.oldWIMLevel = oldWIMLevel;
         }
 
         private void SetupNewWIM(bool maintainTransformRelativeToPlayer, Vector3 levelPos) {
@@ -117,7 +119,7 @@ namespace WIMVR.Features {
 
         private void Cleanup(bool maintainTransformRelativeToPlayer) {
             if (maintainTransformRelativeToPlayer) transform.parent = null;
-            if (removeOldWIMLevel) DestroyOldWIMLevel();
+            if (removeOldWIMLevel) Destroy(oldWIMLevel.gameObject);
         }
 
         private void SetNewWIMPositionAndOrientation(bool maintainTransformRelativeToPlayer, Vector3 levelPos) {
@@ -140,10 +142,6 @@ namespace WIMVR.Features {
                 transform.position = new Vector3(transform.position.x,
                     data.PlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
             }
-        }
-
-        private static void DestroyOldWIMLevel() {
-            Destroy(GameObject.FindWithTag("WIM Level Old"));
         }
     }
 }
