@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 namespace WIMVR.Core.Input {
     [DisallowMultipleComponent]
     public class WIMInput : MonoBehaviour {
-        public InputActionProperty directMovement;
         public InputActionProperty respawn;
         public InputActionProperty destinationSelectionTouch;
         public InputActionProperty confirmTravel;
@@ -17,7 +16,6 @@ namespace WIMVR.Core.Input {
 
 
         private void OnEnable() {
-            directMovement.action.Enable();
             respawn.action.Enable();
             destinationSelectionTouch.action.Enable();
             confirmTravel.action.Enable();
@@ -28,7 +26,6 @@ namespace WIMVR.Core.Input {
         }
 
         private void OnDisable() {
-            directMovement.action.Disable();
             respawn.action.Disable();
             destinationSelectionTouch.action.Disable();
             confirmTravel.action.Disable();
