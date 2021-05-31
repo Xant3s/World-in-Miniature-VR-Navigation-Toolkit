@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using WIMVR.Core;
+using WIMVR.Core.Input;
 using WIMVR.Util;
 
 
@@ -14,24 +15,28 @@ namespace WIMVR.Features {
     /// Can be used to select a destination by touching it with the index finger and pressing a button.
     /// To confirm another button has to be pressed.
     /// </summary>
-    [ExecuteAlways]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(WIMInput))]
     public class DestinationSelectionTouch : MonoBehaviour {
         private WIMConfiguration config;
         private WIMData data;
+        private WIMInput wimInput;
         private MiniatureModel WIM;
 
 
+        private void Awake() {
+            wimInput = GetComponent<WIMInput>();
+            WIM = FindObjectOfType<MiniatureModel>();
+        }
+
         private void Start() {
-            if (!Application.isPlaying) return;
-            WIM = GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>();
-        }
-
-        private void OnEnable() {
             MiniatureModel.OnLateInitHand += Init;
+            wimInput.destinationSelectionTouch.action.performed += ctx => OnDestinationSelectionTouch();
+            wimInput.destinationRotation.action.performed += ctx => OnDestinationRotation(ctx.action.ReadValue<Vector2>());
+            wimInput.confirmTravel.action.performed += ctx => OnConfirmTravel();
         }
 
-        private void OnDisable() {
+        private void OnDestroy() {
             MiniatureModel.OnLateInitHand -= Init;
         }
 
@@ -46,8 +51,6 @@ namespace WIMVR.Features {
         }
 
         private void SelectDestination() {
-            if (!Application.isPlaying) return;
-
             // Check if in WIM bounds.
             Assert.IsNotNull(data);
             Assert.IsNotNull(data.FingertipIndexR);
@@ -103,17 +106,13 @@ namespace WIMVR.Features {
             return GetComponents<Collider>().Any(coll => coll.ClosestPoint(point) == point);
         }
 
-        public void OnDestinationRotation(InputValue value) {
-            if(!Application.isPlaying) return;
+        public void OnDestinationRotation(Vector2 inputRotation) {
             // Only if there is a destination indicator in the WIM.
             if(!data) data = WIM.Data;
             if(!config) config = WIM.Configuration;
             if(!data || !config) return;
             if(!data.DestinationIndicatorInWIM) return;
             if(config.DestinationSelectionMethod != global::WIMVR.Util.DestinationSelection.Touch) return;
-
-            // Thumbstick input.
-            var inputRotation = value.Get<Vector2>();
 
             if(Math.Abs(inputRotation.magnitude) < 0.01f) return;
 
@@ -128,7 +127,6 @@ namespace WIMVR.Features {
         }
 
         public void OnConfirmTravel() {
-            if (!Application.isPlaying) return;
             if (config.DestinationSelectionMethod != DestinationSelection.Touch) return;
             if (!data.DestinationIndicatorInLevel) return;
             WIM.ConfirmTravel();

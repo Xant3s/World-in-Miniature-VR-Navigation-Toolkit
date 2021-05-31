@@ -1,10 +1,12 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using WIMVR.Core;
+using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.Extensions;
 
@@ -16,7 +18,9 @@ namespace WIMVR.Features.Scrolling {
     [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
+        
         private WIMData data;
+        private WIMInput wimInput;
         private Vector2 verticalAxisInput;
 
         internal void Setup() {
@@ -65,6 +69,12 @@ namespace WIMVR.Features.Scrolling {
             Remove();
         }
 
+        private void Awake() {
+            wimInput = GetComponent<WIMInput>();
+            wimInput.scrollWIM.action.performed += ctx => OnScrollWIM(ctx.action.ReadValue<Vector2>());
+            wimInput.scrollWIMVertically.action.performed += ctx => OnScrollWIMVertically(ctx.action.ReadValue<Vector2>());
+        }
+
         private void OnDestroy() {
             var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
             if(!WIM) return;
@@ -80,12 +90,10 @@ namespace WIMVR.Features.Scrolling {
             if (ScrollingConfig.AutoScroll) AutoScrollWIM();
         }
 
-        public void OnScrollWIM(InputValue value) {
-            ManuallyScrollWIM(value.Get<Vector2>());
-        }
+        public void OnScrollWIM(Vector2 value) => ManuallyScrollWIM(value);
 
-        public void OnScrollWIMVertically(InputValue value) {
-            verticalAxisInput = value.Get<Vector2>();
+        public void OnScrollWIMVertically(Vector2 value) {
+            verticalAxisInput = value;
             ManuallyScrollWIM(Vector3.zero);
         }
 

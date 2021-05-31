@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using WIMVR.Core;
+using WIMVR.Core.Input;
 
 namespace WIMVR.Features {
     /// <summary>
@@ -10,12 +11,14 @@ namespace WIMVR.Features {
     /// The arm length is used to determine at what distance the miniature model has to be
     /// spawned in front of the player.
     /// </summary>
-    [ExecuteAlways]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(WIMInput))]
     public class DetectArmLength : MonoBehaviour {
+        private WIMInput wimInput;
         private WIMConfiguration config;
         private bool armLengthDetected;
 
+        
         private void OnEnable() {
             MiniatureModel.OnLateInit += Init;
         }
@@ -24,13 +27,14 @@ namespace WIMVR.Features {
             MiniatureModel.OnLateInit -= Init;
         }
 
-        private void Init(WIMConfiguration config, WIMData data) {
-            this.config = config;
+        private void Awake() {
+            wimInput = GetComponent<WIMInput>();
+            wimInput.detectArmLength.action.performed += ctx => OnDetectArmLength();
         }
 
-        public void OnDetectArmLength() {
-            Detect();
-        }
+        private void Init(WIMConfiguration config, WIMData data) => this.config = config;
+
+        public void OnDetectArmLength() => Detect();
 
         private void Detect() {
             if (!config.AutoDetectArmLength || armLengthDetected) return;

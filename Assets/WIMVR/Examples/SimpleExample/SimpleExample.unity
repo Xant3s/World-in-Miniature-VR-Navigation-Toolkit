@@ -2318,48 +2318,104 @@ MonoBehaviour:
   m_GameObject: {fileID: 460360202}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Script: {fileID: 11500000, guid: 9aa0f53c5fd6479b8170f4980a141800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: b7477b37-cf57-421c-b3af-20373f66f2de
-    m_ActionName: Miniature Model/Test
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 184d9db3-31cb-475b-8c39-c506cbf00983
-    m_ActionName: Miniature Model/Respawn
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a4f24501-8b29-4c9c-b839-bed52b42e955
-    m_ActionName: Miniature Model/DestinationSelectionTouch
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 934c9955-f001-460e-8f26-4348b3e0ba96
-    m_ActionName: Miniature Model/Confirm Travel
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 43c70a85-9362-4577-8294-01bb07331424
-    m_ActionName: Miniature Model/Destination Rotation
-  m_NeverAutoSwitchControlSchemes: 1
-  m_DefaultControlScheme: XR
-  m_DefaultActionMap: Miniature Model
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+  directMovement:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Direct Movement
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: a903825d-7e03-4d23-94f3-a2052e7e4a78
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 0}
+  respawn:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Respawn
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 2b0cda7f-73b0-4424-9522-95dbc7fb850e
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 4463301429280061073, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
+  destinationSelectionTouch:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Destination Selection Touch
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: fd0abdb4-8f1c-405c-a497-cdee395de572
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 2503436365466194533, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
+  confirmTravel:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Confirm Travel
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 219e782a-b97f-4cf9-9b0d-898fe2c94d0e
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 3737720598537592725, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
+  destinationRotation:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Destination Rotation
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 7d2e3601-68c2-40ae-ade5-16420516c0e9
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: -6170237590825875401, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
+  scrollWIM:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Scroll WIM
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 5bf46675-47f9-4b8b-b528-2e43c607e243
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 3880435356163953785, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
+  scrollWIMVertically:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Scroll WIM Vertically
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: a0fa380a-9d1d-4e32-8598-caf695812a49
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: -1771613852081117101, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
+  detectArmLength:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Detect Arm Length
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: f71c6850-fd68-461b-8ad7-372106e84acd
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: -2119435305671207482, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+      type: 3}
 --- !u!114 &460360249
 MonoBehaviour:
   m_ObjectHideFlags: 0
