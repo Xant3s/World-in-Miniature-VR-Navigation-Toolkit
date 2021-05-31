@@ -1,22 +1,16 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 
 
 namespace WIMVR.VR {
-
     [RequireComponent(typeof(CharacterController))]
     public class MovementProvider : MonoBehaviour {
-        public const string playerMovementActionMapName = "Player Movement";
-        public const string directMovementActionName = "Direct Movement";
-
-        public InputActionAsset mappings;
+        public InputActionProperty movementAction;
         public float movementSpeed = 1f;
         public float additionalHeadHeight = .2f;
-        public LayerMask groundLayer = 1;
 
         private CharacterController characterController;
         private XRRig rig;
@@ -30,62 +24,11 @@ namespace WIMVR.VR {
         }
 
         private void Start() {
-            if(mappings == null) Debug.Log("Movement provider requires input mapping.");
-            NotifyIfNoBinding();
-            BindAction();
+            movementAction.action.performed += ctx => OnNewInput(ctx.action.ReadValue<Vector2>());
+            movementAction.action.Enable();
         }
 
-        private void OnEnable() {
-            var action = GetActionFromMappings();
-            action?.Enable();
-        }
-
-        private void OnDisable() {
-            var action = GetActionFromMappings();
-            action?.Disable();
-        }
-
-        private void NotifyIfNoBinding() {
-            if(!HasBinding()) Debug.Log($"No binding for {directMovementActionName}.");
-        }
-
-        private void BindAction() {
-            if(!HasBinding()) return;
-            var action = GetActionFromMappings();
-            action.performed += Test;
-        }
-
-        public InputAction GetActionFromMappings() {
-            var actionMap = mappings.FindActionMap(playerMovementActionMapName);
-            var action = actionMap.FindAction(directMovementActionName);
-            return action;
-        }
-
-        public void CopyBindings(InputAction from, InputAction to) {
-            foreach(var binding in from.bindings) {
-                to.AddBinding(binding);
-            }
-        }
-
-        private bool HasBinding() {
-            if(mappings == null) return false;
-            var bindings = GetActionFromMappings().bindings;
-            var bindingFound = bindings.Any(b => !string.IsNullOrEmpty(b.path));
-            return bindings.Count != 0 && bindingFound;
-        }
-
-        public void SetupActionMap(InputActionAsset mappings) {
-            if(mappings == null) return;
-            var actionMap = mappings.FindActionMap(playerMovementActionMapName)
-                            ?? mappings.AddActionMap(playerMovementActionMapName);
-            var action = actionMap.FindAction(directMovementActionName)
-                         ?? actionMap.AddAction(directMovementActionName);
-            action.expectedControlType = "Vector2";
-        }
-
-        public void Test(InputAction.CallbackContext context) {
-            inputAxis = context.ReadValue<Vector2>();
-        }
+        private void OnNewInput(Vector2 value) => inputAxis = value;
 
         private void FixedUpdate() {
             // Move character controller to headset.
@@ -108,5 +51,7 @@ namespace WIMVR.VR {
 
             characterController.Move(Vector3.up * gravityFactor * Time.fixedDeltaTime);
         }
+
+        private void OnDestroy() => movementAction.action.Disable();
     }
 }
