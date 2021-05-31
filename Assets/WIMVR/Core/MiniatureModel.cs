@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using WIMVR.Core.Input;
 using WIMVR.Features;
 using WIMVR.Util;
 using WIMVR.VR;
@@ -16,7 +17,7 @@ namespace WIMVR.Core {
     [RequireComponent(typeof(OffsetGrabInteractable))]
     [RequireComponent(typeof(PlayerRepresentation))]
     [RequireComponent(typeof(Respawn))]
-    [RequireComponent(typeof(PlayerInput))]
+    [RequireComponent(typeof(WIMInput))]
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public class MiniatureModel : MonoBehaviour {

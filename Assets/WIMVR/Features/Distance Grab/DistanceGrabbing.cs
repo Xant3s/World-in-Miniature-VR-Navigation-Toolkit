@@ -10,7 +10,6 @@ using InputDevice = UnityEngine.XR.InputDevice;
 
 namespace WIMVR.Features.Distance_Grab {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(PlayerInput))]
     public class DistanceGrabbing : MonoBehaviour {
         public bool distanceGrabbingEnabled;
 
