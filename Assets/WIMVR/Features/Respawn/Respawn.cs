@@ -1,14 +1,17 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
+using WIMVR.Core.Input;
 
 namespace WIMVR.Features {
     /// <summary>
     /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
     /// </summary>
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(WIMInput))]
     public class Respawn : MonoBehaviour {
         public delegate void RespawnAction(in Transform oldWIMTransform, in Transform newWIMTransform, bool maintainTransformRelativeToPlayer);
         public static event RespawnAction OnEarlyRespawn;
@@ -18,22 +21,21 @@ namespace WIMVR.Features {
         
         private WIMConfiguration config;
         private WIMData data;
+        private WIMInput wimInput;
         private Transform oldWIMLevel;
 
 
-        private void OnEnable() {
-            MiniatureModel.OnLateInitHand += StartRespawn;
-            var WIM = TryFindWIM();
-            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
-            materialForOldWIM = new Material(Shader.Find(shaderName));
-        }
-
-        private void OnDisable() {
-            MiniatureModel.OnLateInitHand -= StartRespawn;
+        private void Awake() {
+            wimInput = GetComponent<WIMInput>();
+            wimInput.respawn.action.performed += ctx => OnRespawn();
         }
 
         private void Start() {
             MiniatureModel.OnCleanupWIMBeforeRespawn += DestinationIndicators.RemoveDestinationIndicators;
+            MiniatureModel.OnLateInitHand += StartRespawn;
+            var WIM = TryFindWIM();
+            var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
+            materialForOldWIM = new Material(Shader.Find(shaderName));
         }
 
         public void OnRespawn() {
@@ -142,6 +144,10 @@ namespace WIMVR.Features {
                 transform.position = new Vector3(transform.position.x,
                     data.PlayerController.position.y + data.WIMHeightRelativeToPlayer, transform.position.z);
             }
+        }
+
+        private void OnDestroy() {
+            MiniatureModel.OnLateInitHand -= StartRespawn;
         }
     }
 }
