@@ -2321,17 +2321,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa0f53c5fd6479b8170f4980a141800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directMovement:
-    m_UseReference: 0
-    m_Action:
-      m_Name: Direct Movement
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: a903825d-7e03-4d23-94f3-a2052e7e4a78
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-    m_Reference: {fileID: 0}
   respawn:
     m_UseReference: 1
     m_Action:
@@ -7696,6 +7685,27 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: XR Rig Device-based
+      objectReference: {fileID: 0}
+    - target: {fileID: 89556769233134963, guid: e4104f9d56eacdf40a4cc638a6b1d71e,
+        type: 3}
+      propertyPath: movementAction.m_Reference
+      value: 
+      objectReference: {fileID: 3316371202582704530, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
+        type: 3}
+    - target: {fileID: 89556769233134963, guid: e4104f9d56eacdf40a4cc638a6b1d71e,
+        type: 3}
+      propertyPath: movementAction.m_Action.m_Id
+      value: cf040e92-1c0a-46fb-baaf-4841e3e7d4ee
+      objectReference: {fileID: 0}
+    - target: {fileID: 89556769233134963, guid: e4104f9d56eacdf40a4cc638a6b1d71e,
+        type: 3}
+      propertyPath: movementAction.m_UseReference
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 89556769233134963, guid: e4104f9d56eacdf40a4cc638a6b1d71e,
+        type: 3}
+      propertyPath: movementAction.m_Action.m_Name
+      value: Movement
       objectReference: {fileID: 0}
     - target: {fileID: 89556769233134967, guid: e4104f9d56eacdf40a4cc638a6b1d71e,
         type: 3}
