@@ -13,7 +13,7 @@ namespace WIMVR.Editor.Welcome {
     public class WelcomeWindow : EditorWindow {
         private VisualElement root;
 
-        [MenuItem("Window/WIMVR/Welcome Window")]
+        [MenuItem("Window/wimVR/Welcome Window")]
         public static void ShowWindow() {
             var window = GetWindow(typeof(WelcomeWindow), true, "wimVR Welcome");
             window.minSize = window.maxSize = new Vector2(600, 520);
