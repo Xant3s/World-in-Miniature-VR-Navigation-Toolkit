@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 using WIMVR.Util.Extensions;
 using WIMVR.VR.HandSetup;
+using Button = UnityEngine.UIElements.Button;
+using Image = UnityEngine.UIElements.Image;
 
 namespace WIMVR.Core.VR.HandSetup.Editor {
     public class HandSetupWindow : EditorWindow {
@@ -34,11 +37,19 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         }
 
         private void AddHandsTypeDropdown() {
-            var choices = new List<string> { "Oculus custom hands (recommended)", "I have you own hand models" };
-            root.Add(new PopupField<string>("Hands Models", choices, 0) {
+            var choices = new List<string> { "Oculus custom hands (recommended)", "I use you own hand models" };
+            var dropdown = new PopupField<string>("Hands Models", choices, 0) {
                 name = "hand-models-type",
-                tooltip = "Choose whether you want to use the Oculus hands or your own"
+                tooltip = "Choose whether you want to use the Oculus hands or your own."
+            };
+            dropdown.RegisterValueChangedCallback(e => {
+                var oculusHands = e.newValue == "Oculus custom hands (recommended)";
+                var customHandPrefabsAssigned = LeftHandPrefab && RightHandPrefab;
+                root.Q<VisualElement>("prefab-selection-container").SetVisible(!oculusHands);
+                root.Q<VisualElement>("integrity-check-container").SetVisible(oculusHands || customHandPrefabsAssigned);
+                root.Q<VisualElement>("integrity-check-results").Hide();
             });
+            root.Add(dropdown);
         }
 
         private void LoadHierarchy() {
@@ -90,8 +101,8 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
         private void Validate() {
             HandValidator validator = new OculusHandsValidator();
-            validator.CheckLeft(LeftHandPrefab);
-            validator.CheckRight(RightHandPrefab);
+            validator.CheckLeft(OculusHandsSelected ? LeftOculusHandPrefab : LeftHandPrefab);
+            validator.CheckRight(OculusHandsSelected ? RightOculusHandPrefab : RightHandPrefab);
             var results = validator.GetResults();
             DisplayValidationResults(results);
         }
@@ -103,6 +114,15 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         }
 
         private GameObject LeftHandPrefab => root.Q<ObjectField>("left-hand-prefab").value as GameObject;
+        
         private GameObject RightHandPrefab => root.Q<ObjectField>("right-hand-prefab").value as GameObject;
+
+        private GameObject LeftOculusHandPrefab => Resources.Load<GameObject>("CustomHandLeftDeviceBased");
+        
+        private GameObject RightOculusHandPrefab => Resources.Load<GameObject>("CustomHandRightDeviceBased");
+
+        private bool OculusHandsSelected => root.Q<PopupField<string>>("hand-models-type")
+                                                .value
+                                                .Equals("Oculus custom hands (recommended)");
     }
 }

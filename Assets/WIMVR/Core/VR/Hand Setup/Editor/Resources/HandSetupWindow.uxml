@@ -1,27 +1,29 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" xmlns:WIM="WIMVR" xmlns:engine="UnityEngine.UIElements">
     <VisualElement name="root">
-        <WIM:HelpBox name="prefabs-missing-help" class="space-below" message-type="Info" 
-                     text="Please assign the provided hand model prefabs.
+        <VisualElement name="prefab-selection-container" style="display: None;">
+            <WIM:HelpBox name="prefabs-missing-help" class="space-below" message-type="Info"
+                         text="Please assign the provided hand model prefabs.
 You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
-        <editor:ObjectField name="left-hand-prefab"
-                            label="Left Hand Prefab"
-                            type="UnityEngine.GameObject, UnityEngine.CoreModule"
-                            allow-scene-objects="false"
-                            tooltip=""/>
-        <editor:ObjectField name="right-hand-prefab"
-                            class="space-below"
-                            label="Right Hand Prefab"
-                            type="UnityEngine.GameObject, UnityEngine.CoreModule"
-                            allow-scene-objects="false"
-                            tooltip=""/>
-        <VisualElement name="integrity-check-container" style="display: None;">
-            <Button name="btn-check-integrity" class="space-below" text="Check Integrity" />
+            <editor:ObjectField name="left-hand-prefab"
+                                label="Left Hand Prefab"
+                                type="UnityEngine.GameObject, UnityEngine.CoreModule"
+                                allow-scene-objects="false"
+                                tooltip=""/>
+            <editor:ObjectField name="right-hand-prefab"
+                                class="space-below"
+                                label="Right Hand Prefab"
+                                type="UnityEngine.GameObject, UnityEngine.CoreModule"
+                                allow-scene-objects="false"
+                                tooltip=""/>
+        </VisualElement>
+        <VisualElement name="integrity-check-container">
+            <Button name="btn-check-integrity" class="space-below" text="Check Integrity"/>
             <VisualElement name="integrity-check-results" style="display: None;">
-                <Label text="Integrity Check Results:" />
+                <Label text="Integrity Check Results:"/>
                 <VisualElement name="OculusIntegrationPresent" class="row">
                     <Label text="Oculus Integration custom hands imported"/>
-                    <Image name="oculus-integration-present-icon" class="icon" />
-                    <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix" />
+                    <Image name="oculus-integration-present-icon" class="icon"/>
+                    <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix"/>
                 </VisualElement>
             </VisualElement>
         </VisualElement>
