@@ -1,6 +1,7 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -24,6 +25,7 @@ public class HandSetupWindow : EditorWindow {
         LoadHierarchy();
         LoadStyle();
         LoadIcons();
+        SetupPrefabMissingHelpBox();
         SetupValidateButton();
     }
 
@@ -40,6 +42,27 @@ public class HandSetupWindow : EditorWindow {
     private void LoadIcons() {
         validIcon = EditorGUIUtility.IconContent("Valid@2x").image;
         invalidIcon = EditorGUIUtility.IconContent("d_Invalid@2x").image;
+    }
+
+    private void SetupPrefabMissingHelpBox() {
+        var leftHandPrefabPresent = false;
+        var rightHandPrefabPresent = false;
+        
+        root.Q<ObjectField>("left-hand-prefab").RegisterValueChangedCallback(e => {
+            leftHandPrefabPresent = e.newValue != null;
+            UpdateHelpBoxState(leftHandPrefabPresent && rightHandPrefabPresent);
+        });        
+        
+        root.Q<ObjectField>("right-hand-prefab").RegisterValueChangedCallback(e => {
+            rightHandPrefabPresent = e.newValue != null;
+            UpdateHelpBoxState(leftHandPrefabPresent && rightHandPrefabPresent);
+        });
+    }
+
+    private void UpdateHelpBoxState(bool show) {
+        var hidden = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+        var visible = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+        root.Q("prefabs-missing-help").style.display = show ? hidden : visible;
     }
 
     private void SetupValidateButton() {
