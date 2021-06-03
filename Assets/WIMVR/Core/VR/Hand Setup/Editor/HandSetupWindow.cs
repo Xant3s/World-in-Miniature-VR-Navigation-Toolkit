@@ -105,7 +105,10 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         }
 
         private void Validate() {
-            HandValidator validator = new OculusHandsValidator();
+            HandValidator validator = OculusHandsSelected switch {
+                true => new OculusHandsValidator(),
+                _ => new BasicHandValidator()
+            };
             validator.CheckLeft(OculusHandsSelected ? LeftOculusHandPrefab : LeftHandPrefab);
             validator.CheckRight(OculusHandsSelected ? RightOculusHandPrefab : RightHandPrefab);
             var results = validator.GetResults();
@@ -122,9 +125,9 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         
         private GameObject RightHandPrefab => root.Q<ObjectField>("right-hand-prefab").value as GameObject;
 
-        private GameObject LeftOculusHandPrefab => Resources.Load<GameObject>("CustomHandLeftDeviceBased");
+        private static GameObject LeftOculusHandPrefab => Resources.Load<GameObject>("CustomHandLeftDeviceBased");
         
-        private GameObject RightOculusHandPrefab => Resources.Load<GameObject>("CustomHandRightDeviceBased");
+        private static GameObject RightOculusHandPrefab => Resources.Load<GameObject>("CustomHandRightDeviceBased");
 
         private bool OculusHandsSelected => root.Q<PopupField<string>>("hand-models-type")
                                                 .value
