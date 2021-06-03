@@ -6,21 +6,21 @@ You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
                             label="Left Hand Prefab"
                             type="UnityEngine.GameObject, UnityEngine.CoreModule"
                             allow-scene-objects="false"
-                            binding-path="leftHandPrefab"
                             tooltip=""/>
         <editor:ObjectField name="right-hand-prefab"
                             label="Right Hand Prefab"
                             type="UnityEngine.GameObject, UnityEngine.CoreModule"
                             allow-scene-objects="false"
-                            binding-path="rightHandPrefab"
                             tooltip=""/>
         <VisualElement name="integrity-check-container" style="display: None;">
             <Button name="btn-check-integrity" text="Check Integrity" />
-            <Label text="Integrity Check:" />
-            <VisualElement name="OculusIntegrationPresent" class="row">
-                <Label text="Oculus Integration custom hands"/>
-                <Image name="oculus-integration-present-icon" class="icon" />
-                <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix" />
+            <VisualElement name="integrity-check-results" style="display: None;">
+                <Label text="Integrity Check Results:" />
+                <VisualElement name="OculusIntegrationPresent" class="row">
+                    <Label text="Oculus Integration custom hands imported"/>
+                    <Image name="oculus-integration-present-icon" class="icon" />
+                    <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix" />
+                </VisualElement>
             </VisualElement>
         </VisualElement>
     </VisualElement>
