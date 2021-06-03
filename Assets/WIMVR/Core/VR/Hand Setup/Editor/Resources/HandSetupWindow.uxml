@@ -14,12 +14,14 @@ You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
                             allow-scene-objects="false"
                             binding-path="rightHandPrefab"
                             tooltip=""/>
-        <Button name="btn-check-integrity" text="Check Integrity" />
-        <Label text="Integrity Check:" />
-        <VisualElement name="OculusIntegrationPresent" class="row">
-            <Label text="Oculus Integration custom hands"/>
-            <Image name="oculus-integration-present-icon" class="icon" />
-            <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix" />
+        <VisualElement name="integrity-check-container" style="display: None;">
+            <Button name="btn-check-integrity" text="Check Integrity" />
+            <Label text="Integrity Check:" />
+            <VisualElement name="OculusIntegrationPresent" class="row">
+                <Label text="Oculus Integration custom hands"/>
+                <Image name="oculus-integration-present-icon" class="icon" />
+                <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix" />
+            </VisualElement>
         </VisualElement>
     </VisualElement>
 </UXML>

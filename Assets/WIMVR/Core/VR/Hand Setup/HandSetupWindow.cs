@@ -1,9 +1,11 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Util.Extensions;
 
 
 public class HandSetupWindow : EditorWindow {
@@ -25,7 +27,7 @@ public class HandSetupWindow : EditorWindow {
         LoadHierarchy();
         LoadStyle();
         LoadIcons();
-        SetupPrefabMissingHelpBox();
+        RegisterPrefabValueChangeCallbacks();
         SetupValidateButton();
     }
 
@@ -44,25 +46,23 @@ public class HandSetupWindow : EditorWindow {
         invalidIcon = EditorGUIUtility.IconContent("d_Invalid@2x").image;
     }
 
-    private void SetupPrefabMissingHelpBox() {
+    private void RegisterPrefabValueChangeCallbacks() {
         var leftHandPrefabPresent = false;
         var rightHandPrefabPresent = false;
-        
+
+        bool bothHandsPresent() => leftHandPrefabPresent && rightHandPrefabPresent;
+
         root.Q<ObjectField>("left-hand-prefab").RegisterValueChangedCallback(e => {
             leftHandPrefabPresent = e.newValue != null;
-            UpdateHelpBoxState(leftHandPrefabPresent && rightHandPrefabPresent);
+            root.Q("prefabs-missing-help").SetVisible(!bothHandsPresent());
+            root.Q("integrity-check-container").SetVisible(bothHandsPresent());
         });        
         
         root.Q<ObjectField>("right-hand-prefab").RegisterValueChangedCallback(e => {
             rightHandPrefabPresent = e.newValue != null;
-            UpdateHelpBoxState(leftHandPrefabPresent && rightHandPrefabPresent);
+            root.Q("prefabs-missing-help").SetVisible(!bothHandsPresent());
+            root.Q("integrity-check-container").SetVisible(bothHandsPresent());
         });
-    }
-
-    private void UpdateHelpBoxState(bool show) {
-        var hidden = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-        var visible = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-        root.Q("prefabs-missing-help").style.display = show ? hidden : visible;
     }
 
     private void SetupValidateButton() {
