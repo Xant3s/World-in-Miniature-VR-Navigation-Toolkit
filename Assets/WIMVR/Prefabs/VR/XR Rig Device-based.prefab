@@ -250,13 +250,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa04f4ae26496d41b5810bb4197da9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mappings: {fileID: -944628639613478452, guid: 01afb95c1b8ac7b49a5cf8091c12a596,
-    type: 3}
+  movementAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Movement
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: a160b731-6694-416b-a291-d4d83017ffce
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+    m_Reference: {fileID: 0}
   movementSpeed: 1
   additionalHeadHeight: 0.2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
 --- !u!1 &89556769942064600
 GameObject:
   m_ObjectHideFlags: 0
