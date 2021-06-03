@@ -1,6 +1,7 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" xmlns:WIM="WIMVR" xmlns:engine="UnityEngine.UIElements">
     <VisualElement name="root">
-        <WIM:HelpBox name="prefabs-missing-help" message-type="Info" text="Please assign the provided hand model prefabs.
+        <WIM:HelpBox name="prefabs-missing-help" class="space-below" message-type="Info" 
+                     text="Please assign the provided hand model prefabs.
 You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
         <editor:ObjectField name="left-hand-prefab"
                             label="Left Hand Prefab"
@@ -8,12 +9,13 @@ You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
                             allow-scene-objects="false"
                             tooltip=""/>
         <editor:ObjectField name="right-hand-prefab"
+                            class="space-below"
                             label="Right Hand Prefab"
                             type="UnityEngine.GameObject, UnityEngine.CoreModule"
                             allow-scene-objects="false"
                             tooltip=""/>
         <VisualElement name="integrity-check-container" style="display: None;">
-            <Button name="btn-check-integrity" text="Check Integrity" />
+            <Button name="btn-check-integrity" class="space-below" text="Check Integrity" />
             <VisualElement name="integrity-check-results" style="display: None;">
                 <Label text="Integrity Check Results:" />
                 <VisualElement name="OculusIntegrationPresent" class="row">
