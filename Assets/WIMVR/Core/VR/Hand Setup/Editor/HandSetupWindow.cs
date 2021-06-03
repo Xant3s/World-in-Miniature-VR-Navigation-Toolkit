@@ -1,5 +1,6 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
         public void OnEnable() {
             root = rootVisualElement;
+            AddHandsTypeDropdown();
             LoadHierarchy();
             LoadStyle();
             LoadIcons();
@@ -29,6 +31,14 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             SetupValidateButton();
             SetupFixButtons();
             SetupBindings();
+        }
+
+        private void AddHandsTypeDropdown() {
+            var choices = new List<string> { "Oculus custom hands (recommended)", "I have you own hand models" };
+            root.Add(new PopupField<string>("Hands Models", choices, 0) {
+                name = "hand-models-type",
+                tooltip = "Choose whether you want to use the Oculus hands or your own"
+            });
         }
 
         private void LoadHierarchy() {
