@@ -19,8 +19,16 @@ public class HandSetupWindow : EditorWindow {
 
     public void OnEnable() {
         root = rootVisualElement;
+        LoadHierarchy();
+        LoadStyle();
+    }
+
+    private void LoadHierarchy() {
         var visualTree = Resources.Load<VisualTreeAsset>("HandSetupWindow");
         visualTree.CloneTree(root);
+    }
+
+    private void LoadStyle() {
         var style = Resources.Load<StyleSheet>("HandSetupWindowStyle");
         root.styleSheets.Add(style);
     }
