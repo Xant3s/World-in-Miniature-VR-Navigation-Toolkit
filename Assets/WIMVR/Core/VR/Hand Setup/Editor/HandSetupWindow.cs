@@ -40,7 +40,12 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             var choices = new List<string> { "Oculus custom hands (recommended)", "I use you own hand models" };
             var dropdown = new PopupField<string>("Hands Models", choices, 0) {
                 name = "hand-models-type",
-                tooltip = "Choose whether you want to use the Oculus hands or your own."
+                tooltip = "Choose whether you want to use the Oculus hands or your own.",
+                style = {
+                    marginTop = 10,
+                    marginLeft = 10,
+                    marginRight = 10
+                }
             };
             dropdown.RegisterValueChangedCallback(e => {
                 var oculusHands = e.newValue == "Oculus custom hands (recommended)";
