@@ -1,11 +1,10 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
-
 using UnityEditor;
 using UnityEngine;
 
 namespace WIMVR.VR.HandSetup {
-    public class OculusValidationValidationResults : ValidationResults {
+    public class OculusValidationResults : ValidationResults {
         public bool LeftIndexFingerTip { get; set; }
         public bool LeftThumbFingerTip { get; set; }
         public bool RightIndexFingerTip { get; set; }
@@ -14,7 +13,7 @@ namespace WIMVR.VR.HandSetup {
     }
 
     public class OculusHandsValidator : HandValidator {
-        private readonly OculusValidationValidationResults validationResults = new OculusValidationValidationResults();
+        private readonly OculusValidationResults validationResults = new OculusValidationResults();
         private bool leftPrefabRootValid;
         private bool rightPrefabRootValid;
         
