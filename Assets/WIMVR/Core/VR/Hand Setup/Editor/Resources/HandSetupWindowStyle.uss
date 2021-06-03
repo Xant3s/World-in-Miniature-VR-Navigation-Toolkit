@@ -1,11 +1,32 @@
-#root{
+.row {
+    display: flex;
+    flex-direction: row;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+}
+
+.fix-btn {
+    margin-left: 10px;
+    align-self: center;
+}
+
+#root {
     margin: 10px;
 }
 
-#prefabs-missing{
+#prefabs-missing {
     margin-bottom: 10px;
 }
 
-#right-hand-prefab{
+#right-hand-prefab {
+    margin-bottom: 10px;
+}
+
+#btn-check-integrity {
     margin-bottom: 10px;
 }
