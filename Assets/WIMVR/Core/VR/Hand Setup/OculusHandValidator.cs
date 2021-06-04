@@ -13,23 +13,30 @@ namespace WIMVR.VR.HandSetup {
     }
 
     public class OculusHandsValidator : HandValidator {
-        private readonly OculusValidationResults validationResults = new OculusValidationResults();
+        private readonly OculusValidationResults results = new OculusValidationResults();
+        private HandValidator basicValidator = new BasicHandValidator();
         private bool leftPrefabRootValid;
         private bool rightPrefabRootValid;
         
         public void CheckLeft(GameObject leftHand) {
+            basicValidator.CheckLeft(leftHand);
+            var basicResults = basicValidator.GetResults();
             leftPrefabRootValid = PrefabUtility.GetOutermostPrefabInstanceRoot(leftHand) != null;
-            validationResults.PrefabRootsPresent = BothPrefabRootsPresent();
-            // TODO: check fingertips
+            results.PrefabRootsPresent = BothPrefabRootsPresent();
+            results.LeftIndexFingerTip = basicResults.LeftIndexFingerTip;
+            results.LeftThumbFingerTip = basicResults.LeftThumbFingerTip;
         }
 
         public void CheckRight(GameObject rightHand) {
+            basicValidator.CheckLeft(rightHand);
+            var basicResults = basicValidator.GetResults();
             rightPrefabRootValid = PrefabUtility.GetOutermostPrefabInstanceRoot(rightHand) != null;
-            validationResults.PrefabRootsPresent = BothPrefabRootsPresent();
-            // TODO: check fingertips
+            results.PrefabRootsPresent = BothPrefabRootsPresent();
+            results.RightIndexFingerTip = basicResults.RightIndexFingerTip;
+            results.RightThumbFingerTip = basicResults.RightThumbFingerTip;
         }
 
-        public ValidationResults GetResults() => validationResults;
+        public ValidationResults GetResults() => results;
 
         private bool BothPrefabRootsPresent() => leftPrefabRootValid && rightPrefabRootValid;
     }
