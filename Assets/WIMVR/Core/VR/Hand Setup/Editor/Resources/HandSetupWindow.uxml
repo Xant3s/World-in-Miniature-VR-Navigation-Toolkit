@@ -20,10 +20,30 @@ You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
             <Button name="btn-check-integrity" class="space-below" text="Check Integrity"/>
             <VisualElement name="integrity-check-results" style="display: None;">
                 <Label text="Integrity Check Results:"/>
-                <VisualElement name="OculusIntegrationPresent" class="row">
+                <VisualElement name="oculus-integration-present" class="row">
                     <Label text="Oculus Integration custom hands imported"/>
                     <Image name="oculus-integration-present-icon" class="icon"/>
                     <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                <VisualElement name="left-index-finger-tip-present" class="row">
+                    <Label text="Left index finger tip present"/>
+                    <Image name="left-index-finger-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-left-index-finger-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                <VisualElement name="left-thumb-finger-tip-present" class="row">
+                    <Label text="Left thumb tip present"/>
+                    <Image name="left-thumb-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-left-thumb-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                <VisualElement name="right-index-finger-tip-present" class="row">
+                    <Label text="Right index finger tip present"/>
+                    <Image name="right-index-finger-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-right-index-finger-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                <VisualElement name="right-thumb-tip-present" class="row">
+                    <Label text="Right thumb tip present"/>
+                    <Image name="right-thumb-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-right-thumb-tip" class="fix-btn" text="Fix"/>
                 </VisualElement>
             </VisualElement>
         </VisualElement>

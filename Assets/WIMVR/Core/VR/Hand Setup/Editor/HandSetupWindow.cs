@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.UIElements;
 using WIMVR.Util.Extensions;
 using WIMVR.VR.HandSetup;
@@ -117,8 +116,22 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
         private void DisplayValidationResults(ValidationResults results) {
             root.Q<VisualElement>("integrity-check-results").Show();
+            root.Q<VisualElement>("oculus-integration-present").SetVisible(OculusHandsSelected);
+            
             root.Q<Image>("oculus-integration-present-icon").image = results.PrefabRootsPresent ? validIcon : invalidIcon;
             root.Q<Button>("btn-fix-oculus-integration").SetVisible(!results.PrefabRootsPresent);
+            
+            root.Q<Image>("left-index-finger-tip-present-icon").image = results.LeftIndexFingerTip ? validIcon : invalidIcon;
+            root.Q<Button>("btn-fix-left-index-finger-tip").SetVisible(!results.LeftIndexFingerTip);
+            
+            root.Q<Image>("left-thumb-tip-present-icon").image = results.LeftThumbFingerTip ? validIcon : invalidIcon;
+            root.Q<Button>("btn-fix-left-thumb-tip").SetVisible(!results.LeftThumbFingerTip);
+            
+            root.Q<Image>("right-index-finger-tip-present-icon").image = results.RightIndexFingerTip ? validIcon : invalidIcon;
+            root.Q<Button>("btn-fix-right-index-finger-tip").SetVisible(!results.RightIndexFingerTip);
+            
+            root.Q<Image>("right-thumb-tip-present-icon").image = results.RightThumbFingerTip ? validIcon : invalidIcon;
+            root.Q<Button>("btn-fix-right-thumb-tip").SetVisible(!results.RightThumbFingerTip);
         }
 
         private GameObject LeftHandPrefab => root.Q<ObjectField>("left-hand-prefab").value as GameObject;
