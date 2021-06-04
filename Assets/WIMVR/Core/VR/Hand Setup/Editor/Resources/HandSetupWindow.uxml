@@ -19,7 +19,7 @@ You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
         <VisualElement name="integrity-check-container">
             <Button name="btn-check-integrity" class="space-below" text="Check Integrity"/>
             <VisualElement name="integrity-check-results" style="display: None;">
-                <Label text="Integrity Check Results:"/>
+                <Label text="Results:" class="space-below" />
                 <VisualElement name="oculus-integration-present" class="row">
                     <Label text="Oculus Integration custom hands imported"/>
                     <Image name="oculus-integration-present-icon" class="icon"/>
