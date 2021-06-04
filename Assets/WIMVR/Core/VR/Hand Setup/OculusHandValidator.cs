@@ -28,7 +28,7 @@ namespace WIMVR.VR.HandSetup {
         }
 
         public void CheckRight(GameObject rightHand) {
-            basicValidator.CheckLeft(rightHand);
+            basicValidator.CheckRight(rightHand);
             var basicResults = basicValidator.GetResults();
             rightPrefabRootValid = PrefabUtility.GetOutermostPrefabInstanceRoot(rightHand) != null;
             results.PrefabRootsPresent = BothPrefabRootsPresent();

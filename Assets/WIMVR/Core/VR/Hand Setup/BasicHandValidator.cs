@@ -21,8 +21,8 @@ namespace WIMVR.VR.HandSetup {
         }
 
         public void CheckRight(GameObject rightHand) {
-            results.RightIndexFingerTip = LeftIndexFingerTipPrefab.IsChildOf(RightIndexFingerTipPrefab);
-            results.RightThumbFingerTip = LeftThumbFingerTipPrefab.IsChildOf(RightThumbFingerTipPrefab);
+            results.RightIndexFingerTip = RightIndexFingerTipPrefab.IsChildOf(rightHand);
+            results.RightThumbFingerTip = RightThumbFingerTipPrefab.IsChildOf(rightHand);
         }
 
         public ValidationResults GetResults() => results;
