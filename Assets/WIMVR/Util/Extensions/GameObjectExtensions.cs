@@ -16,13 +16,5 @@ namespace WIMVR.Util.Extensions {
             if(t) return t as T;
             return obj.AddComponent<T>();
         }
-
-        public static bool IsChildOf(this GameObject child, GameObject parent) {
-            if(child.Equals(parent)) return true;
-            for(var i = 0; i < parent.transform.childCount; i++) {
-                if(child.IsChildOf(parent.transform.GetChild(i).gameObject)) return true;
-            }
-            return false;
-        }
     }
 }
