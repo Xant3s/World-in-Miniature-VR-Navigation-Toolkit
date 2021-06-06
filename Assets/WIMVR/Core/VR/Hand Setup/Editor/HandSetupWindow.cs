@@ -110,8 +110,10 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                     $"Please remove the missing scripts from the Oculus hands prefabs.", "Ok"));
             
             root.Q<Button>("btn-fix-oculus-material-converted")
-                .RegisterCallback<ClickEvent>(e=> EditorUtility.DisplayDialog("wimVR Hand Setup",
-                    $"Please upgrade Oculus hands material using Edit -> Render Pipeline -> Universal Render Pipeline -> Upgrade Selected Materials to UniversalRP Materials.", "Ok"));
+                .RegisterCallback<ClickEvent>(e => {
+                    UpgradeMaterialToURP(PrefabLoader.LeftOculusHandPrefab);
+                    Validate();
+                });
             
             root.Q<Button>("btn-fix-left-index-finger-tip")
                 .RegisterCallback<ClickEvent>(e 
@@ -128,6 +130,11 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             root.Q<Button>("btn-fix-right-thumb-tip")
                 .RegisterCallback<ClickEvent>(e 
                     => DisplayFingerTipPrefabMissingNotification(PrefabLoader.RightThumbFingerTipPrefab));
+        }
+
+        private static void UpgradeMaterialToURP(GameObject obj) {
+            obj.GetComponentInChildren<Renderer>().sharedMaterial.shader = Shader.Find("Universal Render Pipeline/Lit");
+            Debug.Log($"Upgraded material {obj.GetComponentInChildren<Renderer>().sharedMaterial} to Universal Render Pipeline.");
         }
 
         private static void DisplayFingerTipPrefabMissingNotification(GameObject prefab) {
