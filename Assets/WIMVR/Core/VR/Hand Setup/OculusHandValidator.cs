@@ -14,7 +14,7 @@ namespace WIMVR.VR.HandSetup {
 
     public class OculusHandsValidator : HandValidator {
         private readonly OculusValidationResults results = new OculusValidationResults();
-        private HandValidator basicValidator = new BasicHandValidator();
+        private readonly HandValidator basicValidator = new BasicHandValidator();
         private bool leftPrefabRootValid;
         private bool rightPrefabRootValid;
         
