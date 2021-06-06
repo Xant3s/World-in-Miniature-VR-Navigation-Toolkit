@@ -30,6 +30,7 @@ namespace WIMVR.VR.HandSetup {
             CheckPrefabRoot(leftHand, out leftPrefabRootValid, out var prefabRoot);
             if(!prefabRoot) return;
             CheckForMissingScripts(prefabRoot, out leftPrefabRootHasMissingScripts);
+            CheckMaterialConvertedToURP(leftHand);
         }
 
         public void CheckRight(GameObject rightHand) {
@@ -57,6 +58,11 @@ namespace WIMVR.VR.HandSetup {
         private void CheckForMissingScripts(GameObject prefabRoot, out bool hasMissingScripts) {
             hasMissingScripts = prefabRoot.HasMissingScripts();
             results.OculusCustomHandsNoMissingScripts = !HandsHaveMissingScripts;
+        }
+
+        private void CheckMaterialConvertedToURP(GameObject prefab) {
+            var shader = prefab.GetComponentInChildren<Renderer>().sharedMaterial.shader;
+            results.OculusMaterialsConvertedToURP = shader.name.Equals("Standard");
         }
 
         public ValidationResults GetResults() => results;
