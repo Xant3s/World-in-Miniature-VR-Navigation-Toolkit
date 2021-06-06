@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using WIMVR.Util;
 using WIMVR.Util.Extensions;
 using WIMVR.VR.HandSetup;
 using Button = UnityEngine.UIElements.Button;
@@ -97,6 +98,35 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         private void SetupFixButtons() {
             root.Q<Button>("btn-fix-oculus-integration")
                 .RegisterCallback<ClickEvent>(e =>Debug.Log("Import Oculus Integration custom hands."));
+            
+            root.Q<Button>("btn-fix-left-index-finger-tip")
+                .RegisterCallback<ClickEvent>(e 
+                    => DisplayFingerTipPrefabMissingNotification(PrefabLoader.LeftIndexFingerTipPrefab));
+            
+            root.Q<Button>("btn-fix-left-thumb-tip")
+                .RegisterCallback<ClickEvent>(e 
+                    => DisplayFingerTipPrefabMissingNotification(PrefabLoader.LeftThumbFingerTipPrefab));
+            
+            root.Q<Button>("btn-fix-right-index-finger-tip")
+                .RegisterCallback<ClickEvent>(e 
+                    => DisplayFingerTipPrefabMissingNotification(PrefabLoader.RightIndexFingerTipPrefab));
+            
+            root.Q<Button>("btn-fix-right-thumb-tip")
+                .RegisterCallback<ClickEvent>(e 
+                    => DisplayFingerTipPrefabMissingNotification(PrefabLoader.RightThumbFingerTipPrefab));
+            
+        }
+
+        private static void DisplayFingerTipPrefabMissingNotification(GameObject prefab) {
+            var prefabName = prefab.name.ToLower();
+            HighlightPrefab(prefab);
+            EditorUtility.DisplayDialog("wimVR Hand Setup",
+                $"Please attach the {prefabName} prefab to the {prefabName} of your hand model.", "Ok");
+        }
+
+        private static void HighlightPrefab(Object prefab) {
+            Selection.objects = new[] {prefab};
+            EditorGUIUtility.PingObject(prefab);
         }
 
         private void SetupBindings() {
@@ -135,11 +165,11 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         }
 
         private GameObject LeftHandPrefab => root.Q<ObjectField>("left-hand-prefab").value as GameObject;
-        
+
         private GameObject RightHandPrefab => root.Q<ObjectField>("right-hand-prefab").value as GameObject;
 
         private static GameObject LeftOculusHandPrefab => Resources.Load<GameObject>("CustomHandLeftDeviceBased");
-        
+
         private static GameObject RightOculusHandPrefab => Resources.Load<GameObject>("CustomHandRightDeviceBased");
 
         private bool OculusHandsSelected => root.Q<PopupField<string>>("hand-models-type")
