@@ -109,6 +109,10 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                 .RegisterCallback<ClickEvent>(e => EditorUtility.DisplayDialog("wimVR Hand Setup",
                     $"Please remove the missing scripts from the Oculus hands prefabs.", "Ok"));
             
+            root.Q<Button>("btn-fix-oculus-material-converted")
+                .RegisterCallback<ClickEvent>(e=> EditorUtility.DisplayDialog("wimVR Hand Setup",
+                    $"Please upgrade Oculus hands material using Edit -> Render Pipeline -> Universal Render Pipeline -> Upgrade Selected Materials to UniversalRP Materials.", "Ok"));
+            
             root.Q<Button>("btn-fix-left-index-finger-tip")
                 .RegisterCallback<ClickEvent>(e 
                     => DisplayFingerTipPrefabMissingNotification(PrefabLoader.LeftIndexFingerTipPrefab));
@@ -165,6 +169,9 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             
                 root.Q<Image>("oculus-no-missing-scripts-icon").image = oculusResults.OculusCustomHandsNoMissingScripts ? validIcon : invalidIcon;
                 root.Q<Button>("btn-fix-oculus-missing-scripts").SetVisible(!oculusResults.OculusCustomHandsNoMissingScripts);
+                
+                root.Q<Image>("oculus-material-converted-icon").image = oculusResults.OculusMaterialsConvertedToURP ? validIcon : invalidIcon;
+                root.Q<Button>("btn-fix-oculus-material-converted").SetVisible(!oculusResults.OculusMaterialsConvertedToURP);
             }
             
             root.Q<Image>("left-index-finger-tip-present-icon").image = results.LeftIndexFingerTip ? validIcon : invalidIcon;
