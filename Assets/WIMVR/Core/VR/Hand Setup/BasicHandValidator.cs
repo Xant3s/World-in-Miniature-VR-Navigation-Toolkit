@@ -1,7 +1,6 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
-using WIMVR.Util;
 using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.VR.HandSetup {
@@ -17,13 +16,13 @@ namespace WIMVR.VR.HandSetup {
         private readonly BasicValidationResults results = new BasicValidationResults();
         
         public void CheckLeft(GameObject leftHand) {
-            results.LeftIndexFingerTip = PrefabLoader.LeftIndexFingerTipPrefab.GetComponentInChildren<LeftIndexFingerTip>();
-            results.LeftThumbFingerTip = PrefabLoader.LeftThumbFingerTipPrefab.GetComponentInChildren<LeftThumbFingerTip>();
+            results.LeftIndexFingerTip = leftHand.GetComponentInChildren<LeftIndexFingerTip>();
+            results.LeftThumbFingerTip = leftHand.GetComponentInChildren<LeftThumbFingerTip>();
         }
 
         public void CheckRight(GameObject rightHand) {
-            results.RightIndexFingerTip = PrefabLoader.RightIndexFingerTipPrefab.GetComponentInChildren<RightIndexFingerTip>();
-            results.RightThumbFingerTip = PrefabLoader.RightThumbFingerTipPrefab.GetComponentInChildren<RightThumbFingerTip>();
+            results.RightIndexFingerTip = rightHand.GetComponentInChildren<RightIndexFingerTip>();
+            results.RightThumbFingerTip = rightHand.GetComponentInChildren<RightThumbFingerTip>();
         }
 
         public ValidationResults GetResults() => results;
