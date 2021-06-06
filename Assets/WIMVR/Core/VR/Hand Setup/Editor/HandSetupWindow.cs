@@ -152,7 +152,7 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
         private void DisplayValidationResults(ValidationResults results) {
             root.Q<VisualElement>("integrity-check-results").Show();
-            root.Q<VisualElement>("oculus-integration-present").SetVisible(OculusHandsSelected);
+            root.Q<VisualElement>("oculus-specific-results").SetVisible(OculusHandsSelected);
             
             root.Q<Image>("oculus-integration-present-icon").image = results.PrefabRootsPresent ? validIcon : invalidIcon;
             root.Q<Button>("btn-fix-oculus-integration").SetVisible(!results.PrefabRootsPresent);
