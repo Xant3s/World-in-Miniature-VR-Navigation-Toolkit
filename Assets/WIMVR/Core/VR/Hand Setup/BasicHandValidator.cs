@@ -1,6 +1,7 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Util;
 using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.VR.HandSetup {
@@ -16,20 +17,15 @@ namespace WIMVR.VR.HandSetup {
         private readonly BasicValidationResults results = new BasicValidationResults();
         
         public void CheckLeft(GameObject leftHand) {
-            results.LeftIndexFingerTip = LeftIndexFingerTipPrefab.GetComponentInChildren<LeftIndexFingerTip>();
-            results.LeftThumbFingerTip = LeftThumbFingerTipPrefab.GetComponentInChildren<LeftThumbFingerTip>();
+            results.LeftIndexFingerTip = PrefabLoader.LeftIndexFingerTipPrefab.GetComponentInChildren<LeftIndexFingerTip>();
+            results.LeftThumbFingerTip = PrefabLoader.LeftThumbFingerTipPrefab.GetComponentInChildren<LeftThumbFingerTip>();
         }
 
         public void CheckRight(GameObject rightHand) {
-            results.RightIndexFingerTip = RightIndexFingerTipPrefab.GetComponentInChildren<RightIndexFingerTip>();
-            results.RightThumbFingerTip = RightThumbFingerTipPrefab.GetComponentInChildren<RightThumbFingerTip>();
+            results.RightIndexFingerTip = PrefabLoader.RightIndexFingerTipPrefab.GetComponentInChildren<RightIndexFingerTip>();
+            results.RightThumbFingerTip = PrefabLoader.RightThumbFingerTipPrefab.GetComponentInChildren<RightThumbFingerTip>();
         }
 
         public ValidationResults GetResults() => results;
-
-        private static GameObject LeftIndexFingerTipPrefab => Resources.Load<GameObject>("Fingers/Left Index Finger Tip");
-        private static GameObject LeftThumbFingerTipPrefab => Resources.Load<GameObject>("Fingers/Left Thumb Tip");
-        private static GameObject RightIndexFingerTipPrefab => Resources.Load<GameObject>("Fingers/Right Index Finger Tip");
-        private static GameObject RightThumbFingerTipPrefab => Resources.Load<GameObject>("Fingers/Right Thumb Tip");
     }
 }
