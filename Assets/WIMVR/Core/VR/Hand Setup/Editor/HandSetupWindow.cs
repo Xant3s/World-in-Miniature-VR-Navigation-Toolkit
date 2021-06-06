@@ -105,6 +105,9 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             root.Q<Button>("btn-fix-oculus-integration")
                 .RegisterCallback<ClickEvent>(e =>Debug.Log("Import Oculus Integration custom hands."));
             
+            root.Q<Button>("btn-fix-oculus-missing-scripts")
+                .RegisterCallback<ClickEvent>(e =>Debug.Log("TODO"));
+            
             root.Q<Button>("btn-fix-left-index-finger-tip")
                 .RegisterCallback<ClickEvent>(e 
                     => DisplayFingerTipPrefabMissingNotification(PrefabLoader.LeftIndexFingerTipPrefab));
@@ -120,7 +123,6 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             root.Q<Button>("btn-fix-right-thumb-tip")
                 .RegisterCallback<ClickEvent>(e 
                     => DisplayFingerTipPrefabMissingNotification(PrefabLoader.RightThumbFingerTipPrefab));
-            
         }
 
         private static void DisplayFingerTipPrefabMissingNotification(GameObject prefab) {
@@ -153,9 +155,14 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
         private void DisplayValidationResults(ValidationResults results) {
             root.Q<VisualElement>("integrity-check-results").Show();
             root.Q<VisualElement>("oculus-specific-results").SetVisible(OculusHandsSelected);
+
+            if(results is OculusValidationResults oculusResults) {
+                root.Q<Image>("oculus-integration-present-icon").image = oculusResults.PrefabRootsPresent ? validIcon : invalidIcon;
+                root.Q<Button>("btn-fix-oculus-integration").SetVisible(!oculusResults.PrefabRootsPresent);
             
-            root.Q<Image>("oculus-integration-present-icon").image = results.PrefabRootsPresent ? validIcon : invalidIcon;
-            root.Q<Button>("btn-fix-oculus-integration").SetVisible(!results.PrefabRootsPresent);
+                root.Q<Image>("oculus-no-missing-scripts-icon").image = oculusResults.OculusCustomHandsNoMissingScripts ? validIcon : invalidIcon;
+                root.Q<Button>("btn-fix-oculus-missing-scripts").SetVisible(!oculusResults.OculusCustomHandsNoMissingScripts);
+            }
             
             root.Q<Image>("left-index-finger-tip-present-icon").image = results.LeftIndexFingerTip ? validIcon : invalidIcon;
             root.Q<Button>("btn-fix-left-index-finger-tip").SetVisible(!results.LeftIndexFingerTip);
