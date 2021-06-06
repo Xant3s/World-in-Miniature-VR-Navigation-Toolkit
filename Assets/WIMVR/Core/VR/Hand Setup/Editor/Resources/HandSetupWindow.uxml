@@ -1,0 +1,74 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" xmlns:WIM="WIMVR" xmlns:engine="UnityEngine.UIElements">
+    <VisualElement name="root">
+        <VisualElement name="prefab-selection-container" style="display: None;">
+            <WIM:HelpBox name="prefabs-missing-help" class="space-below" message-type="Info"
+                         text="Please assign the provided hand model prefabs.
+You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
+            <editor:ObjectField name="left-hand-prefab"
+                                label="Left Hand Prefab"
+                                type="UnityEngine.GameObject, UnityEngine.CoreModule"
+                                allow-scene-objects="false"
+                                tooltip=""/>
+            <editor:ObjectField name="right-hand-prefab"
+                                class="space-below"
+                                label="Right Hand Prefab"
+                                type="UnityEngine.GameObject, UnityEngine.CoreModule"
+                                allow-scene-objects="false"
+                                tooltip=""/>
+        </VisualElement>
+        <VisualElement name="integrity-check-container">
+            <Button name="btn-check-integrity" class="space-below" text="Validate"/>
+            <VisualElement name="integrity-check-results" style="display: None;">
+                <Label text="Results:" class="space-below" />
+                
+                <VisualElement name="oculus-specific-results">
+                    <VisualElement name="oculus-integration-present" class="row">
+                        <Label text="Oculus Integration custom hands imported"/>
+                        <Image name="oculus-integration-present-icon" class="icon"/>
+                        <Button name="btn-fix-oculus-integration" class="fix-btn" text="Fix"/>
+                    </VisualElement>
+                    
+                    <VisualElement name="oculus-sub-checks">
+                        <VisualElement name="oculus-no-missing-scripts" class="row">
+                            <Label text="Oculus custom hands no missing scripts"/>
+                            <Image name="oculus-no-missing-scripts-icon" class="icon"/>
+                            <Button name="btn-fix-oculus-missing-scripts" class="fix-btn" text="Fix"/>
+                        </VisualElement>
+
+                        <VisualElement name="oculus-material-converted" class="row">
+                            <Label text="Oculus custom hands material converted"/>
+                            <Image name="oculus-material-converted-icon" class="icon"/>
+                            <Button name="btn-fix-oculus-material-converted" class="fix-btn" text="Fix"/>
+                        </VisualElement>
+                    </VisualElement>
+                </VisualElement>
+                
+                
+                <VisualElement name="left-index-finger-tip-present" class="row">
+                    <Label text="Left index finger tip present"/>
+                    <Image name="left-index-finger-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-left-index-finger-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                
+                <VisualElement name="left-thumb-finger-tip-present" class="row">
+                    <Label text="Left thumb tip present"/>
+                    <Image name="left-thumb-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-left-thumb-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                
+                <VisualElement name="right-index-finger-tip-present" class="row">
+                    <Label text="Right index finger tip present"/>
+                    <Image name="right-index-finger-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-right-index-finger-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                
+                <VisualElement name="right-thumb-tip-present" class="row">
+                    <Label text="Right thumb tip present"/>
+                    <Image name="right-thumb-tip-present-icon" class="icon"/>
+                    <Button name="btn-fix-right-thumb-tip" class="fix-btn" text="Fix"/>
+                </VisualElement>
+                
+            </VisualElement>
+        </VisualElement>
+    </VisualElement>
+</UXML>

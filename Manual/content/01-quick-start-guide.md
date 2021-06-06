@@ -71,6 +71,15 @@ Make sure you've followed all of the steps below.
   ```. -->
 - Make sure that your XR plugin - e.g. Oculus - is properly set up (`Project Settings -> XR Plugin-in Management`). You can learn more [here](https://docs.unity3d.com/Manual/configuring-project-for-xr.html).
 
+### Hands
+
+Please use the provided hand prefabs (wimVR/Prefabs/VR/Hands). These prefabs require the Custom Hands from the Oculus Integration to work. You don't have to import the entire Oculus Integration Asset Store package. While importing, you can unselect everything but the ```Custom Hands``` folder (Oculus/SampleFramework/Core/CustomHands). If you want to use your own hand models, please drag the finger tip prefabs (wimVR/Prefabs/VR/Hands/Device-based/Resources/Fingers) to their respective finger tip on your models.
+
+Please open the Hands Setup window (`Window -> wimVR -> Hand Setup`) and follow the on-screen instructions.
+
+<!-- TODO: Add screenshot -->
+
+
 ### Tags
 
 To edit your project's tags and layers, select  ```Edit Layers``` from the ```Layers``` dropdown (see Fig. \ref{fig:EditTagsAndLayers}). You can also edit the tags in your project settings.
