@@ -62,7 +62,7 @@ namespace WIMVR.VR.HandSetup {
 
         private void CheckMaterialConvertedToURP(GameObject prefab) {
             var shader = prefab.GetComponentInChildren<Renderer>().sharedMaterial.shader;
-            results.OculusMaterialsConvertedToURP = shader.name.Equals("Standard");
+            results.OculusMaterialsConvertedToURP = !shader.name.Equals("Standard");
         }
 
         public ValidationResults GetResults() => results;
