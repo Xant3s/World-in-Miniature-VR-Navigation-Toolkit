@@ -106,7 +106,8 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                 .RegisterCallback<ClickEvent>(e =>Debug.Log("Import Oculus Integration custom hands."));
             
             root.Q<Button>("btn-fix-oculus-missing-scripts")
-                .RegisterCallback<ClickEvent>(e =>Debug.Log("TODO"));
+                .RegisterCallback<ClickEvent>(e => EditorUtility.DisplayDialog("wimVR Hand Setup",
+                    $"Please remove the missing scripts from the Oculus hands prefabs.", "Ok"));
             
             root.Q<Button>("btn-fix-left-index-finger-tip")
                 .RegisterCallback<ClickEvent>(e 
