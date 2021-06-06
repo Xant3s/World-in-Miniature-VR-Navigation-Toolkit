@@ -1,5 +1,6 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
+using System.Linq;
 using UnityEngine;
 
 namespace WIMVR.Util.Extensions {
@@ -15,6 +16,11 @@ namespace WIMVR.Util.Extensions {
             var t = obj.GetComponent(typeof(T));
             if(t) return t as T;
             return obj.AddComponent<T>();
+        }
+
+        public static bool HasMissingScripts(this GameObject obj) {
+            var components = obj.GetComponents<Component>();
+            return components.Any(component => component == null);
         }
     }
 }
