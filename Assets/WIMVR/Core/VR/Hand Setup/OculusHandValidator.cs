@@ -27,33 +27,38 @@ namespace WIMVR.VR.HandSetup {
         private bool rightPrefabRootValid;
         private bool leftPrefabRootHasMissingScripts;
         private bool rightPrefabRootHasMissingScripts;
-        
-        
+
+
         public void CheckLeft(GameObject leftHand) {
             basicValidator.CheckLeft(leftHand);
-            var basicResults = basicValidator.GetResults();
-            results.LeftIndexFingerTip = basicResults.LeftIndexFingerTip;
-            results.LeftThumbFingerTip = basicResults.LeftThumbFingerTip;
-            
-            var prefabRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(leftHand);
-            leftPrefabRootValid = prefabRoot != null;
-            results.PrefabRootsPresent = BothPrefabRootsPresent;
-
-            leftPrefabRootHasMissingScripts = prefabRoot.HasMissingScripts();
-            results.OculusCustomHandsNoMissingScripts = !HandsHaveMissingScripts;
+            CopyResults();
+            CheckPrefabRoot(leftHand, out leftPrefabRootValid, out var prefabRoot);
+            CheckForMissingScripts(prefabRoot, out leftPrefabRootHasMissingScripts);
         }
 
         public void CheckRight(GameObject rightHand) {
             basicValidator.CheckRight(rightHand);
+            CopyResults();
+            CheckPrefabRoot(rightHand, out rightPrefabRootValid, out var prefabRoot);
+            CheckForMissingScripts(prefabRoot, out rightPrefabRootHasMissingScripts);
+        }
+
+        private void CopyResults() {
             var basicResults = basicValidator.GetResults();
-            results.RightIndexFingerTip = basicResults.RightIndexFingerTip;
-            results.RightThumbFingerTip = basicResults.RightThumbFingerTip;
+            results.LeftIndexFingerTip |= basicResults.LeftIndexFingerTip;
+            results.LeftThumbFingerTip |= basicResults.LeftThumbFingerTip;
+            results.RightIndexFingerTip |= basicResults.RightIndexFingerTip;
+            results.RightThumbFingerTip |= basicResults.RightThumbFingerTip;
+        }
 
-            var prefabRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(rightHand);
-            rightPrefabRootValid = prefabRoot != null;
+        private void CheckPrefabRoot(GameObject hand, out bool isValid, out GameObject prefabRoot) {
+            prefabRoot = PrefabUtility.GetOutermostPrefabInstanceRoot(hand);
+            isValid = prefabRoot != null;
             results.PrefabRootsPresent = BothPrefabRootsPresent;
+        }
 
-            rightPrefabRootHasMissingScripts = prefabRoot.HasMissingScripts();
+        private void CheckForMissingScripts(GameObject prefabRoot, out bool hasMissingScripts) {
+            hasMissingScripts = prefabRoot.HasMissingScripts();
             results.OculusCustomHandsNoMissingScripts = !HandsHaveMissingScripts;
         }
 
