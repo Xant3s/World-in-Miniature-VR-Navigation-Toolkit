@@ -1,5 +1,6 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -10,6 +11,7 @@ using WIMVR.Util.Extensions;
 using WIMVR.VR.HandSetup;
 using Button = UnityEngine.UIElements.Button;
 using Image = UnityEngine.UIElements.Image;
+using Object = UnityEngine.Object;
 
 namespace WIMVR.Core.VR.HandSetup.Editor {
     public class HandSetupWindow : EditorWindow {
@@ -103,7 +105,27 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
         private void SetupFixButtons() {
             root.Q<Button>("btn-fix-oculus-integration")
-                .RegisterCallback<ClickEvent>(e =>Debug.Log("Import Oculus Integration custom hands."));
+                .RegisterCallback<ClickEvent>(e => {
+                    EditorUtility.DisplayDialog("wimVR Hand Setup",
+                        "Please import the Custom Hands from the Oculus Integration Asset Store package." + Environment.NewLine +
+                        Environment.NewLine +
+                        "1. Go to the Unity Asset Store" + Environment.NewLine +
+                        "2. Search for 'Oculus Integration'" + Environment.NewLine +
+                        "3. Click 'Add to My Assets'" + Environment.NewLine +
+                        "4. In Unity, open the Package Manager" + Environment.NewLine +
+                        "   (Window -> Package Manager)" + Environment.NewLine +
+                        "5. Select 'My Assets' from the dropdown" + Environment.NewLine +
+                        "6. Search for 'Oculus Integration'" + Environment.NewLine +
+                        "7. Click 'Import'" + Environment.NewLine +
+                        "7a. If you only want the hands, click 'None' to deselect " +
+                        "   everything and only Select the " + Environment.NewLine +
+                        "   Oculus/SampleFramework/CustomsHands folder. " + Environment.NewLine +
+                        "   Also, deselect the " + Environment.NewLine +
+                        "   Oculus/SampleFramework/CustomHands/Scripts " + Environment.NewLine +
+                        "   folder." + Environment.NewLine +
+                        "7b. If you want to use the Oculus Integration " + Environment.NewLine +
+                        "   package, proceed with everything selected", "Ok");
+                });
             
             root.Q<Button>("btn-fix-oculus-missing-scripts")
                 .RegisterCallback<ClickEvent>(e => EditorUtility.DisplayDialog("wimVR Hand Setup",
