@@ -33,6 +33,7 @@ namespace WIMVR.VR.HandSetup {
             basicValidator.CheckLeft(leftHand);
             CopyResults();
             CheckPrefabRoot(leftHand, out leftPrefabRootValid, out var prefabRoot);
+            if(!prefabRoot) return;
             CheckForMissingScripts(prefabRoot, out leftPrefabRootHasMissingScripts);
         }
 
@@ -40,6 +41,7 @@ namespace WIMVR.VR.HandSetup {
             basicValidator.CheckRight(rightHand);
             CopyResults();
             CheckPrefabRoot(rightHand, out rightPrefabRootValid, out var prefabRoot);
+            if(!prefabRoot) return;
             CheckForMissingScripts(prefabRoot, out rightPrefabRootHasMissingScripts);
         }
 
