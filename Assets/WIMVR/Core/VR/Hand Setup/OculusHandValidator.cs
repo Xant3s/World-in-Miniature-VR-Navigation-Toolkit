@@ -13,11 +13,6 @@ namespace WIMVR.VR.HandSetup {
         public bool PrefabRootsPresent { get; set; }
         public bool OculusCustomHandsNoMissingScripts { get; set; }
         public bool OculusMaterialsConvertedToURP { get; set; }
-
-        public bool OculusCustomHandsImported {
-            get => PrefabRootsPresent;
-            set => PrefabRootsPresent = value;
-        }
     }
 
     public class OculusHandsValidator : HandValidator {
