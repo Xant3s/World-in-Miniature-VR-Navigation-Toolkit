@@ -52,9 +52,13 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                 var customHandPrefabsAssigned = LeftHandPrefab && RightHandPrefab;
                 root.Q<VisualElement>("prefab-selection-container").SetVisible(!oculusHands);
                 root.Q<VisualElement>("integrity-check-container").SetVisible(oculusHands || customHandPrefabsAssigned);
-                root.Q<VisualElement>("integrity-check-results").Hide();
+                HideResults();
             });
             root.Add(dropdown);
+        }
+
+        private void HideResults() {
+            root.Q<VisualElement>("integrity-check-results").Hide();
         }
 
         private void LoadHierarchy() {
@@ -82,12 +86,14 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                 leftHandPrefabPresent = e.newValue != null;
                 root.Q("prefabs-missing-help").SetVisible(!bothHandsPresent());
                 root.Q("integrity-check-container").SetVisible(bothHandsPresent());
+                HideResults();
             });        
         
             root.Q<ObjectField>("right-hand-prefab").RegisterValueChangedCallback(e => {
                 rightHandPrefabPresent = e.newValue != null;
                 root.Q("prefabs-missing-help").SetVisible(!bothHandsPresent());
                 root.Q("integrity-check-container").SetVisible(bothHandsPresent());
+                HideResults();
             });
         }
 
