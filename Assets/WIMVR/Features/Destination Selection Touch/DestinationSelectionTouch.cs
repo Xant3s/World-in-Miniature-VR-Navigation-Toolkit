@@ -36,7 +36,8 @@ namespace WIMVR.Features {
 
         private void Start() {
             MiniatureModel.OnLateInitHand += Init;
-            wimInput.destinationSelectionTouch.action.performed += ctx => OnDestinationSelectionTouch();
+            wimInput.destinationSelectionTouchLeft.action.performed += ctx => OnDestinationSelectionTouchLeft();
+            wimInput.destinationSelectionTouchRight.action.performed += ctx => OnDestinationSelectionTouchRight();
             wimInput.destinationRotation.action.performed += ctx => OnDestinationRotation(ctx.action.ReadValue<Vector2>());
             wimInput.confirmTravel.action.performed += ctx => OnConfirmTravel();
         }
@@ -49,8 +50,6 @@ namespace WIMVR.Features {
             config = wimConfig;
             data = wimData;
         }
-
-        private void OnDestinationSelectionTouch() => OnDestinationSelectionTouchRight();
 
         private void OnDestinationSelectionTouchLeft() => SelectDestination(leftIndexFingerTip);
 
