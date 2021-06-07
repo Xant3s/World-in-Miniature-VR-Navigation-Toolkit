@@ -76,14 +76,14 @@ namespace WIMVR.Features {
             // Get forward vector from fingertip in WIM space. Set to WIM floor. Won't work if floor is uneven.
             var lookAtPoint = fingerTip.position + fingerTip.right; // TODO: right because of Oculus prefab
             var pointBFloor = WIM.Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(lookAtPoint));
-            var pointAFloor = WIM.Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(data.FingertipIndexR.position));
+            var pointAFloor = WIM.Converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(fingerTip.position));
             var fingertipForward = pointBFloor - pointAFloor;
             fingertipForward = Quaternion.Inverse(data.WIMLevelTransform.rotation) * fingertipForward;
 
             // Get current forward vector in WIM space. Set to floor.
             var currForward =
-                MathUtils.GetGroundPosition(data.DestinationIndicatorInWIM.position + data.DestinationIndicatorInWIM.forward) -
-                MathUtils.GetGroundPosition(data.DestinationIndicatorInWIM.position);
+                MathUtils.GetGroundPosition(data.DestinationIndicatorInWIM.position + data.DestinationIndicatorInWIM.forward) 
+                - MathUtils.GetGroundPosition(data.DestinationIndicatorInWIM.position);
 
             // Get signed angle between current forward vector and desired forward vector (pointing direction).
             var angle = Vector3.SignedAngle(currForward, fingertipForward, data.WIMLevelTransform.up);
