@@ -59,8 +59,8 @@ namespace WIMVR.Features.Occlusion_Handling {
         }
 
         private static void CleanupOcclusionHandling(in MiniatureModel WIM) {
-            var cylinderMask = FindObjectOfType<CylinderMask>();
-            var spotlightMask = FindObjectOfType<SpotlightMask>();
+            var cylinderMask = FindObjectOfType<CylinderMask>()?.gameObject;
+            var spotlightMask = FindObjectOfType<SpotlightMask>()?.gameObject;
 
 #if UNITY_EDITOR
             if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
@@ -82,6 +82,7 @@ namespace WIMVR.Features.Occlusion_Handling {
             if(!config || config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
             if (FindObjectOfType<SpotlightMask>()) return;
             var spotlightObj = new GameObject("Spotlight Mask");
+            spotlightObj.AddComponent<SpotlightMask>();
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo(spotlightObj, "Spotlight Mask");
 #endif
@@ -98,6 +99,7 @@ namespace WIMVR.Features.Occlusion_Handling {
             if(!config || config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
             if (FindObjectOfType<CylinderMask>()) return;
             var cylinderMask = new GameObject("Cylinder Mask");
+            cylinderMask.AddComponent<CylinderMask>();
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo(cylinderMask, "configureMeltWalls");
 #endif
