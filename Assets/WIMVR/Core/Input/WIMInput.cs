@@ -7,7 +7,8 @@ namespace WIMVR.Core.Input {
     [DisallowMultipleComponent]
     public class WIMInput : MonoBehaviour {
         public InputActionProperty respawn;
-        public InputActionProperty destinationSelectionTouch;
+        public InputActionProperty destinationSelectionTouchLeft;
+        public InputActionProperty destinationSelectionTouchRight;
         public InputActionProperty confirmTravel;
         public InputActionProperty destinationRotation;
         public InputActionProperty scrollWIM;
@@ -17,7 +18,8 @@ namespace WIMVR.Core.Input {
 
         private void OnEnable() {
             respawn.action.Enable();
-            destinationSelectionTouch.action.Enable();
+            destinationSelectionTouchLeft.action.Enable();
+            destinationSelectionTouchRight.action.Enable();
             confirmTravel.action.Enable();
             destinationRotation.action.Enable();
             scrollWIM.action.Enable();
@@ -27,7 +29,8 @@ namespace WIMVR.Core.Input {
 
         private void OnDisable() {
             respawn.action.Disable();
-            destinationSelectionTouch.action.Disable();
+            destinationSelectionTouchLeft.action.Disable();
+            destinationSelectionTouchRight.action.Disable();
             confirmTravel.action.Disable();
             destinationRotation.action.Disable();
             scrollWIM.action.Disable();
