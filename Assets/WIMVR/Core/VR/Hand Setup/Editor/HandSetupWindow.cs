@@ -52,8 +52,8 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
             dropdown.RegisterValueChangedCallback(e => {
                 var oculusHands = e.newValue == "Oculus custom hands (recommended)";
                 var customHandPrefabsAssigned = LeftHandPrefab && RightHandPrefab;
-                root.Q<VisualElement>("prefab-selection-container").SetVisible(!oculusHands);
-                root.Q<VisualElement>("integrity-check-container").SetVisible(oculusHands || customHandPrefabsAssigned);
+                root.Q<VisualElement>("prefab-selection-container").SetDisplay(!oculusHands);
+                root.Q<VisualElement>("integrity-check-container").SetDisplay(oculusHands || customHandPrefabsAssigned);
                 HideResults();
             });
             root.Add(dropdown);
@@ -86,15 +86,15 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
             root.Q<ObjectField>("left-hand-prefab").RegisterValueChangedCallback(e => {
                 leftHandPrefabPresent = e.newValue != null;
-                root.Q("prefabs-missing-help").SetVisible(!bothHandsPresent());
-                root.Q("integrity-check-container").SetVisible(bothHandsPresent());
+                root.Q("prefabs-missing-help").SetDisplay(!bothHandsPresent());
+                root.Q("integrity-check-container").SetDisplay(bothHandsPresent());
                 HideResults();
             });        
         
             root.Q<ObjectField>("right-hand-prefab").RegisterValueChangedCallback(e => {
                 rightHandPrefabPresent = e.newValue != null;
-                root.Q("prefabs-missing-help").SetVisible(!bothHandsPresent());
-                root.Q("integrity-check-container").SetVisible(bothHandsPresent());
+                root.Q("prefabs-missing-help").SetDisplay(!bothHandsPresent());
+                root.Q("integrity-check-container").SetDisplay(bothHandsPresent());
                 HideResults();
             });
         }
@@ -188,32 +188,32 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
 
         private void DisplayValidationResults(ValidationResults results) {
             root.Q<VisualElement>("integrity-check-results").Show();
-            root.Q<VisualElement>("oculus-specific-results").SetVisible(OculusHandsSelected);
+            root.Q<VisualElement>("oculus-specific-results").SetDisplay(OculusHandsSelected);
 
             if(results is OculusValidationResults oculusResults) {
-                root.Q<VisualElement>("oculus-sub-checks").SetVisible(oculusResults.PrefabRootsPresent);
+                root.Q<VisualElement>("oculus-sub-checks").SetDisplay(oculusResults.PrefabRootsPresent);
 
                 root.Q<Image>("oculus-integration-present-icon").image = oculusResults.PrefabRootsPresent ? validIcon : invalidIcon;
-                root.Q<Button>("btn-fix-oculus-integration").SetVisible(!oculusResults.PrefabRootsPresent);
+                root.Q<Button>("btn-fix-oculus-integration").SetDisplay(!oculusResults.PrefabRootsPresent);
             
                 root.Q<Image>("oculus-no-missing-scripts-icon").image = oculusResults.OculusCustomHandsNoMissingScripts ? validIcon : invalidIcon;
-                root.Q<Button>("btn-fix-oculus-missing-scripts").SetVisible(!oculusResults.OculusCustomHandsNoMissingScripts);
+                root.Q<Button>("btn-fix-oculus-missing-scripts").SetDisplay(!oculusResults.OculusCustomHandsNoMissingScripts);
                 
                 root.Q<Image>("oculus-material-converted-icon").image = oculusResults.OculusMaterialsConvertedToURP ? validIcon : invalidIcon;
-                root.Q<Button>("btn-fix-oculus-material-converted").SetVisible(!oculusResults.OculusMaterialsConvertedToURP);
+                root.Q<Button>("btn-fix-oculus-material-converted").SetDisplay(!oculusResults.OculusMaterialsConvertedToURP);
             }
             
             root.Q<Image>("left-index-finger-tip-present-icon").image = results.LeftIndexFingerTip ? validIcon : invalidIcon;
-            root.Q<Button>("btn-fix-left-index-finger-tip").SetVisible(!results.LeftIndexFingerTip);
+            root.Q<Button>("btn-fix-left-index-finger-tip").SetDisplay(!results.LeftIndexFingerTip);
             
             root.Q<Image>("left-thumb-tip-present-icon").image = results.LeftThumbFingerTip ? validIcon : invalidIcon;
-            root.Q<Button>("btn-fix-left-thumb-tip").SetVisible(!results.LeftThumbFingerTip);
+            root.Q<Button>("btn-fix-left-thumb-tip").SetDisplay(!results.LeftThumbFingerTip);
             
             root.Q<Image>("right-index-finger-tip-present-icon").image = results.RightIndexFingerTip ? validIcon : invalidIcon;
-            root.Q<Button>("btn-fix-right-index-finger-tip").SetVisible(!results.RightIndexFingerTip);
+            root.Q<Button>("btn-fix-right-index-finger-tip").SetDisplay(!results.RightIndexFingerTip);
             
             root.Q<Image>("right-thumb-tip-present-icon").image = results.RightThumbFingerTip ? validIcon : invalidIcon;
-            root.Q<Button>("btn-fix-right-thumb-tip").SetVisible(!results.RightThumbFingerTip);
+            root.Q<Button>("btn-fix-right-thumb-tip").SetDisplay(!results.RightThumbFingerTip);
         }
 
         private GameObject LeftHandPrefab => root.Q<ObjectField>("left-hand-prefab").value as GameObject;

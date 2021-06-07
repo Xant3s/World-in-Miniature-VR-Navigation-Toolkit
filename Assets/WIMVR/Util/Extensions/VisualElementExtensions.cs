@@ -4,14 +4,17 @@ using UnityEngine.UIElements;
 
 namespace WIMVR.Util.Extensions {
     public static class VisualElementExtensions {
-        public static void Show(this VisualElement element) => element.SetVisible(true);
+        public static void Show(this VisualElement element) => element.SetDisplay(true);
 
-        public static void Hide(this VisualElement element) => element.SetVisible(false);
+        public static void Hide(this VisualElement element) => element.SetDisplay(false);
 
-        public static void SetVisible(this VisualElement element, bool value) {
-            var visible = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-            var hidden = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-            element.style.display = value ? visible : hidden;
+        /// <summary>
+        /// Changes the VisualElement display state. If element is not displayed, it is invisible and doesn't use any space.
+        /// </summary>
+        /// <param name="element">The element to change.</param>
+        /// <param name="value">Whether to display element.</param>
+        public static void SetDisplay(this VisualElement element, bool value) {
+            element.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
 using WIMVR.Features.Path_Trace;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Editor.Features {
     /// <summary>

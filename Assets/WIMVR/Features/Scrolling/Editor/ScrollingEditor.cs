@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
 using WIMVR.Features.Scrolling;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Editor.Features {
     /// <summary>

@@ -9,6 +9,7 @@ using WIMVR.Core;
 using WIMVR.Editor.Core;
 using WIMVR.Features.Occlusion_Handling;
 using WIMVR.Util;
+using WIMVR.Util.Extensions;
 
 
 namespace WIMVR.Editor.Features {

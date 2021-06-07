@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Features;
 using WIMVR.Util;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Editor.Core {
     /// <summary>

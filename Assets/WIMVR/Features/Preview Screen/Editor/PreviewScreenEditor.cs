@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using WIMVR.Core;
 using WIMVR.Editor.Core;
 using WIMVR.Features.Preview_Screen;
+using WIMVR.Util.Extensions;
 
 namespace WIMVR.Editor.Features {
     /// <summary>
