@@ -25,8 +25,8 @@ namespace WIMVR.Features.Occlusion_Handling {
 
         private void OnDisable() {
             WIMGenerator.OnPreConfigure -= CleanupOcclusionHandling;
-            WIMGenerator.OnConfigure += ConfigureCutoutView;
-            WIMGenerator.OnConfigure += ConfigureMeltWalls;
+            WIMGenerator.OnConfigure -= ConfigureCutoutView;
+            WIMGenerator.OnConfigure -= ConfigureMeltWalls;
         }
 
         public void UpdateCylinderMask(in MiniatureModel WIM) {
