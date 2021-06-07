@@ -3,40 +3,52 @@
 using UnityEditor;
 using UnityEngine;
 using WIMVR.Core;
+using WIMVR.Features.Occlusion_Handling.Tags;
 using WIMVR.Util;
 
 namespace WIMVR.Features.Occlusion_Handling {
     /// <summary>
-    /// Adds occulusion handling strategies.
+    /// Adds occlusion handling strategies.
     /// To Deal with occlusion, parts of the miniature model are hidden.
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
     public sealed class OcclusionHandling : MonoBehaviour {
-        [HideInInspector] public OcclusionHandlingConfiguration Config;
+        [HideInInspector] public OcclusionHandlingConfiguration config;
 
+
+        private void OnEnable() {
+            WIMGenerator.OnPreConfigure += CleanupOcclusionHandling;
+            WIMGenerator.OnConfigure += ConfigureCutoutView;
+            WIMGenerator.OnConfigure += ConfigureMeltWalls;
+        }
+
+        private void OnDisable() {
+            WIMGenerator.OnPreConfigure -= CleanupOcclusionHandling;
+            WIMGenerator.OnConfigure -= ConfigureCutoutView;
+            WIMGenerator.OnConfigure -= ConfigureMeltWalls;
+        }
 
         public void UpdateCylinderMask(in MiniatureModel WIM) {
-            if(!Config) return;
-            if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
-            var cylinderTransform = GameObject.FindWithTag("Cylinder Mask")?.transform;
+            if(!config) return;
+            if(config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
+            var cylinderTransform = FindObjectOfType<CylinderMask>()?.transform;
             if(!cylinderTransform) return;
-            cylinderTransform.localScale =
-                new Vector3(Config.MeltRadius, Config.MeltHeight, 1);
+            cylinderTransform.localScale = new Vector3(config.MeltRadius, config.MeltHeight, 1);
         }
 
         public void UpdateCutoutViewMask(in MiniatureModel WIM) {
-            if(!Config) return;
-            if(Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
-            var spotlightObj = GameObject.FindWithTag("Spotlight Mask");
+            if(!config) return;
+            if(config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
+            var spotlightObj = FindObjectOfType<SpotlightMask>();
             if(!spotlightObj) return;
             var spotlight = spotlightObj.GetComponent<Light>();
-            spotlight.range = Config.CutoutRange;
-            spotlight.spotAngle = Config.CutoutAngle;
+            spotlight.range = config.CutoutRange;
+            spotlight.spotAngle = config.CutoutAngle;
 
             Color color;
-            if(Config.ShowCutoutLight) {
-                color = Config.CutoutLightColor;
+            if(config.ShowCutoutLight) {
+                color = config.CutoutLightColor;
                 color.a = 1;
             }
             else {
@@ -46,9 +58,9 @@ namespace WIMVR.Features.Occlusion_Handling {
             spotlight.color = color;
         }
 
-        private void CleanupOcclusionHandling(in MiniatureModel WIM) {
-            var cylinderMask = GameObject.FindWithTag("Cylinder Mask");
-            var spotlightMask = GameObject.FindWithTag("Spotlight Mask");
+        private static void CleanupOcclusionHandling(in MiniatureModel WIM) {
+            var cylinderMask = FindObjectOfType<CylinderMask>()?.gameObject;
+            var spotlightMask = FindObjectOfType<SpotlightMask>()?.gameObject;
 
 #if UNITY_EDITOR
             if(cylinderMask) Undo.DestroyObjectImmediate(cylinderMask);
@@ -60,32 +72,20 @@ namespace WIMVR.Features.Occlusion_Handling {
         }
 
         private void OnDestroy() {
-            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            var WIM = FindObjectOfType<MiniatureModel>()?.GetComponent<MiniatureModel>();
             if(!WIM) return;
             CleanupOcclusionHandling(WIM);
             WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);
         }
 
-        private void OnEnable() {
-            WIMGenerator.OnPreConfigure += CleanupOcclusionHandling;
-            WIMGenerator.OnConfigure += ConfigureCutoutView;
-            WIMGenerator.OnConfigure += ConfigureMeltWalls;
-        }
-
-        private void OnDisable() {
-            WIMGenerator.OnPreConfigure -= CleanupOcclusionHandling;
-            WIMGenerator.OnConfigure += ConfigureCutoutView;
-            WIMGenerator.OnConfigure += ConfigureMeltWalls;
-        }
-
         private void ConfigureCutoutView(in MiniatureModel WIM) {
-            if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
-            if (GameObject.FindWithTag("Spotlight Mask")) return;
+            if(!config || config.OcclusionHandlingMethod != OcclusionHandlingMethod.CutoutView) return;
+            if (FindObjectOfType<SpotlightMask>()) return;
             var spotlightObj = new GameObject("Spotlight Mask");
-            spotlightObj.tag = spotlightObj.name;
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo(spotlightObj, "Spotlight Mask");
 #endif
+            spotlightObj.AddComponent<SpotlightMask>();
             spotlightObj.AddComponent<Light>().type = LightType.Spot;
             var controller = spotlightObj.AddComponent<ConeController>();
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
@@ -96,13 +96,13 @@ namespace WIMVR.Features.Occlusion_Handling {
         }
 
         private void ConfigureMeltWalls(in MiniatureModel WIM) {
-            if(!Config || Config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
-            if (GameObject.FindWithTag("Cylinder Mask")) return;
+            if(!config || config.OcclusionHandlingMethod != OcclusionHandlingMethod.MeltWalls) return;
+            if (FindObjectOfType<CylinderMask>()) return;
             var cylinderMask = new GameObject("Cylinder Mask");
-            cylinderMask.tag = cylinderMask.name;
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo(cylinderMask, "configureMeltWalls");
 #endif
+            cylinderMask.AddComponent<CylinderMask>();
             cylinderMask.AddComponent<FollowHand>().hand = Hand.RightHand;
             var controller = cylinderMask.AddComponent<CapsuleController>();
             var material = WIMGenerator.LoadDefaultMaterial(WIM);

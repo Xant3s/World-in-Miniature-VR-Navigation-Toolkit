@@ -25,9 +25,9 @@ namespace WIMVR.Editor.Features {
             occlusionHandling.UpdateCutoutViewMask(WIM);
             occlusionHandling.UpdateCylinderMask(WIM);
             DrawDefaultInspector();
-            occlusionHandling.Config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config",
-                occlusionHandling.Config, typeof(OcclusionHandlingConfiguration), false);
-            ref var config = ref ((OcclusionHandling) target).Config;
+            occlusionHandling.config = (OcclusionHandlingConfiguration) EditorGUILayout.ObjectField("Config",
+                occlusionHandling.config, typeof(OcclusionHandlingConfiguration), false);
+            ref var config = ref ((OcclusionHandling) target).config;
             if(!config)
                 EditorGUILayout.HelpBox(
                     "Occlusion handling configuration missing. " +
@@ -52,7 +52,7 @@ namespace WIMVR.Editor.Features {
             var root = new VisualElement();
             if(visualTree) visualTree.CloneTree(root);
             var occlusionHandling = (OcclusionHandling) target;
-            ref var config = ref occlusionHandling.Config;
+            ref var config = ref occlusionHandling.config;
             
             WIMEditorUtility.DisplaySettingsIfConfigNotNull(root, config, typeof(OcclusionHandlingConfiguration));
 
