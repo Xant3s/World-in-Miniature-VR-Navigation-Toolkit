@@ -1,6 +1,7 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Util {
     /// <summary>
@@ -19,14 +20,11 @@ namespace WIMVR.Util {
 
         private void TryGetTarget() {
             if(target) return;
-            switch(hand) {
-                case Hand.LeftHand:
-                    target = GameObject.FindWithTag("HandL")?.transform;
-                    break;
-                case Hand.RightHand:
-                    target = GameObject.FindWithTag("HandR")?.transform;
-                    break;
-            }
+            target = hand switch {
+                Hand.LeftHand => FindObjectOfType<LeftHand>()?.transform,
+                Hand.RightHand => FindObjectOfType<RightHand>()?.transform,
+                _ => target
+            };
         }
 
         private void Update() {
