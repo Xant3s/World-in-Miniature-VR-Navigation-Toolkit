@@ -47,8 +47,7 @@ namespace WIMVR.Features {
                 forwardPos.y = data.DestinationIndicatorInLevel.position.y;
                 var forwardInLevel = forwardPos - data.DestinationIndicatorInLevel.position;
                 data.DestinationIndicatorInLevel.rotation = Quaternion.LookRotation(forwardInLevel, Vector3.up);
-                data.DestinationIndicatorInWIM.rotation =
-                    data.WIMLevelTransform.rotation * data.DestinationIndicatorInLevel.rotation;
+                data.DestinationIndicatorInWIM.rotation = data.WIMLevelTransform.rotation * data.DestinationIndicatorInLevel.rotation;
             }
 
             return data.DestinationIndicatorInLevel;
@@ -58,12 +57,13 @@ namespace WIMVR.Features {
         /// Spawns the destination indicator in the miniature model.
         /// </summary>
         /// <returns>The transform of the newly create destination indicator in the miniature model.</returns>
-        public static Transform SpawnDestinationIndicatorInWIM(WIMConfiguration config, WIMData data) {
+        public static Transform SpawnDestinationIndicatorInWIM(WIMConfiguration config, WIMData data, Vector3 position) {
             Assert.IsNotNull(data.WIMLevelTransform);
             Assert.IsNotNull(config.DestinationIndicator);
             data.DestinationIndicatorInWIM = Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
 
-            data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
+            // data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
+            data.DestinationIndicatorInWIM.position = position;
             OnSpawnDestinationIndicatorInWIM?.Invoke(config, data);
             return data.DestinationIndicatorInWIM;
         }
