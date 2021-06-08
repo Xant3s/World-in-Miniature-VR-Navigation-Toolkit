@@ -2,7 +2,6 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.InputSystem;
 using WIMVR.Core.Input;
 using WIMVR.Features;
 using WIMVR.Util;
@@ -70,7 +69,6 @@ namespace WIMVR.Core {
             Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
             Data.PlayerTransform = GameObject.FindWithTag("Player")?.transform;
             Data.HMDTransform = GameObject.FindWithTag("MainCamera")?.transform;
-            Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
             Data.PlayerController = GameObject.FindWithTag("Player")?.transform;
             Data.WIMLevelTransform = transform.Find("WIM Level");
             grabbable = GetComponent<OffsetGrabInteractable>();
@@ -85,11 +83,6 @@ namespace WIMVR.Core {
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
-        }
-
-        public void ReInitWIM() {
-            Data.FingertipIndexR = GameObject.Find("hands:b_r_index_ignore")?.transform;
-            Assert.IsNotNull(Data.FingertipIndexR);
         }
 
         public void HandSpawned() {
