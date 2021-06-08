@@ -6,6 +6,7 @@ using WIMVR.Core;
 using WIMVR.Util;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Features.Pickup_Destination {
     /// <summary>
@@ -63,7 +64,8 @@ namespace WIMVR.Features.Pickup_Destination {
             WIM.CleanupBeforeRespawn();
 
             // Spawn new destination indicator.
-            DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data);
+            var destination = FindObjectOfType<RightIndexFingerTip>().transform.position;
+            DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data, destination);
 
             // Actually pick up the new destination indicator.
             WIM.Data.DestinationIndicatorInWIM.parent = indexR;

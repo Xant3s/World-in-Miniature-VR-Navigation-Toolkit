@@ -63,7 +63,7 @@ namespace WIMVR.Features {
 
             DestinationIndicators.RemoveDestinationIndicators(config, data);
             WIM.CleanupBeforeRespawn();
-            DestinationIndicators.SpawnDestinationIndicatorInWIM(config, data);
+            DestinationIndicators.SpawnDestinationIndicatorInWIM(config, data, fingerTip.position);
             DestinationIndicators.SpawnDestinationIndicatorInLevel(config, data);
             AlignWIMDestinationIndicatorWithPointingDirection(fingerTip);
             UpdateDestinationRotationInLevel();
