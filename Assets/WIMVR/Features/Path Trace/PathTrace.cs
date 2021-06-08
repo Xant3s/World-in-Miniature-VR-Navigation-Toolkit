@@ -19,7 +19,7 @@ namespace WIMVR.Features.Path_Trace {
 
         private void Awake() {
             if(!PathTraceConfig) return;
-            WIM = GameObject.Find("WIM")?.GetComponent<MiniatureModel>();
+            WIM = FindObjectOfType<MiniatureModel>();
             Assert.IsNotNull(WIM);
         }
 
