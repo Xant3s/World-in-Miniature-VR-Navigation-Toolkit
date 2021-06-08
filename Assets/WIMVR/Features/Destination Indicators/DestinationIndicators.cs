@@ -61,8 +61,6 @@ namespace WIMVR.Features {
             Assert.IsNotNull(data.WIMLevelTransform);
             Assert.IsNotNull(config.DestinationIndicator);
             data.DestinationIndicatorInWIM = Object.Instantiate(config.DestinationIndicator, data.WIMLevelTransform).transform;
-
-            // data.DestinationIndicatorInWIM.position = data.FingertipIndexR.position;
             data.DestinationIndicatorInWIM.position = position;
             OnSpawnDestinationIndicatorInWIM?.Invoke(config, data);
             return data.DestinationIndicatorInWIM;
