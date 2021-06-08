@@ -46,8 +46,7 @@ namespace WIMVR.Features.Travel_Preview_Animation {
             travelPreviewController.DestinationIndicator = WIMConfig.DestinationIndicator;
             travelPreviewController.AnimationSpeed = this.Config.TravelPreviewAnimationSpeed;
             travelPreviewController.WIMLevelTransform = WIMData.WIMLevelTransform;
-            travelPreviewController.Converter = 
-                GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>().Converter;
+            travelPreviewController.Converter = FindObjectOfType<MiniatureModel>().Converter;
         }
 
         private void DestroyTravelPreviewAnimation(WIMConfiguration WIMConfig, WIMData WIMData) {
