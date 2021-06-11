@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using WIMVR.Core;
+using WIMVR.Features.LiveUpdate.Tags;
 
 namespace WIMVR.Features.LiveUpdate {
     /// <summary>
@@ -14,7 +15,8 @@ namespace WIMVR.Features.LiveUpdate {
     [DisallowMultipleComponent]
     public class LiveUpdate : MonoBehaviour {
         public static void UpdateAutoGenerateWIM(in MiniatureModel WIM) {
-            var level = GameObject.FindWithTag("Level");
+            // var level = GameObject.FindWithTag("Level");
+            var level = FindObjectOfType<Level>().gameObject;
             if(!level) {
                 Debug.LogWarning("Level not found.");
                 return;
