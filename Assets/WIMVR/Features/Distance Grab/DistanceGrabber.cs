@@ -12,7 +12,7 @@ namespace WIMVR.Features.Distance_Grab {
         [Header("Distance Grabber (Experimental)")]
 
         [Tooltip("Start point of the laser pointer.")]
-        [SerializeField] private Transform start = null;
+        [SerializeField] private Transform start;
 
         [Tooltip("Distance grabbing will be disabled if within specified distance to miniature model")]
         [SerializeField] private float requiredDistanceToWIM = .5f;
@@ -40,7 +40,7 @@ namespace WIMVR.Features.Distance_Grab {
             if (!disableWhileInWIM || !this.enabled) return;
             aimAssist = gameObject.GetComponentInChildren<AimAssist>();
             lineRenderer = gameObject.GetComponentInChildren<LineRenderer>();
-            WIM = GameObject.FindWithTag("WIM").transform;
+            WIM = FindObjectOfType<MiniatureModel>().transform;
             if(!start) start = aimAssist.transform;
         }
 
@@ -85,19 +85,21 @@ namespace WIMVR.Features.Distance_Grab {
         public void StopDistanceGrab() => grabButtonPressed = false;
 
         private void OnTriggerEnter(Collider other) {
-            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+            if (!disableWhileInWIM || !this.enabled || !IsWIM(other)) return;
             isInsideWIM = true;
         }
-        
+
         private void OnTriggerExit(Collider other) {
-            if (!disableWhileInWIM || !this.enabled || !other.CompareTag("WIM")) return;
+            if (!disableWhileInWIM || !this.enabled || !IsWIM(other)) return;
             isInsideWIM = false;
         }
-        
+
         private void SetEnable(bool value) {
             aimAssist.enabled = value;
             lineRenderer.enabled = value;
             isDisabled = !value;
         }
+
+        private static bool IsWIM(Component other) => other.GetComponent<MiniatureModel>();
     }
 }
