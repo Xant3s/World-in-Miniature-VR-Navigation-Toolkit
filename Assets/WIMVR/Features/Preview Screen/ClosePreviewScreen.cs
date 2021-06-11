@@ -7,6 +7,7 @@ using WIMVR.Core;
 using WIMVR.Util;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Features.Preview_Screen {
     /// <summary>
@@ -19,7 +20,7 @@ namespace WIMVR.Features.Preview_Screen {
 
 
         private void Awake() {
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            WIM = FindObjectOfType<MiniatureModel>();
             Assert.IsNotNull(WIM);
         }
 
@@ -28,19 +29,19 @@ namespace WIMVR.Features.Preview_Screen {
         }
 
         private void OnTriggerEnter(Collider other) {
-            if(!other.CompareTag("IndexR") && !other.CompareTag("IndexL")) return;
-            if (once) return;
+            if(other.GetComponent<RightIndexFingerTip>() == null && other.GetComponent<LeftIndexFingerTip>() == null) return;
+            if(once) return;
             once = true;
-            var hand = other.CompareTag("IndexR") ? Hand.RightHand : Hand.LeftHand;
+            var hand = other.GetComponent<RightIndexFingerTip>() ? Hand.RightHand : Hand.LeftHand;
             StartClosing(hand);
         }
 
         private void StartClosing(Hand hand) {
             Haptics.Vibrate(XRUtils.TryFindCorrespondingInputDevice(hand), .1f, .1f);
-            StartCoroutine(Close(hand, .1f));
+            StartCoroutine(Close(.1f));
         }
 
-        private IEnumerator Close(Hand hand, float time) {
+        private IEnumerator Close(float time) {
             yield return new WaitForSeconds(time);
             WIM.GetComponent<PreviewScreen>().RemovePreviewScreen();
         }

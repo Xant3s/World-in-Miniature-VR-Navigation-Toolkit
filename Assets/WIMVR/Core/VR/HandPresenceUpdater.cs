@@ -40,7 +40,7 @@ namespace WIMVR.VR {
 
             if(devices.Count > 0) {
                 targetDevice = devices[0];
-                if(WIM) WIM.SendMessage("ReInitWIM");
+                // if(WIM) WIM.SendMessage("ReInitWIM");
             }
         }
     }

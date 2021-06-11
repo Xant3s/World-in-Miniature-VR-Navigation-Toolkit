@@ -2,9 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using WIMVR.Core;
 using WIMVR.Util;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Features.Preview_Screen {
     /// <summary>
@@ -12,15 +14,18 @@ namespace WIMVR.Features.Preview_Screen {
     /// </summary>
     [DisallowMultipleComponent]
     public class PreviewScreenController : MonoBehaviour {
-        private Transform index;
+        private Transform indexL;
+        private Transform indexR;
         private Transform WIMTransform;
 
 
         private void Awake() {
-            WIMTransform = GameObject.FindWithTag("WIM")?.transform;
+            WIMTransform = FindObjectOfType<MiniatureModel>()?.transform;
             Assert.IsNotNull(WIMTransform);
-            index = GameObject.FindWithTag("IndexR")?.transform;
-            Assert.IsNotNull(index);
+            indexL = FindObjectOfType<LeftIndexFingerTip>()?.transform;
+            indexR = FindObjectOfType<RightIndexFingerTip>()?.transform;
+            Assert.IsNotNull(indexL);
+            Assert.IsNotNull(indexR);
         }
 
         private void Start() {
@@ -31,7 +36,7 @@ namespace WIMVR.Features.Preview_Screen {
         }
         
         private void Pickup_OnStartGrabbing() {
-            transform.parent = index;
+            transform.parent = indexR;  // TODO: allow both hands
             transform.localPosition = Vector3.zero;
         }
 
