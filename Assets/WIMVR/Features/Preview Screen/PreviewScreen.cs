@@ -25,9 +25,9 @@ namespace WIMVR.Features.Preview_Screen {
         public void ShowPreviewScreen(WIMConfiguration WIMConfig, WIMData WIMData) {
             this.WIMConfig = WIMConfig;
             this.WIMData = WIMData;
-            Assert.IsNotNull(this.Config, "Preview screen configuration is missing.");
+            Assert.IsNotNull(Config, "Preview screen configuration is missing.");
 
-            if(!this.Config.PreviewScreen || !this.Config.AutoPositionPreviewScreen) return;
+            if(!Config.PreviewScreen || !Config.AutoPositionPreviewScreen) return;
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
             Data.PreviewScreenTransform.GetComponentInChildren<FloatAbove>().Target = transform;
@@ -39,7 +39,7 @@ namespace WIMVR.Features.Preview_Screen {
             this.WIMConfig = WIMConfig;
             this.WIMData = WIMData;
             if(!Config.PreviewScreen) return;
-            Assert.IsFalse(this.Config.AutoPositionPreviewScreen);
+            Assert.IsFalse(Config.AutoPositionPreviewScreen);
             RemovePreviewScreen();
             Data.PreviewScreenTransform = Instantiate(Resources.Load<GameObject>("Preview Screen")).transform;
             Destroy(Data.PreviewScreenTransform.GetComponentInChildren<FloatAbove>());
@@ -50,10 +50,10 @@ namespace WIMVR.Features.Preview_Screen {
         public void RemovePreviewScreen() {
             if(!Data) return;
             Data.PreviewScreenEnabled = false;
-            var previewScreen = GameObject.FindGameObjectWithTag("PreviewScreen");
+            var previewScreen = FindObjectOfType<Tags.PreviewScreenTag>();
             if(!previewScreen) return;
             previewScreen.transform.parent = null;
-            Destroy(previewScreen);
+            Destroy(previewScreen.gameObject);
         }
 
 
@@ -85,7 +85,7 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(camObj);
             var cam = camObj.GetOrAddComponent<Camera>();
             Assert.IsNotNull(cam);
-            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));
+            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));    // TODO: don't rely on layers
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
             cam.cullingMask &= ~(1 << LayerMask.NameToLayer("PinchGrabbable"));
             cam.targetTexture = new RenderTexture(1600, 900, 16, RenderTextureFormat.Default);

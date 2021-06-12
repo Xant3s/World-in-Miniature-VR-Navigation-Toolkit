@@ -74,7 +74,7 @@ namespace WIMVR.Features.LiveUpdate {
 #if UNITY_EDITOR
         private void Update() {
             var somethingChanged = GetIsChanged();
-            if(!WIM) WIM = GameObject.FindWithTag("WIM").GetComponent<MiniatureModel>();
+            if(!WIM) WIM = FindObjectOfType<MiniatureModel>();
             if (!somethingChanged || alreadyUpdatedThisFrame || !WIM || !WIM.Configuration.AutoGenerateWIM) return;
             UpdateValues();
             TriggerWIMUpdate();

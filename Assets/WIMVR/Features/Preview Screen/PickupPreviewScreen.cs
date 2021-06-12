@@ -6,6 +6,7 @@ using WIMVR.Core;
 using WIMVR.Util;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Features.Preview_Screen {
     /// <summary>
@@ -15,22 +16,22 @@ namespace WIMVR.Features.Preview_Screen {
     [RequireComponent(typeof(DetectPickupGesture))]
     public class PickupPreviewScreen : MonoBehaviour {
         private MiniatureModel WIM;
-        private Transform thumb;
-        private Transform index;
+        private Transform thumbR;   // TODO: allow both hands
+        private Transform indexR;
         private Transform WIMTransform;
         private IHighlighter alphaHighlighter;
         private DetectPickupGesture detectPickupGesture;
 
 
         private void Awake() {
-            thumb = GameObject.FindWithTag("ThumbR")?.transform;
-            index = GameObject.FindWithTag("IndexR")?.transform;
-            WIMTransform = GameObject.FindWithTag("WIM")?.transform;
-            Assert.IsNotNull(WIMTransform);
-            WIM = WIMTransform.GetComponent<MiniatureModel>();
+            thumbR = FindObjectOfType<RightThumbFingerTip>()?.transform;
+            indexR = FindObjectOfType<RightIndexFingerTip>()?.transform;
+            WIM = FindObjectOfType<MiniatureModel>();
+            WIMTransform = WIM ? WIM.transform : null;
             Assert.IsNotNull(WIM);
-            Assert.IsNotNull(thumb);
-            Assert.IsNotNull(index);
+            Assert.IsNotNull(WIMTransform);
+            Assert.IsNotNull(thumbR);
+            Assert.IsNotNull(indexR);
         }
 
         private void Start() {
@@ -64,7 +65,7 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(previewScreenTransform);
 
             // Pick up the new preview screen.
-            previewScreenTransform.parent = index;
+            previewScreenTransform.parent = indexR;
             previewScreenTransform.localPosition = Vector3.zero;
         }
 

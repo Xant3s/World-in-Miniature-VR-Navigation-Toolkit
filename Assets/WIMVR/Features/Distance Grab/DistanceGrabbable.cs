@@ -1,6 +1,7 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
+using WIMVR.Core;
 
 namespace WIMVR.Features.Distance_Grab {
     /// <summary>
@@ -62,7 +63,7 @@ namespace WIMVR.Features.Distance_Grab {
             material = GetComponentInChildren<Renderer>().sharedMaterial;
             colorProperty = material.HasProperty(tintID) ? tintID : colorID;    
             defaultColor = material.GetColor(colorProperty);
-            isWIM = gameObject.CompareTag("WIM");
+            isWIM = gameObject.GetComponent<MiniatureModel>();
         }
 
         private void Update() {

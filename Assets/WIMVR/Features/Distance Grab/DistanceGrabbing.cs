@@ -1,7 +1,6 @@
 // Author: Samuel Truman (contact@samueltruman.com)
 
 using UnityEngine;
-using UnityEngine.InputSystem;
 using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;

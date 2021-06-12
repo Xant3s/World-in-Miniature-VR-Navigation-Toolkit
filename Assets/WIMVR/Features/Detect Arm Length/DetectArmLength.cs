@@ -3,6 +3,7 @@
 using UnityEngine;
 using WIMVR.Core;
 using WIMVR.Core.Input;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Features {
     /// <summary>
@@ -39,7 +40,7 @@ namespace WIMVR.Features {
         private void Detect() {
             if (!config.AutoDetectArmLength || armLengthDetected) return;
             armLengthDetected = true;
-            var rightHand = GameObject.FindWithTag("HandR");
+            var rightHand = FindObjectOfType<RightHand>().gameObject;
             var mainCamera = Camera.main;
             if(!rightHand || !mainCamera) return;
             var controllerPos = rightHand.transform.position;

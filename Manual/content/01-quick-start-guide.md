@@ -29,7 +29,7 @@ In case you need a scientific reference, you can cite this [paper](https://dl.ac
 
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly and you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.6 'Configure Scene'](#configure-scene).
+Before using this plugin, have a look at these steps to make sure it's set up properly and you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.5 'Configure Scene'](#configure-scene).
 
 ### Requirements
 
@@ -80,37 +80,6 @@ Please open the Hands Setup window (`Window -> wimVR -> Hand Setup`) and follow 
 <!-- TODO: Add screenshot -->
 
 
-### Tags
-
-To edit your project's tags and layers, select  ```Edit Layers``` from the ```Layers``` dropdown (see Fig. \ref{fig:EditTagsAndLayers}). You can also edit the tags in your project settings.
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=.5\textwidth]{content/res/EditTagsAndLayers.png}
-    \caption{To edit your project's tags and layers, select  `Edit Layers` from the `Layers` dropdown.}
-    \label{fig:EditTagsAndLayers}
-\end{figure}
-
-Make sure the following tags exist (exact spelling matters):  
-
-- ```WIM```
-- ```Level```
-- ```WIM Level Old```
-- ```HandL```
-- ```HandR```
-- ```ThumbR```
-- ```ThumbL```
-- ```IndexR```
-- ```IndexL```
-  
-Additional tags for Pro version (exact spelling matters):
-
-- ```PreviewCamera```
-- ```PreviewScreen```
-- ```Box Mask```
-- ```Cylinder Mask```
-- ```Spotlight Mask```
-
 ### Layers
 
 To edit your project's tags and layers, select  ```Edit Layers``` from the ```Layers``` dropdown (see Fig. \ref{fig:EditTagsAndLayers}). You can also edit the tags in your project settings.
@@ -122,6 +91,13 @@ Make sure the following layers exist (exact spelling matters):
 - ```Player```
 - ```Fingers```
 - ```PinchGrabbable```
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=.5\textwidth]{content/res/EditTagsAndLayers.png}
+    \caption{To edit your project's tags and layers, select  `Edit Layers` from the `Layers` dropdown.}
+    \label{fig:EditTagsAndLayers}
+\end{figure}
 
 ### Layer Collision Matrix
 

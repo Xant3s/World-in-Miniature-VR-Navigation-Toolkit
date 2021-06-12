@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
+using WIMVR.Features.LiveUpdate.Tags;
 using WIMVR.Util.Extensions;
 using WIMVR.VR;
 using MathUtils = WIMVR.Util.MathUtils;
@@ -68,7 +69,7 @@ namespace WIMVR.Core {
             var wimLevelTransform = WIM.transform.GetChild(0);
             Assert.IsNotNull(wimLevelTransform);
             var WIMChildTransforms = wimLevelTransform.GetComponentsInChildren<Transform>();
-            var level = GameObject.FindWithTag("Level")?.transform;
+            var level = Object.FindObjectOfType<Level>()?.transform;
             Assert.IsNotNull(level);
             Assert.AreNotEqual(wimLevelTransform, level);
             var levelChildTransforms = level.GetComponentsInChildren<Transform>();
@@ -114,7 +115,7 @@ namespace WIMVR.Core {
         public static void GenerateNewWIM(in MiniatureModel WIM) {
             WIM.transform.RemoveAllColliders();
             AdaptScaleFactorToPlayerHeight(WIM);
-            var levelTransform = GameObject.FindWithTag("Level").transform;
+            var levelTransform = Object.FindObjectOfType<Level>()?.transform;
 #if UNITY_EDITOR
             if (WIM.transform.childCount > 0) Undo.DestroyObjectImmediate(WIM.transform.GetChild(0).gameObject);
 #else
@@ -127,6 +128,7 @@ namespace WIMVR.Core {
             WIMLevel.localPosition = WIM.Configuration.WIMLevelOffset;
             WIMLevel.name = "WIM Level";
             WIMLevel.tag = "Untagged";
+            Object.DestroyImmediate(WIMLevel.GetComponent<Level>());
             WIMLevel.gameObject.isStatic = false;
             var WIMLayer = LayerMask.NameToLayer("WIM");
             WIMLevel.gameObject.layer = WIMLayer;

@@ -9,6 +9,7 @@ using WIMVR.Core.Input;
 using WIMVR.Util;
 using WIMVR.Util.XR;
 using WIMVR.VR;
+using WIMVR.VR.HandSetup.Tags;
 using Hand = WIMVR.Util.Hand;
 
 namespace WIMVR.Features.Scaling {
@@ -45,7 +46,7 @@ namespace WIMVR.Features.Scaling {
 
         private void Awake() {
             if(!ScalingConfig) return;
-            WIMTransform = GameObject.FindWithTag("WIM").transform;
+            WIMTransform = FindObjectOfType<MiniatureModel>().transform;
             grabbable = WIMTransform.GetComponent<OffsetGrabInteractable>();
         }
 
@@ -81,11 +82,11 @@ namespace WIMVR.Features.Scaling {
         private bool IsInitialized() => handL && handR && leftGrabVolume && rightGrabVolume;
 
         private void Init() {
-            handR = GameObject.FindWithTag("HandR")?.transform;
-            handL = GameObject.FindWithTag("HandL")?.transform;
+            handL = FindObjectOfType<LeftHand>()?.transform;
+            handR = FindObjectOfType<RightHand>()?.transform;
 
-            if(handR) rightGrabVolume = handR.GetComponentInParent<SphereCollider>();
             if(handL) leftGrabVolume = handL.GetComponentInParent<SphereCollider>();
+            if(handR) rightGrabVolume = handR.GetComponentInParent<SphereCollider>();
         }
 
         private void SetScalingHand(Hand hand) {
