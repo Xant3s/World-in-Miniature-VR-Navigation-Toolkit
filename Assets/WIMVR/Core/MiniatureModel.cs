@@ -30,8 +30,6 @@ namespace WIMVR.Core {
         public delegate void WIMAction(WIMConfiguration config, WIMData data);
        
         public static event WIMAction OnInit;
-        public static event WIMAction OnInitHand;
-        public static event WIMAction OnLateInitHand;
         public static event WIMAction OnLateInit;
         public static event WIMAction OnUpdate;
         public static event WIMAction OnNewDestinationSelected;
@@ -83,13 +81,6 @@ namespace WIMVR.Core {
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
-        }
-
-        public void HandSpawned() {
-            if(++numberOfHandsSpawned > 1) {
-                OnInitHand?.Invoke(Configuration, Data);
-                OnLateInitHand?.Invoke(Configuration, Data);
-            }
         }
 
         public void CleanupBeforeRespawn() {

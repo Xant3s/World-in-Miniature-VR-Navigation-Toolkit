@@ -28,25 +28,22 @@ namespace WIMVR.Features {
         private void Awake() {
             wimInput = GetComponent<WIMInput>();
             wimInput.respawn.action.performed += ctx => OnRespawn();
+            MiniatureModel.OnCleanupWIMBeforeRespawn += DestinationIndicators.RemoveDestinationIndicators;
+            MiniatureModel.OnInit += Init;
         }
 
         private void Start() {
-            MiniatureModel.OnCleanupWIMBeforeRespawn += DestinationIndicators.RemoveDestinationIndicators;
-            MiniatureModel.OnLateInitHand += StartRespawn;
             var WIM = TryFindWIM();
             var shaderName = WIMGenerator.LoadDefaultMaterial(WIM).shader.name;
             materialForOldWIM = new Material(Shader.Find(shaderName));
         }
 
-        public void OnRespawn() {
-            RespawnWIM(false);
+        private void Init(WIMConfiguration wimConfig, WIMData wimData) {
+            config = wimConfig;
+            data = wimData;
         }
 
-        private void StartRespawn(WIMConfiguration config, WIMData data) {
-            this.config = config;
-            this.data = data;
-            RespawnWIM(false);
-        }
+        private void OnRespawn() => RespawnWIM(false);
 
         /// <summary>
         /// Respawns the WIM, i.e. destroys the old miniature model and creates a new one at specified position.
@@ -78,13 +75,12 @@ namespace WIMVR.Features {
             oldWIMLevel.parent = null;
             oldWIMLevel.name = "WIM Level Old";
             oldWIMLevel.tag = "Untagged";
-            Assert.IsNotNull(data);
+            Assert.IsNotNull(data, "Data not found");
             Assert.IsNotNull(data.PlayerRepresentationTransform);
             Assert.IsNotNull(data.PlayerRepresentationTransform.parent);
             data.PlayerRepresentationTransform.parent = null;
             data.WIMLevelTransform = Instantiate(oldWIMLevel.gameObject, transform).transform;
             data.WIMLevelTransform.gameObject.name = "WIM Level";
-            data.WIMLevelTransform.tag = "Untagged";
 
             // Copy material
             materialForOldWIM.CopyPropertiesFromMaterial(oldWIMLevel.GetComponentInChildren<Renderer>().material);
@@ -147,7 +143,7 @@ namespace WIMVR.Features {
         }
 
         private void OnDestroy() {
-            MiniatureModel.OnLateInitHand -= StartRespawn;
+            MiniatureModel.OnInit -= Init;
         }
     }
 }

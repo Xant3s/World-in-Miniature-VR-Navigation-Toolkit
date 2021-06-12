@@ -35,7 +35,7 @@ namespace WIMVR.Features {
         }
 
         private void Start() {
-            MiniatureModel.OnLateInitHand += Init;
+            MiniatureModel.OnInit += Init;
             wimInput.destinationSelectionTouchLeft.action.performed += ctx => OnDestinationSelectionTouchLeft();
             wimInput.destinationSelectionTouchRight.action.performed += ctx => OnDestinationSelectionTouchRight();
             wimInput.destinationRotation.action.performed += ctx => OnDestinationRotation(ctx.action.ReadValue<Vector2>());
@@ -43,7 +43,7 @@ namespace WIMVR.Features {
         }
 
         private void OnDestroy() {
-            MiniatureModel.OnLateInitHand -= Init;
+            MiniatureModel.OnInit -= Init;
         }
 
         private void Init(WIMConfiguration wimConfig, WIMData wimData) {

@@ -33,15 +33,15 @@ namespace WIMVR.Features {
         }
 
         private void OnEnable() {
-            MiniatureModel.OnInitHand += Setup;
+            MiniatureModel.OnInit += Setup;
             MiniatureModel.OnUpdate += UpdatePlayerRepresentationInWIM;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnInitHand -= Setup;
+            MiniatureModel.OnInit -= Setup;
             MiniatureModel.OnUpdate -= UpdatePlayerRepresentationInWIM;
         }
-
+        
         private static void Setup(WIMConfiguration config, WIMData data) {
             var tmp = Instantiate(config.PlayerRepresentation).transform;
             var playerRepresentation = tmp.GetChild(0);
