@@ -13,6 +13,7 @@ namespace WIMVR.VR.HandSetup {
         public bool PrefabRootsPresent { get; set; }
         public bool OculusCustomHandsNoMissingScripts { get; set; }
         public bool OculusMaterialsConvertedToURP { get; set; }
+        public bool HandTags { get; set; }
     }
 
     public class OculusHandsValidator : HandValidator {
@@ -47,6 +48,7 @@ namespace WIMVR.VR.HandSetup {
             results.LeftThumbFingerTip |= basicResults.LeftThumbFingerTip;
             results.RightIndexFingerTip |= basicResults.RightIndexFingerTip;
             results.RightThumbFingerTip |= basicResults.RightThumbFingerTip;
+            results.HandTags = basicResults.HandTags;
         }
 
         private void CheckPrefabRoot(GameObject hand, out bool isValid, out GameObject prefabRoot) {
