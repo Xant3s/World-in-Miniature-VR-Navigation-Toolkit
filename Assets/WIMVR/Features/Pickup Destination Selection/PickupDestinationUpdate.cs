@@ -6,6 +6,7 @@ using WIMVR.Core;
 using WIMVR.Util;
 using WIMVR.Util.Haptics;
 using WIMVR.Util.XR;
+using WIMVR.VR.HandSetup.Tags;
 
 namespace WIMVR.Features.Pickup_Destination {
     /// <summary>
@@ -30,12 +31,12 @@ namespace WIMVR.Features.Pickup_Destination {
 
         public static event WIMAction OnRemoveDestinationIndicatorExceptWIM;
 
-
+        
         private void Awake() {
             colorHighlighter = GetComponentInChildren<IHighlighter>();
-            thumb = GameObject.FindWithTag("ThumbR")?.transform;
-            index = GameObject.FindWithTag("IndexR")?.transform;
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            index = FindObjectOfType<RightIndexFingerTip>()?.transform;
+            thumb = FindObjectOfType<RightThumbFingerTip>()?.transform;
+            WIM = FindObjectOfType<MiniatureModel>();
             Assert.IsNotNull(thumb);
             Assert.IsNotNull(index);
             Assert.IsNotNull(WIM);

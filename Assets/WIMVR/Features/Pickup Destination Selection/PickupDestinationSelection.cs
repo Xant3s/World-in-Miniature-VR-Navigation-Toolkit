@@ -29,12 +29,12 @@ namespace WIMVR.Features.Pickup_Destination {
         /// </summary>
         public float DoubleTapInterval { get; set; } = 2;
 
-
+        
         private void Start() {
             colorHighlighter = GetComponent<IHighlighter>();
-            thumbR = GameObject.FindWithTag("ThumbR")?.transform;
-            indexR = GameObject.FindWithTag("IndexR")?.transform;
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            indexR = FindObjectOfType<RightIndexFingerTip>()?.transform;
+            thumbR = FindObjectOfType<RightThumbFingerTip>()?.transform;
+            WIM = FindObjectOfType<MiniatureModel>();
             Assert.IsNotNull(thumbR);
             Assert.IsNotNull(indexR);
             Assert.IsNotNull(WIM);
@@ -44,6 +44,7 @@ namespace WIMVR.Features.Pickup_Destination {
             detectPickupGesture.OnStartGrabbing.AddListener(StartGrabbing);
             detectPickupGesture.OnStopGrabbing.AddListener(StopGrabbing);
         }
+
 
         private void OnStartTouch(Hand hand) {
             // Haptic feedback.
@@ -64,7 +65,7 @@ namespace WIMVR.Features.Pickup_Destination {
             WIM.CleanupBeforeRespawn();
 
             // Spawn new destination indicator.
-            var destination = FindObjectOfType<RightIndexFingerTip>().transform.position;
+            var destination = FindObjectOfType<RightIndexFingerTip>().transform.position;   // TODO: allow both hands
             DestinationIndicators.SpawnDestinationIndicatorInWIM(WIM.Configuration, WIM.Data, destination);
 
             // Actually pick up the new destination indicator.
