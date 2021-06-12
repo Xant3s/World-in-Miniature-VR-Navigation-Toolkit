@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using WIMVR.Core;
 
 namespace WIMVR.VR {
     public class HandPresenceUpdater : MonoBehaviour {
@@ -13,7 +14,7 @@ namespace WIMVR.VR {
 
 
         private void Awake() {
-            WIM = GameObject.FindWithTag("WIM");
+            WIM = FindObjectOfType<MiniatureModel>().gameObject;
         }
         
         private void Start() {

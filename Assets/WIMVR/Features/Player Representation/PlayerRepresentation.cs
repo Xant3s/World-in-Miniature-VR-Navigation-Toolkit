@@ -23,7 +23,7 @@ namespace WIMVR.Features {
         private void Start() {
             mainCameraTransform = Camera.main.transform;
             playerTransform = GameObject.FindWithTag("Player").transform;
-            WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            WIM = FindObjectOfType<MiniatureModel>();
             Assert.IsNotNull(WIM);
             if (!WIM.Configuration) return;
             converter = WIM.Converter;
@@ -62,7 +62,7 @@ namespace WIMVR.Features {
             if(!data.PlayerRepresentationTransform) return;
 
             // Position.
-            Debug.Assert(Camera.main != null, "Camera.main != null");
+            Assert.IsNotNull(Camera.main, "No main camera found.");
             data.PlayerRepresentationTransform.position = converter.ConvertToWIMSpace(MathUtils.GetGroundPosition(mainCameraTransform.position));
             var playerRepresentationHeight = config.PlayerRepresentation.transform.GetChild(0).localScale.y;
             data.PlayerRepresentationTransform.position += data.WIMLevelTransform.up * playerRepresentationHeight * config.ScaleFactor;

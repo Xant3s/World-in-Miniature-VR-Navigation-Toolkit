@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core.Input;
 using WIMVR.Features;
+using WIMVR.Features.LiveUpdate.Tags;
 using WIMVR.Util;
 using WIMVR.VR;
 
@@ -66,7 +67,7 @@ namespace WIMVR.Core {
             Data = ScriptableObject.CreateInstance<WIMData>();
             Assert.IsNotNull(Data);
             travelStrategy = new InstantTravel();
-            Data.LevelTransform = GameObject.FindWithTag("Level")?.transform;
+            Data.LevelTransform = FindObjectOfType<Level>()?.transform;
             Data.PlayerTransform = GameObject.FindWithTag("Player")?.transform;
             Data.HMDTransform = GameObject.FindWithTag("MainCamera")?.transform;
             Data.PlayerController = GameObject.FindWithTag("Player")?.transform;
@@ -110,7 +111,6 @@ namespace WIMVR.Core {
 
         private void OnEnable() {
             if(!Application.isPlaying) {
-                gameObject.tag = "WIM";
                 gameObject.layer = LayerMask.NameToLayer("WIM");
                 GetComponent<Rigidbody>().useGravity = false;
                 if(name.Equals("GameObject")) name = "Miniature Model";
