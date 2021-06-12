@@ -42,7 +42,12 @@ You can find them at 'wimVR -> Prefabs -> VR -> Hands -> Device-based'."/>
                         </VisualElement>
                     </VisualElement>
                 </VisualElement>
-                
+
+                <VisualElement name="hand-tags-present" class="row">
+                    <Label text="Hand tags present"/>
+                    <Image name="hand-tags-present-icon" class="icon"/>
+                    <Button name="btn-fix-hand-tags" class="fix-btn" text="Fix"/>
+                </VisualElement>
                 
                 <VisualElement name="left-index-finger-tip-present" class="row">
                     <Label text="Left index finger tip present"/>

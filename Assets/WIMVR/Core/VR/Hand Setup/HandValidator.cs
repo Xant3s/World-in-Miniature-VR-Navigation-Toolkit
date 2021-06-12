@@ -9,6 +9,7 @@ namespace WIMVR.VR.HandSetup {
         bool RightIndexFingerTip { get; }
         bool RightThumbFingerTip { get; }
         bool PrefabRootsPresent { get; }
+        public bool HandTags { get; set; }
     }
 
     public interface HandValidator {

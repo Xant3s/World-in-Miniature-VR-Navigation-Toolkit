@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 using WIMVR.Util;
 using WIMVR.Util.Extensions;
 using WIMVR.VR.HandSetup;
+using WIMVR.VR.HandSetup.Tags;
 using Button = UnityEngine.UIElements.Button;
 using Image = UnityEngine.UIElements.Image;
 using Object = UnityEngine.Object;
@@ -137,6 +138,11 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                     Validate();
                 });
             
+            root.Q<Button>("btn-fix-hand-tags")
+                .RegisterCallback<ClickEvent>(e 
+                    => EditorUtility.DisplayDialog("wimVR Hand Setup",
+                        $"Please attach the {nameof(LeftHand)} and {nameof(RightHand)} script to your respective hand model.", "Ok"));
+            
             root.Q<Button>("btn-fix-left-index-finger-tip")
                 .RegisterCallback<ClickEvent>(e 
                     => DisplayFingerTipPrefabMissingNotification(PrefabLoader.LeftIndexFingerTipPrefab));
@@ -202,6 +208,9 @@ namespace WIMVR.Core.VR.HandSetup.Editor {
                 root.Q<Image>("oculus-material-converted-icon").image = oculusResults.OculusMaterialsConvertedToURP ? validIcon : invalidIcon;
                 root.Q<Button>("btn-fix-oculus-material-converted").SetDisplay(!oculusResults.OculusMaterialsConvertedToURP);
             }
+            
+            root.Q<Image>("hand-tags-present-icon").image = results.HandTags ? validIcon : invalidIcon;
+            root.Q<Button>("btn-fix-hand-tags").SetDisplay(!results.HandTags);
             
             root.Q<Image>("left-index-finger-tip-present-icon").image = results.LeftIndexFingerTip ? validIcon : invalidIcon;
             root.Q<Button>("btn-fix-left-index-finger-tip").SetDisplay(!results.LeftIndexFingerTip);
