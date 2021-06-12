@@ -32,10 +32,10 @@ namespace WIMVR.Features {
             WIM = FindObjectOfType<MiniatureModel>();
             leftIndexFingerTip = FindObjectOfType<LeftIndexFingerTip>().transform;
             rightIndexFingerTip = FindObjectOfType<RightIndexFingerTip>().transform;
+            MiniatureModel.OnInit += Init;
         }
 
         private void Start() {
-            MiniatureModel.OnInit += Init;
             wimInput.destinationSelectionTouchLeft.action.performed += ctx => OnDestinationSelectionTouchLeft();
             wimInput.destinationSelectionTouchRight.action.performed += ctx => OnDestinationSelectionTouchRight();
             wimInput.destinationRotation.action.performed += ctx => OnDestinationRotation(ctx.action.ReadValue<Vector2>());
