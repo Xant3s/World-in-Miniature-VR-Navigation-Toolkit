@@ -1,12 +1,11 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.InputSystem;
 using WIMVR.Core;
 using WIMVR.Core.Input;
+using WIMVR.Features.Scrolling.Tags;
 using WIMVR.Util;
 using WIMVR.Util.Extensions;
 
@@ -18,46 +17,12 @@ namespace WIMVR.Features.Scrolling {
     [DisallowMultipleComponent]
     public class Scrolling : MonoBehaviour {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
-        
+
         private WIMData data;
+
         private WIMInput wimInput;
+
         private Vector2 verticalAxisInput;
-
-        internal void Setup() {
-            WIMGenerator.OnPreConfigure += DisableScrolling;
-            WIMGenerator.OnConfigure += EnableScrolling;
-            WIMGenerator.OnConfigure += UpdateScrollingMask;
-            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM += AdjustPlayerRepresentationInWIM;
-            if (!Application.isPlaying) return;
-            MiniatureModel.OnUpdate += ScrollWIM;
-        }
-
-        internal void Remove() {
-            WIMGenerator.OnPreConfigure -= DisableScrolling;
-            WIMGenerator.OnConfigure -= EnableScrolling;
-            WIMGenerator.OnConfigure -= UpdateScrollingMask;
-            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= AdjustPlayerRepresentationInWIM;
-            if (!Application.isPlaying) return;
-            MiniatureModel.OnUpdate -= ScrollWIM;
-        }
-
-        internal void UpdateScrollingMask(in MiniatureModel WIM) {
-            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
-            var boxMaskObj = GameObject.FindWithTag("Box Mask");
-            if (!boxMaskObj) return;
-            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
-        }
-
-        private static void DisableScrolling(in MiniatureModel WIM) {
-            var boxMask = GameObject.FindWithTag("Box Mask");
-#if UNITY_EDITOR
-            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
-#else
-            GameObject.DestroyImmediate(boxMask);
-#endif
-            WIM.transform.RemoveAllColliders();
-            WIMGenerator.GenerateColliders(WIM);
-        }
 
 
         private void OnEnable() {
@@ -75,12 +40,49 @@ namespace WIMVR.Features.Scrolling {
             wimInput.scrollWIMVertically.action.performed += ctx => OnScrollWIMVertically(ctx.action.ReadValue<Vector2>());
         }
 
+        private void Setup() {
+            WIMGenerator.OnPreConfigure += DisableScrolling;
+            WIMGenerator.OnConfigure += EnableScrolling;
+            WIMGenerator.OnConfigure += UpdateScrollingMask;
+            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM += AdjustPlayerRepresentationInWIM;
+            if (!Application.isPlaying) return;
+            MiniatureModel.OnUpdate += ScrollWIM;
+        }
+
+        private void Remove() {
+            WIMGenerator.OnPreConfigure -= DisableScrolling;
+            WIMGenerator.OnConfigure -= EnableScrolling;
+            WIMGenerator.OnConfigure -= UpdateScrollingMask;
+            PlayerRepresentation.OnUpdatePlayerRepresentationInWIM -= AdjustPlayerRepresentationInWIM;
+            if (!Application.isPlaying) return;
+            MiniatureModel.OnUpdate -= ScrollWIM;
+        }
+
         private void OnDestroy() {
-            var WIM = GameObject.FindWithTag("WIM")?.GetComponent<MiniatureModel>();
+            var WIM = FindObjectOfType<MiniatureModel>();
             if(!WIM) return;
             DisableScrolling(WIM);
             WIMGenerator.SetWIMMaterial(WIMGenerator.LoadDefaultMaterial(WIM), WIM);
         }
+
+        private void UpdateScrollingMask(in MiniatureModel WIM) {
+            if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
+            var boxMaskObj = FindObjectOfType<BoxMask>().gameObject;
+            if (!boxMaskObj) return;
+            boxMaskObj.transform.localScale = WIM.Configuration.ActiveAreaBounds;
+        }
+
+        private static void DisableScrolling(in MiniatureModel WIM) {
+            var boxMask = FindObjectOfType<BoxMask>().gameObject;
+#if UNITY_EDITOR
+            if (boxMask) Undo.DestroyObjectImmediate(boxMask);
+#else
+            GameObject.DestroyImmediate(boxMask);
+#endif
+            WIM.transform.RemoveAllColliders();
+            WIMGenerator.GenerateColliders(WIM);
+        }
+
 
         private void ScrollWIM(WIMConfiguration config, WIMData data) {
             Assert.IsNotNull(ScrollingConfig, "Scrolling configuration is missing.");
@@ -90,9 +92,9 @@ namespace WIMVR.Features.Scrolling {
             if (ScrollingConfig.AutoScroll) AutoScrollWIM();
         }
 
-        public void OnScrollWIM(Vector2 value) => ManuallyScrollWIM(value);
+        private void OnScrollWIM(Vector2 value) => ManuallyScrollWIM(value);
 
-        public void OnScrollWIMVertically(Vector2 value) {
+        private void OnScrollWIMVertically(Vector2 value) {
             verticalAxisInput = value;
             ManuallyScrollWIM(Vector3.zero);
         }
@@ -100,8 +102,7 @@ namespace WIMVR.Features.Scrolling {
         private void ManuallyScrollWIM(Vector3 scrollingInput) {
             if (!Application.isPlaying) return;
             if (!ScrollingConfig.AllowWIMScrolling) return;
-            var input = scrollingInput;
-            var direction = new Vector3(input.x, verticalAxisInput.y, input.y);
+            var direction = new Vector3(scrollingInput.x, verticalAxisInput.y, scrollingInput.y);
             if(!ScrollingConfig.AllowVerticalScrolling) direction.y = 0;
             Assert.IsNotNull(data.WIMLevelTransform);
             data.WIMLevelTransform.Translate(Time.deltaTime * ScrollingConfig.ScrollSpeed * -direction, Space.World);
@@ -121,10 +122,10 @@ namespace WIMVR.Features.Scrolling {
         private void EnableScrolling(in MiniatureModel WIM) {
             if (!ScrollingConfig || !ScrollingConfig.AllowWIMScrolling) return;
             var maskController = new GameObject("Box Mask");
-            maskController.tag = maskController.name;
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo(maskController, "Created Box Mask");
 #endif
+            maskController.AddComponent<BoxMask>();
             maskController.AddComponent<AlignWith>().Target = WIM.transform;
             var controller = maskController.AddComponent<BoxController>();
             var material = WIMGenerator.LoadDefaultMaterial(WIM);
