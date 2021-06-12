@@ -18,7 +18,7 @@ Aim at target using the laser pointer. Hold grab button to start pulling the obj
 - Enable 'Distance Grabbing' in the *MiniatureModel* component inspector
 
 **Configuration**  
-To configure the laser pointer, find the 'AimAssist' prefab in the ```WIMVR/Prefabs/Resources``` directory. Modify the line component to change the visual appearance of the laser pointer. Use the *AimAssist* inspector to change additional settings:
+To configure the laser pointer, find the 'AimAssist' prefab in the ```wimVR/Prefabs/Resources``` directory. Modify the line component to change the visual appearance of the laser pointer. Use the *AimAssist* inspector to change additional settings:
 
 - *Hand*: The hand this script is attached to
 - *Length*: The length of the laser pointer

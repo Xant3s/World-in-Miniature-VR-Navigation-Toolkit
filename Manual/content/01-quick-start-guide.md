@@ -1,9 +1,9 @@
 # Quick Start Guide
 
-Thank you for using WIMVR! This chapter explains how to get started as quickly as possible.
+Thank you for using wimVR! This chapter explains how to get started as quickly as possible.
 After importing the plugin, it will present the welcome screen. if it doesn't appear, you can open it by selecting
 
-`Window > WIMVR > Welcome Window` from the menu bar.
+`Window > wimVR > Welcome Window` from the menu bar.
 
 \begin{figure}[!h]
     \centering
@@ -17,9 +17,9 @@ After importing the plugin, it will present the welcome screen. if it doesn't ap
 Navigation is one of the most fundamental challenges
 in Virtual Reality (VR). The world-in-miniature (WIM) metaphor allows players to travel in large-scale virtual environments (VEs) regardless of available physical space while maintaining a high-level overview of the VE. It relies on a hand-held, scaled-down duplicate of the entire VE or parts of it. This is the world in miniature. The user sees his avatar located on the WIM and he can plan his/her next movements.
 
-## What is WIMVR?
+## What is wimVR?
 
-World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that integrates and extends state-of-the-art interaction tasks and
+World-in-Miniature VR Navigation Toolkit (wimVR) is a Unity plugin that integrates and extends state-of-the-art interaction tasks and
 visualization concepts to overcome open conceptual gaps and to
 provide a comprehensive practical solution for traveling in VR.
 
@@ -29,7 +29,7 @@ In case you need a scientific reference, you can cite this [paper](https://dl.ac
 
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly and you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.5 'Configure Scene'](#configure-scene).
+Before using this plugin, have a look at these steps to make sure it's set up properly and you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/wimVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.5 'Configure Scene'](#configure-scene).
 
 ### Requirements
 
@@ -122,7 +122,7 @@ Also, set up the layer collision matrix under `Project Settings -> Physics` so t
 1. All gameobjects that are part of your level must be nested under an empty gameobject.
    - Tag this empty gameobject as 'Level'.
 2. Add XR rig to the scene
-   - Drag the 'XR Rig' prefab (`WIMVR/Prefabs/XR Rig`) into the scene
+   - Drag the 'XR Rig' prefab (`wimVR/Prefabs/VR/XR Rig`) into the scene
 3. Add miniature model
    - Add *Miniature Model* prefab to scene
    - Make sure both the tag and layer are set to 'WIM'
