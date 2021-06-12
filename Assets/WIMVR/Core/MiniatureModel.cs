@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Core.Input;
 using WIMVR.Features;
 using WIMVR.Features.LiveUpdate.Tags;
@@ -68,18 +69,16 @@ namespace WIMVR.Core {
             Assert.IsNotNull(Data);
             travelStrategy = new InstantTravel();
             Data.LevelTransform = FindObjectOfType<Level>()?.transform;
-            Data.PlayerTransform = GameObject.FindWithTag("Player")?.transform;
             Data.HMDTransform = GameObject.FindWithTag("MainCamera")?.transform;
-            Data.PlayerController = GameObject.FindWithTag("Player")?.transform;
+            Data.PlayerController = FindObjectOfType<XRRig>()?.transform;
             Data.WIMLevelTransform = transform.Find("WIM Level");
             grabbable = GetComponent<OffsetGrabInteractable>();
             _rigidbody = GetComponent<Rigidbody>();
             Assert.IsNotNull(Data.HMDTransform);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
             Assert.IsNotNull(Configuration.DestinationIndicator);
-            Assert.IsNotNull(Data.PlayerController);
+            Assert.IsNotNull(Data.PlayerController, "XR Rig not found in scene.");
             Assert.IsNotNull(Data.LevelTransform);
-            Assert.IsNotNull(Data.PlayerTransform);
             Assert.IsNotNull(Data.WIMLevelTransform);
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);

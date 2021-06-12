@@ -12,7 +12,6 @@ namespace WIMVR.Core {
         public Transform DestinationIndicatorInLevel;
         public Transform DestinationIndicatorInWIM;
         public Transform LevelTransform;
-        public Transform PlayerTransform;
         public float WIMHeightRelativeToPlayer;
         public Transform PlayerController;
         public Transform HMDTransform;

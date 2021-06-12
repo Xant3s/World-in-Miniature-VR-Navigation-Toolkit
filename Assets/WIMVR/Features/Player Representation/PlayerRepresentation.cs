@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.XR.Interaction.Toolkit;
 using WIMVR.Core;
 using WIMVR.Features.Pickup_Destination;
 using WIMVR.Util;
@@ -22,26 +23,26 @@ namespace WIMVR.Features {
 
         private void Start() {
             mainCameraTransform = Camera.main.transform;
-            playerTransform = GameObject.FindWithTag("Player").transform;
+            playerTransform = FindObjectOfType<XRRig>()?.transform;
             WIM = FindObjectOfType<MiniatureModel>();
             Assert.IsNotNull(WIM);
             if (!WIM.Configuration) return;
             converter = WIM.Converter;
-            Assert.IsNotNull(playerTransform);
+            Assert.IsNotNull(playerTransform, "XR Rig not found in scene.");
             Assert.IsNotNull(converter);
         }
 
         private void OnEnable() {
-            MiniatureModel.OnInitHand += setup;
-            MiniatureModel.OnUpdate += updatePlayerRepresentationInWIM;
+            MiniatureModel.OnInitHand += Setup;
+            MiniatureModel.OnUpdate += UpdatePlayerRepresentationInWIM;
         }
 
         private void OnDisable() {
-            MiniatureModel.OnInitHand -= setup;
-            MiniatureModel.OnUpdate -= updatePlayerRepresentationInWIM;
+            MiniatureModel.OnInitHand -= Setup;
+            MiniatureModel.OnUpdate -= UpdatePlayerRepresentationInWIM;
         }
 
-        private void setup(WIMConfiguration config, WIMData data) {
+        private static void Setup(WIMConfiguration config, WIMData data) {
             var tmp = Instantiate(config.PlayerRepresentation).transform;
             var playerRepresentation = tmp.GetChild(0);
             playerRepresentation.parent = data.WIMLevelTransform;
@@ -58,7 +59,7 @@ namespace WIMVR.Features {
             }
         }
 
-        private void updatePlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
+        private void UpdatePlayerRepresentationInWIM(WIMConfiguration config, WIMData data) {
             if(!data.PlayerRepresentationTransform) return;
 
             // Position.
