@@ -19,9 +19,7 @@ namespace WIMVR.Features.Scrolling {
         [HideInInspector] public ScrollingConfiguration ScrollingConfig;
 
         private WIMData data;
-
         private WIMInput wimInput;
-
         private Vector2 verticalAxisInput;
 
 
@@ -73,7 +71,7 @@ namespace WIMVR.Features.Scrolling {
         }
 
         private static void DisableScrolling(in MiniatureModel WIM) {
-            var boxMask = FindObjectOfType<BoxMask>().gameObject;
+            var boxMask = FindObjectOfType<BoxMask>()?.gameObject;
 #if UNITY_EDITOR
             if (boxMask) Undo.DestroyObjectImmediate(boxMask);
 #else
