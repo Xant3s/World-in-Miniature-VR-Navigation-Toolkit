@@ -1,6 +1,5 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
@@ -96,17 +95,8 @@ namespace WIMVR.Features {
         }
 
         private void SetupNewWIM(bool maintainTransformRelativeToPlayer, Vector3 levelPos) {
-            ApplyWIMLayerToNewWIM();
             StopAllMovementOfRigidbody();
             SetNewWIMPositionAndOrientation(maintainTransformRelativeToPlayer, levelPos);
-        }
-
-        private void ApplyWIMLayerToNewWIM() {
-            var WIMLayer = LayerMask.NameToLayer("WIM");
-            data.WIMLevelTransform.gameObject.layer = WIMLayer;
-            foreach (Transform child in data.WIMLevelTransform) {
-                child.gameObject.layer = WIMLayer;
-            }
         }
 
         private void StopAllMovementOfRigidbody() {

@@ -101,7 +101,6 @@ namespace WIMVR.Core {
 
         private void OnEnable() {
             if(!Application.isPlaying) {
-                gameObject.layer = LayerMask.NameToLayer("WIM");
                 GetComponent<Rigidbody>().useGravity = false;
                 if(name.Equals("GameObject")) name = "Miniature Model";
             }
