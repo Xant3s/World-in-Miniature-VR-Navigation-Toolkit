@@ -13,17 +13,16 @@ namespace WIMVR.Util {
     /// <summary>
     /// Detects whether object is being picked up and calls events.
     /// What exactly should happen and how the object is picked up must be specified by events.
-    /// This object is assumed to only collide with the player's fingertips,
-    /// i.e. its layer only collides with the 'Fingers' layer.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Collider))]
     public class DetectPickupGesture : MonoBehaviour {
-        public enum Finger {
+        private enum Finger {
             LeftIndex,
             LeftThumb,
             RightIndex,
-            RightThumb
+            RightThumb,
+            None
         }
 
         #region Events
@@ -85,10 +84,10 @@ namespace WIMVR.Util {
         }
 
         private void OnTriggerEnter(Collider other) {
-            // This object's layer only collides with the 'Fingers' layer.
-            // So we know the object we just collided with is a finger.
-            fingersInside[other.GetFingerType()] = true;
-            var hand = other.Is(Finger.RightIndex) || other.Is(Finger.RightThumb) ? Hand.RightHand : Hand.LeftHand;
+            var fingerType = GetFingerType(other);
+            var hand = IsRightHand(fingerType) ? Hand.RightHand : Hand.LeftHand;
+            if(fingerType == Finger.None) return;
+            fingersInside[fingerType] = true;
             OnStartTouch?.Invoke(hand);
             if(!IsPinched && RIndexInside && RThumbInside && IndexPressed(Hand.RightHand)) {
                 pinchingHand = Hand.RightHand;
@@ -107,7 +106,9 @@ namespace WIMVR.Util {
         }
 
         private void OnTriggerExit(Collider other) {
-            fingersInside[other.GetFingerType()] = false;
+            var fingerType = GetFingerType(other);
+            if(fingerType == Finger.None) return;
+            fingersInside[fingerType] = false;
             if(fingersInside.All(kvp => kvp.Value == false)) {
                 OnStopTouch?.Invoke();
             }
@@ -117,24 +118,15 @@ namespace WIMVR.Util {
             pinchingHand = Hand.None;
             OnStopGrabbing?.Invoke();
         }
-    }
-    
-    internal static class ComponentExtensions {
-        public static bool Is(this Component component, DetectPickupGesture.Finger finger) 
-            => component.GetComponent(ComponentFromFinger(finger));
 
-        public static DetectPickupGesture.Finger GetFingerType(this Component component) {
-            if(component.GetComponent<LeftIndexFingerTip>()) return DetectPickupGesture.Finger.LeftIndex;
-            if(component.GetComponent<LeftThumbFingerTip>()) return DetectPickupGesture.Finger.LeftThumb;
-            if(component.GetComponent<RightIndexFingerTip>()) return DetectPickupGesture.Finger.RightIndex;
-            return DetectPickupGesture.Finger.RightThumb;
+        private static Finger GetFingerType(Component component) {
+            if(component.GetComponent<LeftIndexFingerTip>()) return Finger.LeftIndex;
+            if(component.GetComponent<LeftThumbFingerTip>()) return Finger.LeftThumb;
+            if(component.GetComponent<RightIndexFingerTip>()) return Finger.RightIndex;
+            if(component.GetComponent<RightThumbFingerTip>()) return Finger.RightThumb;
+            return Finger.None;
         }
 
-        private static Type ComponentFromFinger(DetectPickupGesture.Finger finger) => finger switch {
-            DetectPickupGesture.Finger.LeftIndex => typeof(LeftIndexFingerTip),
-            DetectPickupGesture.Finger.LeftThumb => typeof(LeftThumbFingerTip),
-            DetectPickupGesture.Finger.RightIndex => typeof(RightIndexFingerTip),
-            _ => typeof(RightThumbFingerTip)
-        };
+        private static bool IsRightHand(Finger fingerType) => fingerType == Finger.RightIndex || fingerType == Finger.RightThumb;
     }
 }
