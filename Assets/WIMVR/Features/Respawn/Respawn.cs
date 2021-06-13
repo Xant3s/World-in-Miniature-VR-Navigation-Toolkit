@@ -1,6 +1,5 @@
 ﻿// Author: Samuel Truman (contact@samueltruman.com)
 
-using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using WIMVR.Core;
