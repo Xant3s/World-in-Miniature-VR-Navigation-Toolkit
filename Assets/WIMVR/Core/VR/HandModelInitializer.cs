@@ -3,6 +3,8 @@
 using System;
 using UnityEngine;
 using WIMVR.Core;
+using WIMVR.VR.HandSetup.Tags;
+using Object = UnityEngine.Object;
 
 namespace WIMVR.VR {
     /// <summary>
@@ -19,21 +21,18 @@ namespace WIMVR.VR {
 
         private void WaitForHands(WIMConfiguration config, WIMData data) {
             if(!RightHandInitialized) {
-                RightHandInitialized = TryInitHand("HandR", out var rightHand);
+                var rightHand = Object.FindObjectOfType<RightHand>().gameObject;
+                RightHandInitialized = rightHand;
                 if(RightHandInitialized) OnRightHandInitialized?.Invoke(rightHand);
             }
             
             if(!LeftHandInitialized) {
-                LeftHandInitialized = TryInitHand("HandL", out var leftHand);
+                var leftHand = Object.FindObjectOfType<LeftHand>().gameObject;
+                LeftHandInitialized = leftHand;
                 if(LeftHandInitialized) OnLeftHandInitialized?.Invoke(leftHand);
             }
 
             if(RightHandInitialized && LeftHandInitialized) MiniatureModel.OnUpdate -= WaitForHands;
-        }
-
-        private static bool TryInitHand(string handTag, out GameObject hand) {
-            hand = GameObject.FindWithTag(handTag);
-            return hand;
         }
     }
 }

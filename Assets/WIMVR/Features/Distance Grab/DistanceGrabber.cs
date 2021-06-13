@@ -30,6 +30,7 @@ namespace WIMVR.Features.Distance_Grab {
         private LineRenderer lineRenderer;
         private Transform WIM;
         private DistanceGrabbable lastGrabbable;
+        private const float raycastStartPointOffset = 0.025f;
         private bool grabButtonPressed;
         private bool grabStartedThisFrame;
         private bool isDisabled;
@@ -49,8 +50,9 @@ namespace WIMVR.Features.Distance_Grab {
             SetEnable(!(distanceToWIM < requiredDistanceToWIM) && !isInsideWIM);
             if(isDisabled) return;
         
-            var allLayersButHands = ~((1 << LayerMask.NameToLayer("Hands")) | (1 << Physics.IgnoreRaycastLayer));
-            if (Physics.Raycast(transform.position, start.forward, out var hit, Mathf.Infinity, allLayersButHands)) {
+            const int allLayersButIgnore = ~(1 << Physics.IgnoreRaycastLayer);
+            var startPosition = transform.position + start.forward * raycastStartPointOffset;  // Avoid hitting hands.
+            if (Physics.Raycast(startPosition, start.forward, out var hit, Mathf.Infinity, allLayersButIgnore)) {
                 var currentGrabbable = hit.transform.GetComponent<DistanceGrabbable>();
 
                 if(!currentGrabbable || hit.transform.GetComponent<OffsetGrabInteractable>().IsGrabbed) {
