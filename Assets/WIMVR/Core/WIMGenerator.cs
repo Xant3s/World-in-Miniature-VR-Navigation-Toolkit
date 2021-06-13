@@ -99,6 +99,7 @@ namespace WIMVR.Core {
                 var bounds = rootCollider.bounds;
                 bounds.Encapsulate(childBoxCollider.bounds);
                 rootCollider.size = bounds.size / WIM.Configuration.ScaleFactor;
+                rootCollider.isTrigger = true;
                 childInWIM.RemoveAllColliders();
             }
 

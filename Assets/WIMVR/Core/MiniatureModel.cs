@@ -72,6 +72,8 @@ namespace WIMVR.Core {
             Data.WIMLevelTransform = transform.Find("WIM Level");
             grabbable = GetComponent<OffsetGrabInteractable>();
             _rigidbody = GetComponent<Rigidbody>();
+            _rigidbody.isKinematic = true;
+            MakeAllCollidersTriggers();
             Assert.IsNotNull(Data.HMDTransform);
             Assert.IsNotNull(Configuration.PlayerRepresentation);
             Assert.IsNotNull(Configuration.DestinationIndicator);
@@ -81,6 +83,12 @@ namespace WIMVR.Core {
             Converter = new WIMSpaceConverterImpl(Configuration, Data);
             OnInit?.Invoke(Configuration, Data);
             OnLateInit?.Invoke(Configuration, Data);
+        }
+
+        private void MakeAllCollidersTriggers() {
+            foreach(var col in GetComponents<Collider>()) {
+                col.isTrigger = true;
+            }
         }
 
         public void CleanupBeforeRespawn() {
