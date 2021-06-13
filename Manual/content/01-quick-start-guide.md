@@ -80,35 +80,17 @@ Please open the Hands Setup window (`Window -> wimVR -> Hand Setup`) and follow 
 <!-- TODO: Add screenshot -->
 
 
-### Layers
+### Ignore Preview Screen Layer
 
-To edit your project's tags and layers, select  ```Edit Layers``` from the ```Layers``` dropdown (see Fig. \ref{fig:EditTagsAndLayers}). You can also edit the tags in your project settings.
-
-Make sure the following layers exist (exact spelling matters):
-
-- ```WIM```
-- ```Hands```
-- ```Player```
-- ```Fingers```
-- ```PinchGrabbable```
+Move all objects that should not be visible on the Preview Screen ([see Chapter 2.10](#preview-screen)) to the ```Ignore Preview Screen``` layer (exact spelling matters). To edit your project's tags and layers, select  ```Edit Layers``` from the ```Layers``` dropdown (see Fig. \ref{fig:EditTagsAndLayers}). You can also edit the tags in your project settings.
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=.5\textwidth]{content/res/EditTagsAndLayers.png}
+    \includegraphics[width=.5\textwidth]{content/res/EditTagsAndLayers2.png}
     \caption{To edit your project's tags and layers, select  `Edit Layers` from the `Layers` dropdown.}
     \label{fig:EditTagsAndLayers}
 \end{figure}
 
-### Layer Collision Matrix
-
-Also, set up the layer collision matrix under `Project Settings -> Physics` so that the 'WIM' layer doesn't collide with any other layer except the 'Hands' layer (see Fig. \ref{fig:CollisionMatrix}).
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=\textwidth]{content/res/LayerCollisionMatrix.png}
-    \caption{The Layer Collision Matrix. Make sure to replicate this exact settings.}
-    \label{fig:CollisionMatrix}
-\end{figure}
 
 <!-- ## Video Tutorial -->
 <!-- TODO: Insert tutorial URL  -->
