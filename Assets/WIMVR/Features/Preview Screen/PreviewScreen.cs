@@ -85,9 +85,10 @@ namespace WIMVR.Features.Preview_Screen {
             Assert.IsNotNull(camObj);
             var cam = camObj.GetOrAddComponent<Camera>();
             Assert.IsNotNull(cam);
-            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("WIM"));    // TODO: don't rely on layers
-            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("Hands"));
-            cam.cullingMask &= ~(1 << LayerMask.NameToLayer("PinchGrabbable"));
+            var ignorePreviewScreenLayer = LayerMask.NameToLayer("Ignore Preview Screen");
+            if(ignorePreviewScreenLayer > -1) {
+                cam.cullingMask &= ~(1 << ignorePreviewScreenLayer);
+            }
             cam.targetTexture = new RenderTexture(1600, 900, 16, RenderTextureFormat.Default);
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = Color.gray;
