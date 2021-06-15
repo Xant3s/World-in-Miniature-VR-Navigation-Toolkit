@@ -131,7 +131,7 @@ namespace WIMVR.Core {
             WIMLevel.tag = "Untagged";
             Object.DestroyImmediate(WIMLevel.GetComponent<Level>());
             WIMLevel.gameObject.isStatic = false;
-            var WIMLayer = LayerMask.NameToLayer("WIM");
+            var WIMLayer = LayerMask.NameToLayer("Ignore Preview Screen");
             WIMLevel.gameObject.layer = WIMLayer;
             foreach (Transform child in WIMLevel) {
                 child.gameObject.layer = WIMLayer;
