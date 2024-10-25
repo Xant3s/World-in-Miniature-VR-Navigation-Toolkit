@@ -100,9 +100,9 @@ Move all objects that should not be visible on the Preview Screen ([see Chapter 
 <!-- Coming soon. -->
 
 ## Configure Scene
-<!-- Altered -->
-1. All gameobjects that are part of your level must be nested under an empty gameobject.
-   - Attach the Level script to the empty gameobject
+
+1. All static gameobject that are part of your environment and should be represented in the WIM must be nested under a single empty gameobject.
+   - Attach the `Level` script to this empty container gameobject
 2. Add XR rig to the scene
    - Drag the 'XR Rig' prefab (`wimVR/Prefabs/VR/XR Rig`) into the scene
 3. Add miniature model
@@ -162,10 +162,9 @@ To configure the player input, select the WIM gameobject in the scene.
 The configuration is stored in an *InputActions* asset, so you have to assign one.
 Therefore, you can either select an existing *InputActions* stored in (`Assets -> WIMVR -> Examples -> SimpleExample -> Config`) or crate a new one using the create menu (`Assets -> Create -> Input Actions`). You can quickly switch between multiple input mapping configurations by exchanging the assigned *InputActions* configuration.
 
-To edit the input mappings, open the *InputActions* asset by double-clicking it. Then, you can select the action you wish to modify and assign a new binding, or map the existing binding to another button. For information on how to edit Input Action Assets in the dedicated editor, see [Action Assets](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionAssets.html#editing-input-action-assets).
+To edit the input mappings, open the *InputActions* asset by double-clicking it. Then, you can select the action you wish to modify and assign a new binding, or map the existing binding to another button. For information on how to edit InputAction assets in the dedicated editor, see [Action Assets](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionAssets.html#editing-input-action-assets).
 
-<!-- >New  -->
-In the inspector of the WIM game Object is the WIM Input Script attached. You can select the Input Action Reference (see Fig. \ref{fig:InputActionReference}) from the Input Actions Asset, and then assign them to the desired References (see Fig. \ref{fig:WIMInput}).
+Find the `WIMInput` component on the WIM gameobject. You can select the Input Action Reference (see Fig. \ref{fig:InputActionReference}) from the Input Actions Asset, and then assign them to the desired References (see Fig. \ref{fig:WIMInput}).
 
 \begin{figure}[!h]
     \centering
@@ -180,5 +179,3 @@ In the inspector of the WIM game Object is the WIM Input Script attached. You ca
     \caption{WIM Input}
     \label{fig:WIMInput}
 \end{figure}
-
-<!-- >New End -->
