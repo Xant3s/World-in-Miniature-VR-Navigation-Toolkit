@@ -78,7 +78,7 @@ namespace WIMVR.Editor.Welcome {
 
         private void RegisterSupportMailEvent() {
             root.Q<Button>("SupportEmailBtn").RegisterCallback<MouseUpEvent>(e => {
-                Application.OpenURL("mailto:support-wim@realtimefoundry.com");
+                Application.OpenURL("mailto:contact@samueltruman.com");
             });
         }
 
