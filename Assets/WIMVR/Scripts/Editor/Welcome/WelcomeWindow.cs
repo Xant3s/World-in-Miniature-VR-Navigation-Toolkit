@@ -48,8 +48,6 @@ namespace WIMVR.Editor.Welcome {
             root.Q<Image>(name: "SceneIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_app_dark");
             root.Q<Image>(name: "ManualIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_manual_dark");
             root.Q<Image>(name: "EmailIcon").image = Resources.Load<Texture>("RTF/Icons/RTF_icon_mail_dark");
-            var RTFIcon = EditorGUIUtility.isProSkin ? "RTF-Logo-BrightCast" : "RTF-Logo-WhiteCast";
-            root.Q<Image>(name: "RTF-icon").image = Resources.Load<Texture>($"RTF/Logo/{RTFIcon}");
         }
 
         private void AddStyleToIconButtons() {
