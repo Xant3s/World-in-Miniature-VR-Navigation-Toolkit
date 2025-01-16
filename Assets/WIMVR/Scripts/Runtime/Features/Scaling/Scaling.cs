@@ -28,7 +28,8 @@ namespace WIMVR.Features.Scaling {
         private Transform WIMTransform;
         private SphereCollider rightGrabVolume;
         private SphereCollider leftGrabVolume;
-        private Hand scalingHand = Hand.None;
+        private Hand primaryGrabbingHand = Hand.None;  // The first hand that grabs
+        private Hand secondaryGrabbingHand = Hand.None; // The second hand used for scaling
         private float prevInterHandDistance;
 
         
@@ -64,19 +65,45 @@ namespace WIMVR.Features.Scaling {
         }
 
         private void RightHandInitialized(InputDevice rightController) {
-            // var rightController = XRUtils.FindCorrespondingInputDevice(Hand.RightHand);
             var grabButton = XRUtils.DetectGrabButton(Hand.RightHand);
             rightGrabButtonListener = new ButtonListener(grabButton, rightController);
+    
             rightGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.RightHand);
-            rightGrabButtonListener.OnButtonUp += () => scalingHand = Hand.None;
+    
+            rightGrabButtonListener.OnButtonUp += () => {
+                if (secondaryGrabbingHand == Hand.RightHand) {
+                    secondaryGrabbingHand = Hand.None; // Stop scaling
+                    // Debug.Log("Scaling stopped (RightHand released).");
+                }
+        
+                // If primary hand is RightHand and it's released, reset both hands
+                if (primaryGrabbingHand == Hand.RightHand) {
+                    primaryGrabbingHand = Hand.None;
+                    secondaryGrabbingHand = Hand.None;
+                    // Debug.Log("Primary hand released, resetting all grabbing states.");
+                }
+            };
         }
 
         private void LeftHandInitialized(InputDevice leftController) {
-            // var leftController = XRUtils.FindCorrespondingInputDevice(Hand.LeftHand);
             var grabButton = XRUtils.DetectGrabButton(Hand.LeftHand);
             leftGrabButtonListener = new ButtonListener(grabButton, leftController);
+    
             leftGrabButtonListener.OnButtonDown += () => SetScalingHand(Hand.LeftHand);
-            leftGrabButtonListener.OnButtonUp += () => scalingHand = Hand.None;
+    
+            leftGrabButtonListener.OnButtonUp += () => {
+                if (secondaryGrabbingHand == Hand.LeftHand) {
+                    secondaryGrabbingHand = Hand.None; // Stop scaling
+                    // Debug.Log("Scaling stopped (LeftHand released).");
+                }
+        
+                // If primary hand is LeftHand and it's released, reset both hands
+                if (primaryGrabbingHand == Hand.LeftHand) {
+                    primaryGrabbingHand = Hand.None;
+                    secondaryGrabbingHand = Hand.None;
+                    // Debug.Log("Primary hand released, resetting all grabbing states.");
+                }
+            };
         }
 
         private bool IsInitialized() => handL && handR && leftGrabVolume && rightGrabVolume;
@@ -90,18 +117,26 @@ namespace WIMVR.Features.Scaling {
         }
 
         private void SetScalingHand(Hand hand) {
-            // Only if WIM scaling is enabled and WIM is currently being grabbed with one hand.
             if (!ScalingConfig.AllowWIMScaling || !grabbable.IsGrabbed) return;
-
             if (!IsInitialized()) Init();
 
-            var grabbingHand = GetGrabbingHand();
-            var oppositeHand = TypeUtils.GetOppositeHand(grabbingHand); // This is the potential scaling hand.
-            if (oppositeHand != hand) return;
+            // Debug.Log($"Trying to grab with: {hand}");
 
-            // Start scaling if the potential scaling hand (the hand currently not grabbing the WIM) is inside the WIM and starts grabbing.
-            if (GetHandIsInside(oppositeHand)) {
-                scalingHand = oppositeHand;
+            // If no hand has grabbed yet, this is the primary grabbing hand
+            if (primaryGrabbingHand == Hand.None) {
+                primaryGrabbingHand = hand;
+                // Debug.Log($"Primary grabbing hand set to: {primaryGrabbingHand}");
+                return;
+            }
+
+            // If the same hand tries to grab again, ignore it
+            if (primaryGrabbingHand == hand) return;
+
+            // If a second hand grabs, start scaling
+            if (secondaryGrabbingHand == Hand.None && GetHandIsInside(hand)) {
+                secondaryGrabbingHand = hand;
+                prevInterHandDistance = Vector3.Distance(handL.position, handR.position); // Initialize distance
+                // Debug.Log($"Scaling started with secondary hand: {secondaryGrabbingHand}");
             }
         }
 
@@ -113,7 +148,7 @@ namespace WIMVR.Features.Scaling {
             if (!ScalingConfig.AllowWIMScaling || !grabbable.IsGrabbed) return;
 
             // Check if currently scaling. Abort if not.
-            if (scalingHand == Hand.None) return;
+            if (secondaryGrabbingHand == Hand.None) return;
 
             // Scale using inter hand distance delta.
             var currInterHandDistance = Vector3.Distance(handL.position, handR.position);
