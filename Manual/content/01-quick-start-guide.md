@@ -23,9 +23,31 @@ World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that integrat
 visualization concepts to overcome open conceptual gaps and to
 provide a comprehensive practical solution for traveling in VR.
 
-## Scientific Pape
+## Scientific Paper
 
 In case you need a scientific reference, you can cite this [paper](https://dl.acm.org/doi/10.1145/3402942.3402994). You can also access if for free [here](https://www.researchgate.net/publication/344368828_An_Integrated_Design_of_World-in-Miniature_Navigation_in_Virtual_Reality). This paper is also useful if you wish to learn more about World-in-Miniature navigation.
+
+BibTeX citation:
+
+```
+@inproceedings{10.1145/3402942.3402994,
+author = {Truman, Samuel and von Mammen, Sebastian},
+title = {An Integrated Design of World-in-Miniature Navigation 
+in Virtual Reality},
+year = {2020},
+isbn = {9781450388078},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3402942.3402994},
+doi = {10.1145/3402942.3402994},
+articleno = {69},
+numpages = {9},
+keywords = {world-in-miniature, virtual reality, navigation},
+location = {Bugibba, Malta},
+series = {FDG '20}
+}
+```
+
 
 ## Setup
 
@@ -35,7 +57,7 @@ Before using this plugin, have a look at these steps to make sure it's set up pr
 
 \begin{itemize}
   \item This plugin has so far only been tested with an \textbf{Oculus Quest}.
-  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow \hyperlink{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html}{these instructions} if you are trying to install the URP into an existing project.
+  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow [these instructions](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html) if you are trying to install the URP into an existing project.
   \item Additionally, these packages must be installed from the package manager:
     \begin{itemize}
       \item \textbf{Input System}
@@ -84,23 +106,22 @@ To edit your project's tags and layers, select  ```Edit Layers``` from the ```La
 
 Make sure the following tags exist (exact spelling matters):  
 
-- ```WIM```
-- ```Level```
-- ```WIM Level Old```
-- ```HandL```
-- ```HandR```
-- ```ThumbR```
-- ```ThumbL```
-- ```IndexR```
-- ```IndexL```
-  
-Additional tags for Pro version (exact spelling matters):
-
-- ```PreviewCamera```
-- ```PreviewScreen```
 - ```Box Mask```
 - ```Cylinder Mask```
+- ```HandL```
+- ```HandR```
+- ```IndexL```
+- ```IndexR```
+- ```Level```
+- ```PreviewCamera```
+- ```PreviewScreen```
 - ```Spotlight Mask```
+- ```ThumbL```
+- ```ThumbR```
+- ```WIM Level Old```
+- ```WIM```
+
+
 
 ### Layers
 
@@ -108,11 +129,12 @@ To edit your project's tags and layers, select  ```Edit Layers``` from the ```La
 
 Make sure the following layers exist (exact spelling matters):
 
-- ```WIM```
-- ```Hands```
-- ```Player```
 - ```Fingers```
+- ```Hands```
 - ```PinchGrabbable```
+- ```Player```
+- ```WIM```
+
 
 ### Layer Collision Matrix
 
