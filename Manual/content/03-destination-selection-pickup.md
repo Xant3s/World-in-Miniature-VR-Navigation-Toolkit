@@ -8,14 +8,14 @@
 <!-- FIXME: only using one button is actually sufficient -->
 
 **Description**  
-*Destination Selection Pickup* is one of two alternative destination selection methods. *Destination Selection Pickup* allows the player to pick up the representation of himself/herself and place it somewhere else in the miniature model, thus selecting a travel destination. The destination has to be confirmed to start the travel phase. This is the recommended destination selection method.
+*Destination Selection Pickup* is one of two alternative destination selection methods. *Destination Selection Pickup* allows the user to pick up the representation of himself/herself and place it somewhere else in the miniature model, thus selecting a travel destination. The destination has to be confirmed to start the travel phase. This is the recommended destination selection method.
 
 **How to Use in Game**  
 The user can create a destination indicator, identical to the one used in *Destination Selection Touch*, by grabbing the red user representation in the WIM. To do this, the user pinches the index finger and thumb. The destination indicator is picked up while the user's representation remains in place.
 
 The user can place the destination indicator anywhere in the WIM and adjust its orientation by rotating their hand. The indicator can be dropped and picked up again to modify the selected destination or orientation. Alternatively, the user can pull a new destination indicator from the red user representation, causing the previous one to disappear.
 
-To confirm the destination, the player double-taps the destination indicator with the index finger.
+To confirm the destination, the user double-taps the destination indicator with the index finger.
 
 **Setup**  
 Set 'Destination Selection Method' to 'Pickup' in miniature model inspector to enable. Requires no additional setup. This is one of the basic features. Currently, only one hand (the right hand by default) can be used at a time.

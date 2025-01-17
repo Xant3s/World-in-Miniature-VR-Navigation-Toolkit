@@ -26,7 +26,7 @@ Add *PreviewScreen* script to miniature model gameobject. Check 'Show Preview Sc
 The configuration is stored in an *PreviewScreenConfig* asset. Select an existing *PreviewScreenConfig* file or create a new one using the create menu. To do that, right-click anywhere on the project window and select `Create -> WIM -> Feature Configuration -> Preview Screen`. Settings to configure:
 
 - *Show Preview Screen*: Whether this feature is enabled.
-- *Auto Position Preview Screen*: Whether the preview screen should be automatically opened and placed at a fixed position above the miniature model. Otherwise, the player has to grab the destination indicator's view cone by pinching index and thumb and place the preview screen somewhere.
+- *Auto Position Preview Screen*: Whether the preview screen should be automatically opened and placed at a fixed position above the miniature model. Otherwise, the user has to grab the destination indicator's view cone by pinching index and thumb and place the preview screen somewhere.
 
 **Input Mappings**  
  -

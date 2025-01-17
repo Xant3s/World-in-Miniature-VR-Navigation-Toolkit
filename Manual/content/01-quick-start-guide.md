@@ -51,7 +51,7 @@ series = {FDG '20}
 
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.6 'Configure Scene'](#configure-scene).
+Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. To use the World-in-Miniature in your own scene, see [Chapter 1.6 'Configure Scene'](#configure-scene).
 
 ### Requirements
 
@@ -195,7 +195,7 @@ To add or remove features, add or remove their respective scripts to the gameobj
 
 These are the basic settings:
 
-- *Player Representation*: The player's representation (prefab) in the miniature model. Used to indicate player's current position and orientation. Can be picked up and placed somewhere else if destination selection method is set to 'pickup'.
+- *Player Representation*: The user's representation (prefab) in the miniature model. Used to indicate user's current position and orientation. Can be picked up and placed somewhere else if destination selection method is set to 'pickup'.
 - *Destination Indicator*: Indicates the currently selected destination in the miniature model.
 - *Scale Factor*: The scale factor applied to the miniature model on creation. Smaller numbers will result in a smaller model. A value of '1' would not downsize the miniature model at all.
 - *WIM Level Offset*: Initial miniature model offset relative to this (parent) gameobject.
@@ -206,10 +206,10 @@ These are the basic settings:
 - *Semi-Transparent*: See [Chapter 2.15](#semi-transparent)
 - *Transparency*: See [Chapter 2.15](#semi-transparent)
 - *WIM Spawn at Height*: Default height to spawn the miniature model at.
-- *Player Height (in cm)*: The player's height. No Exact value required.
-- *WIM Spawn Distance*: Specifies how far away from the player the miniature model should be spawned.
+- *Player Height (in cm)*: The user's height. No Exact value required.
+- *WIM Spawn Distance*: Specifies how far away from the user the miniature model should be spawned.
 - *Detect Arm Length*: See [Chapter 2.3](#experimental-detect-arm-length)
-- *Adapt miniature model Size to Player Height*: Automatically adapt the miniature model's size to the player's height. The effect will be minimal. Also use scale factor.
+- *Adapt miniature model Size to Player Height*: Automatically adapt the miniature model's size to the user's height. The effect will be minimal. Also use scale factor.
 
 \pagebreak
 
