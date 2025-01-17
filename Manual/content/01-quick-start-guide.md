@@ -211,6 +211,8 @@ These are the basic settings:
 - *Detect Arm Length*: See [Chapter 2.3](#experimental-detect-arm-length)
 - *Adapt miniature model Size to Player Height*: Automatically adapt the miniature model's size to the player's height. The effect will be minimal. Also use scale factor.
 
+\pagebreak
+
 ## Configure Input \label{section:ConfigureInput}
 
 \begin{figure}[!h]
@@ -225,3 +227,26 @@ The configuration is stored in a *InputActions* asset, so you have to assign one
 Therefore, you can either select an existing *InputActions* (see Fig. \ref{fig:PlayerInput}) or crate a new one using the create menu (`Assets -> Create -> Input Actions`). You can quickly switch between multiple input mapping configurations by exchanging the assigned *InputActions* configuration.
 
 To edit the input mappings, open the *InputActions* asset by double-clicking it. Then, you can select the action you wish to modify and assign a new binding, or map the existing binding to another button. For information on how to edit Input Action Assets in the dedicated editor, see [Action Assets](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionAssets.html#editing-input-action-assets).
+
+\pagebreak
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{content/res/VRController/VROculusController.png}
+    \caption{Default input mappings. Image courtesy of Marie Louise Eichner.}
+    \label{fig:DefaultInput}
+\end{figure}
+
+Default input mappings:
+
+1. Grab/carry WIM
+2. Respawn WIM
+3.
+4.
+5. Vertical scrolling
+6. Horizontal scrolling / rotate destination
+7. Destination selection touch: start travel
+8. Destination selection touch: select destination / detect arm length
+9.
+10. Grab/carry WIM
+
