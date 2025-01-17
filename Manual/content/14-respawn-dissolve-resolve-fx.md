@@ -18,7 +18,7 @@ Adds a dissolve-resolve effect to the miniature model on respawn.
 Will be displayed automatically.
 
 **Setup**  
-Add *DissolveFX* scrip to the miniature model.
+Add the *DissolveFX* script to the miniature model.
 
 **Configuration**  
  -

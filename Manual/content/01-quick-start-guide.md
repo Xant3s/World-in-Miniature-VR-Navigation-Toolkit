@@ -57,6 +57,7 @@ Before using this plugin, have a look at these steps to make sure it's set up pr
 
 \begin{itemize}
   \item This plugin has so far only been tested with an \textbf{Oculus Quest}.
+  \item Tested Unity version: \textbf{Unity 2020.1.10f1}
   \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow [these instructions](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html) if you are trying to install the URP into an existing project.
   \item Additionally, these packages must be installed from the package manager:
     \begin{itemize}
@@ -74,7 +75,7 @@ Before using this plugin, have a look at these steps to make sure it's set up pr
 Make sure you've followed all of the steps below.
 
 - Switch the platform to Android in the `Build Settings`
-- Make sure to use the OpenGLES3 graphics API (`Project Settings ->Player -> Other Settings`)
+- Make sure to use the OpenGLES3 graphics API (`Project Settings -> Player -> Other Settings`)
 - Make sure you properly set up the [Universal Render Pipeline (URP)](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html) and [upgraded your shaders](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/upgrading-your-shaders.html).
 <!-- - If you did not set up the Universal Render Pipeline (URP):
   - Convert materials to Universal Render Pipeline: Select `Edit -> Render Pipeline -> Universal Render Pipeline -> Upgrade Project Materials to Universal RP Materials` from the menu.
