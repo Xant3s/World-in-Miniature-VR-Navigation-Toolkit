@@ -20,7 +20,7 @@ The player doesn't need to do anything to activate this feature. It will be auto
 Add the *OcclusionHandling* script to the miniature model gameobject. Select 'Melting Walls' as 'Occlusion Handling Strategy' in the miniature model inspector.
 
 **Configuration**  
-The configuration is stored in an *OcclusionHandlingConfig* asset. Select an existing *OcclusionHandlingConfig* file or create a new one using the create menu. Therefore, right-click anywhere on the project window and select `Create -> WIM -> Feature Configureation -> Occlusion Handling`. Settings to configure:
+The configuration is stored in an *OcclusionHandlingConfig* asset. Select an existing *OcclusionHandlingConfig* file or create a new one using the create menu. To do that, right-click anywhere on the project window and select `Create -> WIM -> Feature Configuration -> Occlusion Handling`. Settings to configure:
 
 - *Melt Radius*: Radius around the player's arm in which the miniature model is hidden.
 - *Melt Height*: Distance parallel to the player's arm in which the miniature model is hidden.

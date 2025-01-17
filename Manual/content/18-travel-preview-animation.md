@@ -20,7 +20,7 @@ Will be displayed automatically.
 Add the *TravelPreviewAnimation* script to the gameobject. Check 'Travel Preview Animation' to enable.
 
 **Configuration**  
-The configuration is stored in a *TravelPreviewConfig* asset. Select an existing *TravelPreviewConfig* file or create a new one using the create menu. Therefore, right-click anywhere on the project window and select `Create -> WIM -> Feature Configureation -> Travel Preview Animation`. Settings to configure:
+The configuration is stored in a *TravelPreviewConfig* asset. Select an existing *TravelPreviewConfig* file or create a new one using the create menu. To do that, right-click anywhere on the project window and select `Create -> WIM -> Feature Configuration -> Travel Preview Animation`. Settings to configure:
 
 - *Travel Preview Animation*: Whether this feature is enabled.
 - *Travel Preview Animation Speed*: How long the travel preview animation should take in seconds. The animation is looped.

@@ -7,15 +7,13 @@
 Allows the player to resize the miniature model at runtime.
 
 **How to Use in Game**  
-To resize the miniature model, the player can grab it using both hands.
-The WIM can be scaled up by moving the hands apart from each
-other and scaled down by bringing the hands closer together.
+The player resizes the miniature model by grabbing it with both hands. Moving the hands apart scales it up, while bringing them closer together scales it down.
 
 **Setup**  
 Add the *Scaling* scrip to the miniature model gameobject. Check 'Allow WIM Scaling' to enable.
 
 **Configuration**  
-The configuration is stored in a *ScalingConfig* asset. Select an existing *ScalingConfig* file or create a new one using the create menu. Therefore, right-click anywhere on the project window and select `Create -> WIM -> Feature Configureation -> Scaling`. Settings to configure:
+The configuration is stored in a *ScalingConfig* asset. Select an existing *ScalingConfig* file or create a new one using the create menu. To do that, right-click anywhere on the project window and select `Create -> WIM -> Feature Configuration -> Scaling`. Settings to configure:
 
 - When scaling the miniature model up or down, the player changes the scale factor. The scale factor represents the miniature model's current size.
 - Change *Min Scale Factor* to set the smallest allowed scale factor. This should be a positive number.
