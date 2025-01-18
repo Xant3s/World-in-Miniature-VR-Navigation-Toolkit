@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace ST.DevTools {
     public sealed class QuickSceneSwitch {
-        private static readonly string simpleExampleScene = "Assets/WIMVR/Examples/SimpleExample/SimpleExample.unity";
+        private static readonly string simpleExampleScene = "Packages/com.samueltruman.wimvr/Examples/SimpleExample/SimpleExample.unity";
         private static readonly string cityExampleScene = "Assets/ExampleProjects/CityExample/CityExample.unity";
 
 

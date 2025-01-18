@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngineInternal;
 
 
 namespace WIMVR.Core {
@@ -22,6 +23,8 @@ namespace WIMVR.Core {
         private XRRig rig;
         private Vector2 inputAxis;
         private float gravityFactor = 1f;
+
+        private bool newInputThisFrame;
 
 
         private void Awake() {
@@ -85,9 +88,12 @@ namespace WIMVR.Core {
 
         public void Test(InputAction.CallbackContext context) {
             inputAxis = context.ReadValue<Vector2>();
+            newInputThisFrame = true;
         }
 
         private void FixedUpdate() {
+            if (!newInputThisFrame) inputAxis = Vector2.zero;
+            
             // Move character controller to headset.
             characterController.height = rig.cameraInRigSpaceHeight + additionalHeadHeight;
             var capsuleCenter = transform.InverseTransformPoint(rig.cameraGameObject.transform.position);
@@ -107,6 +113,7 @@ namespace WIMVR.Core {
             }
 
             characterController.Move(Vector3.up * gravityFactor * Time.fixedDeltaTime);
+            newInputThisFrame = false;
         }
     }
 }

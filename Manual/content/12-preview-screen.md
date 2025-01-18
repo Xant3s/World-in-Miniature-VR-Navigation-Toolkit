@@ -17,17 +17,16 @@ in the VE and always faces the user. On the preview screen, the user can see a l
 **How to Use in Game**  
 When the automatic mode is active, the WIM will be automatically displayed while a destination is selected. The preview screen will float above the WIM using a consistent offset. No user input is required.
 
-The pickup mode works very similarly to the pickup destination selection method described in Section \ref{section:DestinationSelectionPickup}. The destination indicator’s view frustum is displayed in the miniature model. The user can grab the view frustum by pinching the index finger and thumb. The preview screen will become visible and attached to the user’s hand. Afterwards, the user can position the preview screen anywhere in the VE. As soon as the preview screen is dropped, it will retain its position relative to the WIM. The preview screen can be closed by pressing a Close button which is displayed
-in the upper right corner of the preview screen.
+The pickup mode works very similarly to the pickup destination selection method described in Section \ref{section:DestinationSelectionPickup}. The destination indicator’s view frustum is displayed in the miniature model. The user can grab the view frustum by pinching the index finger and thumb. The preview screen will become visible and attached to the user’s hand. Afterwards, the user can position the preview screen anywhere in the VE. As soon as the preview screen is dropped, it will retain its position relative to the WIM. The preview screen can be closed by touching a close button with the index finger which is displayed in the upper right corner of the preview screen.
 
 **Setup**  
 Add *PreviewScreen* script to miniature model gameobject. Check 'Show Preview Screen' to enable.
 
 **Configuration**  
-The configuration is stored in an *PreviewScreenConfig* asset. Select an existing *PreviewScreenConfig* file or create a new one using the create menu. Therefore, right-click anywhere on the project window and select `Create -> WIM -> Feature Configureation -> Preview Screen`. Settings to configure:
+The configuration is stored in an *PreviewScreenConfig* asset. Select an existing *PreviewScreenConfig* file or create a new one using the create menu. To do that, right-click anywhere on the project window and select `Create -> WIM -> Feature Configuration -> Preview Screen`. Settings to configure:
 
 - *Show Preview Screen*: Whether this feature is enabled.
-- *Auto Position Preview Screen*: Whether the preview screen should be automatically opened and placed at a fixed position above the miniature model. Otherwise, the player has to grab the destination indicator's view cone using index and thumb and place the preview screen somewhere.
+- *Auto Position Preview Screen*: Whether the preview screen should be automatically opened and placed at a fixed position above the miniature model. Otherwise, the user has to grab the destination indicator's view cone by pinching index and thumb and place the preview screen somewhere.
 
 **Input Mappings**  
  -

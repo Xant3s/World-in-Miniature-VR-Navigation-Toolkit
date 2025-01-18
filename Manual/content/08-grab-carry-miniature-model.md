@@ -4,10 +4,10 @@
 ## Grab/Carry Miniature Model
 
 **Description**  
-Allows the player to pick up the entire miniature model and carry it.
+Allows the user to pick up the entire miniature model and carry it.
 
 **How to Use in Game**  
-The player must press the grab button on either controller.
+The user must press the grab button on either controller.
 
 **Setup**  
 Requires no setup. This is one of the basic features.

@@ -6,7 +6,7 @@
 <!-- TODO: Add image -->
 
 **Description**  
-Allows the player to point at certain objects and grab them from a distance.
+Users can point at objects (including the WIM) and grab them from a distance.
 
 **How to Use in Game**  
 Aim at target using the laser pointer. Hold grab button to start pulling the object.

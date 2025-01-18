@@ -8,7 +8,7 @@ Allows the user to respawn the miniature model. This is especially useful if the
 position using an offset specified beforehand.
 
 **How to Use in Game**  
-The user has to press the respawn button.
+The user has to press the respawn button (X-button/primary left hand button).
 
 **Setup**  
 Requires no setup. This is one of the basic features.

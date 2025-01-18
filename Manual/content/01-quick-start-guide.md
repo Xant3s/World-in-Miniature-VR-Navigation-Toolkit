@@ -23,19 +23,42 @@ World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that integrat
 visualization concepts to overcome open conceptual gaps and to
 provide a comprehensive practical solution for traveling in VR.
 
-## Scientific Pape
+## Scientific Paper
 
 In case you need a scientific reference, you can cite this [paper](https://dl.acm.org/doi/10.1145/3402942.3402994). You can also access if for free [here](https://www.researchgate.net/publication/344368828_An_Integrated_Design_of_World-in-Miniature_Navigation_in_Virtual_Reality). This paper is also useful if you wish to learn more about World-in-Miniature navigation.
 
+BibTeX citation:
+
+```
+@inproceedings{10.1145/3402942.3402994,
+author = {Truman, Samuel and von Mammen, Sebastian},
+title = {An Integrated Design of World-in-Miniature Navigation 
+in Virtual Reality},
+year = {2020},
+isbn = {9781450388078},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3402942.3402994},
+doi = {10.1145/3402942.3402994},
+articleno = {69},
+numpages = {9},
+keywords = {world-in-miniature, virtual reality, navigation},
+location = {Bugibba, Malta},
+series = {FDG '20}
+}
+```
+
+
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. If you want to use the World-in-Miniature in you own scene, have a look at [Chapter 1.6 'Configure Scene'](#configure-scene).
+Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in the package folder at `Packages/com.samueltruman.wimvr/Examples/SimpleExample`. To use the World-in-Miniature in your own scene, see [Chapter 1.6 'Configure Scene'](#configure-scene).
 
 ### Requirements
 
 \begin{itemize}
   \item This plugin has so far only been tested with an \textbf{Oculus Quest}.
-  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow \hyperlink{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html}{these instructions} if you are trying to install the URP into an existing project.
+  \item Tested Unity version: \textbf{Unity 2020.1.10f1}
+  \item \textbf{Universal Render Pipeline (URP)}. Use the package manager to install the URP. Please follow [these instructions](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html) if you are trying to install the URP into an existing project.
   \item Additionally, these packages must be installed from the package manager:
     \begin{itemize}
       \item \textbf{Input System}
@@ -52,7 +75,7 @@ Before using this plugin, have a look at these steps to make sure it's set up pr
 Make sure you've followed all of the steps below.
 
 - Switch the platform to Android in the `Build Settings`
-- Make sure to use the OpenGLES3 graphics API (`Project Settings ->Player -> Other Settings`)
+- Make sure to use the OpenGLES3 graphics API (`Project Settings -> Player -> Other Settings`)
 - Make sure you properly set up the [Universal Render Pipeline (URP)](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/InstallURPIntoAProject.html) and [upgraded your shaders](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.2/manual/upgrading-your-shaders.html).
 <!-- - If you did not set up the Universal Render Pipeline (URP):
   - Convert materials to Universal Render Pipeline: Select `Edit -> Render Pipeline -> Universal Render Pipeline -> Upgrade Project Materials to Universal RP Materials` from the menu.
@@ -84,23 +107,22 @@ To edit your project's tags and layers, select  ```Edit Layers``` from the ```La
 
 Make sure the following tags exist (exact spelling matters):  
 
-- ```WIM```
-- ```Level```
-- ```WIM Level Old```
-- ```HandL```
-- ```HandR```
-- ```ThumbR```
-- ```ThumbL```
-- ```IndexR```
-- ```IndexL```
-  
-Additional tags for Pro version (exact spelling matters):
-
-- ```PreviewCamera```
-- ```PreviewScreen```
 - ```Box Mask```
 - ```Cylinder Mask```
+- ```HandL```
+- ```HandR```
+- ```IndexL```
+- ```IndexR```
+- ```Level```
+- ```PreviewCamera```
+- ```PreviewScreen```
 - ```Spotlight Mask```
+- ```ThumbL```
+- ```ThumbR```
+- ```WIM Level Old```
+- ```WIM```
+
+
 
 ### Layers
 
@@ -108,11 +130,12 @@ To edit your project's tags and layers, select  ```Edit Layers``` from the ```La
 
 Make sure the following layers exist (exact spelling matters):
 
-- ```WIM```
-- ```Hands```
-- ```Player```
 - ```Fingers```
+- ```Hands```
 - ```PinchGrabbable```
+- ```Player```
+- ```WIM```
+
 
 ### Layer Collision Matrix
 
@@ -173,7 +196,7 @@ To add or remove features, add or remove their respective scripts to the gameobj
 
 These are the basic settings:
 
-- *Player Representation*: The player's representation (prefab) in the miniature model. Used to indicate player's current position and orientation. Can be picked up and placed somewhere else if destination selection method is set to 'pickup'.
+- *Player Representation*: The user's representation (prefab) in the miniature model. Used to indicate user's current position and orientation. Can be picked up and placed somewhere else if destination selection method is set to 'pickup'.
 - *Destination Indicator*: Indicates the currently selected destination in the miniature model.
 - *Scale Factor*: The scale factor applied to the miniature model on creation. Smaller numbers will result in a smaller model. A value of '1' would not downsize the miniature model at all.
 - *WIM Level Offset*: Initial miniature model offset relative to this (parent) gameobject.
@@ -184,10 +207,12 @@ These are the basic settings:
 - *Semi-Transparent*: See [Chapter 2.15](#semi-transparent)
 - *Transparency*: See [Chapter 2.15](#semi-transparent)
 - *WIM Spawn at Height*: Default height to spawn the miniature model at.
-- *Player Height (in cm)*: The player's height. No Exact value required.
-- *WIM Spawn Distance*: Specifies how far away from the player the miniature model should be spawned.
+- *Player Height (in cm)*: The user's height. No Exact value required.
+- *WIM Spawn Distance*: Specifies how far away from the user the miniature model should be spawned.
 - *Detect Arm Length*: See [Chapter 2.3](#experimental-detect-arm-length)
-- *Adapt miniature model Size to Player Height*: Automatically adapt the miniature model's size to the player's height. The effect will be minimal. Also use scale factor.
+- *Adapt miniature model Size to Player Height*: Automatically adapt the miniature model's size to the user's height. The effect will be minimal. Also use scale factor.
+
+\pagebreak
 
 ## Configure Input \label{section:ConfigureInput}
 
@@ -203,3 +228,26 @@ The configuration is stored in a *InputActions* asset, so you have to assign one
 Therefore, you can either select an existing *InputActions* (see Fig. \ref{fig:PlayerInput}) or crate a new one using the create menu (`Assets -> Create -> Input Actions`). You can quickly switch between multiple input mapping configurations by exchanging the assigned *InputActions* configuration.
 
 To edit the input mappings, open the *InputActions* asset by double-clicking it. Then, you can select the action you wish to modify and assign a new binding, or map the existing binding to another button. For information on how to edit Input Action Assets in the dedicated editor, see [Action Assets](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/manual/ActionAssets.html#editing-input-action-assets).
+
+\pagebreak
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{content/res/VRController/VROculusController.png}
+    \caption{Default input mappings (image credit: Marie Louise Eichner).}
+    \label{fig:DefaultInput}
+\end{figure}
+
+Default input mappings:
+
+1. Grab/carry WIM
+2. Respawn WIM
+3. Unassigned
+4. Unassigned
+5. Vertical scrolling
+6. Horizontal scrolling / rotate destination
+7. Destination selection touch: start travel
+8. Destination selection touch: select destination / detect arm length
+9. Pinch (used by destination selection pickup and preview screen)
+10. Grab/carry WIM
+
