@@ -1,5 +1,7 @@
 # WIMVR: World-in-Miniature VR Navigation Toolkit
 
+WIMVR is a Unity plugin that provides intuitive VR navigation through a miniature world model, making movement in large virtual spaces effortless and immersive.
+
 ## What is World-in-Miniature (WIM)?
 
 Navigation is one of the most fundamental challenges
@@ -7,37 +9,43 @@ in Virtual Reality (VR). The world-in-miniature (WIM) metaphor allows players to
 
 ## What is WIMVR?
 
-World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that integrates and extends state-of-the-art interaction tasks and
-visualization concepts to overcome open conceptual gaps and to
-provide a comprehensive practical solution for traveling in VR.
+World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that brings seamless VR navigation using a scaled-down model of the virtual world. It integrates cutting-edge interaction techniques to improve usability, occlusion handling, and user experience, making VR navigation more intuitive for applications like gaming, architecture, and simulations.
 
 ## Features
 
 [![Watch the video](https://img.youtube.com/vi/DzmdxMqrKJw/maxresdefault.jpg)](https://www.youtube.com/watch?v=DzmdxMqrKJw)
 
-- Automatic WIM generation
-- Destination selection:
-  - via pickup gesture
-  - via touch
-- Grab/carry the WIM
-- WIM respawn
-- Distance grab
-- Scalability:
-  - Scaling
-  - Scrolling
-- Occlusion handling:
-  - transparency
-  - melting walls
-  - cutout view
-- User guidance:
-  - Preview screen
-  - travel preview animation
-  - path trace
-  - WIM respawn dissolve FX
-- Experimental: detect user's arm length
-- Experimental: live update the WIM
+
+### 🚀 Core Features  
+- **Automatic WIM Generation**  
+- **Destination Selection:**  
+  - Pickup Gesture  
+  - Touch Interaction  
+- **Grab & Carry the WIM**  
+- **WIM Respawn**  
+- **Distance Grab**  
+
+### 🔍 Scalability & Navigation  
+- **Scaling**  
+- **Scrolling**  
+- **Occlusion Handling:**  
+  - Transparency  
+  - Melting Walls  
+  - Cutout View  
+
+### 🎯 User Guidance & Feedback  
+- **Preview Screen**  
+- **Travel Preview Animation**  
+- **Path Trace**  
+- **Respawn Dissolve FX**  
+
+### 🧪 Experimental Features  
+- **Detect User’s Arm Length**  
+- **Live Update the WIM**  
 
 ## How to Test
+
+📖 **For more detailed instructions, please consult the [manual](Manual/Manual.pdf).**
 
 
 ### Hardware Requirements
@@ -75,14 +83,20 @@ The `SimpleExample` scene can be used to test all features. There are two differ
    4. Press play in Unity
 2. Test via standalone
    1. Connect the Oculus Quest to your PC
-   2. Make sure Oculus Links is *not* running
+   2. Make sure Oculus Link is *not* running
    3. Build and run (File > Build & Run)
    4. No cable connection is required once the build process is finished and the .apk was transferred to the Quest
 
-### Common Oculus Quest Issues
+### 🔧 Common Oculus Quest Issues  
 
-- **No image is rendered for the right eye** - set the Stereo Rendering Mode to Multiview (Edit > Project Settings > XR Plug-in Management > Oculus > Android)
-- **Massive performance issues when running in standalone mode** - uncheck the 'Auto-Switch' setting on the PlayerInput component attached to the WIM instance
+- **🛑 No image is rendered for the right eye**  
+  ✅ Fix: Set **Stereo Rendering Mode** to **Multiview**  
+  - _Location:_ `Edit > Project Settings > XR Plug-in Management > Oculus > Android`  
+
+- **🐌 Performance issues in standalone mode**  
+  ✅ Fix: Uncheck **Auto-Switch** in the `PlayerInput` component attached to the WIM instance.  
+  - _Location:_ `Open WIM GameObject > Inspector > PlayerInput Component`
+
 
 
 ## Scientific Reference
