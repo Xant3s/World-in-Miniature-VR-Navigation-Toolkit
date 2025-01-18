@@ -234,7 +234,7 @@ To edit the input mappings, open the *InputActions* asset by double-clicking it.
 \begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{content/res/VRController/VROculusController.png}
-    \caption{Default input mappings. Image courtesy of Marie Louise Eichner.}
+    \caption{Default input mappings (image credit: Marie Louise Eichner).}
     \label{fig:DefaultInput}
 \end{figure}
 
@@ -242,12 +242,12 @@ Default input mappings:
 
 1. Grab/carry WIM
 2. Respawn WIM
-3.
-4.
+3. Unassigned
+4. Unassigned
 5. Vertical scrolling
 6. Horizontal scrolling / rotate destination
 7. Destination selection touch: start travel
 8. Destination selection touch: select destination / detect arm length
-9.
+9. Pinch (used by destination selection pickup and preview screen)
 10. Grab/carry WIM
 
