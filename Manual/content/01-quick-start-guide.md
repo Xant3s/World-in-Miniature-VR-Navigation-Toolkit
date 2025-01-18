@@ -51,7 +51,7 @@ series = {FDG '20}
 
 ## Setup
 
-Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in your Assets folder at `Assets/WIMVR/Examples/SimpleExample`. To use the World-in-Miniature in your own scene, see [Chapter 1.6 'Configure Scene'](#configure-scene).
+Before using this plugin, have a look at these steps to make sure it's set up properly. Once everything is set up, you are ready to go. Check out the example scene to give it a try right away. You can select the example scene from the welcome window. Alternatively, you can find it in the package folder at `Packages/com.samueltruman.wimvr/Examples/SimpleExample`. To use the World-in-Miniature in your own scene, see [Chapter 1.6 'Configure Scene'](#configure-scene).
 
 ### Requirements
 

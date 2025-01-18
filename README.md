@@ -74,6 +74,15 @@ World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that brings s
 4. Make sure `OpenGLES3` is the only active graphics API (Edit > Project Settings > Player > Other Settings)
 5. Make sure the Oculus Plugin is enabled for both PC and Android (Edit > Project Settings > XR Plug-in Management)
 
+### Install to Existing Unity Project from Git
+
+Alternatively, you can to the following to add the plugin to an existing Unity project.
+
+1. Open the Package Manager window (Window > Package Manager)
+2. Select the install icon (+) and select install from git URL
+3. Enter `https://github.com/Xant3s/World-in-Miniature-VR-Navigation-Toolkit.git?path=/Packages/com.samueltruman.wimvr` and confirm
+
+
 ### How to Run Example
 
 The `SimpleExample` scene can be used to test all features. There are two different methods to run this example.
