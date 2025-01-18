@@ -13,7 +13,9 @@ World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that brings s
 
 ## Features
 
-[![Watch the video](https://img.youtube.com/vi/DzmdxMqrKJw/maxresdefault.jpg)](https://www.youtube.com/watch?v=DzmdxMqrKJw)
+![WIMVR Teaser](Media/wimvr_teaser.gif)
+
+[Watch on Youtube for better quality](https://youtu.be/DzmdxMqrKJw)
 
 
 ### 🚀 Core Features  
@@ -66,7 +68,7 @@ World-in-Miniature VR Navigation Toolkit (WIMVR) is a Unity plugin that brings s
 ### Installation
 
 1. Clone this repository  
-   ```$ git clone --recursive --depth 1 git@github.com:WIMVR-Plugin/WIMVR-Deployment.git```
+   ```$ git clone --recursive --depth 1 https://github.com/Xant3s/World-in-Miniature-VR-Navigation-Toolkit.git```
 2. Open in Unity
 3. Make sure the build target is set to Android (File > Build Settings)
 4. Make sure `OpenGLES3` is the only active graphics API (Edit > Project Settings > Player > Other Settings)
